@@ -1,6 +1,6 @@
 {
   "name": "bbob-parser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fast BB Code parser written in pure javascript, no dependencies",
   "main": "index.js",
   "directories": {
