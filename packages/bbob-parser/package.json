@@ -1,0 +1,17 @@
+{
+  "name": "bbob",
+  "version": "1.0.0",
+  "description": "Fast BB Code parser written in pure javascript, no dependencies",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^23.1.0"
+  }
+}
