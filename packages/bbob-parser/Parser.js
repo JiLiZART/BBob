@@ -1,44 +1,19 @@
+const {
+    convertTokenToText,
+    getTagName,
+    getTokenColumn,
+    getTokenLine,
+    getTokenValue,
+    isAttrNameToken,
+    isAttrValueToken,
+    isTagStart,
+    isTagToken,
+    isTextToken,
+    isTagEnd
+} = require("./Tokenizer");
 const Tokenizer = require("./Tokenizer");
-const TokenType = Tokenizer.TYPE;
 const TokenChar = Tokenizer.CHAR;
-const getCharCode = Tokenizer.getCharCode;
-
-const isTextToken = (token) => {
-    const type = token[Tokenizer.TOKEN.TYPE_ID];
-
-    return type === TokenType.SPACE || type === TokenType.NEW_LINE || type === TokenType.WORD
-};
-
-const isTagToken = (token) => token[Tokenizer.TOKEN.TYPE_ID] === TokenType.TAG;
-
-const isTagStart = (token) => !isTagEnd(token);
-
-const isTagEnd = (token) => getTokenValue(token).charCodeAt(0) === TokenChar.SLASH;
-
-const isAttrNameToken = (token) => token[Tokenizer.TOKEN.TYPE_ID] === TokenType.ATTR_NAME;
-
-const isAttrValueToken = (token) => token[Tokenizer.TOKEN.TYPE_ID] === TokenType.ATTR_VALUE;
-
-const getTagName = (token) => {
-    const value = getTokenValue(token);
-
-    return isTagEnd(token) ? value.slice(1) : value
-};
-
-const convertTagToText = (token) => {
-    let text = getCharCode(TokenChar.OPEN_BRAKET);
-
-    if (isTagEnd(token)) {
-        text += getCharCode(TokenChar.SLASH)
-    }
-
-    text += getTokenValue(token);
-    text += getCharCode(TokenChar.CLOSE_BRAKET);
-
-    return text
-};
-
-const getTokenValue = (token) => token[Tokenizer.TOKEN.VALUE_ID];
+const getChar = Tokenizer.getChar;
 
 const createTagNode = (name, attrs = {}, content = []) => ({tag: name, attrs, content});
 
@@ -64,6 +39,10 @@ module.exports = class Parser {
         const nestedNodes = [];
         const curTags = [];
         const curTagsAttrName = [];
+
+        const closableTags = this.findNestedTags(tokens);
+
+        const isNestedTag = (token) => closableTags.indexOf(getTokenValue(token)) >= 0;
 
         const getCurTag = () => {
             if (curTags.length) {
@@ -124,7 +103,7 @@ module.exports = class Parser {
                     if (isTagStart(token)) {
                         createCurTag(token);
 
-                        if (this.isCloseTag(getTokenValue(token))) {
+                        if (isNestedTag(token)) {
                             nestedNodes.push(getCurTag())
                         } else {
                             getNodes().push(getCurTag());
@@ -141,12 +120,11 @@ module.exports = class Parser {
                         if (lastNestedNode) {
                             getNodes().push(lastNestedNode)
                         } else {
-                            debugger;
-                            console.warn(`Inconsistent tag '${getTokenValue(token)}'`);
+                            console.warn(`Inconsistent tag '${getTokenValue(token)}' on line ${getTokenLine(token)} and column ${getTokenColumn(token)}`);
                         }
                     }
                 } else {
-                    getNodes().push(convertTagToText(token))
+                    getNodes().push(convertTokenToText(token))
                 }
             }
 
@@ -168,8 +146,22 @@ module.exports = class Parser {
         return nodes
     }
 
-    isCloseTag(value) {
-        return this.options.closableTags && this.options.closableTags.indexOf(value) >= 0
+    findNestedTags(tokens) {
+        const tags = tokens.filter(isTagToken).reduce((acc, token) => {
+            acc[getTokenValue(token)] = true;
+
+            return acc
+        }, {});
+
+        const closeChar = getChar(TokenChar.SLASH);
+
+        return Object.keys(tags).reduce((arr, key) => {
+            if (tags[key] && tags[closeChar + key]) {
+                arr.push(key)
+            }
+
+            return arr;
+        }, [])
     }
 
     isAllowedTag(value) {

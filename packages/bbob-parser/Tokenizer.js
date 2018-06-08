@@ -1,19 +1,50 @@
 const CHAR = require('./char');
 const TOKEN = require('./token');
+const getChar = String.fromCharCode;
 
-// const TOKEN.TYPE_ID = 0;
-// const TOKEN.VALUE_ID = 1;
-// const TOKEN.LINE_ID = 2;
-// const TOKEN.COLUMN_ID = 3;
-//
-// const TOKEN.TYPE_WORD = 'word';
-// const TOKEN.TYPE_TAG = 'tag';
-// const TOKEN.TYPE_ATTR_NAME = 'attr-name';
-// const TOKEN.TYPE_ATTR_VALUE = 'attr-value';
-// const TOKEN.TYPE_SPACE = 'space';
-// const TOKEN.TYPE_NEW_LINE = 'new-line';
 
-const getCharCode = String.fromCharCode;
+const getTokenValue = (token) => token[Tokenizer.TOKEN.VALUE_ID];
+
+const getTokenLine = (token) => token[Tokenizer.TOKEN.LINE_ID];
+const getTokenColumn = (token) => token[Tokenizer.TOKEN.COLUMN_ID];
+
+const isTextToken = (token) => {
+    const type = token[Tokenizer.TOKEN.TYPE_ID];
+
+    return type === TOKEN.TYPE_SPACE || type === TOKEN.TYPE_NEW_LINE || type === TOKEN.TYPE_WORD
+};
+
+const isTagToken = (token) => token[Tokenizer.TOKEN.TYPE_ID] === TOKEN.TYPE_TAG;
+
+const isTagStart = (token) => !isTagEnd(token);
+
+const isTagEnd = (token) => getTokenValue(token).charCodeAt(0) === CHAR.SLASH;
+
+const isAttrNameToken = (token) => token[Tokenizer.TOKEN.TYPE_ID] === TOKEN.TYPE_ATTR_NAME;
+
+const isAttrValueToken = (token) => token[Tokenizer.TOKEN.TYPE_ID] === TOKEN.TYPE_ATTR_VALUE;
+
+const getTagName = (token) => {
+    const value = getTokenValue(token);
+
+    return isTagEnd(token) ? value.slice(1) : value
+};
+
+const convertTagToText = (token) => {
+    let text = getChar(CHAR.OPEN_BRAKET);
+
+    if (isTagEnd(token)) {
+        text += getChar(CHAR.SLASH)
+    }
+
+    text += getTokenValue(token);
+    text += getChar(CHAR.CLOSE_BRAKET);
+
+    return text
+};
+
+const SPACE_TAB = '    ';
+const SPACE = ' ';
 
 class Tokenizer {
     constructor(input) {
@@ -24,7 +55,7 @@ class Tokenizer {
     }
 
     tokenize() {
-        let wordToken = this.createWordToken('');
+        let wordToken = null;
         let tagToken = null;
         let attrNameToken = null;
         let attrValueToken = null;
@@ -33,7 +64,7 @@ class Tokenizer {
         let tokenIndex = -1;
 
         const flushWord = () => {
-            if (wordToken[TOKEN.VALUE_ID]) {
+            if (wordToken && wordToken[TOKEN.VALUE_ID]) {
                 tokenIndex++;
                 tokens[tokenIndex] = wordToken;
                 wordToken = this.createWordToken('')
@@ -42,20 +73,23 @@ class Tokenizer {
 
         const flushTag = () => {
             if (tagToken !== null) {
+                if (attrNameToken && !attrValueToken) {
+                    tagToken[TOKEN.VALUE_ID] += SPACE + attrNameToken[TOKEN.VALUE_ID]
+                    attrNameToken = null
+                }
+
                 tokenIndex++;
                 tokens[tokenIndex] = tagToken;
                 tagToken = null;
             }
         };
 
-        const flushAttrName = () => {
+        const flushAttrNames = () => {
             if (attrNameToken) {
                 attrTokens.push(attrNameToken);
                 attrNameToken = null;
             }
-        };
 
-        const flushAttrValue = () => {
             if (attrValueToken) {
                 attrTokens.push(attrValueToken);
                 attrValueToken = null
@@ -85,20 +119,19 @@ class Tokenizer {
 
                     if (tagToken) {
                         attrNameToken = this.createAttrNameToken('');
+                    } else {
+                        const spaceCode = charCode === CHAR.TAB ? SPACE_TAB : SPACE;
+
+                        tokenIndex++;
+                        tokens[tokenIndex] = this.createSpaceToken(spaceCode);
                     }
-
-                    const spaceCode = charCode === CHAR.TAB ? '    ' : ' ';
-
-                    tokenIndex++;
-                    tokens[tokenIndex] = this.createSpaceToken(spaceCode);
-
                     this.colPos++;
                     break;
 
                 case CHAR.N:
                     flushWord();
                     tokenIndex++;
-                    tokens[tokenIndex] = this.createNewLineToken(getCharCode(charCode));
+                    tokens[tokenIndex] = this.createNewLineToken(getChar(charCode));
 
                     this.rowPos++;
                     this.colPos = 0;
@@ -113,8 +146,7 @@ class Tokenizer {
 
                 case CHAR.CLOSE_BRAKET:
                     flushTag();
-                    flushAttrName();
-                    flushAttrValue();
+                    flushAttrNames();
                     flushAttrs();
 
                     this.colPos++;
@@ -124,7 +156,7 @@ class Tokenizer {
                     if (tagToken) {
                         attrValueToken = this.createAttrValueToken('')
                     } else {
-                        wordToken[TOKEN.VALUE_ID] += getCharCode(charCode);
+                        wordToken[TOKEN.VALUE_ID] += getChar(charCode);
                     }
 
                     this.colPos++;
@@ -132,10 +164,9 @@ class Tokenizer {
 
                 case CHAR.QUOTEMARK:
                     if (attrValueToken && attrValueToken[TOKEN.VALUE_ID] > 0) {
-                        flushAttrName();
-                        flushAttrValue();
+                        flushAttrNames();
                     } else if (tagToken === null) {
-                        wordToken[TOKEN.VALUE_ID] += getCharCode(charCode);
+                        wordToken[TOKEN.VALUE_ID] += getChar(charCode);
                     }
 
                     this.colPos++;
@@ -143,13 +174,17 @@ class Tokenizer {
 
                 default:
                     if (tagToken && attrValueToken) {
-                        attrValueToken[TOKEN.VALUE_ID] += getCharCode(charCode)
+                        attrValueToken[TOKEN.VALUE_ID] += getChar(charCode)
                     } else if (tagToken && attrNameToken) {
-                        attrNameToken[TOKEN.VALUE_ID] += getCharCode(charCode)
+                        attrNameToken[TOKEN.VALUE_ID] += getChar(charCode)
                     } else if (tagToken) {
-                        tagToken[TOKEN.VALUE_ID] += getCharCode(charCode)
+                        tagToken[TOKEN.VALUE_ID] += getChar(charCode)
                     } else {
-                        wordToken[TOKEN.VALUE_ID] += getCharCode(charCode);
+                        if (!wordToken) {
+                            wordToken = this.createWordToken('')
+                        }
+
+                        wordToken[TOKEN.VALUE_ID] += getChar(charCode);
                     }
 
                     this.colPos++;
@@ -161,7 +196,7 @@ class Tokenizer {
 
         flushWord();
 
-        tokens.length = tokenIndex;
+        tokens.length = tokenIndex + 1;
 
         return tokens;
     }
@@ -210,5 +245,16 @@ module.exports.TOKEN = {
     LINE_ID: TOKEN.LINE_ID,
     COLUMN_ID: TOKEN.COLUMN_ID,
 };
-module.exports.getCharCode = getCharCode;
+module.exports.getChar = getChar;
+module.exports.getTokenValue = getTokenValue;
+module.exports.getTokenLine = getTokenLine;
+module.exports.getTokenColumn = getTokenColumn;
+module.exports.isTextToken = isTextToken;
+module.exports.isTagToken = isTagToken;
+module.exports.isTagStart = isTagStart;
+module.exports.isTagEnd = isTagEnd;
+module.exports.isAttrNameToken = isAttrNameToken;
+module.exports.isAttrValueToken = isAttrValueToken;
+module.exports.getTagName = getTagName;
+module.exports.convertTokenToText = convertTagToText;
 

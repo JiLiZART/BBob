@@ -6,7 +6,7 @@ const options = {
 
 const textStub = require("./test/stub");
 
-const count = 10;
+const count = 0;
 const parsers3 = [];
 
 console.time('newParser');

@@ -12,7 +12,8 @@
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^23.1.0"
+    "jest": "^23.1.0",
+    "xbbcode-parser": "^0.1.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

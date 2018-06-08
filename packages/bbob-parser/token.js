@@ -1,7 +1,7 @@
 const TOKEN_TYPE_ID = 0;
 const TOKEN_VALUE_ID = 1;
-const TOKEN_LINE_ID = 2;
-const TOKEN_COLUMN_ID = 3;
+const TOKEN_COLUMN_ID = 2;
+const TOKEN_LINE_ID = 3;
 
 const TOKEN_TYPE_WORD = 'word';
 const TOKEN_TYPE_TAG = 'tag';

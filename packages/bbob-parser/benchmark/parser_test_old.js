@@ -2,7 +2,7 @@ const OldParser = require('./OldParser')
 
 const textStub = require("./test/stub");
 
-const count = 10;
+const count = 0;
 const oldParsers3 = [];
 console.time('oldParser');
 for (let i = 0; i <= count; i++) {
