@@ -52,6 +52,14 @@ class Tokenizer {
         this.colPos = 0;
         this.rowPos = 0;
         this.index = 0;
+        
+        this.tokenIndex = -1;
+        this.tokens = [];
+    }
+
+    appendToken(token) {
+        this.tokenIndex++;
+        this.tokens[this.tokenIndex] = token;
     }
 
     tokenize() {
@@ -60,27 +68,64 @@ class Tokenizer {
         let attrNameToken = null;
         let attrValueToken = null;
         let attrTokens = [];
-        let tokens = new Array(Math.floor(this.buffer.length / 2));
-        let tokenIndex = -1;
+        this.tokens = new Array(Math.floor(this.buffer.length / 2));
 
         const flushWord = () => {
             if (wordToken && wordToken[TOKEN.VALUE_ID]) {
-                tokenIndex++;
-                tokens[tokenIndex] = wordToken;
+                this.appendToken(wordToken);
                 wordToken = this.createWordToken('')
+            }
+        };
+
+        const createWord = (value, line, row) => {
+            if (!wordToken) {
+                wordToken = this.createWordToken(value, line, row)
             }
         };
 
         const flushTag = () => {
             if (tagToken !== null) {
+                // [] and [=] tag case
+                if (!tagToken[TOKEN.VALUE_ID]) {
+                    const value = attrValueToken ? getChar(CHAR.EQ) : '';
+                    const word = getChar(CHAR.OPEN_BRAKET) + value + getChar(CHAR.CLOSE_BRAKET);
+
+                    createWord('', 0, 0);
+                    wordToken[TOKEN.VALUE_ID] += word;
+
+                    tagToken = null;
+
+                    if (attrValueToken) {
+                        attrValueToken = null
+                    }
+
+                    return;
+                }
+
                 if (attrNameToken && !attrValueToken) {
-                    tagToken[TOKEN.VALUE_ID] += SPACE + attrNameToken[TOKEN.VALUE_ID]
+                    tagToken[TOKEN.VALUE_ID] += SPACE + attrNameToken[TOKEN.VALUE_ID];
                     attrNameToken = null
                 }
 
-                tokenIndex++;
-                tokens[tokenIndex] = tagToken;
+                this.appendToken(tagToken);
                 tagToken = null;
+            }
+        };
+
+        const flushUnclosedTag = () => {
+            if (tagToken !== null) {
+                const value = tagToken[TOKEN.VALUE_ID] + (attrValueToken ? getChar(CHAR.EQ) : '');
+
+                tagToken[TOKEN.TYPE_ID] = TOKEN.TYPE_WORD;
+                tagToken[TOKEN.VALUE_ID] = getChar(CHAR.OPEN_BRAKET) + value;
+
+                this.appendToken(tagToken);
+
+                tagToken = null;
+
+                if (attrValueToken) {
+                    attrValueToken = null
+                }
             }
         };
 
@@ -98,11 +143,7 @@ class Tokenizer {
 
         const flushAttrs = () => {
             if (attrTokens.length) {
-                attrTokens.forEach(attrToken => {
-                    tokenIndex++;
-                    tokens[tokenIndex] = attrToken
-                });
-
+                attrTokens.forEach(this.appendToken.bind(this));
                 attrTokens = [];
             }
         };
@@ -122,16 +163,14 @@ class Tokenizer {
                     } else {
                         const spaceCode = charCode === CHAR.TAB ? SPACE_TAB : SPACE;
 
-                        tokenIndex++;
-                        tokens[tokenIndex] = this.createSpaceToken(spaceCode);
+                        this.appendToken(this.createSpaceToken(spaceCode));
                     }
                     this.colPos++;
                     break;
 
                 case CHAR.N:
                     flushWord();
-                    tokenIndex++;
-                    tokens[tokenIndex] = this.createNewLineToken(getChar(charCode));
+                    this.appendToken(this.createNewLineToken(getChar(charCode)));
 
                     this.rowPos++;
                     this.colPos = 0;
@@ -180,9 +219,7 @@ class Tokenizer {
                     } else if (tagToken) {
                         tagToken[TOKEN.VALUE_ID] += getChar(charCode)
                     } else {
-                        if (!wordToken) {
-                            wordToken = this.createWordToken('')
-                        }
+                        createWord();
 
                         wordToken[TOKEN.VALUE_ID] += getChar(charCode);
                     }
@@ -195,39 +232,41 @@ class Tokenizer {
         }
 
         flushWord();
+        flushUnclosedTag();
 
-        tokens.length = tokenIndex + 1;
+        this.tokens.length = this.tokenIndex + 1;
 
-        return tokens;
+        return this.tokens;
     }
 
-    createWordToken(value) {
-        return [TOKEN.TYPE_WORD, value, this.colPos, this.rowPos]
+    createWordToken(value = '', line = this.colPos, row = this.rowPos) {
+        return [TOKEN.TYPE_WORD, value, line, row]
     }
 
-    createTagToken(value) {
-        return [TOKEN.TYPE_TAG, value, this.colPos, this.rowPos]
+    createTagToken(value, line = this.colPos, row = this.rowPos) {
+        return [TOKEN.TYPE_TAG, value, line, row]
     }
 
-    createAttrNameToken(value) {
-        return [TOKEN.TYPE_ATTR_NAME, value, this.colPos, this.rowPos]
+    createAttrNameToken(value, line = this.colPos, row = this.rowPos) {
+        return [TOKEN.TYPE_ATTR_NAME, value, line, row]
     }
 
-    createAttrValueToken(value) {
-        return [TOKEN.TYPE_ATTR_VALUE, value, this.colPos, this.rowPos]
+    createAttrValueToken(value, line = this.colPos, row = this.rowPos) {
+        return [TOKEN.TYPE_ATTR_VALUE, value, line, row]
     }
 
-    createSpaceToken(value) {
-        return [TOKEN.TYPE_SPACE, value, this.colPos, this.rowPos]
+    createSpaceToken(value, line = this.colPos, row = this.rowPos) {
+        return [TOKEN.TYPE_SPACE, value, line, row]
     }
 
-    createNewLineToken(value) {
-        return [TOKEN.TYPE_NEW_LINE, value, this.colPos, this.rowPos]
+    createNewLineToken(value, line = this.colPos, row = this.rowPos) {
+        return [TOKEN.TYPE_NEW_LINE, value, line, row]
     }
 }
 
 // warm up tokenizer to elimitate code branches that never execute
-new Tokenizer(`[b param="hello"]Sample text[/b]\n\t[Chorus]`).tokenize();
+new Tokenizer(`[sc=asdasd`).tokenize();
+//new Tokenizer(`[b param="hello"]Sample text[/b]\n\t[Chorus]`).tokenize();
 
 module.exports = Tokenizer;
 module.exports.CHAR = CHAR;

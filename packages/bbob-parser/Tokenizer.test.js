@@ -91,5 +91,54 @@ describe("Tokenizer", () => {
             [TYPE.NEW_LINE, '\n', 14, 3],
             [TYPE.TAG, '/list', 0, 4]
         ])
+    });
+
+    test("tokenize bad tags as texts", () => {
+        const inputs = [
+            '[]',
+            '[=]',
+            '![](image.jpg)',
+            'x html([a. title][, alt][, classes]) x',
+            '[/y]',
+            '[sc',
+            '[sc / [/sc]',
+            '[sc arg="val',
+        ];
+
+        const asserts = [
+            [[TYPE.WORD, '[]', 0, 0]],
+            [[TYPE.WORD, '[=]', 0, 0]],
+            [
+                [TYPE.WORD, '!', 0, 0],
+                [TYPE.WORD, '[](image.jpg)', 1, 0]
+            ],
+            [
+                [TYPE.WORD, "x", 0, 0],
+                [TYPE.SPACE, " ", 1, 0],
+                [TYPE.WORD, "html(", 1, 0],
+                [TYPE.TAG, "a. title", 7, 0],
+                [TYPE.TAG, ", alt", 17, 0],
+                [TYPE.TAG, ", classes", 24, 0],
+                [TYPE.WORD, ")", 7, 0],
+                [TYPE.SPACE, " ", 36, 0],
+                [TYPE.WORD, "x", 36, 0]
+            ],
+            [[TYPE.TAG, "/y", 0, 0]],
+            [[TYPE.WORD, '[sc', 0, 0]],
+            [
+                [TYPE.WORD, '[sc', 0, 0],
+                [TYPE.SPACE, ' ', 0, 0],
+                [TYPE.WORD, '/', 0, 0],
+                [TYPE.SPACE, ' ', 0, 0],
+                [TYPE.WORD, '[/sc]', 0, 0]
+            ],
+        ];
+
+        inputs.forEach((input, idx) => {
+            const tokens = new Tokenizer(input).tokenize();
+
+            expect(tokens).toBeInstanceOf(Array);
+            expect(tokens).toEqual(asserts[idx])
+        });
     })
 });
