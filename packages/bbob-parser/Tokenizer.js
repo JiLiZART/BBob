@@ -52,7 +52,7 @@ class Tokenizer {
         this.colPos = 0;
         this.rowPos = 0;
         this.index = 0;
-        
+
         this.tokenIndex = -1;
         this.tokens = [];
     }

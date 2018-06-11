@@ -1,5 +1,24 @@
 {
-	"devDependencies": {
-		"lerna": "^2.11.0"
-	}
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "test": "lerna run test",
+    "cover": "lerna run cover",
+    "lint": "lerna run lint"
+  },
+  "author": {
+    "name": "Nikolay Kostyurin",
+    "url": "https://artkost.ru/"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jest": "^21.17.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.9.1",
+    "jest": "^23.1.0",
+    "lerna": "^2.11.0",
+    "xbbcode-parser": "^0.1.2"
+  }
 }

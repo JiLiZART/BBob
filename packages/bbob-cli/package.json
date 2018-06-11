@@ -1,0 +1,26 @@
+{
+  "name": "@bbob/cli",
+  "version": "1.0.0",
+  "description": "Comand line bbcode parser",
+  "main": "lib/bbob.js",
+  "bin": {
+    "cli": "bbob.js"
+  },
+  "scripts": {
+    "test": "../../node_modules/.bin/jest --",
+    "cover": "../../node_modules/.bin/jest --coverage"
+  },
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "@bbob/parser": "^1.0.0",
+    "commander": "^2.15.1"
+  },
+  "devDependencies": {
+    "jest": "^23.1.0",
+    "xbbcode-parser": "^0.1.2"
+  }
+}

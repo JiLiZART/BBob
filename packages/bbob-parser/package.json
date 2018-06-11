@@ -1,5 +1,5 @@
 {
-  "name": "bbob-parser",
+  "name": "@bbob/parser",
   "version": "1.0.1",
   "description": "Fast BB Code parser written in pure javascript, no dependencies",
   "main": "index.js",
@@ -7,14 +7,12 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest"
+    "test": "../../node_modules/.bin/jest --",
+    "cover": "../../node_modules/.bin/jest --coverage",
+    "lint": "../../node_modules/.bin/eslint ."
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
-  "devDependencies": {
-    "jest": "^23.1.0",
-    "xbbcode-parser": "^0.1.2"
-  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   }

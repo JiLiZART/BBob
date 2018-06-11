@@ -1,4 +1,4 @@
-const parse = require('../index');
+const parse = require('../packages/bbob-parser/index');
 
 const options = {
     closableTags: ['ch', 'syllable', 'tab']
