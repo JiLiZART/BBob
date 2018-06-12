@@ -7,5 +7,7 @@
     "node": true,
     "jest/globals": true
   },
-  "rules": {}
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+  }
 }

@@ -1,6 +1,6 @@
 const Tokenizer = require('./Tokenizer');
 
-const TYPE = Tokenizer.TYPE;
+const { TYPE } = Tokenizer;
 
 const tokenize = input => (new Tokenizer(input).tokenize());
 

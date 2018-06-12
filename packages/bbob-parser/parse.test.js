@@ -1,9 +1,5 @@
 const parse = require('./index');
 
-const options = {
-  allowOnlyTags: ['ch', 'syllable', 'tab'],
-};
-
 describe('parse', () => {
   test('tag with spaces', () => {
     const ast = parse('[Verse 2]');

@@ -10,12 +10,12 @@ const {
   isTagToken,
   isTextToken,
   isTagEnd,
-} = require('./Tokenizer');
+} = require('./token');
 
-const Tokenizer = require('./Tokenizer');
-
-const TokenChar = Tokenizer.CHAR;
-const getChar = Tokenizer.getChar;
+const {
+  SLASH,
+  getChar,
+} = require('./char');
 
 const createTagNode = (tag, attrs = {}, content = []) => ({ tag, attrs, content });
 
@@ -41,7 +41,7 @@ module.exports = class Parser {
     const curTags = [];
     const curTagsAttrName = [];
 
-    const closableTags = this.findNestedTags(this.tokens);
+    const closableTags = this.findNestedTags();
 
     const isNestedTag = token => closableTags.indexOf(getTokenValue(token)) >= 0;
 
@@ -123,6 +123,7 @@ module.exports = class Parser {
             if (lastNestedNode) {
               getNodes().push(lastNestedNode);
             } else {
+              // eslint-disable-next-line no-console
               console.warn(`Inconsistent tag '${getTokenValue(token)}' on line ${getTokenLine(token)} and column ${getTokenColumn(token)}`);
             }
           }
@@ -149,14 +150,14 @@ module.exports = class Parser {
     return nodes;
   }
 
-  findNestedTags(tokens) {
-    const tags = tokens.filter(isTagToken).reduce((acc, token) => {
+  findNestedTags() {
+    const tags = this.tokens.filter(isTagToken).reduce((acc, token) => {
       acc[getTokenValue(token)] = true;
 
       return acc;
     }, {});
 
-    const closeChar = getChar(TokenChar.SLASH);
+    const closeChar = getChar(SLASH);
 
     return Object.keys(tags).reduce((arr, key) => {
       if (tags[key] && tags[closeChar + key]) {
@@ -168,10 +169,12 @@ module.exports = class Parser {
   }
 
   isAllowedTag(value) {
-    if (this.options.allowOnlyTags && this.options.allowOnlyTags.length) {
-      return this.options.allowOnlyTags.indexOf(value) >= 0;
+    if (this.options.onlyAllowTags && this.options.onlyAllowTags.length) {
+      return this.options.onlyAllowTags.indexOf(value) >= 0;
     }
 
     return true;
   }
 };
+
+module.exports.createTagNode = createTagNode;

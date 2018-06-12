@@ -1,4 +1,3 @@
-
 function attrs(obj) {
   let attr = '';
 
@@ -27,9 +26,7 @@ function traverse(tree, cb) {
   return tree;
 }
 
-function render(tree, options) {
-  return html(tree);
-
+function render(ast) {
   function html(tree) {
     let result = '';
 
@@ -42,43 +39,20 @@ function render(tree, options) {
         return;
       }
 
-      if (typeof node.tag === 'boolean' && !node.tag) {
-        typeof node.content !== 'object' && (result += node.content);
-
-        return node.content;
+      if (typeof node === 'object') {
+        result += `<${node.tag} ${attrs(node.attrs)}></${node.tag}>`;
       }
 
       // treat as new root tree if node is an array
       if (Array.isArray(node)) {
         result += html(node);
-
-        return;
-      }
-
-      const tag = node.tag || 'div';
-
-      if (isSingleTag(tag, singleTags, singleRegExp)) {
-        result += `<${tag}${attrs(node.attrs)}`;
-
-        switch (closingSingleTag) {
-          case 'tag':
-            result += `></${tag}>`;
-
-            break;
-          case 'slash':
-            result += ' />';
-
-            break;
-          default:
-            result += '>';
-        }
-      } else {
-        result += `<${tag}${node.attrs ? attrs(node.attrs) : ''}>${node.content ? html(node.content) : ''}</${tag}>`;
       }
     });
 
     return result;
   }
+
+  return html(ast);
 }
 
 module.exports = render;
