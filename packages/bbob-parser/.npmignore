@@ -3,3 +3,4 @@ coverage
 src
 dist
 !lib
+*.test.js
