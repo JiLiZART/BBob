@@ -1,7 +1,7 @@
 {
-  "name": "@bbob/parser",
-  "version": "1.0.3",
-  "description": "Fast BB Code parser written in pure javascript, no dependencies",
+  "name": "@bbob/html",
+  "version": "1.0.1",
+  "description": "HTML renderer for BBCode pareser BBob",
   "main": "index.js",
   "scripts": {
     "test": "../../node_modules/.bin/jest --",

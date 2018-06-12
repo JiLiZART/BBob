@@ -1,10 +1,10 @@
 {
   "name": "@bbob/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Comand line bbcode parser",
   "main": "lib/bbob.js",
   "bin": {
-    "cli": "bbob.js"
+    "bbob": "bbob.js"
   },
   "scripts": {
     "test": "../../node_modules/.bin/jest --",
@@ -12,11 +12,14 @@
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "directories": {
     "lib": "lib"
   },
   "dependencies": {
-    "@bbob/parser": "^1.0.2",
+    "@bbob/parser": "^1.0.3",
     "commander": "^2.15.1"
   },
   "devDependencies": {
