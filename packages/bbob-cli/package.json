@@ -16,7 +16,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "@bbob/parser": "^1.0.0",
+    "@bbob/parser": "^1.0.2",
     "commander": "^2.15.1"
   },
   "devDependencies": {
