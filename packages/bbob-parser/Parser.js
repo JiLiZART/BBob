@@ -17,7 +17,7 @@ const Tokenizer = require('./Tokenizer');
 const TokenChar = Tokenizer.CHAR;
 const getChar = Tokenizer.getChar;
 
-const createTagNode = (name, attrs = {}, content = []) => ({ tag: name, attrs, content });
+const createTagNode = (tag, attrs = {}, content = []) => ({ tag, attrs, content });
 
 /**
  *

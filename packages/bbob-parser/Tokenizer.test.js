@@ -2,10 +2,12 @@ const Tokenizer = require('./Tokenizer');
 
 const TYPE = Tokenizer.TYPE;
 
+const tokenize = input => (new Tokenizer(input).tokenize());
+
 describe('Tokenizer', () => {
   test('tokenize single tag', () => {
     const input = '[SingleTag]';
-    const tokens = new Tokenizer(input).tokenize();
+    const tokens = tokenize(input);
 
     expect(tokens).toBeInstanceOf(Array);
     expect(tokens).toEqual([
@@ -15,7 +17,7 @@ describe('Tokenizer', () => {
 
   test('tokenize single tag with spaces', () => {
     const input = '[Single Tag]';
-    const tokens = new Tokenizer(input).tokenize();
+    const tokens = tokenize(input);
 
     expect(tokens).toBeInstanceOf(Array);
     expect(tokens).toEqual([
@@ -25,7 +27,7 @@ describe('Tokenizer', () => {
 
   test('tokenize tag as param', () => {
     const input = '[color="#ff0000"]Text[/color]';
-    const tokens = new Tokenizer(input).tokenize();
+    const tokens = tokenize(input);
 
     expect(tokens).toBeInstanceOf(Array);
     expect(tokens).toEqual([
@@ -38,7 +40,7 @@ describe('Tokenizer', () => {
 
   test('tokenize tag param without quotemarks', () => {
     const input = '[style color=#ff0000]Text[/style]';
-    const tokens = new Tokenizer(input).tokenize();
+    const tokens = tokenize(input);
 
     expect(tokens).toBeInstanceOf(Array);
     expect(tokens).toEqual([
@@ -57,7 +59,7 @@ describe('Tokenizer', () => {
    [*] Item 3.
 [/list]`;
 
-    const tokens = new Tokenizer(input).tokenize();
+    const tokens = tokenize(input);
 
     expect(tokens).toBeInstanceOf(Array);
     expect(tokens).toEqual([
@@ -136,7 +138,7 @@ describe('Tokenizer', () => {
     ];
 
     inputs.forEach((input, idx) => {
-      const tokens = new Tokenizer(input).tokenize();
+      const tokens = tokenize(input);
 
       expect(tokens).toBeInstanceOf(Array);
       expect(tokens).toEqual(asserts[idx]);
