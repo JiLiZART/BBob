@@ -1,8 +1,8 @@
 {
   "name": "@bbob/parser",
-  "version": "1.0.3",
-  "description": "Fast BB Code parser written in pure javascript, no dependencies",
-  "main": "index.js",
+  "version": "1.0.4",
+  "description": "Fast BB Code parser ",
+  "main": "./lib/index.js",
   "scripts": {
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
@@ -12,5 +12,6 @@
   "license": "MIT",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "files": ["lib"]
 }

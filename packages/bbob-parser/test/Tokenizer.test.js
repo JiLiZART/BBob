@@ -1,4 +1,4 @@
-const Tokenizer = require('./Tokenizer');
+const Tokenizer = require('../lib/Tokenizer');
 
 const { TYPE } = Tokenizer;
 

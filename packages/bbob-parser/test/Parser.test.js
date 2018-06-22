@@ -1,6 +1,6 @@
-const Parser = require('./Parser');
-const TOKEN = require('./token');
-const Tokenizer = require('./Tokenizer');
+const Parser = require('../lib/Parser');
+const TOKEN = require('../lib/token');
+const Tokenizer = require('../lib/Tokenizer');
 
 const parse = input => (new Parser(input).parse());
 const tokenize = input => (new Tokenizer(input).tokenize());

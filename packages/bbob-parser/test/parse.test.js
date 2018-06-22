@@ -1,4 +1,4 @@
-const parse = require('./index');
+const parse = require('../lib/index');
 
 describe('parse', () => {
   test('tag with spaces', () => {
