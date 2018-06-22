@@ -2,7 +2,27 @@
   "name": "@bbob/parser",
   "version": "1.0.4",
   "description": "Fast BB Code parser ",
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "keywords": [
+    "bbcode",
+    "parser",
+    "fast",
+    "bbcode parser",
+    "bbcodeparser",
+    "bbob",
+    "serializer",
+    "bbcode serializer",
+    "bbcode serializer",
+    "bbcodeserializer",
+    "parse",
+    "serialize",
+    "html"
+  ],
   "main": "./lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
   "scripts": {
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
