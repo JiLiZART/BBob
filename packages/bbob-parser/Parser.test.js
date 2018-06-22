@@ -1,7 +1,9 @@
 const Parser = require('./Parser');
 const TOKEN = require('./token');
+const Tokenizer = require('./Tokenizer');
 
 const parse = input => (new Parser(input).parse());
+const tokenize = input => (new Tokenizer(input).tokenize());
 
 describe('Parser', () => {
   test('parse paired tags tokens', () => {
@@ -29,6 +31,22 @@ describe('Parser', () => {
           ' ',
           'Bar',
         ],
+      },
+    ]);
+  });
+
+  test('parse tag with value param', () => {
+    const tokens = tokenize('[url=https://github.com/jilizart/bbob]BBob[/url]');
+    const ast = parse(tokens);
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast).toEqual([
+      {
+        tag: 'url',
+        attrs: {
+          url: 'https://github.com/jilizart/bbob',
+        },
+        content: ['BBob'],
       },
     ]);
   });

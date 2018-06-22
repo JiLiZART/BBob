@@ -66,7 +66,7 @@ module.exports = class Parser {
       return this.curTagsAttrName[this.curTagsAttrName.length - 1];
     }
 
-    return null;
+    return this.getCurTag().tag;
   }
 
   clearCurTagAttrName() {
