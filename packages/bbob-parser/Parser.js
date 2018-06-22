@@ -33,65 +33,128 @@ module.exports = class Parser {
   constructor(tokens, options = {}) {
     this.tokens = tokens;
     this.options = options;
+
+    this.closableTags = this.findNestedTags();
+    this.nodes = [];
+    this.nestedNodes = [];
+    this.curTags = [];
+    this.curTagsAttrName = [];
+  }
+
+  isNestedTag(token) {
+    return this.closableTags.indexOf(getTokenValue(token)) >= 0;
+  }
+
+  getCurTag() {
+    if (this.curTags.length) {
+      return this.curTags[this.curTags.length - 1];
+    }
+
+    return null;
+  }
+
+  createCurTag(token) {
+    this.curTags.push(createTagNode(getTokenValue(token)));
+  }
+
+  createCurTagAttrName(token) {
+    this.curTagsAttrName.push(getTokenValue(token));
+  }
+
+  getCurTagAttrName() {
+    if (this.curTagsAttrName.length) {
+      return this.curTagsAttrName[this.curTagsAttrName.length - 1];
+    }
+
+    return null;
+  }
+
+  clearCurTagAttrName() {
+    if (this.curTagsAttrName.length) {
+      this.curTagsAttrName.pop();
+    }
+  }
+
+  clearCurTag() {
+    if (this.curTags.length) {
+      this.curTags.pop();
+
+      this.clearCurTagAttrName();
+    }
+  }
+
+  getNodes() {
+    if (this.nestedNodes.length) {
+      const nestedNode = this.nestedNodes[this.nestedNodes.length - 1];
+      return nestedNode.content;
+    }
+
+    return this.nodes;
+  }
+
+  appendNode(tag) {
+    this.getNodes().push(tag);
+  }
+
+  handleTagStart(token) {
+    if (isTagStart(token)) {
+      this.createCurTag(token);
+
+      if (this.isNestedTag(token)) {
+        this.nestedNodes.push(this.getCurTag());
+      } else {
+        this.appendNode(this.getCurTag());
+        this.clearCurTag();
+      }
+    }
+  }
+
+  handleTagEnd(token) {
+    if (isTagEnd(token)) {
+      this.clearCurTag();
+
+      const lastNestedNode = this.nestedNodes.pop();
+
+      if (lastNestedNode) {
+        this.appendNode(lastNestedNode);
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn(`Inconsistent tag '${getTokenValue(token)}' on line ${getTokenLine(token)} and column ${getTokenColumn(token)}`);
+      }
+    }
+  }
+
+  handleTagToken(token) {
+    if (isTagToken(token)) {
+      if (this.isAllowedTag(getTagName(token))) {
+        // [tag]
+        this.handleTagStart(token);
+
+        // [/tag]
+        this.handleTagEnd(token);
+      } else {
+        this.appendNode(convertTokenToText(token));
+      }
+    }
+  }
+
+  handleCurTag(token) {
+    if (this.getCurTag()) {
+      if (isAttrNameToken(token)) {
+        this.createCurTagAttrName(token);
+        this.getCurTag().attrs[this.getCurTagAttrName()] = null;
+      } else if (isAttrValueToken(token)) {
+        this.getCurTag().attrs[this.getCurTagAttrName()] = getTokenValue(token);
+        this.clearCurTagAttrName();
+      } else if (isTextToken(token)) {
+        this.getCurTag().content.push(getTokenValue(token));
+      }
+    } else if (isTextToken(token)) {
+      this.appendNode(getTokenValue(token));
+    }
   }
 
   parse() {
-    const nodes = [];
-    const nestedNodes = [];
-    const curTags = [];
-    const curTagsAttrName = [];
-
-    const closableTags = this.findNestedTags();
-
-    const isNestedTag = token => closableTags.indexOf(getTokenValue(token)) >= 0;
-
-    const getCurTag = () => {
-      if (curTags.length) {
-        return curTags[curTags.length - 1];
-      }
-
-      return null;
-    };
-
-    const createCurTag = (token) => {
-      curTags.push(createTagNode(getTokenValue(token)));
-    };
-
-    const getCurTagAttrName = () => {
-      if (curTagsAttrName.length) {
-        return curTagsAttrName[curTagsAttrName.length - 1];
-      }
-
-      return null;
-    };
-
-    const createCurTagAttrName = (token) => {
-      curTagsAttrName.push(getTokenValue(token));
-    };
-
-    const clearCurTagAttrName = () => {
-      if (curTagsAttrName.length) {
-        curTagsAttrName.pop();
-      }
-    };
-
-    const clearCurTag = () => {
-      if (curTags.length) {
-        curTags.pop();
-
-        clearCurTagAttrName();
-      }
-    };
-
-    const getNodes = () => {
-      if (nestedNodes.length) {
-        const nestedNode = nestedNodes[nestedNodes.length - 1];
-        return nestedNode.content;
-      }
-
-      return nodes;
-    };
-
     let token;
     // eslint-disable-next-line no-cond-assign
     while (token = this.tokens.shift()) {
@@ -100,54 +163,12 @@ module.exports = class Parser {
         continue;
       }
 
-      if (isTagToken(token)) {
-        if (this.isAllowedTag(getTagName(token))) {
-          // [tag]
-          if (isTagStart(token)) {
-            createCurTag(token);
+      this.handleTagToken(token);
 
-            if (isNestedTag(token)) {
-              nestedNodes.push(getCurTag());
-            } else {
-              getNodes().push(getCurTag());
-              clearCurTag();
-            }
-          }
-
-          // [/tag]
-          if (isTagEnd(token)) {
-            clearCurTag();
-
-            const lastNestedNode = nestedNodes.pop();
-
-            if (lastNestedNode) {
-              getNodes().push(lastNestedNode);
-            } else {
-              // eslint-disable-next-line no-console
-              console.warn(`Inconsistent tag '${getTokenValue(token)}' on line ${getTokenLine(token)} and column ${getTokenColumn(token)}`);
-            }
-          }
-        } else {
-          getNodes().push(convertTokenToText(token));
-        }
-      }
-
-      if (getCurTag()) {
-        if (isAttrNameToken(token)) {
-          createCurTagAttrName(token);
-          getCurTag().attrs[getCurTagAttrName()] = null;
-        } else if (isAttrValueToken(token)) {
-          getCurTag().attrs[getCurTagAttrName()] = getTokenValue(token);
-          clearCurTagAttrName();
-        } else if (isTextToken(token)) {
-          getCurTag().content.push(getTokenValue(token));
-        }
-      } else if (isTextToken(token)) {
-        getNodes().push(getTokenValue(token));
-      }
+      this.handleCurTag(token);
     }
 
-    return nodes;
+    return this.nodes;
   }
 
   findNestedTags() {
