@@ -10,12 +10,14 @@ const {
   isTagToken,
   isTextToken,
   isTagEnd,
-} = require('./token');
+} = require('./Token');
 
 const {
   SLASH,
   getChar,
 } = require('./char');
+
+const Tokenizer = require('./Tokenizer');
 
 const createTagNode = (tag, attrs = {}, content = []) => ({ tag, attrs, content });
 
@@ -29,12 +31,16 @@ const createTagNode = (tag, attrs = {}, content = []) => ({ tag, attrs, content 
      content: ['hello world!']
  }
  */
-module.exports = class Parser {
-  constructor(tokens, options = {}) {
-    this.tokens = tokens;
+class Parser {
+  constructor(input, options = {}) {
+    this.tokenizer = new Tokenizer(input, {
+      onToken: (token) => {
+        this.parseToken(token);
+      },
+    });
+
     this.options = options;
 
-    this.closableTags = this.findNestedTags();
     this.nodes = [];
     this.nestedNodes = [];
     this.curTags = [];
@@ -42,7 +48,7 @@ module.exports = class Parser {
   }
 
   isNestedTag(token) {
-    return this.closableTags.indexOf(getTokenValue(token)) >= 0;
+    return this.tokenizer.isTokenNested(token);
   }
 
   getCurTag() {
@@ -154,25 +160,32 @@ module.exports = class Parser {
     }
   }
 
+  parseToken(token) {
+    this.handleTagToken(token);
+    this.handleCurTag(token);
+  }
+
   parse() {
-    let token;
-    // eslint-disable-next-line no-cond-assign
-    while (token = this.tokens.shift()) {
-      if (!token) {
-        // eslint-disable-next-line no-continue
-        continue;
+    if (this.tokens) {
+      let token;
+      // eslint-disable-next-line no-cond-assign
+      while (token = this.tokens.shift()) {
+        if (!token) {
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+
+        this.parseToken(token);
       }
-
-      this.handleTagToken(token);
-
-      this.handleCurTag(token);
+    } else {
+      this.tokens = this.tokenizer.tokenize();
     }
 
     return this.nodes;
   }
 
   findNestedTags() {
-    const tags = this.tokens.filter(isTagToken).reduce((acc, token) => {
+    const tags = (this.tokens || []).filter(isTagToken).reduce((acc, token) => {
       acc[getTokenValue(token)] = true;
 
       return acc;
@@ -196,6 +209,9 @@ module.exports = class Parser {
 
     return true;
   }
-};
+}
 
+new Parser('[Verse 2]').parse();
+
+module.exports = Parser;
 module.exports.createTagNode = createTagNode;

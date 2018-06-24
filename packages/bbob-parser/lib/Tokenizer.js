@@ -3,11 +3,14 @@ const {
   OPEN_BRAKET,
   CLOSE_BRAKET, EQ, TAB, SPACE, N, QUOTEMARK,
   PLACEHOLDER_SPACE, PLACEHOLDER_SPACE_TAB,
+  SLASH,
 } = require('./char');
-const TOKEN = require('./token');
+const Token = require('./Token');
+
+const createTokenOfType = (type, value, line, row) => new Token(type, value, line, row);
 
 class Tokenizer {
-  constructor(input) {
+  constructor(input, options = {}) {
     this.buffer = input;
     this.colPos = 0;
     this.rowPos = 0;
@@ -15,18 +18,27 @@ class Tokenizer {
 
     this.tokenIndex = -1;
     this.tokens = new Array(Math.floor(this.buffer.length));
-    this.dummyArray = ['', '', '', ''];
+    this.dummyToken = createTokenOfType('', '', '', '');
 
-    this.wordToken = this.dummyArray;
-    this.tagToken = this.dummyArray;
-    this.attrNameToken = this.dummyArray;
-    this.attrValueToken = this.dummyArray;
+    this.wordToken = this.dummyToken;
+    this.tagToken = this.dummyToken;
+    this.attrNameToken = this.dummyToken;
+    this.attrValueToken = this.dummyToken;
     this.attrTokens = [];
+
+    this.options = options;
+  }
+
+  emitToken(token) {
+    if (this.options.onToken) {
+      this.options.onToken(token);
+    }
   }
 
   appendToken(token) {
     this.tokenIndex += 1;
     this.tokens[this.tokenIndex] = token;
+    this.emitToken(token);
   }
 
   nextCol() {
@@ -38,73 +50,73 @@ class Tokenizer {
   }
 
   flushWord() {
-    if (this.wordToken[TOKEN.TYPE_ID] && this.wordToken[TOKEN.VALUE_ID]) {
+    if (this.wordToken[Token.TYPE_ID] && this.wordToken[Token.VALUE_ID]) {
       this.appendToken(this.wordToken);
       this.wordToken = this.createWordToken('');
     }
   }
 
   createWord(value, line, row) {
-    if (this.wordToken[TOKEN.TYPE_ID] === '') {
+    if (this.wordToken[Token.TYPE_ID] === '') {
       this.wordToken = this.createWordToken(value, line, row);
     }
   }
 
   flushTag() {
-    if (this.tagToken[TOKEN.TYPE_ID]) {
+    if (this.tagToken[Token.TYPE_ID]) {
       // [] and [=] tag case
-      if (this.tagToken[TOKEN.VALUE_ID] === '') {
-        const value = this.attrValueToken[TOKEN.TYPE_ID] ? getChar(EQ) : '';
+      if (this.tagToken[Token.VALUE_ID] === '') {
+        const value = this.attrValueToken[Token.TYPE_ID] ? getChar(EQ) : '';
         const word = getChar(OPEN_BRAKET) + value + getChar(CLOSE_BRAKET);
 
         this.createWord('', 0, 0);
-        this.wordToken[TOKEN.VALUE_ID] += word;
+        this.wordToken[Token.VALUE_ID] += word;
 
-        this.tagToken = this.dummyArray;
+        this.tagToken = this.dummyToken;
 
-        if (this.attrValueToken[TOKEN.TYPE_ID]) {
-          this.attrValueToken = this.dummyArray;
+        if (this.attrValueToken[Token.TYPE_ID]) {
+          this.attrValueToken = this.dummyToken;
         }
 
         return;
       }
 
-      if (this.attrNameToken[TOKEN.TYPE_ID] && !this.attrValueToken[TOKEN.TYPE_ID]) {
-        this.tagToken[TOKEN.VALUE_ID] += PLACEHOLDER_SPACE + this.attrNameToken[TOKEN.VALUE_ID];
-        this.attrNameToken = this.dummyArray;
+      if (this.attrNameToken[Token.TYPE_ID] && !this.attrValueToken[Token.TYPE_ID]) {
+        this.tagToken[Token.VALUE_ID] += PLACEHOLDER_SPACE + this.attrNameToken[Token.VALUE_ID];
+        this.attrNameToken = this.dummyToken;
       }
 
       this.appendToken(this.tagToken);
-      this.tagToken = this.dummyArray;
+      this.tagToken = this.dummyToken;
     }
   }
 
   flushUnclosedTag() {
-    if (this.tagToken[TOKEN.TYPE_ID]) {
-      const value = this.tagToken[TOKEN.VALUE_ID] + (this.attrValueToken[TOKEN.VALUE_ID] ? getChar(EQ) : '');
+    if (this.tagToken[Token.TYPE_ID]) {
+      const value = this.tagToken[Token.VALUE_ID] + (this.attrValueToken[Token.VALUE_ID] ? getChar(EQ) : '');
 
-      this.tagToken[TOKEN.TYPE_ID] = TOKEN.TYPE_WORD;
-      this.tagToken[TOKEN.VALUE_ID] = getChar(OPEN_BRAKET) + value;
+      this.tagToken[Token.TYPE_ID] = Token.TYPE_WORD;
+      this.tagToken[Token.VALUE_ID] = getChar(OPEN_BRAKET) + value;
 
       this.appendToken(this.tagToken);
 
-      this.tagToken = this.dummyArray;
+      this.tagToken = this.dummyToken;
 
-      if (this.attrValueToken[TOKEN.TYPE_ID]) {
-        this.attrValueToken = this.dummyArray;
+      if (this.attrValueToken[Token.TYPE_ID]) {
+        this.attrValueToken = this.dummyToken;
       }
     }
   }
 
   flushAttrNames() {
-    if (this.attrNameToken[TOKEN.TYPE_ID]) {
+    if (this.attrNameToken[Token.TYPE_ID]) {
       this.attrTokens.push(this.attrNameToken);
-      this.attrNameToken = this.dummyArray;
+      this.attrNameToken = this.dummyToken;
     }
 
-    if (this.attrValueToken[TOKEN.TYPE_ID]) {
+    if (this.attrValueToken[Token.TYPE_ID]) {
       this.attrTokens.push(this.attrValueToken);
-      this.attrValueToken = this.dummyArray;
+      this.attrValueToken = this.dummyToken;
     }
   }
 
@@ -118,7 +130,7 @@ class Tokenizer {
   charSPACE(charCode) {
     this.flushWord();
 
-    if (this.tagToken[TOKEN.TYPE_ID]) {
+    if (this.tagToken[Token.TYPE_ID]) {
       this.attrNameToken = this.createAttrNameToken('');
     } else {
       const spaceCode = charCode === TAB ? PLACEHOLDER_SPACE_TAB : PLACEHOLDER_SPACE;
@@ -152,36 +164,36 @@ class Tokenizer {
   }
 
   charEQ(charCode) {
-    if (this.tagToken[TOKEN.TYPE_ID]) {
+    if (this.tagToken[Token.TYPE_ID]) {
       this.attrValueToken = this.createAttrValueToken('');
     } else {
-      this.wordToken[TOKEN.VALUE_ID] += getChar(charCode);
+      this.wordToken[Token.VALUE_ID] += getChar(charCode);
     }
 
     this.nextCol();
   }
 
   charQUOTEMARK(charCode) {
-    if (this.attrValueToken[TOKEN.TYPE_ID] && this.attrValueToken[TOKEN.VALUE_ID] > 0) {
+    if (this.attrValueToken[Token.TYPE_ID] && this.attrValueToken[Token.VALUE_ID] > 0) {
       this.flushAttrNames();
-    } else if (this.tagToken[TOKEN.TYPE_ID] === '') {
-      this.wordToken[TOKEN.VALUE_ID] += getChar(charCode);
+    } else if (this.tagToken[Token.TYPE_ID] === '') {
+      this.wordToken[Token.VALUE_ID] += getChar(charCode);
     }
 
     this.nextCol();
   }
 
   charWORD(charCode) {
-    if (this.tagToken[TOKEN.TYPE_ID] && this.attrValueToken[TOKEN.TYPE_ID]) {
-      this.attrValueToken[TOKEN.VALUE_ID] += getChar(charCode);
-    } else if (this.tagToken[TOKEN.TYPE_ID] && this.attrNameToken[TOKEN.TYPE_ID]) {
-      this.attrNameToken[TOKEN.VALUE_ID] += getChar(charCode);
-    } else if (this.tagToken[TOKEN.TYPE_ID]) {
-      this.tagToken[TOKEN.VALUE_ID] += getChar(charCode);
+    if (this.tagToken[Token.TYPE_ID] && this.attrValueToken[Token.TYPE_ID]) {
+      this.attrValueToken[Token.VALUE_ID] += getChar(charCode);
+    } else if (this.tagToken[Token.TYPE_ID] && this.attrNameToken[Token.TYPE_ID]) {
+      this.attrNameToken[Token.VALUE_ID] += getChar(charCode);
+    } else if (this.tagToken[Token.TYPE_ID]) {
+      this.tagToken[Token.VALUE_ID] += getChar(charCode);
     } else {
       this.createWord();
 
-      this.wordToken[TOKEN.VALUE_ID] += getChar(charCode);
+      this.wordToken[Token.VALUE_ID] += getChar(charCode);
     }
 
     this.nextCol();
@@ -234,31 +246,32 @@ class Tokenizer {
   }
 
   createWordToken(value = '', line = this.colPos, row = this.rowPos) {
-    return this.createTokenOfType(TOKEN.TYPE_WORD, value, line, row);
+    return createTokenOfType(Token.TYPE_WORD, value, line, row);
   }
 
   createTagToken(value, line = this.colPos, row = this.rowPos) {
-    return this.createTokenOfType(TOKEN.TYPE_TAG, value, line, row);
+    return createTokenOfType(Token.TYPE_TAG, value, line, row);
   }
 
   createAttrNameToken(value, line = this.colPos, row = this.rowPos) {
-    return this.createTokenOfType(TOKEN.TYPE_ATTR_NAME, value, line, row);
+    return createTokenOfType(Token.TYPE_ATTR_NAME, value, line, row);
   }
 
   createAttrValueToken(value, line = this.colPos, row = this.rowPos) {
-    return this.createTokenOfType(TOKEN.TYPE_ATTR_VALUE, value, line, row);
+    return createTokenOfType(Token.TYPE_ATTR_VALUE, value, line, row);
   }
 
   createSpaceToken(value, line = this.colPos, row = this.rowPos) {
-    return this.createTokenOfType(TOKEN.TYPE_SPACE, value, line, row);
+    return createTokenOfType(Token.TYPE_SPACE, value, line, row);
   }
 
   createNewLineToken(value, line = this.colPos, row = this.rowPos) {
-    return this.createTokenOfType(TOKEN.TYPE_NEW_LINE, value, line, row);
+    return createTokenOfType(Token.TYPE_NEW_LINE, value, line, row);
   }
 
-  createTokenOfType(type, value, line = this.colPos, row = this.rowPos) {
-    return [String(type), String(value), String(line), String(row)];
+  isTokenNested(token) {
+    const value = getChar(OPEN_BRAKET) + getChar(SLASH) + Token.getTokenValue(token);
+    return this.buffer.indexOf(value) > -1;
   }
 }
 
@@ -266,18 +279,19 @@ class Tokenizer {
 new Tokenizer('[b param="hello"]Sample text[/b]\n\t[Chorus 2] x html([a. title][, alt][, classes]) x [=] [/y]').tokenize();
 
 module.exports = Tokenizer;
+module.exports.createTokenOfType = createTokenOfType;
 module.exports.TYPE = {
-  WORD: TOKEN.TYPE_WORD,
-  TAG: TOKEN.TYPE_TAG,
-  ATTR_NAME: TOKEN.TYPE_ATTR_NAME,
-  ATTR_VALUE: TOKEN.TYPE_ATTR_VALUE,
-  SPACE: TOKEN.TYPE_SPACE,
-  NEW_LINE: TOKEN.TYPE_NEW_LINE,
+  WORD: Token.TYPE_WORD,
+  TAG: Token.TYPE_TAG,
+  ATTR_NAME: Token.TYPE_ATTR_NAME,
+  ATTR_VALUE: Token.TYPE_ATTR_VALUE,
+  SPACE: Token.TYPE_SPACE,
+  NEW_LINE: Token.TYPE_NEW_LINE,
 };
 module.exports.TOKEN = {
-  TYPE_ID: TOKEN.TYPE_ID,
-  VALUE_ID: TOKEN.VALUE_ID,
-  LINE_ID: TOKEN.LINE_ID,
-  COLUMN_ID: TOKEN.COLUMN_ID,
+  TYPE_ID: Token.TYPE_ID,
+  VALUE_ID: Token.VALUE_ID,
+  LINE_ID: Token.LINE_ID,
+  COLUMN_ID: Token.COLUMN_ID,
 };
 

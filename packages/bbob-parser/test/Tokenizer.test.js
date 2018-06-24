@@ -5,51 +5,60 @@ const { TYPE } = Tokenizer;
 const tokenize = input => (new Tokenizer(input).tokenize());
 
 describe('Tokenizer', () => {
+  const expectOutput = (output, tokens) => {
+    expect(tokens).toBeInstanceOf(Array);
+    output.forEach((token, idx) => {
+      expect(tokens[idx]).toBeInstanceOf(Object);
+      expect(tokens[idx]).toEqual(Tokenizer.createTokenOfType(...token));
+    });
+  };
+
   test('tokenize single tag', () => {
     const input = '[SingleTag]';
     const tokens = tokenize(input);
-
-    expect(tokens).toBeInstanceOf(Array);
-    expect(tokens).toEqual([
+    const output = [
       [TYPE.TAG, 'SingleTag', '0', '0'],
-    ]);
+    ];
+
+    expectOutput(output, tokens);
   });
 
   test('tokenize single tag with spaces', () => {
     const input = '[Single Tag]';
     const tokens = tokenize(input);
 
-    expect(tokens).toBeInstanceOf(Array);
-    expect(tokens).toEqual([
+    const output = [
       [TYPE.TAG, 'Single Tag', '0', '0'],
-    ]);
+    ];
+
+    expectOutput(output, tokens);
   });
 
   test('tokenize tag as param', () => {
     const input = '[color="#ff0000"]Text[/color]';
     const tokens = tokenize(input);
-
-    expect(tokens).toBeInstanceOf(Array);
-    expect(tokens).toEqual([
+    const output = [
       [TYPE.TAG, 'color', '0', '0'],
       [TYPE.ATTR_VALUE, '#ff0000', '6', '0'],
       [TYPE.WORD, 'Text', '17', '0'],
       [TYPE.TAG, '/color', '21', '0'],
-    ]);
+    ];
+
+    expectOutput(output, tokens);
   });
 
   test('tokenize tag param without quotemarks', () => {
     const input = '[style color=#ff0000]Text[/style]';
     const tokens = tokenize(input);
-
-    expect(tokens).toBeInstanceOf(Array);
-    expect(tokens).toEqual([
+    const output = [
       [TYPE.TAG, 'style', '0', '0'],
       [TYPE.ATTR_NAME, 'color', '6', '0'],
       [TYPE.ATTR_VALUE, '#ff0000', '12', '0'],
       [TYPE.WORD, 'Text', '21', '0'],
       [TYPE.TAG, '/style', '25', '0'],
-    ]);
+    ];
+
+    expectOutput(output, tokens);
   });
 
   test('tokenize list tag with items', () => {
@@ -60,9 +69,7 @@ describe('Tokenizer', () => {
 [/list]`;
 
     const tokens = tokenize(input);
-
-    expect(tokens).toBeInstanceOf(Array);
-    expect(tokens).toEqual([
+    const output = [
       [TYPE.TAG, 'list', '0', '0'],
       [TYPE.NEW_LINE, '\n', '6', '0'],
       [TYPE.SPACE, ' ', '0', '1'],
@@ -93,7 +100,9 @@ describe('Tokenizer', () => {
       [TYPE.WORD, '3.', '11', '3'],
       [TYPE.NEW_LINE, '\n', '14', '3'],
       [TYPE.TAG, '/list', '0', '4'],
-    ]);
+    ];
+
+    expectOutput(output, tokens);
   });
 
   test('tokenize bad tags as texts', () => {
@@ -140,8 +149,7 @@ describe('Tokenizer', () => {
     inputs.forEach((input, idx) => {
       const tokens = tokenize(input);
 
-      expect(tokens).toBeInstanceOf(Array);
-      expect(tokens).toEqual(asserts[idx]);
+      expectOutput(asserts[idx], tokens);
     });
   });
 });
