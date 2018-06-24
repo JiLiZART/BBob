@@ -1,7 +1,7 @@
 {
   "name": "@bbob/parser",
   "version": "1.0.4",
-  "description": "Fast BB Code parser ",
+  "description": "Fast, flexible, and lean implementation of BBcode parser",
   "homepage": "https://github.com/JiLiZART/bbob",
   "keywords": [
     "bbcode",
