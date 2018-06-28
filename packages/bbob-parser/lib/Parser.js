@@ -12,14 +12,10 @@ const {
   isTagEnd,
 } = require('./Token');
 
-const {
-  SLASH,
-  getChar,
-} = require('./char');
-
 const Tokenizer = require('./Tokenizer');
+const TagNode = require('./TagNode');
 
-const createTagNode = (tag, attrs = {}, content = []) => ({ tag, attrs, content });
+const createTagNode = (tag, attrs = {}, content = []) => new TagNode(tag, attrs, content);
 
 /**
  *
@@ -33,59 +29,66 @@ const createTagNode = (tag, attrs = {}, content = []) => ({ tag, attrs, content 
  */
 class Parser {
   constructor(input, options = {}) {
-    this.tokenizer = new Tokenizer(input, {
-      onToken: (token) => {
-        this.parseToken(token);
-      },
-    });
+    this.createTokenizer(input);
 
     this.options = options;
 
     this.nodes = [];
     this.nestedNodes = [];
-    this.curTags = [];
-    this.curTagsAttrName = [];
+    this.tagNodes = [];
+    this.tagNodesAttrName = [];
   }
 
-  isNestedTag(token) {
+  createTokenizer(input) {
+    this.tokenizer = new Tokenizer(input, {
+      onToken: (token) => {
+        this.parseToken(token);
+      },
+    });
+  }
+
+  isTagNested(token) {
     return this.tokenizer.isTokenNested(token);
   }
 
-  getCurTag() {
-    if (this.curTags.length) {
-      return this.curTags[this.curTags.length - 1];
+  /**
+   * @return {TagNode}
+   */
+  getTagNode() {
+    if (this.tagNodes.length) {
+      return this.tagNodes[this.tagNodes.length - 1];
     }
 
     return null;
   }
 
-  createCurTag(token) {
-    this.curTags.push(createTagNode(getTokenValue(token)));
+  createTagNode(token) {
+    this.tagNodes.push(createTagNode(getTokenValue(token)));
   }
 
-  createCurTagAttrName(token) {
-    this.curTagsAttrName.push(getTokenValue(token));
+  createTagNodeAttrName(token) {
+    this.tagNodesAttrName.push(getTokenValue(token));
   }
 
-  getCurTagAttrName() {
-    if (this.curTagsAttrName.length) {
-      return this.curTagsAttrName[this.curTagsAttrName.length - 1];
+  getTagNodeAttrName() {
+    if (this.tagNodesAttrName.length) {
+      return this.tagNodesAttrName[this.tagNodesAttrName.length - 1];
     }
 
-    return this.getCurTag().tag;
+    return this.getTagNode().tag;
   }
 
-  clearCurTagAttrName() {
-    if (this.curTagsAttrName.length) {
-      this.curTagsAttrName.pop();
+  clearTagNodeAttrName() {
+    if (this.tagNodesAttrName.length) {
+      this.tagNodesAttrName.pop();
     }
   }
 
-  clearCurTag() {
-    if (this.curTags.length) {
-      this.curTags.pop();
+  clearTagNode() {
+    if (this.tagNodes.length) {
+      this.tagNodes.pop();
 
-      this.clearCurTagAttrName();
+      this.clearTagNodeAttrName();
     }
   }
 
@@ -104,20 +107,20 @@ class Parser {
 
   handleTagStart(token) {
     if (isTagStart(token)) {
-      this.createCurTag(token);
+      this.createTagNode(token);
 
-      if (this.isNestedTag(token)) {
-        this.nestedNodes.push(this.getCurTag());
+      if (this.isTagNested(token)) {
+        this.nestedNodes.push(this.getTagNode());
       } else {
-        this.appendNode(this.getCurTag());
-        this.clearCurTag();
+        this.appendNode(this.getTagNode());
+        this.clearTagNode();
       }
     }
   }
 
   handleTagEnd(token) {
     if (isTagEnd(token)) {
-      this.clearCurTag();
+      this.clearTagNode();
 
       const lastNestedNode = this.nestedNodes.pop();
 
@@ -144,16 +147,18 @@ class Parser {
     }
   }
 
-  handleCurTag(token) {
-    if (this.getCurTag()) {
+  handleTagNode(token) {
+    const tagNode = this.getTagNode();
+
+    if (tagNode) {
       if (isAttrNameToken(token)) {
-        this.createCurTagAttrName(token);
-        this.getCurTag().attrs[this.getCurTagAttrName()] = null;
+        this.createTagNodeAttrName(token);
+        tagNode.attr(this.getTagNodeAttrName(), null);
       } else if (isAttrValueToken(token)) {
-        this.getCurTag().attrs[this.getCurTagAttrName()] = getTokenValue(token);
-        this.clearCurTagAttrName();
+        tagNode.attr(this.getTagNodeAttrName(), getTokenValue(token));
+        this.clearTagNodeAttrName();
       } else if (isTextToken(token)) {
-        this.getCurTag().content.push(getTokenValue(token));
+        tagNode.append(getTokenValue(token));
       }
     } else if (isTextToken(token)) {
       this.appendNode(getTokenValue(token));
@@ -162,7 +167,7 @@ class Parser {
 
   parseToken(token) {
     this.handleTagToken(token);
-    this.handleCurTag(token);
+    this.handleTagNode(token);
   }
 
   parse() {
@@ -184,24 +189,6 @@ class Parser {
     return this.nodes;
   }
 
-  findNestedTags() {
-    const tags = (this.tokens || []).filter(isTagToken).reduce((acc, token) => {
-      acc[getTokenValue(token)] = true;
-
-      return acc;
-    }, {});
-
-    const closeChar = getChar(SLASH);
-
-    return Object.keys(tags).reduce((arr, key) => {
-      if (tags[key] && tags[closeChar + key]) {
-        arr.push(key);
-      }
-
-      return arr;
-    }, []);
-  }
-
   isAllowedTag(value) {
     if (this.options.onlyAllowTags && this.options.onlyAllowTags.length) {
       return this.options.onlyAllowTags.indexOf(value) >= 0;
@@ -210,8 +197,6 @@ class Parser {
     return true;
   }
 }
-
-new Parser('[Verse 2]').parse();
 
 module.exports = Parser;
 module.exports.createTagNode = createTagNode;
