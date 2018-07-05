@@ -61,6 +61,10 @@ class Token {
     this.row = Number(row);
   }
 
+  isEmpty() {
+    return !!this.type;
+  }
+
   isText() {
     return isTextToken(this);
   }

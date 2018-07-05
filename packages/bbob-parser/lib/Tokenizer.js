@@ -4,6 +4,7 @@ const {
   CLOSE_BRAKET, EQ, TAB, SPACE, N, QUOTEMARK,
   PLACEHOLDER_SPACE, PLACEHOLDER_SPACE_TAB,
   SLASH,
+  BACKSLASH,
 } = require('./char');
 const Token = require('./Token');
 
@@ -39,6 +40,15 @@ class Tokenizer {
     this.tokenIndex += 1;
     this.tokens[this.tokenIndex] = token;
     this.emitToken(token);
+  }
+
+  skipChar(num) {
+    this.index += num;
+    this.colPos += num;
+  }
+
+  seekChar(num) {
+    return this.buffer.charCodeAt(this.index + num);
   }
 
   nextCol() {
@@ -115,6 +125,7 @@ class Tokenizer {
     }
 
     if (this.attrValueToken[Token.TYPE_ID]) {
+      delete this.attrValueToken.quoted;
       this.attrTokens.push(this.attrValueToken);
       this.attrValueToken = this.dummyToken;
     }
@@ -129,12 +140,16 @@ class Tokenizer {
 
   charSPACE(charCode) {
     this.flushWord();
+    const spaceCode = charCode === TAB ? PLACEHOLDER_SPACE_TAB : PLACEHOLDER_SPACE;
 
-    if (this.tagToken[Token.TYPE_ID]) {
-      this.attrNameToken = this.createAttrNameToken('');
+    if (this.inTag()) {
+      if (this.inAttrValue() && this.attrValueToken.quoted) {
+        this.attrValueToken[Token.VALUE_ID] += spaceCode;
+      } else {
+        this.flushAttrNames();
+        this.attrNameToken = this.createAttrNameToken('');
+      }
     } else {
-      const spaceCode = charCode === TAB ? PLACEHOLDER_SPACE_TAB : PLACEHOLDER_SPACE;
-
       this.appendToken(this.createSpaceToken(spaceCode));
     }
     this.nextCol();
@@ -156,16 +171,23 @@ class Tokenizer {
   }
 
   charCLOSEBRAKET() {
+    this.nextCol();
     this.flushTag();
     this.flushAttrNames();
     this.flushAttrs();
-
-    this.nextCol();
   }
 
   charEQ(charCode) {
-    if (this.tagToken[Token.TYPE_ID]) {
+    const nextCharCode = this.seekChar(1);
+    const isNextQuotemark = nextCharCode === QUOTEMARK;
+
+    if (this.inTag()) {
       this.attrValueToken = this.createAttrValueToken('');
+
+      if (isNextQuotemark) {
+        this.attrValueToken.quoted = true;
+        this.skipChar(1);
+      }
     } else {
       this.wordToken[Token.VALUE_ID] += getChar(charCode);
     }
@@ -174,7 +196,13 @@ class Tokenizer {
   }
 
   charQUOTEMARK(charCode) {
-    if (this.attrValueToken[Token.TYPE_ID] && this.attrValueToken[Token.VALUE_ID] > 0) {
+    const prevCharCode = this.seekChar(-1);
+    const isPrevBackslash = prevCharCode === BACKSLASH;
+
+    if (this.inAttrValue() &&
+        this.attrValueToken[Token.VALUE_ID] &&
+        this.attrValueToken.quoted &&
+        !isPrevBackslash) {
       this.flushAttrNames();
     } else if (this.tagToken[Token.TYPE_ID] === '') {
       this.wordToken[Token.VALUE_ID] += getChar(charCode);
@@ -183,13 +211,31 @@ class Tokenizer {
     this.nextCol();
   }
 
+  charBACKSLASH() {
+    const nextCharCode = this.seekChar(1);
+    const isNextQuotemark = nextCharCode === QUOTEMARK;
+
+    if (this.inAttrValue() &&
+        this.attrValueToken[Token.VALUE_ID] &&
+        this.attrValueToken.quoted &&
+        isNextQuotemark
+    ) {
+      this.attrValueToken[Token.VALUE_ID] += getChar(nextCharCode);
+      this.skipChar(1);
+    }
+
+    this.nextCol();
+  }
+
   charWORD(charCode) {
-    if (this.tagToken[Token.TYPE_ID] && this.attrValueToken[Token.TYPE_ID]) {
-      this.attrValueToken[Token.VALUE_ID] += getChar(charCode);
-    } else if (this.tagToken[Token.TYPE_ID] && this.attrNameToken[Token.TYPE_ID]) {
-      this.attrNameToken[Token.VALUE_ID] += getChar(charCode);
-    } else if (this.tagToken[Token.TYPE_ID]) {
-      this.tagToken[Token.VALUE_ID] += getChar(charCode);
+    if (this.inTag()) {
+      if (this.inAttrValue()) {
+        this.attrValueToken[Token.VALUE_ID] += getChar(charCode);
+      } else if (this.inAttrName()) {
+        this.attrNameToken[Token.VALUE_ID] += getChar(charCode);
+      } else {
+        this.tagToken[Token.VALUE_ID] += getChar(charCode);
+      }
     } else {
       this.createWord();
 
@@ -214,11 +260,11 @@ class Tokenizer {
           break;
 
         case OPEN_BRAKET:
-          this.charOPENBRAKET();
+          this.charOPENBRAKET(charCode);
           break;
 
         case CLOSE_BRAKET:
-          this.charCLOSEBRAKET();
+          this.charCLOSEBRAKET(charCode);
           break;
 
         case EQ:
@@ -227,6 +273,10 @@ class Tokenizer {
 
         case QUOTEMARK:
           this.charQUOTEMARK(charCode);
+          break;
+
+        case BACKSLASH:
+          this.charBACKSLASH(charCode);
           break;
 
         default:
@@ -243,6 +293,18 @@ class Tokenizer {
     this.tokens.length = this.tokenIndex + 1;
 
     return this.tokens;
+  }
+
+  inTag() {
+    return this.tagToken[Token.TYPE_ID];
+  }
+
+  inAttrValue() {
+    return this.attrValueToken[Token.TYPE_ID];
+  }
+
+  inAttrName() {
+    return this.attrNameToken[Token.TYPE_ID];
   }
 
   createWordToken(value = '', line = this.colPos, row = this.rowPos) {

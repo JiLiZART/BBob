@@ -11,6 +11,7 @@ const OPEN_BRAKET = '['.charCodeAt(0);
 const CLOSE_BRAKET = ']'.charCodeAt(0);
 
 const SLASH = '/'.charCodeAt(0);
+const BACKSLASH = '\\'.charCodeAt(0);
 
 const PLACEHOLDER_SPACE_TAB = '    ';
 const PLACEHOLDER_SPACE = ' ';
@@ -31,4 +32,5 @@ module.exports = {
   SLASH,
   PLACEHOLDER_SPACE_TAB,
   PLACEHOLDER_SPACE,
+  BACKSLASH,
 };

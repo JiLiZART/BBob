@@ -47,6 +47,34 @@ describe('Tokenizer', () => {
     expectOutput(output, tokens);
   });
 
+  test('tokenize tag with quotemark params with spaces', () => {
+    const input = '[url text="Foo Bar"]Text[/url]';
+    const tokens = tokenize(input);
+    const output = [
+      [TYPE.TAG, 'url', '0', '0'],
+      [TYPE.ATTR_NAME, 'text', '4', '0'],
+      [TYPE.ATTR_VALUE, 'Foo Bar', '9', '0'],
+      [TYPE.WORD, 'Text', '20', '0'],
+      [TYPE.TAG, '/url', '24', '0'],
+    ];
+
+    expectOutput(output, tokens);
+  });
+
+  test('tokenize tag with escaped quotemark param', () => {
+    const input = `[url text="Foo \\"Bar"]Text[/url]`;
+    const tokens = tokenize(input);
+    const output = [
+      [TYPE.TAG, 'url', '0', '0'],
+      [TYPE.ATTR_NAME, 'text', '4', '0'],
+      [TYPE.ATTR_VALUE, 'Foo "Bar', '9', '0'],
+      [TYPE.WORD, 'Text', '22', '0'],
+      [TYPE.TAG, '/url', '26', '0'],
+    ];
+
+    expectOutput(output, tokens);
+  });
+
   test('tokenize tag param without quotemarks', () => {
     const input = '[style color=#ff0000]Text[/style]';
     const tokens = tokenize(input);

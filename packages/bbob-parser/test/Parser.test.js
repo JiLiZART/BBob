@@ -36,4 +36,21 @@ describe('Parser', () => {
       },
     ]);
   });
+
+  test('parse tag with quoted param with spaces', () => {
+    const ast = parse('[url href=https://ru.wikipedia.org target=_blank text="Foo Bar"]Text[/url]');
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast).toEqual([
+      {
+        tag: 'url',
+        attrs: {
+          href: 'https://ru.wikipedia.org',
+          target: '_blank',
+          text: 'Foo Bar',
+        },
+        content: ['Text'],
+      },
+    ]);
+  });
 });
