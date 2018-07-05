@@ -2,7 +2,10 @@
   "name": "@bbob/html",
   "version": "1.0.1",
   "description": "HTML renderer for BBCode pareser BBob",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "devDependencies": {
+    "@bbob/parser": "*"
+  },
   "scripts": {
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",

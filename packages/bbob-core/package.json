@@ -1,27 +1,25 @@
 {
-  "name": "@bbob/cli",
-  "version": "1.0.1",
-  "description": "Comand line bbcode parser",
-  "main": "lib/bbob.js",
-  "bin": {
-    "bbob": "bbob.js"
-  },
+  "name": "@bbob/core",
+  "version": "1.0.0",
+  "description": "BBob is a tool to transform BBCode markup useing presets",
+  "main": "lib/index.js",
   "directories": {
     "lib": "lib"
   },
   "dependencies": {
-    "@bbob/parser": "^1.0.3",
-    "commander": "^2.15.1"
+    "@bbob/parser": "*",
+    "@bbob/html": "*",
+    "@bbob/preset-html5": "*"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JiLiZART/bbob.git"
   },
   "keywords": [
-    "bbob",
-    "cli",
     "bbcode",
-    "pipe"
+    "parser",
+    "html",
+    "transform"
   ],
   "bugs": {
     "url": "https://github.com/JiLiZART/bbob/issues"
