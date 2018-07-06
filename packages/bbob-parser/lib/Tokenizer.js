@@ -28,6 +28,18 @@ class Tokenizer {
     this.attrTokens = [];
 
     this.options = options;
+
+    this.charMap = {
+      TAB: this.charSPACE.bind(this),
+      SPACE: this.charSPACE.bind(this),
+      N: this.charN.bind(this),
+      OPEN_BRAKET: this.charOPENBRAKET.bind(this),
+      CLOSE_BRAKET: this.charCLOSEBRAKET.bind(this),
+      EQ: this.charEQ.bind(this),
+      QUOTEMARK: this.charQUOTEMARK.bind(this),
+      BACKSLASH: this.charBACKSLASH.bind(this),
+      default: this.charWORD.bind(this),
+    }
   }
 
   emitToken(token) {
@@ -249,40 +261,7 @@ class Tokenizer {
     while (this.index < this.buffer.length) {
       const charCode = this.buffer.charCodeAt(this.index);
 
-      switch (charCode) {
-        case TAB:
-        case SPACE:
-          this.charSPACE(charCode);
-          break;
-
-        case N:
-          this.charN(charCode);
-          break;
-
-        case OPEN_BRAKET:
-          this.charOPENBRAKET(charCode);
-          break;
-
-        case CLOSE_BRAKET:
-          this.charCLOSEBRAKET(charCode);
-          break;
-
-        case EQ:
-          this.charEQ(charCode);
-          break;
-
-        case QUOTEMARK:
-          this.charQUOTEMARK(charCode);
-          break;
-
-        case BACKSLASH:
-          this.charBACKSLASH(charCode);
-          break;
-
-        default:
-          this.charWORD(charCode);
-          break;
-      }
+      (this.charMap[charCode] || this.charMap.default)(charCode);
 
       this.index += 1;
     }
