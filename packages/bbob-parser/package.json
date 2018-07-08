@@ -1,6 +1,6 @@
 {
   "name": "@bbob/parser",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Fast, flexible, and lean implementation of BBcode parser",
   "homepage": "https://github.com/JiLiZART/bbob",
   "keywords": [
@@ -36,5 +36,7 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "files": ["lib"]
+  "files": [
+    "lib"
+  ]
 }

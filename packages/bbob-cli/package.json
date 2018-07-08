@@ -10,7 +10,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "@bbob/parser": "^1.0.3",
+    "@bbob/parser": "^1.0.6",
     "commander": "^2.15.1"
   },
   "repository": {

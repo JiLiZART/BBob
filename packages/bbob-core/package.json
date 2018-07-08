@@ -1,15 +1,15 @@
 {
   "name": "@bbob/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "BBob is a tool to transform BBCode markup useing presets",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib"
   },
   "dependencies": {
-    "@bbob/parser": "*",
-    "@bbob/html": "*",
-    "@bbob/preset-html5": "*"
+    "@bbob/html": "^1.0.2",
+    "@bbob/parser": "^1.0.6",
+    "@bbob/preset-html5": "^1.0.1"
   },
   "repository": {
     "type": "git",
