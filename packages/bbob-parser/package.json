@@ -18,12 +18,16 @@
     "serialize",
     "html"
   ],
-  "main": "./lib/index.js",
+  "main": "dist/cjs.js",
+  "module": "dist/esm.js",
+  "browser": "dist/umd.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/JiLiZART/bbob.git"
   },
   "scripts": {
+    "build": "../../node_modules/.bin/rollup -c",
+    "dev": "../../node_modules/.bin/rollup -c -w",
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
     "lint": "../../node_modules/.bin/eslint ."

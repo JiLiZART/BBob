@@ -22,11 +22,10 @@ const getTokenValue = token => token[TOKEN_VALUE_ID];
 const getTokenLine = token => token[TOKEN_LINE_ID];
 const getTokenColumn = token => token[TOKEN_COLUMN_ID];
 
-const isTextToken = (token) => {
-  const type = token[TOKEN_TYPE_ID];
-
-  return type === TOKEN_TYPE_SPACE || type === TOKEN_TYPE_NEW_LINE || type === TOKEN_TYPE_WORD;
-};
+const isTextToken = token =>
+    token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE ||
+    token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE ||
+    token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
 
 const isTagToken = token => token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
 const isTagEnd = token => getTokenValue(token).charCodeAt(0) === SLASH;

@@ -15,11 +15,12 @@ class Tokenizer {
     this.buffer = input;
     this.colPos = 0;
     this.rowPos = 0;
-    this.index = 0;
+    // eslint-disable-next-line no-bitwise
+    this.index = 2 ** 32;
 
     this.tokenIndex = -1;
     this.tokens = new Array(Math.floor(this.buffer.length));
-    this.dummyToken = createTokenOfType('', '', '', '');
+    this.dummyToken = null; // createTokenOfType('', '', '', '');
 
     this.wordToken = this.dummyToken;
     this.tagToken = this.dummyToken;
@@ -30,16 +31,16 @@ class Tokenizer {
     this.options = options;
 
     this.charMap = {
-      TAB: this.charSPACE.bind(this),
-      SPACE: this.charSPACE.bind(this),
-      N: this.charN.bind(this),
-      OPEN_BRAKET: this.charOPENBRAKET.bind(this),
-      CLOSE_BRAKET: this.charCLOSEBRAKET.bind(this),
-      EQ: this.charEQ.bind(this),
-      QUOTEMARK: this.charQUOTEMARK.bind(this),
-      BACKSLASH: this.charBACKSLASH.bind(this),
+      [TAB]: this.charSPACE.bind(this),
+      [SPACE]: this.charSPACE.bind(this),
+      [N]: this.charN.bind(this),
+      [OPEN_BRAKET]: this.charOPENBRAKET.bind(this),
+      [CLOSE_BRAKET]: this.charCLOSEBRAKET.bind(this),
+      [EQ]: this.charEQ.bind(this),
+      [QUOTEMARK]: this.charQUOTEMARK.bind(this),
+      [BACKSLASH]: this.charBACKSLASH.bind(this),
       default: this.charWORD.bind(this),
-    }
+    };
   }
 
   emitToken(token) {
@@ -72,22 +73,23 @@ class Tokenizer {
   }
 
   flushWord() {
-    if (this.wordToken[Token.TYPE_ID] && this.wordToken[Token.VALUE_ID]) {
+    if (this.inWord() && this.wordToken[Token.VALUE_ID]) {
       this.appendToken(this.wordToken);
       this.wordToken = this.createWordToken('');
     }
   }
 
   createWord(value, line, row) {
-    if (this.wordToken[Token.TYPE_ID] === '') {
+    if (!this.inWord()) {
       this.wordToken = this.createWordToken(value, line, row);
+      this.wordIndex = this.index;
     }
   }
 
   flushTag() {
-    if (this.tagToken[Token.TYPE_ID]) {
+    if (this.inTag()) {
       // [] and [=] tag case
-      if (this.tagToken[Token.VALUE_ID] === '') {
+      if (!this.inTag()) {
         const value = this.attrValueToken[Token.TYPE_ID] ? getChar(EQ) : '';
         const word = getChar(OPEN_BRAKET) + value + getChar(CLOSE_BRAKET);
 
@@ -103,7 +105,8 @@ class Tokenizer {
         return;
       }
 
-      if (this.attrNameToken[Token.TYPE_ID] && !this.attrValueToken[Token.TYPE_ID]) {
+      // this.attrNameToken[Token.TYPE_ID] && !this.attrValueToken[Token.TYPE_ID]
+      if (this.inAttrName() && !this.inAttrValue()) {
         this.tagToken[Token.VALUE_ID] += PLACEHOLDER_SPACE + this.attrNameToken[Token.VALUE_ID];
         this.attrNameToken = this.dummyToken;
       }
@@ -114,7 +117,7 @@ class Tokenizer {
   }
 
   flushUnclosedTag() {
-    if (this.tagToken[Token.TYPE_ID]) {
+    if (this.inTag()) {
       const value = this.tagToken[Token.VALUE_ID] + (this.attrValueToken[Token.VALUE_ID] ? getChar(EQ) : '');
 
       this.tagToken[Token.TYPE_ID] = Token.TYPE_WORD;
@@ -131,13 +134,13 @@ class Tokenizer {
   }
 
   flushAttrNames() {
-    if (this.attrNameToken[Token.TYPE_ID]) {
+    if (this.inAttrName()) {
       this.attrTokens.push(this.attrNameToken);
       this.attrNameToken = this.dummyToken;
     }
 
-    if (this.attrValueToken[Token.TYPE_ID]) {
-      delete this.attrValueToken.quoted;
+    if (this.inAttrValue()) {
+      this.attrValueToken.quoted = null;
       this.attrTokens.push(this.attrValueToken);
       this.attrValueToken = this.dummyToken;
     }
@@ -151,8 +154,9 @@ class Tokenizer {
   }
 
   charSPACE(charCode) {
-    this.flushWord();
     const spaceCode = charCode === TAB ? PLACEHOLDER_SPACE_TAB : PLACEHOLDER_SPACE;
+
+    this.flushWord();
 
     if (this.inTag()) {
       if (this.inAttrValue() && this.attrValueToken.quoted) {
@@ -216,7 +220,7 @@ class Tokenizer {
         this.attrValueToken.quoted &&
         !isPrevBackslash) {
       this.flushAttrNames();
-    } else if (this.tagToken[Token.TYPE_ID] === '') {
+    } else if (!this.inTag()) {
       this.wordToken[Token.VALUE_ID] += getChar(charCode);
     }
 
@@ -258,12 +262,14 @@ class Tokenizer {
   }
 
   tokenize() {
+    this.index = 0;
     while (this.index < this.buffer.length) {
       const charCode = this.buffer.charCodeAt(this.index);
 
       (this.charMap[charCode] || this.charMap.default)(charCode);
 
-      this.index += 1;
+      // eslint-disable-next-line no-plusplus
+      ++this.index;
     }
 
     this.flushWord();
@@ -274,16 +280,20 @@ class Tokenizer {
     return this.tokens;
   }
 
+  inWord() {
+    return this.wordToken && this.wordToken[Token.TYPE_ID];
+  }
+
   inTag() {
-    return this.tagToken[Token.TYPE_ID];
+    return this.tagToken && this.tagToken[Token.TYPE_ID];
   }
 
   inAttrValue() {
-    return this.attrValueToken[Token.TYPE_ID];
+    return this.attrValueToken && this.attrValueToken[Token.TYPE_ID];
   }
 
   inAttrName() {
-    return this.attrNameToken[Token.TYPE_ID];
+    return this.attrNameToken && this.attrNameToken[Token.TYPE_ID];
   }
 
   createWordToken(value = '', line = this.colPos, row = this.rowPos) {
@@ -317,7 +327,7 @@ class Tokenizer {
 }
 
 // warm up tokenizer to elimitate code branches that never execute
-new Tokenizer('[b param="hello"]Sample text[/b]\n\t[Chorus 2] x html([a. title][, alt][, classes]) x [=] [/y]').tokenize();
+// new Tokenizer('[b param="hello"]Sample text[/b]\n\t[Chorus 2] x html([a. title][, alt][, classes]) x [=] [/y]').tokenize();
 
 module.exports = Tokenizer;
 module.exports.createTokenOfType = createTokenOfType;
