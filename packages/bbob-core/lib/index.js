@@ -1,18 +1,19 @@
 class BBob {
   constructor(plugins) {
+    this.plugins = plugins;
   }
 
-  parse() {
-
-  }
-
-  stringify() {
-
-  }
-
-  process(input) {
-
-  }
+  // parse() {
+  //
+  // }
+  //
+  // stringify() {
+  //
+  // }
+  //
+  // process(input) {
+  //
+  // }
 }
 
 module.exports = function bbob(...plugins) {

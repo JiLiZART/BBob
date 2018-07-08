@@ -18,8 +18,7 @@
     "serialize",
     "html"
   ],
-  "main": "dist/cjs.js",
-  "module": "dist/esm.js",
+  "main": "lib/index.js",
   "browser": "dist/umd.js",
   "repository": {
     "type": "git",

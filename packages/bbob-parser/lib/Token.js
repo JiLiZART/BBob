@@ -23,7 +23,7 @@ const getTokenLine = token => token[TOKEN_LINE_ID];
 const getTokenColumn = token => token[TOKEN_COLUMN_ID];
 
 const isTextToken = token =>
-    token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE ||
+  token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE ||
     token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE ||
     token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
 

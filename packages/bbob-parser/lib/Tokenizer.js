@@ -82,15 +82,14 @@ class Tokenizer {
   createWord(value, line, row) {
     if (!this.inWord()) {
       this.wordToken = this.createWordToken(value, line, row);
-      this.wordIndex = this.index;
     }
   }
 
   flushTag() {
     if (this.inTag()) {
       // [] and [=] tag case
-      if (!this.inTag()) {
-        const value = this.attrValueToken[Token.TYPE_ID] ? getChar(EQ) : '';
+      if (this.tagToken[Token.VALUE_ID] === '') {
+        const value = this.inAttrValue() ? getChar(EQ) : '';
         const word = getChar(OPEN_BRAKET) + value + getChar(CLOSE_BRAKET);
 
         this.createWord('', 0, 0);
@@ -98,14 +97,13 @@ class Tokenizer {
 
         this.tagToken = this.dummyToken;
 
-        if (this.attrValueToken[Token.TYPE_ID]) {
+        if (this.inAttrValue()) {
           this.attrValueToken = this.dummyToken;
         }
 
         return;
       }
 
-      // this.attrNameToken[Token.TYPE_ID] && !this.attrValueToken[Token.TYPE_ID]
       if (this.inAttrName() && !this.inAttrValue()) {
         this.tagToken[Token.VALUE_ID] += PLACEHOLDER_SPACE + this.attrNameToken[Token.VALUE_ID];
         this.attrNameToken = this.dummyToken;
@@ -118,7 +116,7 @@ class Tokenizer {
 
   flushUnclosedTag() {
     if (this.inTag()) {
-      const value = this.tagToken[Token.VALUE_ID] + (this.attrValueToken[Token.VALUE_ID] ? getChar(EQ) : '');
+      const value = this.tagToken[Token.VALUE_ID] + (this.attrValueToken && this.attrValueToken[Token.VALUE_ID] ? getChar(EQ) : '');
 
       this.tagToken[Token.TYPE_ID] = Token.TYPE_WORD;
       this.tagToken[Token.VALUE_ID] = getChar(OPEN_BRAKET) + value;
@@ -127,7 +125,7 @@ class Tokenizer {
 
       this.tagToken = this.dummyToken;
 
-      if (this.attrValueToken[Token.TYPE_ID]) {
+      if (this.inAttrValue()) {
         this.attrValueToken = this.dummyToken;
       }
     }
@@ -140,7 +138,7 @@ class Tokenizer {
     }
 
     if (this.inAttrValue()) {
-      this.attrValueToken.quoted = null;
+      this.attrValueToken.quoted = undefined;
       this.attrTokens.push(this.attrValueToken);
       this.attrValueToken = this.dummyToken;
     }
@@ -325,9 +323,6 @@ class Tokenizer {
     return this.buffer.indexOf(value) > -1;
   }
 }
-
-// warm up tokenizer to elimitate code branches that never execute
-// new Tokenizer('[b param="hello"]Sample text[/b]\n\t[Chorus 2] x html([a. title][, alt][, classes]) x [=] [/y]').tokenize();
 
 module.exports = Tokenizer;
 module.exports.createTokenOfType = createTokenOfType;
