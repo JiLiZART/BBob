@@ -19,7 +19,6 @@
     "html"
   ],
   "main": "lib/index.js",
-  "browser": "dist/umd.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/JiLiZART/bbob.git"

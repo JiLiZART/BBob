@@ -1,33 +1,54 @@
-const parse = require('../lib/index');
+const parse = require('../lib/parse');
 
-describe('parse', () => {
-  test('tag with spaces', () => {
-    const ast = parse('[Verse 2]');
+describe('Parser', () => {
+  test('parse paired tags tokens', () => {
+    const ast = parse('[best name=value]Foo Bar[/best]');
 
-    expect(ast).toEqual([{ tag: 'Verse 2', attrs: {}, content: [] }]);
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast).toEqual([
+      {
+        tag: 'best',
+        attrs: {
+          name: 'value',
+        },
+        content: [
+          'Foo',
+          ' ',
+          'Bar',
+        ],
+      },
+    ]);
   });
 
-  // test("pass invalid tags", () => {
-  //     const inputs = [
-  //         '[]',
-  //         '![](image.jpg)',
-  //         'x html([a. title][, alt][, classes]) x',
-  //         '[/y]',
-  //         '[sc',
-  //         '[sc / [/sc]',
-  //         '[sc arg="val',
-  //     ];
-  //
-  //     const ast1 = parse(inputs[0]);
-  //
-  //
-  //
-  //     console.log('ast1', ast1);
-  //
-  //
-  //
-  //     expect(ast1).toEqual([
-  //
-  //     ]);
-  // })
+  test('parse tag with value param', () => {
+    const ast = parse('[url=https://github.com/jilizart/bbob]BBob[/url]');
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast).toEqual([
+      {
+        tag: 'url',
+        attrs: {
+          url: 'https://github.com/jilizart/bbob',
+        },
+        content: ['BBob'],
+      },
+    ]);
+  });
+
+  test('parse tag with quoted param with spaces', () => {
+    const ast = parse('[url href=https://ru.wikipedia.org target=_blank text="Foo Bar"]Text[/url]');
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast).toEqual([
+      {
+        tag: 'url',
+        attrs: {
+          href: 'https://ru.wikipedia.org',
+          target: '_blank',
+          text: 'Foo Bar',
+        },
+        content: ['Text'],
+      },
+    ]);
+  });
 });
