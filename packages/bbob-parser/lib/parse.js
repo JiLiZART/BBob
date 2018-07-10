@@ -1,5 +1,5 @@
 const {
-  convertTokenToText,
+  convertTagToText,
   getTagName,
   getTokenColumn,
   getTokenLine,
@@ -187,7 +187,7 @@ const handleTagToken = (token) => {
       // [/tag]
       handleTagEnd(token);
     } else {
-      appendNode(convertTokenToText(token));
+      appendNode(convertTagToText(token));
     }
   }
 };

@@ -20,6 +20,28 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse only allowed tags', () => {
+    const ast = parse('[h1 name=value]Foo [Bar] [/h1]', {
+      onlyAllowTags: ['h1']
+    });
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast).toEqual([
+      {
+        tag: 'h1',
+        attrs: {
+          name: 'value',
+        },
+        content: [
+          'Foo',
+          ' ',
+          '[Bar]',
+          ' '
+        ],
+      },
+    ]);
+  });
+
   test('parse tag with value param', () => {
     const ast = parse('[url=https://github.com/jilizart/bbob]BBob[/url]');
 
