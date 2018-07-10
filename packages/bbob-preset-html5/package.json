@@ -1,13 +1,13 @@
 {
   "name": "@bbob/preset-html5",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "HTML5 Preset to transform BBCode to HTML",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib"
   },
   "devDependencies": {
-    "@bbob/core": "^1.0.2"
+    "@bbob/core": "^1.0.3"
   },
   "repository": {
     "type": "git",
