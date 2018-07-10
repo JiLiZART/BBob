@@ -38,6 +38,8 @@ let tagNodesAttrName;
 
 let options = {};
 let tokenizer = null;
+
+// eslint-disable-next-line no-unused-vars
 let tokens = null;
 
 /**
