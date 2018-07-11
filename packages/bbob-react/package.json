@@ -1,6 +1,6 @@
 {
   "name": "@bbob/react",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@bbob/html": "^1.0.5",
+    "@bbob/html": "^1.0.6",
     "prop-types": "^15.6.1",
     "react": "^15.6.2"
   },

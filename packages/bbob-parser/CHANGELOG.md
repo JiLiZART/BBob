@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.0.10"></a>
+## [1.0.10](https://github.com/JiLiZART/bbob/compare/@bbob/parser@1.0.9...@bbob/parser@1.0.10) (2018-07-11)
+
+
+### Bug Fixes
+
+* **parser:** tokenizer error with quotemark strings ([7f40050](https://github.com/JiLiZART/bbob/commit/7f40050))
+
+
+
+
 <a name="1.0.9"></a>
 ## [1.0.9](https://github.com/JiLiZART/bbob/compare/@bbob/parser@1.0.8...@bbob/parser@1.0.9) (2018-07-10)
 

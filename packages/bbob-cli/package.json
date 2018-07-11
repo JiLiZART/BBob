@@ -1,6 +1,6 @@
 {
   "name": "@bbob/cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Comand line bbcode parser",
   "main": "lib/bbob.js",
   "bin": {
@@ -10,7 +10,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "@bbob/parser": "^1.0.9",
+    "@bbob/parser": "^1.0.10",
     "commander": "^2.15.1"
   },
   "repository": {
