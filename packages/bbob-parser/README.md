@@ -14,7 +14,7 @@ to
         "attrs": {
             "url": "https://github.com/JiLiZART/bbob/tree/master/packages/bbob-parser"
         },
-        content: ["hello", " ", "world!"]
+        "content": ["hello", " ", "world!"]
     }
 ]
 ```
