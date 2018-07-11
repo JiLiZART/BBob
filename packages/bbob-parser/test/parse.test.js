@@ -42,6 +42,30 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse inconsistent tags', () => {
+    const ast = parse('[h1 name=value]Foo [Bar] /h1]');
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast).toEqual(
+      [
+        {
+          attrs: {},
+          tag: 'h1',
+          content: []
+        },
+        'Foo',
+        ' ',
+        {
+          tag: 'Bar',
+          attrs: {},
+          content: []
+        },
+        ' ',
+        '/h1',
+      ]
+    );
+  });
+
   test('parse tag with value param', () => {
     const ast = parse('[url=https://github.com/jilizart/bbob]BBob[/url]');
 

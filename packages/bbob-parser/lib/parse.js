@@ -167,9 +167,15 @@ const handleTagEnd = (token) => {
 
     if (lastNestedNode) {
       appendNode(lastNestedNode);
-    } else {
-      // eslint-disable-next-line no-console
-      console.warn(`Inconsistent tag '${getTokenValue(token)}' on line ${getTokenLine(token)} and column ${getTokenColumn(token)}`);
+    } else if (options.onError) {
+      const tag = getTokenValue(token);
+      const line = getTokenLine(token);
+      const column = getTokenColumn(token);
+      options.onError({
+        message: `Inconsistent tag '${tag}' on line ${line} and column ${column}`,
+        lineNumber: line,
+        columnNumber: column,
+      });
     }
   }
 };
@@ -228,8 +234,8 @@ const parseToken = (token) => {
  * @return {Array}
  */
 const parse = (input, opts = {}) => {
-  tokenizer = createTokenizer(input, parseToken);
   options = opts;
+  tokenizer = createTokenizer(input, parseToken);
 
   nodes = [];
   nestedNodes = [];

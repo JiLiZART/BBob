@@ -219,7 +219,11 @@ class Tokenizer {
         !isPrevBackslash) {
       this.flushAttrNames();
     } else if (!this.inTag()) {
-      this.wordToken[Token.VALUE_ID] += getChar(charCode);
+      if (!this.wordToken) {
+        this.wordToken = this.createWordToken(getChar(charCode));
+      } else {
+        this.wordToken[Token.VALUE_ID] += getChar(charCode);
+      }
     }
 
     this.nextCol();

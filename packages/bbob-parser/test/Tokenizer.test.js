@@ -34,6 +34,25 @@ describe('Tokenizer', () => {
     expectOutput(output, tokens);
   });
 
+  test('tokenize string with quotemarks', () => {
+    const input = '"Someone Like You" by Adele';
+    const tokens = tokenize(input);
+
+    const output = [
+      [TYPE.WORD, '"Someone', '0', '0'],
+      [TYPE.SPACE, ' ', '8', '0'],
+      [TYPE.WORD, 'Like', '8', '0'],
+      [TYPE.SPACE, ' ', '13', '0'],
+      [TYPE.WORD, 'You"', '13', '0'],
+      [TYPE.SPACE, ' ', '18', '0'],
+      [TYPE.WORD, 'by', '18', '0'],
+      [TYPE.SPACE, ' ', '21', '0'],
+      [TYPE.WORD, 'Adele', '21', '0'],
+    ];
+
+    expectOutput(output, tokens);
+  });
+
   test('tokenize tag as param', () => {
     const input = '[color="#ff0000"]Text[/color]';
     const tokens = tokenize(input);
