@@ -53,6 +53,23 @@ describe('Tokenizer', () => {
     expectOutput(output, tokens);
   });
 
+  test('tokenize tags in brakets', () => {
+    const input = '[ [h1]G[/h1] ]';
+    const tokens = tokenize(input);
+
+    const output = [
+      [TYPE.WORD, '[', '0', '0'],
+      [TYPE.SPACE, ' ', '1', '0'],
+      [TYPE.TAG, 'h1', '2', '0'],
+      [TYPE.WORD, 'G', '1', '0'],
+      [TYPE.TAG, '/h1', '7', '0'],
+      [TYPE.SPACE, ' ', '12', '0'],
+      [TYPE.WORD, ']', '7', '0'],
+    ];
+
+    expectOutput(output, tokens);
+  });
+
   test('tokenize tag as param', () => {
     const input = '[color="#ff0000"]Text[/color]';
     const tokens = tokenize(input);

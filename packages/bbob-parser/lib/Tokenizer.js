@@ -177,14 +177,30 @@ class Tokenizer {
     this.colPos = 0;
   }
 
-  charOPENBRAKET() {
-    this.flushWord();
-    this.tagToken = this.createTagToken('');
+  charOPENBRAKET(charCode) {
+    const nextCharCode = this.seekChar(1);
+    const isNextSpace = nextCharCode === SPACE || nextCharCode === TAB;
+
+    if (isNextSpace) {
+      this.createWord();
+      this.wordToken[Token.VALUE_ID] += getChar(charCode);
+    } else {
+      this.flushWord();
+
+      this.tagToken = this.createTagToken('');
+    }
 
     this.nextCol();
   }
 
-  charCLOSEBRAKET() {
+  charCLOSEBRAKET(charCode) {
+    const prevCharCode = this.seekChar(-1);
+    const isPrevSpace = prevCharCode === SPACE || prevCharCode === TAB;
+
+    if (isPrevSpace) {
+      this.wordToken[Token.VALUE_ID] += getChar(charCode);
+    }
+
     this.nextCol();
     this.flushTag();
     this.flushAttrNames();
@@ -327,6 +343,8 @@ class Tokenizer {
     return this.buffer.indexOf(value) > -1;
   }
 }
+
+new Tokenizer('[ [g]G[/g] ]').tokenize()
 
 module.exports = Tokenizer;
 module.exports.createTokenOfType = createTokenOfType;
