@@ -80,6 +80,10 @@ class Token {
     return isAttrValueToken(this);
   }
 
+  isStart() {
+    return isTagStart(this);
+  }
+
   isEnd() {
     return isTagEnd(this);
   }
@@ -117,15 +121,3 @@ module.exports.TYPE_ATTR_NAME = TOKEN_TYPE_ATTR_NAME;
 module.exports.TYPE_ATTR_VALUE = TOKEN_TYPE_ATTR_VALUE;
 module.exports.TYPE_SPACE = TOKEN_TYPE_SPACE;
 module.exports.TYPE_NEW_LINE = TOKEN_TYPE_NEW_LINE;
-
-module.exports.convertTagToText = convertTagToText;
-module.exports.getTagName = getTagName;
-module.exports.getTokenColumn = getTokenColumn;
-module.exports.getTokenLine = getTokenLine;
-module.exports.getTokenValue = getTokenValue;
-module.exports.isAttrNameToken = isAttrNameToken;
-module.exports.isAttrValueToken = isAttrValueToken;
-module.exports.isTagStart = isTagStart;
-module.exports.isTagToken = isTagToken;
-module.exports.isTextToken = isTextToken;
-module.exports.isTagEnd = isTagEnd;

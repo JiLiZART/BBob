@@ -1,6 +1,14 @@
 const Tokenizer = require('../lib/Tokenizer');
+const Token = require('../lib/Token');
 
-const { TYPE } = Tokenizer;
+const TYPE = {
+  WORD: Token.TYPE_WORD,
+  TAG: Token.TYPE_TAG,
+  ATTR_NAME: Token.TYPE_ATTR_NAME,
+  ATTR_VALUE: Token.TYPE_ATTR_VALUE,
+  SPACE: Token.TYPE_SPACE,
+  NEW_LINE: Token.TYPE_NEW_LINE,
+};
 
 const tokenize = input => (new Tokenizer(input).tokenize());
 

@@ -1,17 +1,3 @@
-const {
-  convertTagToText,
-  getTagName,
-  getTokenColumn,
-  getTokenLine,
-  getTokenValue,
-  isAttrNameToken,
-  isAttrValueToken,
-  isTagStart,
-  isTagToken,
-  isTextToken,
-  isTagEnd,
-} = require('./Token');
-
 const Tokenizer = require('./Tokenizer');
 const TagNode = require('./TagNode');
 
@@ -67,14 +53,16 @@ const getTagNode = () => (tagNodes.length ? tagNodes[tagNodes.length - 1] : null
 
 /**
  * @private
+ * @param {Token} token
  * @return {Array}
  */
-const createTagNode = token => tagNodes.push(newTagNode(getTokenValue(token)));
+const createTagNode = token => tagNodes.push(newTagNode(token.getValue()));
 /**
  * @private
+ * @param {Token} token
  * @return {Array}
  */
-const createTagNodeAttrName = token => tagNodesAttrName.push(getTokenValue(token));
+const createTagNodeAttrName = token => tagNodesAttrName.push(token.getValue());
 
 /**
  * @private
@@ -140,10 +128,10 @@ const isAllowedTag = (value) => {
 };
 /**
  * @private
- * @param token
+ * @param {Token} token
  */
 const handleTagStart = (token) => {
-  if (isTagStart(token)) {
+  if (token.isStart()) {
     createTagNode(token);
 
     if (isTagNested(token)) {
@@ -157,10 +145,10 @@ const handleTagStart = (token) => {
 
 /**
  * @private
- * @param token
+ * @param {Token} token
  */
 const handleTagEnd = (token) => {
-  if (isTagEnd(token)) {
+  if (token.isEnd()) {
     clearTagNode();
 
     const lastNestedNode = nestedNodes.pop();
@@ -168,9 +156,9 @@ const handleTagEnd = (token) => {
     if (lastNestedNode) {
       appendNode(lastNestedNode);
     } else if (options.onError) {
-      const tag = getTokenValue(token);
-      const line = getTokenLine(token);
-      const column = getTokenColumn(token);
+      const tag = token.getValue();
+      const line = token.getLine();
+      const column = token.getColumn();
       options.onError({
         message: `Inconsistent tag '${tag}' on line ${line} and column ${column}`,
         lineNumber: line,
@@ -182,41 +170,41 @@ const handleTagEnd = (token) => {
 
 /**
  * @private
- * @param token
+ * @param {Token} token
  */
 const handleTagToken = (token) => {
-  if (isTagToken(token)) {
-    if (isAllowedTag(getTagName(token))) {
+  if (token.isTag()) {
+    if (isAllowedTag(token.getName())) {
       // [tag]
       handleTagStart(token);
 
       // [/tag]
       handleTagEnd(token);
     } else {
-      appendNode(convertTagToText(token));
+      appendNode(token.toString());
     }
   }
 };
 
 /**
  * @private
- * @param token
+ * @param {Token} token
  */
 const handleTagNode = (token) => {
   const tagNode = getTagNode();
 
   if (tagNode) {
-    if (isAttrNameToken(token)) {
+    if (token.isAttrName()) {
       createTagNodeAttrName(token);
       tagNode.attr(getTagNodeAttrName(), null);
-    } else if (isAttrValueToken(token)) {
-      tagNode.attr(getTagNodeAttrName(), getTokenValue(token));
+    } else if (token.isAttrValue()) {
+      tagNode.attr(getTagNodeAttrName(), token.getValue());
       clearTagNodeAttrName();
-    } else if (isTextToken(token)) {
-      tagNode.append(getTokenValue(token));
+    } else if (token.isText()) {
+      tagNode.append(token.getValue());
     }
-  } else if (isTextToken(token)) {
-    appendNode(getTokenValue(token));
+  } else if (token.isText()) {
+    appendNode(token.getValue());
   }
 };
 

@@ -339,27 +339,10 @@ class Tokenizer {
   }
 
   isTokenNested(token) {
-    const value = getChar(OPEN_BRAKET) + getChar(SLASH) + Token.getTokenValue(token);
+    const value = getChar(OPEN_BRAKET) + getChar(SLASH) + token.getValue();
     return this.buffer.indexOf(value) > -1;
   }
 }
 
-new Tokenizer('[ [g]G[/g] ]').tokenize()
-
 module.exports = Tokenizer;
 module.exports.createTokenOfType = createTokenOfType;
-module.exports.TYPE = {
-  WORD: Token.TYPE_WORD,
-  TAG: Token.TYPE_TAG,
-  ATTR_NAME: Token.TYPE_ATTR_NAME,
-  ATTR_VALUE: Token.TYPE_ATTR_VALUE,
-  SPACE: Token.TYPE_SPACE,
-  NEW_LINE: Token.TYPE_NEW_LINE,
-};
-module.exports.TOKEN = {
-  TYPE_ID: Token.TYPE_ID,
-  VALUE_ID: Token.VALUE_ID,
-  LINE_ID: Token.LINE_ID,
-  COLUMN_ID: Token.COLUMN_ID,
-};
-
