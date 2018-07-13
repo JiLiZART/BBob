@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/JiLiZART/bbob/compare/@bbob/parser@1.0.10...@bbob/parser@1.1.0) (2018-07-13)
+
+
+### Features
+
+* **parser:** optimize size ([4c8dbed](https://github.com/JiLiZART/bbob/commit/4c8dbed))
+
+
+
+
 <a name="1.0.10"></a>
 ## [1.0.10](https://github.com/JiLiZART/bbob/compare/@bbob/parser@1.0.9...@bbob/parser@1.0.10) (2018-07-11)
 
