@@ -4,6 +4,7 @@ node_js:
   - 'lts/*'
 
 script:
+  - 'npm install -g codecov'
   - 'npm run bootstrap'
   - 'set -e'
   - 'npm run lint'
@@ -11,6 +12,7 @@ script:
 
 after_success:
   - 'npm run cover'
+  - 'codecov'
 
 notifications:
   email: false
