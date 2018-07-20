@@ -3,9 +3,19 @@
 
 Parses BBCode and returns AST Tree looks like
 
+## Usage
 
-`[url=]hello world![/url]`
-to
+```js
+import parse from '@bbob/parser'
+
+const options = {
+    onlyAllowTags: ['url', 'h'],
+    onError: (err) => console.warn(err.message, err.lineNumber, err.columnNumber)
+}
+const ast = parse('[url=https://github.com/JiLiZART/bbob/tree/master/packages/bbob-parser]hello world![/url]')
+```
+
+## Results 
 
 ```json
 [
