@@ -12,7 +12,7 @@ const options = {
     onlyAllowTags: ['url', 'h'],
     onError: (err) => console.warn(err.message, err.lineNumber, err.columnNumber)
 }
-const ast = parse('[url=https://github.com/JiLiZART/bbob/tree/master/packages/bbob-parser]hello world![/url]')
+const ast = parse('[url=https://github.com/JiLiZART/bbob/tree/master/packages/bbob-parser]hello world![/url]', options)
 ```
 
 ## Results 
