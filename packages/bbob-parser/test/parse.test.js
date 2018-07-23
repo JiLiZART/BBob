@@ -97,4 +97,11 @@ describe('Parser', () => {
       },
     ]);
   });
+
+  test('detect inconsistent tag', () => {
+    const onError = jest.fn();
+    const ast = parse('[c][/c][b]hello[/c][/b][b]', { onError });
+
+    expect(onError).toHaveBeenCalled();
+  })
 });
