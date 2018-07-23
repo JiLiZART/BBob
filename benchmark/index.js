@@ -35,6 +35,14 @@ suite
 
     const result = parse(stub);
   })
+  .add('BBob Parser new', () => {
+    const parse = require('../packages/bbob-parser/lib/index');
+    const createLexer = require('../packages/bbob-parser/lib/lexer');
+
+    const result = parse(stub, {
+      createTokenizer: (input) => createLexer(input)
+    });
+  })
 // add listeners
   .on('cycle', (event) => {
     console.log(String(event.target));

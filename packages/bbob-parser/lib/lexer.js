@@ -120,6 +120,4 @@ function createLexer(buffer, options = {}) {
   };
 }
 
-const TOKENS = createLexer('[ [h1]G[/h1] ]').tokenize();
-console.log(TOKENS);
 module.exports = createLexer;
