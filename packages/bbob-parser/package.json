@@ -28,10 +28,16 @@
     "dev": "../../node_modules/.bin/rollup -c -w",
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
-    "lint": "../../node_modules/.bin/eslint ."
+    "lint": "../../node_modules/.bin/eslint .",
+    "size": "../../node_modules/.bin/size-limit"
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
+  "size-limit": [
+    {
+      "path": "lib/index.js"
+    }
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
