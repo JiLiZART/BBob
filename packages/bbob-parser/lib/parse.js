@@ -1,5 +1,6 @@
 const Tokenizer = require('./Tokenizer');
 const TagNode = require('./TagNode');
+const createLexer = require('./lexer');
 
 /**
  * @private
@@ -223,7 +224,7 @@ const parseToken = (token) => {
  */
 const parse = (input, opts = {}) => {
   options = opts;
-  tokenizer = createTokenizer(input, parseToken);
+  tokenizer = (opts.createTokenizer ? opts.createTokenizer : createTokenizer)(input, parseToken);
 
   nodes = [];
   nestedNodes = [];
