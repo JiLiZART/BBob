@@ -1,6 +1,5 @@
 const Tokenizer = require('./Tokenizer');
 const TagNode = require('./TagNode');
-const createLexer = require('./lexer');
 
 /**
  * @private
