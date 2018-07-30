@@ -1,5 +1,99 @@
+const core = require('../lib');
+
+const stringify = val => JSON.stringify(val);
+
 describe('@bbob/core', () => {
-  test('1', () => {
-    expect(1).toBe(1);
+  test('parse bbcode string to ast and html', () => {
+    const res = core().process('[style size="15px"]Large Text[/style]');
+    const ast = res.tree;
+
+    expect(res.html).toBe(`<style size="15px">Large Text</style>`);
+    expect(ast).toBeInstanceOf(Array);
+    expect(stringify(ast)).toEqual(stringify([
+      {
+        tag: 'style',
+        attrs: { size: '15px' },
+        content: ["Large", " ", "Text"]
+      }
+    ]))
   });
+
+  test('plugin walk api', () => {
+    const testPlugin = () => (tree) => tree.walk(node => {
+      if (node.tag === 'mytag') {
+        node.attrs = {
+          pass: 1
+        };
+
+        node.content.push('Test');
+      }
+
+      return node
+    });
+
+    const res = core([testPlugin()]).process('[mytag size="15px"]Large Text[/mytag]');
+    const ast = res.tree;
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast.walk).toBeInstanceOf(Function);
+    expect(stringify(ast)).toEqual(stringify([
+      {
+        tag: 'mytag',
+        attrs: {
+          pass: 1
+        },
+        content: [
+          'Large',
+          ' ',
+          'Text',
+          'Test'
+        ]
+      }
+    ]));
+  });
+
+  test('plugin match api', () => {
+    const testPlugin = () => (tree) => tree.match([{ tag: 'mytag1' }, { tag: 'mytag2' }], node => {
+      if (node.attrs) {
+        node.attrs['pass'] = 1
+      }
+
+      return node
+    });
+
+    const res = core([testPlugin()]).process(`[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]`);
+    const ast = res.tree;
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast.walk).toBeInstanceOf(Function);
+    expect(stringify(ast)).toEqual(stringify([
+      {
+        tag: 'mytag1',
+        attrs: {
+          size: '15',
+          pass: 1
+        },
+        content: [
+          'Tag1'
+        ]
+      },
+      {
+        tag: 'mytag2',
+        attrs: {
+          size: '16',
+          pass: 1
+        },
+        content: [
+          'Tag2'
+        ]
+      },
+      {
+        tag: 'mytag3',
+        attrs: {},
+        content: [
+          'Tag3'
+        ]
+      }
+    ]));
+  })
 });
