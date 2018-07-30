@@ -1,2 +1,2 @@
 # bbob-html
-Converts bbob-parser AST tree to html
+> Converts bbob-parser AST tree to html
