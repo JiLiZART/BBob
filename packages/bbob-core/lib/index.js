@@ -29,7 +29,12 @@ module.exports = function bbob(plugs) {
       tree.match = match;
 
       plugins.forEach((plugin) => {
-        tree = plugin(tree) || tree;
+        tree = plugin(tree, {
+          parse: parseFn,
+          render: renderFn,
+          iterate,
+          match,
+        }) || tree;
       });
 
       return {
