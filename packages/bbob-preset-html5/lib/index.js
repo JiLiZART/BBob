@@ -46,6 +46,61 @@
 
 // [b]bolded text[/b] => <span style="font-weight: bold;">bolded text</span>
 
+const getStyleFromAttrs = (attrs) => {
+  const styles = [];
+
+  if (attrs.color) {
+    styles.push(`color:${attrs.color};`);
+  }
+
+  if (attrs.size) {
+    styles.push(`font-size:${attrs.size};`);
+  }
+
+  return styles.join(' ');
+};
+
+const asListItems = (content) => {
+  const listItems = [];
+  let listIdx = 0;
+  const createItemNode = () => ({ tag: 'li', attrs: {}, content: [] });
+  const ensureListItem = (val) => {
+    listItems[listIdx] = listItems[listIdx] || val;
+  };
+  const addItem = (val) => {
+    if (listItems[listIdx] && listItems[listIdx].content) {
+      listItems[listIdx].content = listItems[listIdx].content.concat(val);
+    } else {
+      listItems[listIdx] = listItems[listIdx].concat(val);
+    }
+  };
+  content.forEach(el => {
+    if (typeof el === 'string' && el[0] === '*') {
+      if (listItems[listIdx]) {
+        listIdx++;
+      }
+      ensureListItem(createItemNode());
+      addItem(el.substr(1));
+    } else if (typeof el === 'object' && el.tag && el.tag === '*') {
+      if (listItems[listIdx]) {
+        listIdx++;
+      }
+      ensureListItem(createItemNode());
+    } else {
+      if (listItems[listIdx] && !listItems[listIdx].tag) {
+        listIdx++;
+        ensureListItem(el);
+      } else if (listItems[listIdx]) {
+        addItem(el);
+      } else {
+        ensureListItem(el);
+      }
+    }
+  });
+
+  return [].concat(listItems);
+};
+
 const processors = {
   b: node => ({
     tag: 'span',
@@ -61,16 +116,66 @@ const processors = {
     },
     content: node.content,
   }),
+  u: node => ({
+    tag: 'span',
+    attrs: {
+      style: 'text-decoration: underline;',
+    },
+    content: node.content,
+  }),
+  s: node => ({
+    tag: 'span',
+    attrs: {
+      style: 'text-decoration: line-through;',
+    },
+    content: node.content,
+  }),
+  url: (node, { render }) => ({
+    tag: 'a',
+    attrs: {
+      href: node.attrs.url ? node.attrs.url : render(node.content),
+    },
+    content: node.content,
+  }),
+  img: (node, { render }) => ({
+    tag: 'img',
+    attrs: {
+      src: render(node.content),
+    },
+    content: null,
+  }),
+  quote: node => ({
+    tag: 'blockquote',
+    attrs: {},
+    content: [{
+      tag: 'p',
+      attrs: {},
+      content: node.content,
+    }],
+  }),
+  code: node => ({
+    tag: 'pre',
+    attrs: {},
+    content: node.content,
+  }),
+  style: node => ({
+    tag: 'span',
+    attrs: {
+      style: getStyleFromAttrs(node.attrs),
+    },
+    content: node.content,
+  }),
+  list: node => ({
+    tag: 'ul',
+    attrs: {},
+    content: asListItems(node.content),
+  }),
 };
 
 module.exports = function html5Preset(opts = {}) {
-  return function process(tree) {
-    tree.forEach((node) => {
-      if (node.tag && processors[node.tag]) {
-        return processors[node.tag](node, opts);
-      }
-
-      return node;
-    });
+  return function process(tree, core) {
+    tree.walk(node => (node.tag && processors[node.tag]
+      ? processors[node.tag](node, core)
+      : node));
   };
 };
