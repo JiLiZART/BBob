@@ -1,50 +1,10 @@
-// [b]bolded text[/b] => <span style="font-weight: bold;">bolded text</span>
-// [i]italicized text[/i] => <span style="font-style: italic;">italicized text</span>
-// [u]underlined text[/u] =>  <span style="text-decoration: underline;">underlined text</span>
-// [s]strikethrough text[/s]
-// => <span style="text-decoration: line-through;">strikethrough text</span>
-// [url]https://en.wikipedia.org[/url] => <a href="https://en.wikipedia.org">https://en.wikipedia.org</a>
-// [url=http://step.pgc.edu/]ECAT[/url] => <a href="http://step.pgc.edu/">ECAT</a>
-// [img]https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Go-home-2.svg/100px-Go-home-2.svg.png[/img]
-// => <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Go-home-2.svg/100px-Go-home-2.svg.png" />
-// [quote="author"]quoted text[/quote] => <blockquote><p>quoted text</p></blockquote>
-// [code]monospaced text[/code] => <pre>monospaced text</pre>
-// [style size="15px"]Large Text[/style] => <span style="font-size:15px">Large Text</span>
-// [style color="red"]Red Text[/style] => <span style="color:red;">Red Text</span>
+/* eslint-disable no-plusplus,no-lonely-if */
+const isStringNode = node => (typeof node === 'string');
+const isStartsWith = (node, type) => (node[0] === type);
 
-/**
- [list]
- [*]Entry 1
- [*]Entry 2
- [/list]
-
- [list]
- *Entry 1
- *Entry 2
- [/list]
-
- => <ul><li>Entry 1</li><li>Entry 2</li></ul>
-
- */
-
-/**
- [table]
- [tr]
- [td]table 1[/td]
- [td]table 2[/td]
- [/tr]
- [tr]
- [td]table 3[/td]
- [td]table 4[/td]
- [/tr]
- [/table]
- => <table>
- <tr><td>table 1</td><td>table 2</td></tr>
- <tr><td>table 3</td><td>table 4</td></tr>
- </table>
- */
-
-// [b]bolded text[/b] => <span style="font-weight: bold;">bolded text</span>
+const isTagNode = node => (typeof node === 'object' && Boolean(node.tag));
+const isTagOf = (node, type) => (node.tag === type);
+const createTagNode = tag => ({ tag, attrs: {}, content: [] });
 
 const getStyleFromAttrs = (attrs) => {
   const styles = [];
@@ -63,7 +23,7 @@ const getStyleFromAttrs = (attrs) => {
 const asListItems = (content) => {
   const listItems = [];
   let listIdx = 0;
-  const createItemNode = () => ({ tag: 'li', attrs: {}, content: [] });
+  const createItemNode = () => createTagNode('li');
   const ensureListItem = (val) => {
     listItems[listIdx] = listItems[listIdx] || val;
   };
@@ -74,20 +34,20 @@ const asListItems = (content) => {
       listItems[listIdx] = listItems[listIdx].concat(val);
     }
   };
-  content.forEach(el => {
-    if (typeof el === 'string' && el[0] === '*') {
+  content.forEach((el) => {
+    if (isStringNode(el) && isStartsWith(el, '*')) {
       if (listItems[listIdx]) {
         listIdx++;
       }
       ensureListItem(createItemNode());
       addItem(el.substr(1));
-    } else if (typeof el === 'object' && el.tag && el.tag === '*') {
+    } else if (isTagNode(el) && isTagOf(el, '*')) {
       if (listItems[listIdx]) {
         listIdx++;
       }
       ensureListItem(createItemNode());
     } else {
-      if (listItems[listIdx] && !listItems[listIdx].tag) {
+      if (!isTagNode(listItems[listIdx])) {
         listIdx++;
         ensureListItem(el);
       } else if (listItems[listIdx]) {
@@ -101,7 +61,7 @@ const asListItems = (content) => {
   return [].concat(listItems);
 };
 
-const processors = {
+const defaultProcessors = {
   b: node => ({
     tag: 'span',
     attrs: {
@@ -173,8 +133,10 @@ const processors = {
 };
 
 module.exports = function html5Preset(opts = {}) {
+  const processors = Object.assign({}, defaultProcessors, opts.processors || {});
+
   return function process(tree, core) {
-    tree.walk(node => (node.tag && processors[node.tag]
+    tree.walk(node => (isTagNode(node) && processors[node.tag]
       ? processors[node.tag](node, core)
       : node));
   };
