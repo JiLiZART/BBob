@@ -3,7 +3,7 @@ const {
   OPEN_BRAKET,
   CLOSE_BRAKET,
   SLASH,
-} = require('./char');
+} = require('@bbob/plugin-helper/lib/char');
 
 // type, value, line, row,
 const TOKEN_TYPE_ID = 'type'; // 0;

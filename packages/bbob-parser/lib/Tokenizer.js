@@ -5,7 +5,7 @@ const {
   PLACEHOLDER_SPACE, PLACEHOLDER_SPACE_TAB,
   SLASH,
   BACKSLASH,
-} = require('./char');
+} = require('@bbob/plugin-helper/lib/char');
 const Token = require('./Token');
 
 const createTokenOfType = (type, value, line, row) => new Token(type, value, line, row);

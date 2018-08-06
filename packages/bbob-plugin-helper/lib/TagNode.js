@@ -1,25 +1,7 @@
 const {
-  getChar, N, CLOSE_BRAKET, OPEN_BRAKET, SLASH,
+  getChar, OPEN_BRAKET, CLOSE_BRAKET, SLASH,
 } = require('./char');
-
-const EOL = getChar(N);
-const isNode = el => typeof el === 'object' && el.tag;
-const isStringNode = el => typeof el === 'string';
-const isEOL = el => el === EOL;
-
-const getNodeLength = (node) => {
-  if (isNode(node)) {
-    return node.content.reduce((count, contentNode) => count + getNodeLength(contentNode), 0);
-  } else if (isStringNode(node)) {
-    return node.length;
-  }
-
-  return 0;
-};
-
-const appendToNode = (node, value) => {
-  node.content.push(value);
-};
+const { getNodeLength, appendToNode } = require('./index');
 
 class TagNode {
   constructor(tag, attrs, content) {
@@ -53,7 +35,5 @@ class TagNode {
 }
 
 module.exports = TagNode;
-module.exports.isNode = isNode;
-module.exports.isStringNode = isStringNode;
-module.exports.isEOL = isEOL;
-module.exports.appendToNode = appendToNode;
+module.exports.create = (tag, attrs = {}, content = []) => new TagNode(tag, attrs, content);
+module.exports.isOf = (node, type) => (node.tag === type);

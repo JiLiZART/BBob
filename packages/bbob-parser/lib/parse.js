@@ -1,5 +1,5 @@
 const Tokenizer = require('./Tokenizer');
-const TagNode = require('./TagNode');
+const TagNode = require('@bbob/plugin-helper/lib/TagNode');
 
 /**
  * @private
@@ -28,14 +28,6 @@ let tokenizer = null;
 // eslint-disable-next-line no-unused-vars
 let tokens = null;
 
-/**
- *
- * @param tag
- * @param attrs
- * @param content
- */
-const newTagNode = (tag, attrs = {}, content = []) => new TagNode(tag, attrs, content);
-
 const createTokenizer = (input, onToken) => new Tokenizer(input, { onToken });
 
 /**
@@ -56,7 +48,7 @@ const getTagNode = () => (tagNodes.length ? tagNodes[tagNodes.length - 1] : null
  * @param {Token} token
  * @return {Array}
  */
-const createTagNode = token => tagNodes.push(newTagNode(token.getValue()));
+const createTagNode = token => tagNodes.push(TagNode.create(token.getValue()));
 /**
  * @private
  * @param {Token} token
