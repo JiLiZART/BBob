@@ -6,19 +6,16 @@ const isTagNode = node => (typeof node === 'object' && Boolean(node.tag));
 const isTagOf = (node, type) => (node.tag === type);
 const createTagNode = tag => ({ tag, attrs: {}, content: [] });
 
-const getStyleFromAttrs = (attrs) => {
-  const styles = [];
-
-  if (attrs.color) {
-    styles.push(`color:${attrs.color};`);
-  }
-
-  if (attrs.size) {
-    styles.push(`font-size:${attrs.size};`);
-  }
-
-  return styles.join(' ');
+const styleMap = {
+  color: val => `color:${val};`,
+  size: val => `font-size:${val};`,
 };
+
+const getStyleFromAttrs = attrs =>
+  Object
+    .keys(attrs)
+    .reduce((acc, key) => (styleMap[key] ? acc.concat(styleMap[key](attrs[key])) : acc), [])
+    .join(' ');
 
 const asListItems = (content) => {
   const listItems = [];
