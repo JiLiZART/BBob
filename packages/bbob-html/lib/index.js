@@ -3,16 +3,16 @@ function escapeQuote(value) {
 }
 
 function attrValue(name, value) {
-  if (typeof value === 'boolean' && value) {
-    return `${name}`;
-  } else if (typeof value === 'number') {
-    return `${name}="${value}"`;
-  } else if (typeof value === 'string') {
-    return `${name}="${escapeQuote(value)}"`;
-  } else if (typeof value === 'object') {
-    return `${name}="${escapeQuote(JSON.stringify(value))}"`;
-  }
-  return '';
+  const type = typeof value;
+
+  const types = {
+    boolean: () => (value ? `${name}` : ''),
+    number: () => `${name}="${value}"`,
+    string: () => `${name}="${escapeQuote(value)}"`,
+    object: () => `${name}="${escapeQuote(JSON.stringify(value))}"`,
+  };
+
+  return types[type] ? types[type]() : '';
 }
 
 /**
@@ -24,14 +24,24 @@ const attrs = values =>
     .reduce((arr, key) => [...arr, attrValue(key, values[key])], [''])
     .join(' ');
 
-const renderNode = (node) => {
+const renderNode = (node, { stripTags = false }) => {
   if (!node) return '';
+  const type = typeof node;
 
-  if (typeof node === 'string' || typeof node === 'number') {
+  if (type === 'string' || type === 'number') {
     return node;
   }
 
-  if (typeof node === 'object') {
+  if (type === 'object') {
+    if (stripTags === true) {
+      // eslint-disable-next-line no-use-before-define
+      return renderNodes(node.content);
+    }
+
+    if (node.content === null) {
+      return `<${node.tag}${attrs(node.attrs)} />`;
+    }
+
     // eslint-disable-next-line no-use-before-define
     return `<${node.tag}${attrs(node.attrs)}>${renderNodes(node.content)}</${node.tag}>`;
   }
@@ -44,6 +54,8 @@ const renderNode = (node) => {
   return '';
 };
 
-const renderNodes = nodes => [].concat(nodes).reduce((r, node) => r + renderNode(node), '');
+const renderNodes = (nodes, { stripTags = false } = {}) => []
+  .concat(nodes)
+  .reduce((r, node) => r + renderNode(node, { stripTags }), '');
 
 module.exports = renderNodes;
