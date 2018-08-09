@@ -1,7 +1,7 @@
 const render = require('../lib/index');
 const parse = require('@bbob/parser');
 
-const process = input => render(parse(input));
+const process = (input, params) => render(parse(input), params);
 
 describe('@bbob/html', () => {
   test('render bbcode tag with single param as html tag', () => {
@@ -23,5 +23,21 @@ describe('@bbob/html', () => {
     const result = '<url>https://ru.wikipedia.org</url>';
 
     expect(process(input)).toBe(result);
+  });
+
+  test('strip tags', () => {
+    const input = '[url]https://ru.wikipedia.org[/url]';
+    const result = 'https://ru.wikipedia.org';
+
+    expect(process(input, { stripTags: true })).toBe(result);
+  });
+
+  test('array of nodes', () => {
+    const input = [
+      'https://ru.wikipedia.org'
+    ];
+    const result = 'https://ru.wikipedia.org';
+
+    expect(render(input)).toBe(result);
   });
 });

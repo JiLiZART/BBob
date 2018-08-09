@@ -20,7 +20,7 @@ const renderNode = (node, { stripTags = false }) => {
   if (type === 'object') {
     if (stripTags === true) {
       // eslint-disable-next-line no-use-before-define
-      return renderNodes(node.content);
+      return renderNodes(node.content, { stripTags });
     }
 
     if (node.content === null) {
@@ -33,7 +33,7 @@ const renderNode = (node, { stripTags = false }) => {
 
   if (Array.isArray(node)) {
     // eslint-disable-next-line no-use-before-define
-    return renderNodes(node);
+    return renderNodes(node, { stripTags });
   }
 
   return '';
