@@ -3,33 +3,21 @@ const PropTypes = require('prop-types');
 const core = require('@bbob/core');
 const render = require('./render');
 
-class Component extends React.Component {
-  content() {
-    return React.Children.map(this.props.children, (child) => {
-      if (typeof child === 'string') {
-        // eslint-disable-next-line react/no-danger
-        return render(this.renderBBCodeToAST(child));
-      }
-      return child;
-    });
-  }
+const toAST = (source, plugins) => core(plugins).process(source).tree;
 
-  renderBBCodeToAST(source) {
-    return core(this.props.plugins).process(source).tree;
-  }
+const content = (children, plugins) => React.Children.map(children, child =>
+  (typeof child === 'string' ? render(toAST(child, plugins)) : child));
 
-  render() {
-    const Container = this.props.container;
+const Component = props =>
+  React.createElement(props.container, {}, content(props.children, props.plugins));
 
-    return (<Container>{this.content()}</Container>);
-  }
+if (process.env.NODE_ENV !== 'production') {
+  Component.propTypes = {
+    container: PropTypes.node,
+    children: PropTypes.node.isRequired,
+    plugins: PropTypes.arrayOf(Function),
+  };
 }
-
-Component.propTypes = {
-  container: PropTypes.node,
-  children: PropTypes.node.isRequired,
-  plugins: PropTypes.arrayOf(Function),
-};
 
 Component.defaultProps = {
   container: 'span',
