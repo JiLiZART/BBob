@@ -1,19 +1,4 @@
-function escapeQuote(value) {
-  return value.replace(/"/g, '&quot;');
-}
-
-function attrValue(name, value) {
-  const type = typeof value;
-
-  const types = {
-    boolean: () => (value ? `${name}` : ''),
-    number: () => `${name}="${value}"`,
-    string: () => `${name}="${escapeQuote(value)}"`,
-    object: () => `${name}="${escapeQuote(JSON.stringify(value))}"`,
-  };
-
-  return types[type] ? types[type]() : '';
-}
+const { attrValue } = require('@bbob/plugin-helper');
 
 /**
  * Transforms attrs to html params string

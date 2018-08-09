@@ -2,7 +2,23 @@
   "name": "@bbob/react",
   "version": "1.0.7",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JiLiZART/bbob.git"
+  },
+  "keywords": [
+    "bbob",
+    "react",
+    "helper"
+  ],
+  "bugs": {
+    "url": "https://github.com/JiLiZART/bbob/issues"
+  },
+  "homepage": "https://github.com/JiLiZART/bbob#readme",
   "scripts": {
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
@@ -14,11 +30,20 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@bbob/html": "^1.0.7",
-    "prop-types": "^15.6.1",
-    "react": "^15.6.2"
+    "@bbob/core": "^1.x",
+    "@bbob/plugin-helper": "^1.x",
+    "@bbob/preset-html5": "^1.0.5",
+    "prop-types": "^15.6.1"
   },
   "peerDependencies": {
     "react": "15.x"
+  },
+  "devDependencies": {
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.4.0",
+    "enzyme-adapter-react-15": "^1.0.6",
+    "react": "15.x",
+    "react-dom": "^15.6.2",
+    "react-test-renderer": "^15.6.2"
   }
 }

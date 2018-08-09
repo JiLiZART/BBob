@@ -3,6 +3,9 @@
   "version": "1.0.7",
   "description": "HTML renderer for BBCode pareser BBob",
   "main": "lib/index.js",
+  "dependencies": {
+    "@bbob/plugin-helper": "^1.0.0"
+  },
   "devDependencies": {
     "@bbob/parser": "^1.1.0"
   },

@@ -29,8 +29,9 @@ class TagNode {
   toString() {
     const OB = getChar(OPEN_BRAKET);
     const CB = getChar(CLOSE_BRAKET);
+    const SL = getChar(SLASH);
 
-    return OB + this.tag + CB + this.content.reduce((r, node) => r + node.toString(), '') + OB + getChar(SLASH) + this.tag + CB;
+    return OB + this.tag + CB + this.content.reduce((r, node) => r + node.toString(), '') + OB + SL + this.tag + CB;
   }
 }
 
