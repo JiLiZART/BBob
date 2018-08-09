@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "@bbob/html": "^1.0.7",
-    "@bbob/parser": "^1.1.0",
-    "@bbob/preset-html5": "^1.0.6"
+    "@bbob/parser": "^1.1.0"
+  },
+  "peerDependencies": {
+    "@bbob/preset-html5": "^1.x"
   },
   "repository": {
     "type": "git",

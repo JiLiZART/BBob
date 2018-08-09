@@ -10,7 +10,8 @@
     "lib": "lib"
   },
   "dependencies": {
-    "@bbob/parser": "^1.1.0",
+    "@bbob/core": "^1.x",
+    "@bbob/preset-html5": "^1.x",
     "commander": "^2.15.1"
   },
   "repository": {
