@@ -1,6 +1,6 @@
 {
   "name": "@bbob/react",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "",
   "main": "lib/index.js",
   "directories": {
@@ -30,9 +30,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@bbob/core": "^1.x",
-    "@bbob/plugin-helper": "^1.x",
-    "@bbob/preset-html5": "^1.0.5",
+    "@bbob/core": "^1.1.0",
+    "@bbob/plugin-helper": "^1.1.0",
+    "@bbob/preset-html5": "^1.1.0",
     "prop-types": "^15.6.1"
   },
   "peerDependencies": {

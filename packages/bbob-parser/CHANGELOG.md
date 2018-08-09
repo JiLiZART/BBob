@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/JiLiZART/bbob/compare/@bbob/parser@1.1.0...@bbob/parser@1.2.0) (2018-08-09)
+
+
+### Bug Fixes
+
+* **parser:** remove bad code ([4d9dc34](https://github.com/JiLiZART/bbob/commit/4d9dc34))
+
+
+### Features
+
+* **parser:** add support for custom tokenizer ([ce03b2f](https://github.com/JiLiZART/bbob/commit/ce03b2f))
+* **parser:** inconsistent tag detection test ([2eb83c1](https://github.com/JiLiZART/bbob/commit/2eb83c1))
+
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/JiLiZART/bbob/compare/@bbob/parser@1.0.10...@bbob/parser@1.1.0) (2018-07-13)
 
