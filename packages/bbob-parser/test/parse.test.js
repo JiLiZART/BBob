@@ -61,7 +61,7 @@ describe('Parser', () => {
           content: []
         },
         ' ',
-        '/h1',
+        '/h1]',
       ]
     );
   });

@@ -1,4 +1,4 @@
-const Tokenizer = require('./Tokenizer');
+const createLexer = require('./lexer');
 const TagNode = require('@bbob/plugin-helper/lib/TagNode');
 
 /**
@@ -28,7 +28,7 @@ let tokenizer = null;
 // eslint-disable-next-line no-unused-vars
 let tokens = null;
 
-const createTokenizer = (input, onToken) => new Tokenizer(input, { onToken });
+const createTokenizer = (input, onToken) => createLexer(input, { onToken });
 
 /**
  * @private
