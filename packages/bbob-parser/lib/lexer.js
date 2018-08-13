@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus,no-param-reassign */
 const c = require('@bbob/plugin-helper/lib/char');
 const Token = require('./Token');
 
@@ -89,7 +90,7 @@ function createLexer(buffer, options = {}) {
 
     const attrTokens = [];
     const attrGrabber = createGrabber(str);
-    const validAttr = val => {
+    const validAttr = (val) => {
       const isEQ = val === EQ;
       const isWS = isWhiteSpace(val);
       const isPrevSLASH = attrGrabber.prevChar() === SLASH;
@@ -119,9 +120,10 @@ function createLexer(buffer, options = {}) {
       if (tagName === null) {
         tagName = attrStr;
       } else if (isWS || !hasNext) {
-        attrTokens.push(createToken(Token.TYPE_ATTR_VALUE, unquote(trimChar(attrStr, QUOTEMARK))));
+        const escaped = unquote(trimChar(attrStr, QUOTEMARK));
+        attrTokens.push(createToken(Token.TYPE_ATTR_VALUE, escaped, row, col));
       } else {
-        attrTokens.push(createToken(Token.TYPE_ATTR_NAME, attrStr));
+        attrTokens.push(createToken(Token.TYPE_ATTR_NAME, attrStr, row, col));
       }
 
       attrGrabber.skipChar();
@@ -145,16 +147,16 @@ function createLexer(buffer, options = {}) {
       col = 0;
       row++;
 
-      emitToken(createToken(Token.TYPE_NEW_LINE, char));
+      emitToken(createToken(Token.TYPE_NEW_LINE, char, row, col));
     } else if (isWhiteSpace(char)) {
       const str = grabber.grabUntil(isWhiteSpace);
-      emitToken(createToken(Token.TYPE_SPACE, str));
+      emitToken(createToken(Token.TYPE_SPACE, str, row, col));
     } else if (char === OPEN_BRAKET) {
       const nextChar = grabber.nextChar();
       grabber.skipChar(); // skip [
 
       if (isCharReserved(nextChar)) {
-        emitToken(createToken(Token.TYPE_WORD, char));
+        emitToken(createToken(Token.TYPE_WORD, char, row, col));
       } else {
         const str = grabber.grabUntil(val => val !== CLOSE_BRAKET);
         const hasAttrs = str.indexOf(EQ) > 0;
@@ -163,22 +165,22 @@ function createLexer(buffer, options = {}) {
         grabber.skipChar(); // skip [
 
         if (!hasAttrs || isCloseTag) {
-          emitToken(createToken(Token.TYPE_TAG, str));
+          emitToken(createToken(Token.TYPE_TAG, str, row, col));
         } else {
           const parsed = parseAttrs(str);
 
-          emitToken(createToken(Token.TYPE_TAG, parsed.tag));
+          emitToken(createToken(Token.TYPE_TAG, parsed.tag, row, col));
           parsed.attrs.map(emitToken);
         }
       }
     } else if (char === CLOSE_BRAKET) {
       grabber.skipChar();
 
-      emitToken(createToken(Token.TYPE_WORD, char));
+      emitToken(createToken(Token.TYPE_WORD, char, row, col));
     } else if (isCharToken(char)) {
       const str = grabber.grabUntil(isCharToken);
 
-      emitToken(createToken(Token.TYPE_WORD, str));
+      emitToken(createToken(Token.TYPE_WORD, str, row, col));
     }
   };
 
