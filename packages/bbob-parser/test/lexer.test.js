@@ -1,5 +1,5 @@
-const Tokenizer = require('../lib/Tokenizer');
 const Token = require('../lib/Token');
+const lexer = require('../lib/lexer');
 
 const TYPE = {
   WORD: Token.TYPE_WORD,
@@ -10,14 +10,15 @@ const TYPE = {
   NEW_LINE: Token.TYPE_NEW_LINE,
 };
 
-const tokenize = input => (new Tokenizer(input).tokenize());
+const tokenize = input => (lexer(input).tokenize());
 
-describe('Tokenizer', () => {
+describe('lexer', () => {
   const expectOutput = (output, tokens) => {
     expect(tokens).toBeInstanceOf(Array);
     output.forEach((token, idx) => {
       expect(tokens[idx]).toBeInstanceOf(Object);
-      expect(tokens[idx]).toEqual(Tokenizer.createTokenOfType(...token));
+      expect(tokens[idx].type).toEqual(token[0]);
+      expect(tokens[idx].value).toEqual(token[1]);
     });
   };
 
@@ -92,12 +93,14 @@ describe('Tokenizer', () => {
   });
 
   test('tokenize tag with quotemark params with spaces', () => {
-    const input = '[url text="Foo Bar"]Text[/url]';
+    const input = '[url text="Foo Bar" text2="Foo Bar 2"]Text[/url]';
     const tokens = tokenize(input);
     const output = [
       [TYPE.TAG, 'url', '0', '0'],
       [TYPE.ATTR_NAME, 'text', '4', '0'],
       [TYPE.ATTR_VALUE, 'Foo Bar', '9', '0'],
+      [TYPE.ATTR_NAME, 'text2', '4', '0'],
+      [TYPE.ATTR_VALUE, 'Foo Bar 2', '9', '0'],
       [TYPE.WORD, 'Text', '20', '0'],
       [TYPE.TAG, '/url', '24', '0'],
     ];
@@ -144,27 +147,21 @@ describe('Tokenizer', () => {
     const output = [
       [TYPE.TAG, 'list', '0', '0'],
       [TYPE.NEW_LINE, '\n', '6', '0'],
-      [TYPE.SPACE, ' ', '0', '1'],
-      [TYPE.SPACE, ' ', '1', '1'],
-      [TYPE.SPACE, ' ', '2', '1'],
+      [TYPE.SPACE, '   ', '0', '1'],
       [TYPE.TAG, '*', '3', '1'],
       [TYPE.SPACE, ' ', '6', '1'],
       [TYPE.WORD, 'Item', '7', '1'],
       [TYPE.SPACE, ' ', '11', '1'],
       [TYPE.WORD, '1.', '11', '1'],
       [TYPE.NEW_LINE, '\n', '14', '1'],
-      [TYPE.SPACE, ' ', '0', '2'],
-      [TYPE.SPACE, ' ', '1', '2'],
-      [TYPE.SPACE, ' ', '2', '2'],
+      [TYPE.SPACE, '   ', '0', '2'],
       [TYPE.TAG, '*', '3', '2'],
       [TYPE.SPACE, ' ', '6', '2'],
       [TYPE.WORD, 'Item', '14', '1'],
       [TYPE.SPACE, ' ', '11', '2'],
       [TYPE.WORD, '2.', '11', '2'],
       [TYPE.NEW_LINE, '\n', '14', '2'],
-      [TYPE.SPACE, ' ', '0', '3'],
-      [TYPE.SPACE, ' ', '1', '3'],
-      [TYPE.SPACE, ' ', '2', '3'],
+      [TYPE.SPACE, '   ', '0', '3'],
       [TYPE.TAG, '*', '3', '3'],
       [TYPE.SPACE, ' ', '6', '3'],
       [TYPE.WORD, 'Item', '14', '2'],
@@ -185,16 +182,24 @@ describe('Tokenizer', () => {
       'x html([a. title][, alt][, classes]) x',
       '[/y]',
       '[sc',
-      // '[sc / [/sc]',
-      // '[sc arg="val',
+      '[sc / [/sc]',
+      '[sc arg="val',
     ];
 
     const asserts = [
-      [[TYPE.WORD, '[]', '0', '0']],
-      [[TYPE.WORD, '[=]', '0', '0']],
+      [
+        [TYPE.WORD, '[', '0', '0'],
+        [TYPE.WORD, ']', '0', '0']
+      ],
+      [
+        [TYPE.WORD, '[', '0', '0'],
+        [TYPE.WORD, '=]', '0', '0']
+      ],
       [
         [TYPE.WORD, '!', '0', '0'],
-        [TYPE.WORD, '[](image.jpg)', '1', '0'],
+        [TYPE.WORD, '[', '1', '0'],
+        [TYPE.WORD, ']', '1', '0'],
+        [TYPE.WORD, '(image.jpg)', '1', '0'],
       ],
       [
         [TYPE.WORD, 'x', '0', '0'],
@@ -207,15 +212,20 @@ describe('Tokenizer', () => {
         [TYPE.SPACE, ' ', '36', '0'],
         [TYPE.WORD, 'x', '36', '0'],
       ],
-      [[TYPE.TAG, '/y', '0', '0']],
-      [[TYPE.WORD, '[sc', '0', '0']],
-      // [
-      //   [TYPE.WORD, '[sc', '0', '0'],
-      //   [TYPE.SPACE, ' ', '0', '0'],
-      //   [TYPE.WORD, '/', '0', '0'],
-      //   [TYPE.SPACE, ' ', '0', '0'],
-      //   [TYPE.WORD, '[/sc]', '0', '0'],
-      // ],
+      [
+        [TYPE.TAG, '/y', '0', '0']
+      ],
+      [
+        [TYPE.TAG, 'sc', '0', '0']
+      ],
+      [
+        [TYPE.TAG, 'sc / [/sc', '0', '0']
+      ],
+      [
+        [TYPE.TAG, 'sc', '0', '0'],
+        [TYPE.ATTR_NAME, 'arg', '0', '0'],
+        [TYPE.ATTR_VALUE, 'val', '0', '0']
+      ]
     ];
 
     inputs.forEach((input, idx) => {
