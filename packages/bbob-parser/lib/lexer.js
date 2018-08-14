@@ -66,13 +66,15 @@ function createLexer(buffer, options = {}) {
   let row = 0;
   let col = 0;
 
-  const tokens = [];
+  let tokenIndex = -1;
+  const tokens = new Array(Math.floor(buffer.length));
   const emitToken = (token) => {
     if (options.onToken) {
       options.onToken(token);
     }
 
-    tokens.push(token);
+    tokenIndex += 1;
+    tokens[tokenIndex] = token;
   };
 
   const parseAttrs = (str) => {
@@ -172,6 +174,8 @@ function createLexer(buffer, options = {}) {
     while (grabber.hasNext()) {
       next();
     }
+
+    tokens.length = tokenIndex + 1;
 
     return tokens;
   };
