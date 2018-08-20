@@ -5,7 +5,15 @@
 
 Valid for use with [posthtml-render](https://github.com/posthtml/posthtml-render)
 
+## Install
+
+```bash
+npm i @bbob/parser
+```
+
 ## Usage
+
+### API
 
 ```js
 import parse from '@bbob/parser'
@@ -17,7 +25,7 @@ const options = {
 const ast = parse('[url=https://github.com]hello world![/url]', options)
 ```
 
-## Results 
+**Results to** 
 
 ```json
 [
@@ -29,4 +37,18 @@ const ast = parse('[url=https://github.com]hello world![/url]', options)
         "content": ["hello", " ", "world!"]
     }
 ]
+```
+
+### PostHTML
+
+```js
+import render from 'posthtml-render'
+import parse from '@bbob/parser'
+
+const options = {
+    onlyAllowTags: ['url', 'h'],
+    onError: (err) => console.warn(err.message, err.lineNumber, err.columnNumber)
+}
+const ast = parse('[url=https://github.com]hello world![/url]', options)
+const html = render(ast) // <url url="https://github.com">hello world!</url>
 ```
