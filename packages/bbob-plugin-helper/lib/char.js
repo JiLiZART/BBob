@@ -1,36 +1,36 @@
-const N = '\n'.charCodeAt(0);
-const TAB = '\t'.charCodeAt(0);
-const F = '\f'.charCodeAt(0);
-const R = '\r'.charCodeAt(0);
+'use strict';
 
-const EQ = '='.charCodeAt(0);
-const QUOTEMARK = '"'.charCodeAt(0);
-const SPACE = ' '.charCodeAt(0);
+exports.__esModule = true;
+var N = '\n';
+var TAB = '\t';
+var F = '\f';
+var R = '\r';
 
-const OPEN_BRAKET = '['.charCodeAt(0);
-const CLOSE_BRAKET = ']'.charCodeAt(0);
+var EQ = '=';
+var QUOTEMARK = '"';
+var SPACE = ' ';
 
-const SLASH = '/'.charCodeAt(0);
-const BACKSLASH = '\\'.charCodeAt(0);
+var OPEN_BRAKET = '[';
+var CLOSE_BRAKET = ']';
 
-const PLACEHOLDER_SPACE_TAB = '    ';
-const PLACEHOLDER_SPACE = ' ';
+var SLASH = '/';
+var BACKSLASH = '\\';
 
-const getChar = String.fromCharCode;
+var PLACEHOLDER_SPACE_TAB = '    ';
+var PLACEHOLDER_SPACE = ' ';
 
-module.exports = {
-  getChar,
-  N,
-  F,
-  R,
-  TAB,
-  EQ,
-  QUOTEMARK,
-  SPACE,
-  OPEN_BRAKET,
-  CLOSE_BRAKET,
-  SLASH,
-  PLACEHOLDER_SPACE_TAB,
-  PLACEHOLDER_SPACE,
-  BACKSLASH,
-};
+// const getChar = String.fromCharCode;
+
+exports.N = N;
+exports.F = F;
+exports.R = R;
+exports.TAB = TAB;
+exports.EQ = EQ;
+exports.QUOTEMARK = QUOTEMARK;
+exports.SPACE = SPACE;
+exports.OPEN_BRAKET = OPEN_BRAKET;
+exports.CLOSE_BRAKET = CLOSE_BRAKET;
+exports.SLASH = SLASH;
+exports.PLACEHOLDER_SPACE_TAB = PLACEHOLDER_SPACE_TAB;
+exports.PLACEHOLDER_SPACE = PLACEHOLDER_SPACE;
+exports.BACKSLASH = BACKSLASH;

@@ -1,24 +1,42 @@
-/* eslint-disable indent */
-const { isTagNode } = require('@bbob/plugin-helper');
-const defaultTags = require('./default');
+'use strict';
 
+exports.__esModule = true;
+
+var _pluginHelper = require('@bbob/plugin-helper');
+
+var _defaultTags = require('./defaultTags');
+
+var _defaultTags2 = _interopRequireDefault(_defaultTags);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* eslint-disable indent */
 function process(tags, tree, core) {
-  tree.walk(node => (isTagNode(node) && tags[node.tag]
-      ? tags[node.tag](node, core)
-      : node));
+  tree.walk(function (node) {
+    return (0, _pluginHelper.isTagNode)(node) && tags[node.tag] ? tags[node.tag](node, core) : node;
+  });
 }
 
-function html5Preset(opts = {}) {
-  const tags = Object.assign({}, defaultTags, opts.tags || {});
+function html5Preset() {
+  var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-  return (tree, core) => process(tags, tree, core);
+  var tags = Object.assign({}, _defaultTags2.default, opts.tags || {});
+
+  return function (tree, core) {
+    return process(tags, tree, core);
+  };
 }
 
 function extend(callback) {
-  const tags = callback(defaultTags);
+  var tags = callback(_defaultTags2.default);
 
-  return () => (tree, core) => process(tags, tree, core);
+  return function () {
+    return function (tree, core) {
+      return process(tags, tree, core);
+    };
+  };
 }
 
-module.exports = html5Preset;
-module.exports.extend = extend;
+html5Preset.extend = extend;
+
+exports.default = html5Preset;

@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus,no-lonely-if */
-const { isStringNode, isTagNode } = require('@bbob/plugin-helper');
-const TagNode = require('@bbob/plugin-helper/lib/TagNode');
+import { isStringNode, isTagNode } from '@bbob/plugin-helper';
+import TagNode from '@bbob/plugin-helper/lib/TagNode';
 
 const isStartsWith = (node, type) => (node[0] === type);
 
@@ -56,7 +56,7 @@ const asListItems = (content) => {
   return [].concat(listItems);
 };
 
-module.exports = {
+export default {
   b: node => ({
     tag: 'span',
     attrs: {

@@ -1,3 +1,4 @@
 dist
+es
+lib
 test
-rollup.config.js

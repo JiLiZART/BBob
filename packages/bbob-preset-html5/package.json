@@ -2,20 +2,6 @@
   "name": "@bbob/preset-html5",
   "version": "1.1.0",
   "description": "HTML5 Preset to transform BBCode to HTML",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "dependencies": {
-    "@bbob/plugin-helper": "^1.1.0"
-  },
-  "devDependencies": {
-    "@bbob/core": "^1.1.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JiLiZART/bbob.git"
-  },
   "keywords": [
     "bbcode",
     "preset",
@@ -23,18 +9,51 @@
     "bbode",
     "transform"
   ],
+  "dependencies": {
+    "@bbob/plugin-helper": "^1.1.0",
+    "@bbob/preset": "^1.1.0"
+  },
+  "devDependencies": {
+    "@bbob/core": "^1.1.0",
+    "@bbob/html": "^1.1.0"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "browser": "dist/index.js",
+  "browserName": "BbobPresetHTML5",
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/JiLiZART/bbob/issues"
   },
-  "homepage": "https://github.com/JiLiZART/bbob#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
   "scripts": {
+    "build:commonjs": "../../node_modules/.bin/cross-env BABEL_ENV=commonjs ../../node_modules/.bin/babel src --out-dir lib",
+    "build:es": "../../node_modules/.bin/cross-env BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es",
+    "build:umd": "../../node_modules/.bin/cross-env BABEL_ENV=rollup NODE_ENV=development ../../node_modules/.bin/rollup --config ../../rollup.config.js",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
-    "lint": "../../node_modules/.bin/eslint ."
+    "lint": "../../node_modules/.bin/eslint .",
+    "size": "../../node_modules/.bin/size-limit"
   },
-  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
-  "license": "MIT",
+  "size-limit": [
+    {
+      "path": "lib/index.js"
+    }
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es"
+  ]
 }

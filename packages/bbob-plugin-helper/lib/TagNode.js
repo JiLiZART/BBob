@@ -1,40 +1,64 @@
-const {
-  getChar, OPEN_BRAKET, CLOSE_BRAKET, SLASH,
-} = require('./char');
-const { getNodeLength, appendToNode } = require('./index');
+'use strict';
 
-class TagNode {
-  constructor(tag, attrs, content) {
+exports.__esModule = true;
+exports.TagNode = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _char = require('./char');
+
+var _index = require('./index');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TagNode = function () {
+  function TagNode(tag, attrs, content) {
+    _classCallCheck(this, TagNode);
+
     this.tag = tag;
     this.attrs = attrs;
     this.content = content;
   }
 
-  attr(name, value) {
+  TagNode.prototype.attr = function attr(name, value) {
     if (typeof value !== 'undefined') {
       this.attrs[name] = value;
     }
 
     return this.attrs[name];
-  }
+  };
 
-  append(value) {
-    return appendToNode(this, value);
-  }
+  TagNode.prototype.append = function append(value) {
+    return (0, _index.appendToNode)(this, value);
+  };
 
-  get length() {
-    return getNodeLength(this);
-  }
+  TagNode.prototype.toString = function toString() {
+    var OB = _char.OPEN_BRAKET;
+    var CB = _char.CLOSE_BRAKET;
 
-  toString() {
-    const OB = getChar(OPEN_BRAKET);
-    const CB = getChar(CLOSE_BRAKET);
-    const SL = getChar(SLASH);
+    return OB + this.tag + CB + this.content.reduce(function (r, node) {
+      return r + node.toString();
+    }, '') + OB + _char.SLASH + this.tag + CB;
+  };
 
-    return OB + this.tag + CB + this.content.reduce((r, node) => r + node.toString(), '') + OB + SL + this.tag + CB;
-  }
-}
+  _createClass(TagNode, [{
+    key: 'length',
+    get: function get() {
+      return (0, _index.getNodeLength)(this);
+    }
+  }]);
 
-module.exports = TagNode;
-module.exports.create = (tag, attrs = {}, content = []) => new TagNode(tag, attrs, content);
-module.exports.isOf = (node, type) => (node.tag === type);
+  return TagNode;
+}();
+
+TagNode.create = function (tag) {
+  var attrs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var content = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  return new TagNode(tag, attrs, content);
+};
+TagNode.isOf = function (node, type) {
+  return node.tag === type;
+};
+
+exports.TagNode = TagNode;
+exports.default = TagNode;

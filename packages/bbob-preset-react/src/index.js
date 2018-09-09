@@ -1,6 +1,6 @@
-const presetHTML5 = require('@bbob/preset-html5');
+import presetHTML5 from '@bbob/preset-html5';
 
-module.exports = presetHTML5.extend(tags => ({
+export default presetHTML5.extend(tags => ({
   ...tags,
 
   b: (...args) => ({

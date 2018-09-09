@@ -1,14 +1,15 @@
-const React = require('react');
-const { shallow } = require('enzyme');
-const BBCode = require('../lib');
-const presetHTML5 = require('../lib/preset-html5');
-const Enzyme = require('enzyme');
-const Adapter = require('enzyme-adapter-react-15');
+import React from 'react';
+import preset from '@bbob/preset-react';
 
+import { shallow } from 'enzyme';
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-15';
+
+import BBCode from '../src';
 Enzyme.configure({ adapter: new Adapter() });
 
 const renderBBCode = input => shallow(
-    <BBCode plugins={[presetHTML5()]}>{input}</BBCode>
+    <BBCode plugins={[preset()]}>{input}</BBCode>
 ).html();
 
 describe('@bbob/react', () => {

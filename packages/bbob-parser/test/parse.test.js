@@ -1,4 +1,4 @@
-const parse = require('../lib/parse');
+import { parse } from '../src'
 
 describe('Parser', () => {
   test('parse paired tags tokens', () => {

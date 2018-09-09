@@ -1,4 +1,4 @@
-const TagNode = require('../lib/TagNode');
+import TagNode from '../src/TagNode'
 
 describe('@bbob/plugin-helper/lib/TagNode', () => {
   test('create', () => {

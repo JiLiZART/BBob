@@ -1,49 +1,54 @@
-const parser = require('@bbob/parser');
-const render = require('@bbob/html');
+'use strict';
 
-const { iterate, match } = require('./utils');
+exports.__esModule = true;
+exports.default = bbob;
+
+var _parser = require('@bbob/parser');
+
+var _utils = require('./utils');
 
 function walk(cb) {
-  return iterate(this, cb);
+  return (0, _utils.iterate)(this, cb);
 }
 
-module.exports = function bbob(plugs) {
-  const plugins = typeof plugs === 'function' ? [plugs] : plugs || [];
+function bbob(plugs) {
+  var plugins = typeof plugs === 'function' ? [plugs] : plugs || [];
 
-  let options = {
-    skipParse: false,
+  var options = {
+    skipParse: false
   };
 
   return {
-    process(input, opts) {
+    process: function process(input, opts) {
       options = opts || {};
 
-      const parseFn = options.parser || parser;
-      const renderFn = options.render || render;
+      var parseFn = options.parser || _parser.parse;
+      var renderFn = options.render;
 
-      let tree = options.skipParse
-        ? input || []
-        : parseFn(input, options);
+      var tree = options.skipParse ? input || [] : parseFn(input, options);
 
       tree.walk = walk;
-      tree.match = match;
+      tree.match = _utils.match;
 
-      plugins.forEach((plugin) => {
+      plugins.forEach(function (plugin) {
         tree = plugin(tree, {
           parse: parseFn,
           render: renderFn,
-          iterate,
-          match,
+          iterate: _utils.iterate,
+          match: _utils.match
         }) || tree;
       });
 
       return {
         get html() {
+          if (typeof renderFn !== 'function') {
+            throw new Error('"render" function not defined, please pass to "process(input, { render })"');
+          }
           return renderFn(tree, tree.options);
         },
-        tree,
-        messages: tree.messages,
+        tree: tree,
+        messages: tree.messages
       };
-    },
+    }
   };
-};
+}

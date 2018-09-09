@@ -1,14 +1,25 @@
-const { getChar, N } = require('./char');
+'use strict';
 
-const isTagNode = el => typeof el === 'object' && !!el.tag;
-const isStringNode = el => typeof el === 'string';
+exports.__esModule = true;
+exports.isEOL = exports.isStringNode = exports.isTagNode = exports.getNodeLength = exports.appendToNode = exports.attrValue = undefined;
 
-const EOL = getChar(N);
-const isEOL = el => el === EOL;
+var _char = require('./char');
 
-const getNodeLength = (node) => {
+var isTagNode = function isTagNode(el) {
+  return typeof el === 'object' && !!el.tag;
+};
+var isStringNode = function isStringNode(el) {
+  return typeof el === 'string';
+};
+var isEOL = function isEOL(el) {
+  return el === _char.N;
+};
+
+var getNodeLength = function getNodeLength(node) {
   if (isTagNode(node)) {
-    return node.content.reduce((count, contentNode) => count + getNodeLength(contentNode), 0);
+    return node.content.reduce(function (count, contentNode) {
+      return count + getNodeLength(contentNode);
+    }, 0);
   } else if (isStringNode(node)) {
     return node.length;
   }
@@ -16,30 +27,38 @@ const getNodeLength = (node) => {
   return 0;
 };
 
-const appendToNode = (node, value) => {
+var appendToNode = function appendToNode(node, value) {
   node.content.push(value);
 };
 
-const escapeQuote = value => value.replace(/"/g, '&quot;');
+var escapeQuote = function escapeQuote(value) {
+  return value.replace(/"/g, '&quot;');
+};
 
-const attrValue = (name, value) => {
-  const type = typeof value;
+var attrValue = function attrValue(name, value) {
+  var type = typeof value;
 
-  const types = {
-    boolean: () => (value ? `${name}` : ''),
-    number: () => `${name}="${value}"`,
-    string: () => `${name}="${escapeQuote(value)}"`,
-    object: () => `${name}="${escapeQuote(JSON.stringify(value))}"`,
+  var types = {
+    boolean: function boolean() {
+      return value ? '' + name : '';
+    },
+    number: function number() {
+      return name + '="' + value + '"';
+    },
+    string: function string() {
+      return name + '="' + escapeQuote(value) + '"';
+    },
+    object: function object() {
+      return name + '="' + escapeQuote(JSON.stringify(value)) + '"';
+    }
   };
 
   return types[type] ? types[type]() : '';
 };
 
-module.exports = {
-  attrValue,
-  appendToNode,
-  getNodeLength,
-  isTagNode,
-  isStringNode,
-  isEOL,
-};
+exports.attrValue = attrValue;
+exports.appendToNode = appendToNode;
+exports.getNodeLength = getNodeLength;
+exports.isTagNode = isTagNode;
+exports.isStringNode = isStringNode;
+exports.isEOL = isEOL;

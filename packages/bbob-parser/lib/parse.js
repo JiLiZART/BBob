@@ -1,73 +1,94 @@
-const createLexer = require('./lexer');
-const TagNode = require('@bbob/plugin-helper/lib/TagNode');
+'use strict';
+
+exports.__esModule = true;
+exports.parse = exports.createTagNode = undefined;
+
+var _TagNode = require('@bbob/plugin-helper/lib/TagNode');
+
+var _TagNode2 = _interopRequireDefault(_TagNode);
+
+var _lexer = require('./lexer');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @private
  * @type {Array}
  */
-let nodes;
+var nodes = void 0;
 /**
  * @private
  * @type {Array}
  */
-let nestedNodes;
+var nestedNodes = void 0;
 /**
  * @private
  * @type {Array}
  */
-let tagNodes;
+var tagNodes = void 0;
 /**
  * @private
  * @type {Array}
  */
-let tagNodesAttrName;
+var tagNodesAttrName = void 0;
 
-let options = {};
-let tokenizer = null;
+var options = {};
+var tokenizer = null;
 
 // eslint-disable-next-line no-unused-vars
-let tokens = null;
+var tokens = null;
 
-const createTokenizer = (input, onToken) => createLexer(input, { onToken });
+var createTokenizer = function createTokenizer(input, onToken) {
+  return (0, _lexer.createLexer)(input, { onToken: onToken });
+};
 
 /**
  * @private
  * @param token
  * @return {*}
  */
-const isTagNested = token => tokenizer.isTokenNested(token);
+var isTagNested = function isTagNested(token) {
+  return tokenizer.isTokenNested(token);
+};
 
 /**
  * @private
  * @return {TagNode}
  */
-const getTagNode = () => (tagNodes.length ? tagNodes[tagNodes.length - 1] : null);
+var getTagNode = function getTagNode() {
+  return tagNodes.length ? tagNodes[tagNodes.length - 1] : null;
+};
 
 /**
  * @private
  * @param {Token} token
  * @return {Array}
  */
-const createTagNode = token => tagNodes.push(TagNode.create(token.getValue()));
+var createTagNode = function createTagNode(token) {
+  return tagNodes.push(_TagNode2.default.create(token.getValue()));
+};
 /**
  * @private
  * @param {Token} token
  * @return {Array}
  */
-const createTagNodeAttrName = token => tagNodesAttrName.push(token.getValue());
+var createTagNodeAttrName = function createTagNodeAttrName(token) {
+  return tagNodesAttrName.push(token.getValue());
+};
 
 /**
  * @private
  * @return {Array}
  */
-const getTagNodeAttrName = () =>
-  (tagNodesAttrName.length ? tagNodesAttrName[tagNodesAttrName.length - 1] : getTagNode().tag);
+var getTagNodeAttrName = function getTagNodeAttrName() {
+  return tagNodesAttrName.length ? tagNodesAttrName[tagNodesAttrName.length - 1] : getTagNode().tag;
+};
 
 /**
  * @private
  * @return {Array}
  */
-const clearTagNodeAttrName = () => {
+var clearTagNodeAttrName = function clearTagNodeAttrName() {
   if (tagNodesAttrName.length) {
     tagNodesAttrName.pop();
   }
@@ -77,7 +98,7 @@ const clearTagNodeAttrName = () => {
  * @private
  * @return {Array}
  */
-const clearTagNode = () => {
+var clearTagNode = function clearTagNode() {
   if (tagNodes.length) {
     tagNodes.pop();
 
@@ -89,9 +110,9 @@ const clearTagNode = () => {
  * @private
  * @return {Array}
  */
-const getNodes = () => {
+var getNodes = function getNodes() {
   if (nestedNodes.length) {
-    const nestedNode = nestedNodes[nestedNodes.length - 1];
+    var nestedNode = nestedNodes[nestedNodes.length - 1];
     return nestedNode.content;
   }
 
@@ -102,7 +123,7 @@ const getNodes = () => {
  * @private
  * @param tag
  */
-const appendNode = (tag) => {
+var appendNode = function appendNode(tag) {
   getNodes().push(tag);
 };
 
@@ -111,7 +132,7 @@ const appendNode = (tag) => {
  * @param value
  * @return {boolean}
  */
-const isAllowedTag = (value) => {
+var isAllowedTag = function isAllowedTag(value) {
   if (options.onlyAllowTags && options.onlyAllowTags.length) {
     return options.onlyAllowTags.indexOf(value) >= 0;
   }
@@ -122,7 +143,7 @@ const isAllowedTag = (value) => {
  * @private
  * @param {Token} token
  */
-const handleTagStart = (token) => {
+var handleTagStart = function handleTagStart(token) {
   if (token.isStart()) {
     createTagNode(token);
 
@@ -139,22 +160,22 @@ const handleTagStart = (token) => {
  * @private
  * @param {Token} token
  */
-const handleTagEnd = (token) => {
+var handleTagEnd = function handleTagEnd(token) {
   if (token.isEnd()) {
     clearTagNode();
 
-    const lastNestedNode = nestedNodes.pop();
+    var lastNestedNode = nestedNodes.pop();
 
     if (lastNestedNode) {
       appendNode(lastNestedNode);
     } else if (options.onError) {
-      const tag = token.getValue();
-      const line = token.getLine();
-      const column = token.getColumn();
+      var tag = token.getValue();
+      var line = token.getLine();
+      var column = token.getColumn();
       options.onError({
-        message: `Inconsistent tag '${tag}' on line ${line} and column ${column}`,
+        message: 'Inconsistent tag \'' + tag + '\' on line ' + line + ' and column ' + column,
         lineNumber: line,
-        columnNumber: column,
+        columnNumber: column
       });
     }
   }
@@ -164,7 +185,7 @@ const handleTagEnd = (token) => {
  * @private
  * @param {Token} token
  */
-const handleTagToken = (token) => {
+var handleTagToken = function handleTagToken(token) {
   if (token.isTag()) {
     if (isAllowedTag(token.getName())) {
       // [tag]
@@ -182,8 +203,8 @@ const handleTagToken = (token) => {
  * @private
  * @param {Token} token
  */
-const handleTagNode = (token) => {
-  const tagNode = getTagNode();
+var handleTagNode = function handleTagNode(token) {
+  var tagNode = getTagNode();
 
   if (tagNode) {
     if (token.isAttrName()) {
@@ -204,7 +225,7 @@ const handleTagNode = (token) => {
  * @private
  * @param token
  */
-const parseToken = (token) => {
+var parseToken = function parseToken(token) {
   handleTagToken(token);
   handleTagNode(token);
 };
@@ -213,7 +234,9 @@ const parseToken = (token) => {
  * @public
  * @return {Array}
  */
-const parse = (input, opts = {}) => {
+var parse = function parse(input) {
+  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
   options = opts;
   tokenizer = (opts.createTokenizer ? opts.createTokenizer : createTokenizer)(input, parseToken);
 
@@ -227,5 +250,6 @@ const parse = (input, opts = {}) => {
   return nodes;
 };
 
-module.exports = parse;
-module.exports.createTagNode = createTagNode;
+exports.createTagNode = createTagNode;
+exports.parse = parse;
+exports.default = parse;

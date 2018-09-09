@@ -1,5 +1,5 @@
-const Token = require('../lib/Token');
-const lexer = require('../lib/lexer');
+const Token = require('../src/Token');
+const { createLexer } = require('../src/lexer');
 
 const TYPE = {
   WORD: Token.TYPE_WORD,
@@ -10,7 +10,7 @@ const TYPE = {
   NEW_LINE: Token.TYPE_NEW_LINE,
 };
 
-const tokenize = input => (lexer(input).tokenize());
+const tokenize = input => (createLexer(input).tokenize());
 
 describe('lexer', () => {
   const expectOutput = (output, tokens) => {

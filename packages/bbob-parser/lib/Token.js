@@ -1,123 +1,144 @@
-const {
-  getChar,
-  OPEN_BRAKET,
-  CLOSE_BRAKET,
-  SLASH,
-} = require('@bbob/plugin-helper/lib/char');
+'use strict';
+
+exports.__esModule = true;
+exports.Token = exports.TYPE_NEW_LINE = exports.TYPE_SPACE = exports.TYPE_ATTR_VALUE = exports.TYPE_ATTR_NAME = exports.TYPE_TAG = exports.TYPE_WORD = exports.COLUMN_ID = exports.LINE_ID = exports.VALUE_ID = exports.TYPE_ID = undefined;
+
+var _char = require('@bbob/plugin-helper/lib/char');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // type, value, line, row,
-const TOKEN_TYPE_ID = 'type'; // 0;
-const TOKEN_VALUE_ID = 'value'; // 1;
-const TOKEN_COLUMN_ID = 'row'; // 2;
-const TOKEN_LINE_ID = 'line'; // 3;
+var TOKEN_TYPE_ID = 'type'; // 0;
+var TOKEN_VALUE_ID = 'value'; // 1;
+var TOKEN_COLUMN_ID = 'row'; // 2;
+var TOKEN_LINE_ID = 'line'; // 3;
 
-const TOKEN_TYPE_WORD = 'word';
-const TOKEN_TYPE_TAG = 'tag';
-const TOKEN_TYPE_ATTR_NAME = 'attr-name';
-const TOKEN_TYPE_ATTR_VALUE = 'attr-value';
-const TOKEN_TYPE_SPACE = 'space';
-const TOKEN_TYPE_NEW_LINE = 'new-line';
+var TOKEN_TYPE_WORD = 'word';
+var TOKEN_TYPE_TAG = 'tag';
+var TOKEN_TYPE_ATTR_NAME = 'attr-name';
+var TOKEN_TYPE_ATTR_VALUE = 'attr-value';
+var TOKEN_TYPE_SPACE = 'space';
+var TOKEN_TYPE_NEW_LINE = 'new-line';
 
-const getTokenValue = token => token[TOKEN_VALUE_ID];
-const getTokenLine = token => token[TOKEN_LINE_ID];
-const getTokenColumn = token => token[TOKEN_COLUMN_ID];
+var getTokenValue = function getTokenValue(token) {
+  return token[TOKEN_VALUE_ID];
+};
+var getTokenLine = function getTokenLine(token) {
+  return token[TOKEN_LINE_ID];
+};
+var getTokenColumn = function getTokenColumn(token) {
+  return token[TOKEN_COLUMN_ID];
+};
 
-const isTextToken = token =>
-  token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE ||
-    token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE ||
-    token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
+var isTextToken = function isTextToken(token) {
+  return token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE || token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE || token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
+};
 
-const isTagToken = token => token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
-const isTagEnd = token => getTokenValue(token).charCodeAt(0) === SLASH;
-const isTagStart = token => !isTagEnd(token);
-const isAttrNameToken = token => token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
-const isAttrValueToken = token => token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
+var isTagToken = function isTagToken(token) {
+  return token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
+};
+var isTagEnd = function isTagEnd(token) {
+  return getTokenValue(token).charCodeAt(0) === _char.SLASH.charCodeAt(0);
+};
+var isTagStart = function isTagStart(token) {
+  return !isTagEnd(token);
+};
+var isAttrNameToken = function isAttrNameToken(token) {
+  return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
+};
+var isAttrValueToken = function isAttrValueToken(token) {
+  return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
+};
 
-const getTagName = (token) => {
-  const value = getTokenValue(token);
+var getTagName = function getTagName(token) {
+  var value = getTokenValue(token);
 
   return isTagEnd(token) ? value.slice(1) : value;
 };
 
-const convertTagToText = (token) => {
-  let text = getChar(OPEN_BRAKET);
+var convertTagToText = function convertTagToText(token) {
+  var text = _char.OPEN_BRAKET;
 
   if (isTagEnd(token)) {
-    text += getChar(SLASH);
+    text += _char.SLASH;
   }
 
   text += getTokenValue(token);
-  text += getChar(CLOSE_BRAKET);
+  text += _char.CLOSE_BRAKET;
 
   return text;
 };
 
-class Token {
-  constructor(type, value, line, row) {
+var Token = function () {
+  function Token(type, value, line, row) {
+    _classCallCheck(this, Token);
+
     this.type = String(type);
     this.value = String(value);
     this.line = Number(line);
     this.row = Number(row);
   }
 
-  isEmpty() {
+  Token.prototype.isEmpty = function isEmpty() {
     return !!this.type;
-  }
+  };
 
-  isText() {
+  Token.prototype.isText = function isText() {
     return isTextToken(this);
-  }
+  };
 
-  isTag() {
+  Token.prototype.isTag = function isTag() {
     return isTagToken(this);
-  }
+  };
 
-  isAttrName() {
+  Token.prototype.isAttrName = function isAttrName() {
     return isAttrNameToken(this);
-  }
+  };
 
-  isAttrValue() {
+  Token.prototype.isAttrValue = function isAttrValue() {
     return isAttrValueToken(this);
-  }
+  };
 
-  isStart() {
+  Token.prototype.isStart = function isStart() {
     return isTagStart(this);
-  }
+  };
 
-  isEnd() {
+  Token.prototype.isEnd = function isEnd() {
     return isTagEnd(this);
-  }
+  };
 
-  getName() {
+  Token.prototype.getName = function getName() {
     return getTagName(this);
-  }
+  };
 
-  getValue() {
+  Token.prototype.getValue = function getValue() {
     return getTokenValue(this);
-  }
+  };
 
-  getLine() {
+  Token.prototype.getLine = function getLine() {
     return getTokenLine(this);
-  }
+  };
 
-  getColumn() {
+  Token.prototype.getColumn = function getColumn() {
     return getTokenColumn(this);
-  }
+  };
 
-  toString() {
+  Token.prototype.toString = function toString() {
     return convertTagToText(this);
-  }
-}
+  };
 
-module.exports = Token;
+  return Token;
+}();
 
-module.exports.TYPE_ID = TOKEN_TYPE_ID;
-module.exports.VALUE_ID = TOKEN_VALUE_ID;
-module.exports.LINE_ID = TOKEN_LINE_ID;
-module.exports.COLUMN_ID = TOKEN_COLUMN_ID;
-module.exports.TYPE_WORD = TOKEN_TYPE_WORD;
-module.exports.TYPE_TAG = TOKEN_TYPE_TAG;
-module.exports.TYPE_ATTR_NAME = TOKEN_TYPE_ATTR_NAME;
-module.exports.TYPE_ATTR_VALUE = TOKEN_TYPE_ATTR_VALUE;
-module.exports.TYPE_SPACE = TOKEN_TYPE_SPACE;
-module.exports.TYPE_NEW_LINE = TOKEN_TYPE_NEW_LINE;
+var TYPE_ID = exports.TYPE_ID = TOKEN_TYPE_ID;
+var VALUE_ID = exports.VALUE_ID = TOKEN_VALUE_ID;
+var LINE_ID = exports.LINE_ID = TOKEN_LINE_ID;
+var COLUMN_ID = exports.COLUMN_ID = TOKEN_COLUMN_ID;
+var TYPE_WORD = exports.TYPE_WORD = TOKEN_TYPE_WORD;
+var TYPE_TAG = exports.TYPE_TAG = TOKEN_TYPE_TAG;
+var TYPE_ATTR_NAME = exports.TYPE_ATTR_NAME = TOKEN_TYPE_ATTR_NAME;
+var TYPE_ATTR_VALUE = exports.TYPE_ATTR_VALUE = TOKEN_TYPE_ATTR_VALUE;
+var TYPE_SPACE = exports.TYPE_SPACE = TOKEN_TYPE_SPACE;
+var TYPE_NEW_LINE = exports.TYPE_NEW_LINE = TOKEN_TYPE_NEW_LINE;
+exports.Token = Token;
+exports.default = Token;

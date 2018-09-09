@@ -1,10 +1,10 @@
-const {
+import {
   attrValue,
   appendToNode,
   getNodeLength,
   isTagNode,
   isStringNode,
-} = require('../lib');
+} from '../src';
 
 describe('@bbob/plugin-helper', () => {
   test('appendToNode', () => {
@@ -61,7 +61,7 @@ describe('@bbob/plugin-helper', () => {
   });
 
   test('attrValue object', () => {
-    const attrs = { tag: 'test'};
+    const attrs = { tag: 'test' };
 
     expect(attrValue('test', attrs)).toBe('test="{&quot;tag&quot;:&quot;test&quot;}"');
   });

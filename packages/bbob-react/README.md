@@ -1,21 +1,41 @@
 # @bbob/react
 
-```js
+```jsx
+import React from 'react'
 import BBCode from '@bbob/react';
-import presetHTML5 from '@bbob/react/lib/preset-html5';
+import presetReact from '@bbob/preset-react';
 
-const plugins = [presetHTML5()];
+const plugins = [presetReact()];
 
-<BBCode plugins={plugins}>
+export default () => (
+    <BBCode plugins={plugins}>
+    [table]
+      [tr]
+          [td]table 1[/td]
+          [td]table 2[/td]
+      [/tr]
+      [tr]
+          [td]table 3[/td]
+          [td]table 4[/td]
+      [/tr]
+    [/table]
+    </BBCode>
+)
+```
+
+```jsx
+import { render } from '@bbob/react'
+
+export default () => render(`
 [table]
   [tr]
-  [td]table 1[/td]
-  [td]table 2[/td]
+      [td]table 1[/td]
+      [td]table 2[/td]
   [/tr]
   [tr]
-  [td]table 3[/td]
-  [td]table 4[/td]
+      [td]table 3[/td]
+      [td]table 4[/td]
   [/tr]
 [/table]
-</BBCode>
+`)
 ```
