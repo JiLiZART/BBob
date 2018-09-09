@@ -1,5 +1,5 @@
-const render = require('posthtml-render');
-const parse = require('../lib');
+import {parse} from '../src'
+import render from 'posthtml-render'
 
 describe('posthtml-render', () => {
 

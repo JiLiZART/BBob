@@ -1,6 +1,7 @@
 package-lock.json
 coverage
 src
-dist
+!dist
 !lib
+!es
 *.test.js

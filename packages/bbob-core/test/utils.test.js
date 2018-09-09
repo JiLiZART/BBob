@@ -1,4 +1,4 @@
-const { iterate } = require('../lib/utils');
+import { iterate } from '../src/utils';
 
 describe('@bbob/core utils', () => {
   test('iterate', () => {

@@ -1,7 +1,8 @@
-const preset = require('../lib/index');
-const core = require('@bbob/core');
+import core from '@bbob/core'
+import { render } from '@bbob/html'
+import preset from '../src'
 
-const parse = input => core([preset()]).process(input).html;
+const parse = input => core([preset()]).process(input, {render}).html;
 
 describe('@bbob/preset-html5', () => {
   test('[b]bolded text[/b]', () => {

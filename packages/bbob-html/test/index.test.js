@@ -1,14 +1,20 @@
-const render = require('../lib/index');
-const parse = require('@bbob/parser');
+import {parse} from '@bbob/parser'
+import {render} from '../src';
 
-const process = (input, params) => render(parse(input), params);
+const process = (input, params) => {
+  const ast = parse(input);
+  const html = render(ast, params);
+
+  return html
+};
 
 describe('@bbob/html', () => {
   test('render bbcode tag with single param as html tag', () => {
     const input = '[url=https://ru.wikipedia.org]Text[/url]';
-    const result = '<url url="https://ru.wikipedia.org">Text</url>';
+    const expected = '<url url="https://ru.wikipedia.org">Text</url>';
+    const result = process(input)
 
-    expect(process(input)).toBe(result);
+    expect(result).toBe(expected);
   });
 
   test('render bbcode tag with multiple params as html tag', () => {

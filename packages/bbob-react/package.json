@@ -2,48 +2,65 @@
   "name": "@bbob/react",
   "version": "1.1.0",
   "description": "",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JiLiZART/bbob.git"
-  },
   "keywords": [
     "bbob",
     "react",
     "helper"
   ],
-  "bugs": {
-    "url": "https://github.com/JiLiZART/bbob/issues"
-  },
-  "homepage": "https://github.com/JiLiZART/bbob#readme",
-  "scripts": {
-    "test": "../../node_modules/.bin/jest --",
-    "cover": "../../node_modules/.bin/jest --coverage",
-    "lint": "../../node_modules/.bin/eslint ."
-  },
-  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
-  "license": "MIT",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "dependencies": {
     "@bbob/core": "^1.1.0",
+    "@bbob/html": "^1.1.0",
     "@bbob/plugin-helper": "^1.1.0",
-    "@bbob/preset-html5": "^1.1.0",
+    "@bbob/preset-react": "^1.1.0",
     "prop-types": "^15.6.1"
   },
   "peerDependencies": {
     "react": "15.x"
   },
   "devDependencies": {
-    "babel-preset-react": "^6.24.1",
     "enzyme": "^3.4.0",
     "enzyme-adapter-react-15": "^1.0.6",
     "react": "15.x",
     "react-dom": "^15.6.2",
     "react-test-renderer": "^15.6.2"
-  }
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "browser": "dist/index.js",
+  "browserName": "BbobReact",
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JiLiZART/bbob/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
+  "scripts": {
+    "build:commonjs": "../../node_modules/.bin/cross-env BABEL_ENV=commonjs ../../node_modules/.bin/babel src --out-dir lib",
+    "build:es": "../../node_modules/.bin/cross-env BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es",
+    "build:umd": "../../node_modules/.bin/cross-env BABEL_ENV=rollup NODE_ENV=development ../../node_modules/.bin/rollup --config ../../rollup.config.js",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
+    "test": "../../node_modules/.bin/jest --",
+    "cover": "../../node_modules/.bin/jest --coverage",
+    "lint": "../../node_modules/.bin/eslint .",
+    "size": "../../node_modules/.bin/size-limit"
+  },
+  "size-limit": [
+    {
+      "path": "lib/index.js"
+    }
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es"
+  ]
 }

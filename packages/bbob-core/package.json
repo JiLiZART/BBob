@@ -1,40 +1,72 @@
 {
   "name": "@bbob/core",
   "version": "1.1.0",
-  "description": "BBob is a tool to transform BBCode markup useing presets",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib"
-  },
-  "dependencies": {
-    "@bbob/html": "^1.1.0",
-    "@bbob/parser": "^1.2.0"
-  },
-  "peerDependencies": {
-    "@bbob/preset-html5": "^1.x"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JiLiZART/bbob.git"
-  },
+  "description": "Fast, flexible, and lean implementation of BBcode parser with plugins",
   "keywords": [
     "bbcode",
     "parser",
+    "fast",
+    "bbcode parser",
+    "bbcodeparser",
+    "bbob",
+    "serializer",
+    "bbcode serializer",
+    "bbcode serializer",
+    "bbcodeserializer",
+    "parse",
+    "serialize",
     "html",
     "transform"
   ],
+  "dependencies": {
+    "@bbob/parser": "^1.2.0"
+  },
+  "devDependencies": {
+    "@bbob/html": "^1.x"
+  },
+  "peerDependencies": {
+    "@bbob/html": "^1.x",
+    "@bbob/preset-html5": "^1.x",
+    "@bbob/react": "^1.x",
+    "@bbob/preset-react": "^1.x"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "browser": "dist/index.js",
+  "browserName": "BbobCore",
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/JiLiZART/bbob/issues"
   },
-  "homepage": "https://github.com/JiLiZART/bbob#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
   "scripts": {
+    "build:commonjs": "../../node_modules/.bin/cross-env BABEL_ENV=commonjs ../../node_modules/.bin/babel src --out-dir lib",
+    "build:es": "../../node_modules/.bin/cross-env BABEL_ENV=es ../../node_modules/.bin/babel src --out-dir es",
+    "build:umd": "../../node_modules/.bin/cross-env BABEL_ENV=rollup NODE_ENV=development ../../node_modules/.bin/rollup --config ../../rollup.config.js",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
-    "lint": "../../node_modules/.bin/eslint ."
+    "lint": "../../node_modules/.bin/eslint .",
+    "size": "../../node_modules/.bin/size-limit"
   },
-  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
-  "license": "MIT",
+  "size-limit": [
+    {
+      "path": "lib/index.js"
+    }
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es"
+  ]
 }
