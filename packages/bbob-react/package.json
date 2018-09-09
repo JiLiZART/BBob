@@ -1,6 +1,6 @@
 {
   "name": "@bbob/react",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "keywords": [
     "bbob",
@@ -8,10 +8,10 @@
     "helper"
   ],
   "dependencies": {
-    "@bbob/core": "^1.1.0",
-    "@bbob/html": "^1.1.0",
-    "@bbob/plugin-helper": "^1.1.0",
-    "@bbob/preset-react": "^1.1.0",
+    "@bbob/core": "^1.1.1",
+    "@bbob/html": "^1.1.1",
+    "@bbob/plugin-helper": "^1.1.1",
+    "@bbob/preset-react": "^1.1.1",
     "prop-types": "^15.6.1"
   },
   "peerDependencies": {
