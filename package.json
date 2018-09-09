@@ -3,7 +3,7 @@
     "bootstrap": "lerna bootstrap",
     "test": "lerna run build && lerna run link && lerna run test",
     "cover": "lerna run cover",
-    "lint": "lerna run lint"
+    "lint": "lerna run build && lerna run link && lerna run lint"
   },
   "author": {
     "name": "Nikolay Kostyurin",
