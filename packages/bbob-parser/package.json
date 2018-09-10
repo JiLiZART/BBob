@@ -13,7 +13,7 @@
     "parse"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^1.1.1"
+    "@bbob/plugin-helper": "1.x"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -38,7 +38,8 @@
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
     "lint": "../../node_modules/.bin/eslint .",
-    "size": "../../node_modules/.bin/size-limit"
+    "size": "../../node_modules/.bin/size-limit",
+    "prepublishOnly": "npm run build"
   },
   "size-limit": [
     {
