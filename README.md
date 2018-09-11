@@ -5,3 +5,17 @@
 > Fast [BBCode](https://en.wikipedia.org/wiki/BBCode) parser written in pure javascript, no dependencies
 
 [@bbob/parser usage](https://github.com/JiLiZART/bbob/blob/master/packages/bbob-parser/README.md)
+
+// @TODO
+Table of contents
+=================
+* [Basic usage](#basic)
+* [Presets]
+   * [Create your own preset]
+   * [HTML Preset](#html-preset)
+   * [React Preset](#react-preset)
+* [React usage](#react)
+   * [Component](#react-component)
+   * [Render prop](#react-render)
+* [PostHTML usage](#posthtml)
+* [Create Plugin](#plugin)
