@@ -14,15 +14,16 @@ const tokenize = input => (createLexer(input).tokenize());
 
 describe('lexer', () => {
   const expectOutput = (output, tokens) => {
+    expect(tokens.length).toBe(output.length);
     expect(tokens).toBeInstanceOf(Array);
-    output.forEach((token, idx) => {
-      expect(tokens[idx]).toBeInstanceOf(Object);
-      expect(tokens[idx].type).toEqual(token[0]);
-      expect(tokens[idx].value).toEqual(token[1]);
+    tokens.forEach((token, idx) => {
+      expect(token).toBeInstanceOf(Object);
+      expect(token.type).toEqual(output[idx][0]);
+      expect(token.value).toEqual(output[idx][1]);
     });
   };
 
-  test('tokenize single tag', () => {
+  test('single tag', () => {
     const input = '[SingleTag]';
     const tokens = tokenize(input);
     const output = [
@@ -32,7 +33,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize single tag with spaces', () => {
+  test('single tag with spaces', () => {
     const input = '[Single Tag]';
     const tokens = tokenize(input);
 
@@ -43,7 +44,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize string with quotemarks', () => {
+  test('string with quotemarks', () => {
     const input = '"Someone Like You" by Adele';
     const tokens = tokenize(input);
 
@@ -62,7 +63,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize tags in brakets', () => {
+  test('tags in brakets', () => {
     const input = '[ [h1]G[/h1] ]';
     const tokens = tokenize(input);
 
@@ -79,7 +80,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize tag as param', () => {
+  test('tag as param', () => {
     const input = '[color="#ff0000"]Text[/color]';
     const tokens = tokenize(input);
     const output = [
@@ -92,7 +93,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize tag with quotemark params with spaces', () => {
+  test('tag with quotemark params with spaces', () => {
     const input = '[url text="Foo Bar" text2="Foo Bar 2"]Text[/url]';
     const tokens = tokenize(input);
     const output = [
@@ -108,7 +109,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize tag with escaped quotemark param', () => {
+  test('tag with escaped quotemark param', () => {
     const input = `[url text="Foo \\"Bar"]Text[/url]`;
     const tokens = tokenize(input);
     const output = [
@@ -122,7 +123,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize tag param without quotemarks', () => {
+  test('tag param without quotemarks', () => {
     const input = '[style color=#ff0000]Text[/style]';
     const tokens = tokenize(input);
     const output = [
@@ -136,7 +137,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize list tag with items', () => {
+  test('list tag with items', () => {
     const input = `[list]
    [*] Item 1.
    [*] Item 2.
@@ -174,7 +175,7 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-  test('tokenize bad tags as texts', () => {
+  test('bad tags as texts', () => {
     const inputs = [
       '[]',
       '[=]',
@@ -234,4 +235,68 @@ describe('lexer', () => {
       expectOutput(asserts[idx], tokens);
     });
   });
+
+  describe('html', () => {
+    const tokenizeHTML = input => (createLexer(input, {
+      openTag: '<',
+      closeTag: '>'
+    }).tokenize());
+
+    test('Normal attributes', () => {
+      const content = `<button id="test0" class="value0" title="value1">class="value0" title="value1"</button>`;
+      const tokens = tokenizeHTML(content);
+      const output = [
+        [TYPE.TAG, 'button', 2, 0],
+        [TYPE.ATTR_NAME, 'id', 2, 0],
+        [TYPE.ATTR_VALUE, 'test0', 2, 0],
+        [TYPE.ATTR_NAME, 'class', 2, 0],
+        [TYPE.ATTR_VALUE, 'value0', 2, 0],
+        [TYPE.ATTR_NAME, 'title', 2, 0],
+        [TYPE.ATTR_VALUE, 'value1', 2, 0],
+        [TYPE.WORD, "class=\"value0\"", 2, 0],
+        [TYPE.SPACE, " ", 2, 0],
+        [TYPE.WORD, "title=\"value1\"", 2, 0],
+        [TYPE.TAG, '/button', 2, 0]
+      ];
+
+      expectOutput(output, tokens);
+    });
+
+    test('Attributes with no quotes or value', () => {
+      const content = `<button id="test1" class=value2 disabled>class=value2 disabled</button>`;
+      const tokens = tokenizeHTML(content);
+      const output = [
+        [TYPE.TAG, 'button', 2, 0],
+        [TYPE.ATTR_NAME, 'id', 2, 0],
+        [TYPE.ATTR_VALUE, 'test1', 2, 0],
+        [TYPE.ATTR_NAME, 'class', 2, 0],
+        [TYPE.ATTR_VALUE, 'value2', 2, 0],
+        [TYPE.ATTR_VALUE, 'disabled', 2, 0],
+        [TYPE.WORD, "class=value2", 2, 0],
+        [TYPE.SPACE, " ", 2, 0],
+        [TYPE.WORD, "disabled", 2, 0],
+        [TYPE.TAG, '/button', 2, 0]
+      ];
+
+      expectOutput(output, tokens);
+    });
+
+    test('Attributes with no space between them. No valid, but accepted by the browser', () => {
+      const content = `<button id="test2" class="value4"title="value5">class="value4"title="value5"</button>`;
+      const tokens = tokenizeHTML(content);
+      const output = [
+        [TYPE.TAG, 'button', 2, 0],
+        [TYPE.ATTR_NAME, 'id', 2, 0],
+        [TYPE.ATTR_VALUE, 'test2', 2, 0],
+        [TYPE.ATTR_NAME, 'class', 2, 0],
+        [TYPE.ATTR_VALUE, 'value4', 2, 0],
+        [TYPE.ATTR_NAME, 'title', 2, 0],
+        [TYPE.ATTR_VALUE, 'value5', 2, 0],
+        [TYPE.WORD, "class=\"value4\"title=\"value5\"", 2, 0],
+        [TYPE.TAG, '/button', 2, 0]
+      ];
+
+      expectOutput(output, tokens);
+    });
+  })
 });
