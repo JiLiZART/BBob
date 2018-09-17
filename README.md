@@ -7,11 +7,12 @@
 [@bbob/parser usage](https://github.com/JiLiZART/bbob/blob/master/packages/bbob-parser/README.md)
 
 // @TODO
+
 Table of contents
 =================
 * [Basic usage](#basic)
-* [Presets]
-   * [Create your own preset]
+* [Presets](#presets)
+   * [Create your own preset](#create-preset)
    * [HTML Preset](#html-preset)
    * [React Preset](#react-preset)
 * [React usage](#react)
