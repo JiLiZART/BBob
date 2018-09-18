@@ -53,14 +53,14 @@ const convertTagToText = (token) => {
 
 class Token {
   constructor(type, value, line, row) {
-    this.type = String(type);
-    this.value = String(value);
-    this.line = Number(line);
-    this.row = Number(row);
+    this[TOKEN_TYPE_ID] = String(type);
+    this[TOKEN_VALUE_ID] = String(value);
+    this[TOKEN_LINE_ID] = Number(line);
+    this[TOKEN_COLUMN_ID] = Number(row);
   }
 
   isEmpty() {
-    return !!this.type;
+    return !!this[TOKEN_TYPE_ID];
   }
 
   isText() {

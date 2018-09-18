@@ -13,13 +13,7 @@ import {
 
 import { Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD } from './Token';
 
-const RESERVED_CHARS = [CLOSE_BRAKET, OPEN_BRAKET, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N];
-const NOT_CHAR_TOKENS = [OPEN_BRAKET, SPACE, TAB, N];
-const WHITESPACES = [SPACE, TAB];
-
-const isCharReserved = char => (RESERVED_CHARS.indexOf(char) >= 0);
-const isWhiteSpace = char => (WHITESPACES.indexOf(char) >= 0);
-const isCharToken = char => (NOT_CHAR_TOKENS.indexOf(char) === -1);
+const EM = '!';
 
 const createCharGrabber = (source) => {
   let idx = 0;
@@ -69,6 +63,19 @@ function createLexer(buffer, options = {}) {
 
   let tokenIndex = -1;
   const tokens = new Array(Math.floor(buffer.length));
+  const openTag = options.openTag || OPEN_BRAKET;
+  const closeTag = options.closeTag || CLOSE_BRAKET;
+
+  const RESERVED_CHARS = [closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM];
+  const NOT_CHAR_TOKENS = [openTag, SPACE, TAB, N];
+  const WHITESPACES = [SPACE, TAB];
+  const SPECIAL_CHARS = [EQ, SPACE, TAB];
+
+  const isCharReserved = char => (RESERVED_CHARS.indexOf(char) >= 0);
+  const isWhiteSpace = char => (WHITESPACES.indexOf(char) >= 0);
+  const isCharToken = char => (NOT_CHAR_TOKENS.indexOf(char) === -1);
+  const isSpecialChar = char => (SPECIAL_CHARS.indexOf(char) >= 0);
+
   const emitToken = (token) => {
     if (options.onToken) {
       options.onToken(token);
@@ -80,37 +87,46 @@ function createLexer(buffer, options = {}) {
 
   const parseAttrs = (str) => {
     let tagName = null;
-    let skipSpaces = false;
+    let skipSpecialChars = false;
 
     const attrTokens = [];
     const attrCharGrabber = createCharGrabber(str);
-    const validAttr = (val) => {
-      const isEQ = val === EQ;
-      const isWS = isWhiteSpace(val);
-      const isPrevSLASH = attrCharGrabber.getPrev() === SLASH;
 
-      if (tagName === null) {
-        return !(isEQ || isWS || attrCharGrabber.isLast());
+    const validAttr = (char) => {
+      const isEQ = char === EQ;
+      const isWS = isWhiteSpace(char);
+      const prevChar = attrCharGrabber.getPrev();
+      const nextChar = attrCharGrabber.getNext();
+      const isPrevSLASH = prevChar === BACKSLASH;
+      const isTagNameEmpty = tagName === null;
+
+      if (isTagNameEmpty) {
+        return (isEQ || isWS || attrCharGrabber.isLast()) === false;
       }
 
-      if (skipSpaces && isWS) {
+      if (skipSpecialChars && isSpecialChar(char)) {
         return true;
       }
 
-      if (val === QUOTEMARK && !isPrevSLASH) {
-        skipSpaces = !skipSpaces;
+      if (char === QUOTEMARK && !isPrevSLASH) {
+        skipSpecialChars = !skipSpecialChars;
+
+        if (!skipSpecialChars && !(nextChar === EQ || isWhiteSpace(nextChar))) {
+          return false;
+        }
       }
 
-      return !(isEQ || isWS);
+      return (isEQ || isWS) === false;
     };
 
     const nextAttr = () => {
       const attrStr = attrCharGrabber.grabWhile(validAttr);
+      const currChar = attrCharGrabber.getCurr();
 
       // first string before space is a tag name
       if (tagName === null) {
         tagName = attrStr;
-      } else if (isWhiteSpace(attrCharGrabber.getCurr()) || !attrCharGrabber.hasNext()) {
+      } else if (isWhiteSpace(currChar) || currChar === QUOTEMARK || !attrCharGrabber.hasNext()) {
         const escaped = unquote(trimChar(attrStr, QUOTEMARK));
         attrTokens.push(createToken(TYPE_ATTR_VALUE, escaped, row, col));
       } else {
@@ -127,29 +143,29 @@ function createLexer(buffer, options = {}) {
     return { tag: tagName, attrs: attrTokens };
   };
 
-  const grabber = createCharGrabber(buffer);
+  const bufferGrabber = createCharGrabber(buffer);
 
   const next = () => {
-    const char = grabber.getCurr();
+    const char = bufferGrabber.getCurr();
 
     if (char === N) {
-      grabber.skip();
+      bufferGrabber.skip();
       col = 0;
       row++;
 
       emitToken(createToken(TYPE_NEW_LINE, char, row, col));
     } else if (isWhiteSpace(char)) {
-      const str = grabber.grabWhile(isWhiteSpace);
+      const str = bufferGrabber.grabWhile(isWhiteSpace);
       emitToken(createToken(TYPE_SPACE, str, row, col));
-    } else if (char === OPEN_BRAKET) {
-      const nextChar = grabber.getNext();
-      grabber.skip(); // skip [
+    } else if (char === openTag) {
+      const nextChar = bufferGrabber.getNext();
+      bufferGrabber.skip(); // skip [
 
       if (isCharReserved(nextChar)) {
         emitToken(createToken(TYPE_WORD, char, row, col));
       } else {
-        const str = grabber.grabWhile(val => val !== CLOSE_BRAKET);
-        grabber.skip(); // skip ]
+        const str = bufferGrabber.grabWhile(val => val !== closeTag);
+        bufferGrabber.skip(); // skip ]
 
         if (!(str.indexOf(EQ) > 0) || str[0] === SLASH) {
           emitToken(createToken(TYPE_TAG, str, row, col));
@@ -160,19 +176,19 @@ function createLexer(buffer, options = {}) {
           parsed.attrs.map(emitToken);
         }
       }
-    } else if (char === CLOSE_BRAKET) {
-      grabber.skip();
+    } else if (char === closeTag) {
+      bufferGrabber.skip();
 
       emitToken(createToken(TYPE_WORD, char, row, col));
     } else if (isCharToken(char)) {
-      const str = grabber.grabWhile(isCharToken);
+      const str = bufferGrabber.grabWhile(isCharToken);
 
       emitToken(createToken(TYPE_WORD, str, row, col));
     }
   };
 
   const tokenize = () => {
-    while (grabber.hasNext()) {
+    while (bufferGrabber.hasNext()) {
       next();
     }
 
@@ -182,7 +198,7 @@ function createLexer(buffer, options = {}) {
   };
 
   const isTokenNested = (token) => {
-    const value = OPEN_BRAKET + SLASH + token.getValue();
+    const value = openTag + SLASH + token.getValue();
     return buffer.indexOf(value) > -1;
   };
 

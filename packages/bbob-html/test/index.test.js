@@ -3,16 +3,15 @@ import {render} from '../src';
 
 const process = (input, params) => {
   const ast = parse(input);
-  const html = render(ast, params);
 
-  return html
+  return render(ast, params)
 };
 
 describe('@bbob/html', () => {
   test('render bbcode tag with single param as html tag', () => {
     const input = '[url=https://ru.wikipedia.org]Text[/url]';
-    const expected = '<url url="https://ru.wikipedia.org">Text</url>';
-    const result = process(input)
+    const expected = '<url https://ru.wikipedia.org="https://ru.wikipedia.org">Text</url>';
+    const result = process(input);
 
     expect(result).toBe(expected);
   });

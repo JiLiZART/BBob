@@ -7,7 +7,7 @@ describe('posthtml-render', () => {
     const ast = parse('[size=150][b]PostHTML render test[/b][/size]');
     const html = render(ast);
 
-    expect(html).toBe('<size size="150"><b>PostHTML render test</b></size>')
+    expect(html).toBe('<size 150="150"><b>PostHTML render test</b></size>')
   })
 
 });

@@ -56,6 +56,10 @@ const asListItems = (content) => {
   return [].concat(listItems);
 };
 
+const getUniqAttr = attrs => Object
+  .keys(attrs)
+  .reduce((res, key) => (attrs[key] === key ? attrs[key] : null), null);
+
 export default {
   b: node => ({
     tag: 'span',
@@ -88,7 +92,7 @@ export default {
   url: (node, { render }) => ({
     tag: 'a',
     attrs: {
-      href: node.attrs.url ? node.attrs.url : render(node.content),
+      href: getUniqAttr(node.attrs) ? getUniqAttr(node.attrs) : render(node.content),
     },
     content: node.content,
   }),
