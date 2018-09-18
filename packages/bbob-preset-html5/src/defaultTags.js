@@ -56,10 +56,9 @@ const asListItems = (content) => {
   return [].concat(listItems);
 };
 
-const getUniqAttr = attrs =>
-  Object
-    .keys(attrs)
-    .reduce((res, key) => (attrs[key] === key ? attrs[key] : null), null);
+const getUniqAttr = attrs => Object
+  .keys(attrs)
+  .reduce((res, key) => (attrs[key] === key ? attrs[key] : null), null);
 
 export default {
   b: node => ({
