@@ -28,8 +28,6 @@ let tokenizer = null;
 // eslint-disable-next-line no-unused-vars
 let tokens = null;
 
-const createTokenizer = (input, onToken) => createLexer(input, { onToken });
-
 /**
  * @private
  * @param token
@@ -41,7 +39,7 @@ const isTagNested = token => tokenizer.isTokenNested(token);
  * @private
  * @return {TagNode}
  */
-const getTagNode = () => (tagNodes.length ? tagNodes[tagNodes.length - 1] : null);
+const getLastTagNode = () => (tagNodes.length ? tagNodes[tagNodes.length - 1] : null);
 
 /**
  * @private
@@ -61,7 +59,7 @@ const createTagNodeAttrName = token => tagNodesAttrName.push(token.getValue());
  * @return {Array}
  */
 const getTagNodeAttrName = () =>
-  (tagNodesAttrName.length ? tagNodesAttrName[tagNodesAttrName.length - 1] : getTagNode().tag);
+  (tagNodesAttrName.length ? tagNodesAttrName[tagNodesAttrName.length - 1] : null);
 
 /**
  * @private
@@ -92,6 +90,7 @@ const clearTagNode = () => {
 const getNodes = () => {
   if (nestedNodes.length) {
     const nestedNode = nestedNodes[nestedNodes.length - 1];
+
     return nestedNode.content;
   }
 
@@ -127,9 +126,9 @@ const handleTagStart = (token) => {
     createTagNode(token);
 
     if (isTagNested(token)) {
-      nestedNodes.push(getTagNode());
+      nestedNodes.push(getLastTagNode());
     } else {
-      appendNode(getTagNode());
+      appendNode(getLastTagNode());
       clearTagNode();
     }
   }
@@ -151,6 +150,7 @@ const handleTagEnd = (token) => {
       const tag = token.getValue();
       const line = token.getLine();
       const column = token.getColumn();
+
       options.onError({
         message: `Inconsistent tag '${tag}' on line ${line} and column ${column}`,
         lineNumber: line,
@@ -183,15 +183,22 @@ const handleTagToken = (token) => {
  * @param {Token} token
  */
 const handleTagNode = (token) => {
-  const tagNode = getTagNode();
+  const tagNode = getLastTagNode();
 
   if (tagNode) {
     if (token.isAttrName()) {
       createTagNodeAttrName(token);
-      tagNode.attr(getTagNodeAttrName(), null);
+      tagNode.attr(getTagNodeAttrName(), '');
     } else if (token.isAttrValue()) {
-      tagNode.attr(getTagNodeAttrName(), token.getValue());
-      clearTagNodeAttrName();
+      const attrName = getTagNodeAttrName();
+      const attrValue = token.getValue();
+
+      if (attrName) {
+        tagNode.attr(getTagNodeAttrName(), attrValue);
+        clearTagNodeAttrName();
+      } else {
+        tagNode.attr(attrValue, attrValue);
+      }
     } else if (token.isText()) {
       tagNode.append(token.getValue());
     }
@@ -215,7 +222,12 @@ const parseToken = (token) => {
  */
 const parse = (input, opts = {}) => {
   options = opts;
-  tokenizer = (opts.createTokenizer ? opts.createTokenizer : createTokenizer)(input, parseToken);
+  tokenizer = (opts.createTokenizer ? opts.createTokenizer : createLexer)(input, {
+    onToken: parseToken,
+    onlyAllowTags: options.onlyAllowTags,
+    openTag: options.openTag,
+    closeTag: options.closeTag,
+  });
 
   nodes = [];
   nestedNodes = [];

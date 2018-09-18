@@ -236,11 +236,18 @@ describe('lexer', () => {
     });
   });
 
+/*
+  test('bad unclosed tag', () => {
+    const input = `[Finger tapping; R.H. = Right Hand) Part A [Finger tapping (Right hand -15-, -16-)]`;
+    const tokens = tokenize(input);
+    const output = [];
+
+    expectOutput(output, tokens);
+  });
+*/
+
   describe('html', () => {
-    const tokenizeHTML = input => (createLexer(input, {
-      openTag: '<',
-      closeTag: '>'
-    }).tokenize());
+    const tokenizeHTML = input => createLexer(input, { openTag: '<', closeTag: '>' }).tokenize();
 
     test('Normal attributes', () => {
       const content = `<button id="test0" class="value0" title="value1">class="value0" title="value1"</button>`;
