@@ -90,7 +90,6 @@ function createLexer(buffer, options = {}) {
   const isWhiteSpace = char => (WHITESPACES.indexOf(char) >= 0);
   const isCharToken = char => (NOT_CHAR_TOKENS.indexOf(char) === -1);
   const isSpecialChar = char => (SPECIAL_CHARS.indexOf(char) >= 0);
-  const isNotValidCharInTag = char => ([openTag].indexOf(char) >= 0);
 
   const emitToken = (token) => {
     if (options.onToken) {
