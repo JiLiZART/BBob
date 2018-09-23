@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Base preset for creating extensible presets for BBob",
   "keywords": [
     "bbcode",
@@ -10,7 +10,7 @@
     "transform"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.0.0"
+    "@bbob/plugin-helper": "^2.0.1"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

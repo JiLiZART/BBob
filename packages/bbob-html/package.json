@@ -1,13 +1,13 @@
 {
   "name": "@bbob/html",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "HTML renderer for BBCode pareser BBob",
   "keywords": [],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.0.0"
+    "@bbob/plugin-helper": "^2.0.1"
   },
   "devDependencies": {
-    "@bbob/parser": "^2.0.0"
+    "@bbob/parser": "^2.1.0"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

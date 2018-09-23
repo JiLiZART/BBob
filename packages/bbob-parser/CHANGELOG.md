@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/JiLiZART/bbob/compare/@bbob/parser@2.0.0...@bbob/parser@2.1.0) (2018-09-23)
+
+
+### Features
+
+* **parser:** better handlinf of unclosed tags like '[My unclosed and [closed] tag' ([b49b743](https://github.com/JiLiZART/bbob/commit/b49b743))
+
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/JiLiZART/bbob/compare/@bbob/parser@1.1.0...@bbob/parser@1.2.0) (2018-08-09)
 
