@@ -78,6 +78,7 @@ describe('@bbob/core', () => {
           'Large',
           ' ',
           'Text',
+          ' ',
           {
             tag: 'test-tag',
             attrs: {},
