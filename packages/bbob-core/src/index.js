@@ -19,6 +19,10 @@ export default function bbob(plugs) {
       const parseFn = options.parser || parse;
       const renderFn = options.render;
 
+      if (typeof parseFn !== 'function') {
+        throw new Error('"parser" is not a function, please pass to "process(input, { parser })" right function');
+      }
+
       let tree = options.skipParse
         ? input || []
         : parseFn(input, options);

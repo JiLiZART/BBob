@@ -1,4 +1,5 @@
 import render from '@bbob/html'
+import { TagNode } from '@bbob/parser'
 import core from '../src'
 
 const stringify = val => JSON.stringify(val);
@@ -21,7 +22,7 @@ describe('@bbob/core', () => {
     ]))
   });
 
-  test('plugin walk api', () => {
+  test('plugin walk api node', () => {
     const testPlugin = () => (tree) => tree.walk(node => {
       if (node.tag === 'mytag') {
         node.attrs = {
@@ -50,6 +51,38 @@ describe('@bbob/core', () => {
           ' ',
           'Text',
           'Test'
+        ]
+      }
+    ]));
+  });
+
+  test('plugin walk api string', () => {
+    const testPlugin = () => (tree) => tree.walk(node => {
+      if (node === ':)') {
+        return TagNode.create('test-tag')
+      }
+
+      return node
+    });
+
+    const res = process([testPlugin()], '[mytag]Large Text :)[/mytag]');
+    const ast = res.tree;
+
+    expect(ast).toBeInstanceOf(Array);
+    expect(ast.walk).toBeInstanceOf(Function);
+    expect(stringify(ast)).toEqual(stringify([
+      {
+        tag: 'mytag',
+        attrs: {},
+        content: [
+          'Large',
+          ' ',
+          'Text',
+          {
+            tag: 'test-tag',
+            attrs: {},
+            content: [],
+          }
         ]
       }
     ]));
