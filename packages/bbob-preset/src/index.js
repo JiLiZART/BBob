@@ -1,24 +1,23 @@
 /* eslint-disable indent */
 import { isTagNode } from '@bbob/plugin-helper';
 
-function process(tags, tree, ...rest) {
+function process(tags, tree, core) {
   tree.walk(node => (isTagNode(node) && tags[node.tag]
-      ? tags[node.tag](node, ...rest)
+      ? tags[node.tag](node, core)
       : node));
 }
 
 /**
- * @param tags
+ * @param defTags
  * @return {function(*=, *=)}
  */
-function createPreset(tags) {
-  const instance = (tree, ...rest) => process(tags, tree, ...rest);
-
-  instance.extend = (callback) => {
-    const newTags = callback(tags);
-
-    return () => createPreset(newTags);
+function createPreset(defTags) {
+  const instance = (opts = {}) => {
+    instance.options = Object.assign(instance.options || {}, opts);
+    return (tree, core) => process(defTags, tree, core);
   };
+
+  instance.extend = callback => createPreset(callback(defTags, instance.options));
 
   return instance;
 }

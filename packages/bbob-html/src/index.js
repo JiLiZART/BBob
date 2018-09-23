@@ -9,6 +9,11 @@ const attrs = values =>
     .reduce((arr, key) => [...arr, attrValue(key, values[key])], [''])
     .join(' ');
 
+const SELFCLOSE_END_TAG = '/>';
+const CLOSE_START_TAG = '</';
+const START_TAG = '<';
+const END_TAG = '>';
+
 const renderNode = (node, { stripTags = false }) => {
   if (!node) return '';
   const type = typeof node;
@@ -24,11 +29,11 @@ const renderNode = (node, { stripTags = false }) => {
     }
 
     if (node.content === null) {
-      return `<${node.tag}${attrs(node.attrs)} />`;
+      return [START_TAG, node.tag, attrs(node.attrs), SELFCLOSE_END_TAG].join('');
     }
 
     // eslint-disable-next-line no-use-before-define
-    return `<${node.tag}${attrs(node.attrs)}>${renderNodes(node.content)}</${node.tag}>`;
+    return [START_TAG, node.tag, attrs(node.attrs), END_TAG, renderNodes(node.content), CLOSE_START_TAG, node.tag, END_TAG].join('');
   }
 
   if (Array.isArray(node)) {
