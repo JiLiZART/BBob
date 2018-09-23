@@ -2,7 +2,7 @@
   "scripts": {
     "prepublishOnly": "lerna run build",
     "bootstrap": "lerna bootstrap",
-    "publish-all": "lerna publish",
+    "publish-all": "lerna publish --conventional-commits --registry=https://registry.npmjs.org/",
     "test": "lerna run build && lerna run link && lerna run test",
     "cover": "lerna run cover",
     "lint": "lerna run build && lerna run link && lerna run lint"
