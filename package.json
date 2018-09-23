@@ -13,6 +13,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^7.1.2",
+    "@commitlint/config-conventional": "^7.1.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-jest": "^23.4.2",
@@ -31,7 +33,7 @@
     "eslint-plugin-jest": "^21.17.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.9.1",
-    "husky": "^0.14.3",
+    "husky": "^1.0.0-rc.15",
     "jest": "^23.1.0",
     "jsdoc-to-markdown": "^4.0.1",
     "lerna": "^2.11.0",
@@ -39,7 +41,7 @@
     "microtime": "^2.1.8",
     "posthtml-render": "^1.1.4",
     "rimraf": "^2.6.2",
-    "rollup": "^0.62.0",
+    "rollup": "^0.65.0",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.6",
     "rollup-plugin-node-resolve": "^3.4.0",
@@ -55,5 +57,10 @@
   "jest": {
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
