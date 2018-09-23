@@ -5,7 +5,7 @@ class TagNode {
   constructor(tag, attrs, content) {
     this.tag = tag;
     this.attrs = attrs;
-    this.content = content;
+    this.content = [].concat(content);
   }
 
   attr(name, value) {

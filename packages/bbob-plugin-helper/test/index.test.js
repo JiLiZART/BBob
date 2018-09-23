@@ -4,6 +4,7 @@ import {
   getNodeLength,
   isTagNode,
   isStringNode,
+  isEOL,
 } from '../src';
 
 describe('@bbob/plugin-helper', () => {
@@ -65,4 +66,8 @@ describe('@bbob/plugin-helper', () => {
 
     expect(attrValue('test', attrs)).toBe('test="{&quot;tag&quot;:&quot;test&quot;}"');
   });
+
+  test('isEOL', () => {
+    expect(isEOL('\n')).toBe(true)
+  })
 });
