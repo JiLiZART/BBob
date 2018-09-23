@@ -239,5 +239,5 @@ const parse = (input, opts = {}) => {
   return nodes;
 };
 
-export { createTagNode, parse };
+export { parse };
 export default parse;

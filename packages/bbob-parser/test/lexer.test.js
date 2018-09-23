@@ -217,34 +217,67 @@ describe('lexer', () => {
         [TYPE.TAG, '/y', '0', '0']
       ],
       [
-        [TYPE.TAG, 'sc', '0', '0']
+        [TYPE.WORD, '[', '0', '0'],
+        [TYPE.WORD, 'sc', '0', '0']
       ],
       [
-        [TYPE.TAG, 'sc / [/sc', '0', '0']
+        // [sc /
+        [TYPE.WORD, '[', '0', '0'],
+        [TYPE.WORD, 'sc', '0', '0'],
+        [TYPE.SPACE, ' ', '0', '0'],
+        [TYPE.WORD, '/', '0', '0'],
+        [TYPE.SPACE, ' ', '0', '0'],
+        [TYPE.TAG, '/sc', '0', '0']
       ],
       [
-        [TYPE.TAG, 'sc', '0', '0'],
-        [TYPE.ATTR_NAME, 'arg', '0', '0'],
-        [TYPE.ATTR_VALUE, 'val', '0', '0']
+        [TYPE.WORD, '[', '0', '0'],
+        [TYPE.WORD, 'sc', '0', '0'],
+        [TYPE.SPACE, ' ', '0', '0'],
+        [TYPE.WORD, 'arg="val', '0', '0'],
       ]
     ];
 
     inputs.forEach((input, idx) => {
       const tokens = tokenize(input);
+      const output = asserts[idx];
 
-      expectOutput(asserts[idx], tokens);
+      expectOutput(output, tokens);
     });
   });
 
-/*
+
   test('bad unclosed tag', () => {
-    const input = `[Finger tapping; R.H. = Right Hand) Part A [Finger tapping (Right hand -15-, -16-)]`;
+    const input = `[Finger Part A [Finger]`;
     const tokens = tokenize(input);
-    const output = [];
+    const output = [
+      [TYPE.WORD, '[', '0', '0'],
+      [TYPE.WORD, 'Finger', '0', '0'],
+      [TYPE.SPACE, ' ', '0', '0'],
+      [TYPE.WORD, 'Part', '0', '0'],
+      [TYPE.SPACE, ' ', '0', '0'],
+      [TYPE.WORD, 'A', '0', '0'],
+      [TYPE.SPACE, ' ', '0', '0'],
+      [TYPE.TAG, 'Finger', '0', '0']
+    ];
 
     expectOutput(output, tokens);
   });
-*/
+
+  test('no close tag', () => {
+    const input = '[Finger Part A';
+    const tokens = tokenize(input);
+    const output = [
+      [TYPE.WORD, '[', '0', '0'],
+      [TYPE.WORD, 'Finger', '0', '0'],
+      [TYPE.SPACE, ' ', '0', '0'],
+      [TYPE.WORD, 'Part', '0', '0'],
+      [TYPE.SPACE, ' ', '0', '0'],
+      [TYPE.WORD, 'A', '0', '0'],
+    ];
+
+    expectOutput(output, tokens);
+  });
+
 
   describe('html', () => {
     const tokenizeHTML = input => createLexer(input, { openTag: '<', closeTag: '>' }).tokenize();

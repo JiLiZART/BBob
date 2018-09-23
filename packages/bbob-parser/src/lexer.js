@@ -22,6 +22,7 @@ const createCharGrabber = (source) => {
     idx += 1;
   };
   const hasNext = () => source.length > idx;
+  const getRest = () => source.substr(idx);
 
   return {
     skip,
@@ -39,6 +40,20 @@ const createCharGrabber = (source) => {
     getNext: () => source[idx + 1],
     getPrev: () => source[idx - 1],
     getCurr: () => source[idx],
+    moveIdxTo: (val) => {
+      idx += val;
+    },
+    getRest,
+    substrUntilChar: (char) => {
+      const restStr = getRest();
+      const indexOfChar = restStr.indexOf(char);
+
+      if (indexOfChar >= 0) {
+        return restStr.substr(0, indexOfChar);
+      }
+
+      return '';
+    },
   };
 };
 
@@ -75,6 +90,7 @@ function createLexer(buffer, options = {}) {
   const isWhiteSpace = char => (WHITESPACES.indexOf(char) >= 0);
   const isCharToken = char => (NOT_CHAR_TOKENS.indexOf(char) === -1);
   const isSpecialChar = char => (SPECIAL_CHARS.indexOf(char) >= 0);
+  const isNotValidCharInTag = char => ([openTag].indexOf(char) >= 0);
 
   const emitToken = (token) => {
     if (options.onToken) {
@@ -159,15 +175,22 @@ function createLexer(buffer, options = {}) {
       emitToken(createToken(TYPE_SPACE, str, row, col));
     } else if (char === openTag) {
       const nextChar = bufferGrabber.getNext();
-      bufferGrabber.skip(); // skip [
+      bufferGrabber.skip(); // skip openTag
 
-      if (isCharReserved(nextChar)) {
+      // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
+      const substr = bufferGrabber.substrUntilChar(closeTag);
+      const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
+
+      if (isCharReserved(nextChar) || hasInvalidChars || bufferGrabber.isLast()) {
         emitToken(createToken(TYPE_WORD, char, row, col));
       } else {
         const str = bufferGrabber.grabWhile(val => val !== closeTag);
-        bufferGrabber.skip(); // skip ]
 
-        if (!(str.indexOf(EQ) > 0) || str[0] === SLASH) {
+        bufferGrabber.skip(); // skip closeTag
+        const isNoAttrsInTag = str.indexOf(EQ) === -1;
+        const isClosingTag = str[0] === SLASH;
+
+        if (isNoAttrsInTag || isClosingTag) {
           emitToken(createToken(TYPE_TAG, str, row, col));
         } else {
           const parsed = parseAttrs(str);

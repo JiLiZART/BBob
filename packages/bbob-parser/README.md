@@ -16,12 +16,12 @@ npm i @bbob/parser
 ### API
 
 ```js
-import parse from '@bbob/parser'
+import { parse } from '@bbob/parser'
 
 const options = {
     onlyAllowTags: ['url', 'h'],
     onError: (err) => console.warn(err.message, err.lineNumber, err.columnNumber)
-}
+};
 const ast = parse('[url=https://github.com]hello world![/url]', options)
 ```
 
@@ -43,12 +43,13 @@ const ast = parse('[url=https://github.com]hello world![/url]', options)
 
 ```js
 import render from 'posthtml-render'
-import parse from '@bbob/parser'
+import { parse } from '@bbob/parser'
 
 const options = {
     onlyAllowTags: ['url', 'h'],
     onError: (err) => console.warn(err.message, err.lineNumber, err.columnNumber)
-}
-const ast = parse('[url=https://github.com]hello world![/url]', options)
+};
+
+const ast = parse('[url=https://github.com]hello world![/url]', options);
 const html = render(ast) // <url url="https://github.com">hello world!</url>
 ```

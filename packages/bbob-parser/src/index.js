@@ -1,1 +1,2 @@
-export { parse, createTagNode } from './parse';
+export { default, parse } from './parse';
+export { TagNode } from '@bbob/plugin-helper/lib/TagNode';
