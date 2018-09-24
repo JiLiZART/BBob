@@ -4,7 +4,7 @@
 
 > Fast [BBCode](https://en.wikipedia.org/wiki/BBCode) parser written in pure javascript, no dependencies
 
-[@bbob/parser usage](https://github.com/JiLiZART/bbob/blob/master/packages/bbob-parser/README.md)
+[@bbob/parser usage](https://github.com/JiLiZART/bbob/blob/master/packages/bbob-parser/README.md) [Codepen demo](https://codepen.io/JiLiZART/full/vzMvpd)
 
 // @TODO
 
