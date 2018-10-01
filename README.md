@@ -25,11 +25,11 @@ Written in pure javascript, no dependencies
 
 | Package              | Status                                                     | Size    | Description               |
 |----------------------|------------------------------------------------------------|---------|---------------------------|
-| @bbob/core           | [![@bbob/core-status]][@bbob/core-package]                 | `1.5K`  | Core package              |
-| @bbob/react          | [![@bbob/react-status]][@bbob/react-package]               | `1.0K`  | React renderer         |
-| @bbob/preset-react   | [![@bbob/preset-react-status]][@bbob/preset-react-package] | `1.0K`  | React default tags preset         |
-| @bbob/html           | [![@bbob/html-status]][@bbob/html-package]                 | `0.7K`  | Vue.js integration        |
-| @bbob/preset-html5   | [![[@bbob/preset-html5-status]][@bbob/preset-html5-package]| `1.1K`  | Preact integration        |
+| @bbob/core           | [![@bbob/core-status]][@bbob/core-package]                 | `3.2K`  | Core package              |
+| @bbob/react          | [![@bbob/react-status]][@bbob/react-package]               | `1.0K`  | React renderer            |
+| @bbob/preset-react   | [![@bbob/preset-react-status]][@bbob/preset-react-package] | `1.8K`  | React default tags preset |
+| @bbob/html           | [![@bbob/html-status]][@bbob/html-package]                 | `689B`  | HTML renderer             |
+| @bbob/preset-html5   | [![@bbob/preset-html5-status]][@bbob/preset-html5-package] | `1.6K`  | HTML5 default tags preset |
 
 [@bbob/core-status]: https://img.shields.io/npm/v/@bbob/core.svg
 [@bbob/react-status]: https://img.shields.io/npm/v/@bbob/react.svg
