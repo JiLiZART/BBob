@@ -100,17 +100,52 @@ console.log(bbob(preset()).process(`[quote]Text[/quote]`, { render }).html) // <
 Also you can use predefined preset for HTML
 
 ```js
+import html5Preset from '@bbob/preset-html5'
+import { render } from '@bbob/html'
+import bbob from '@bbob/core'
 
+console.log(bbob(html5Preset()).process(`[quote]Text[/quote]`, { render }).html) // <blockquote><p>Text</p></blockquote>
 ```
 
 #### React Preset <a name="react-preset"></a>
 
+Also you can use predefined preset for React
+
+```js
+import reactPreset from '@bbob/preset-react'
+import { render } from '@bbob/react'
+import bbob from '@bbob/core'
+
+console.log(bbob(reactPreset()).process(`[quote]Text[/quote]`, { render }).html) 
+/* It produces a VDOM Nodes equal to
+  React.createElement('blockquote', React.createElement('p', 'Text'))
+*/
+```
+
 ### React usage <a name="react"></a>
 
-### Component <a name="react-component"></a>
+#### Component <a name="react-component"></a>
 
-### Render prop <a name="react-render"></a>
+Or you can use React Component
 
-## PostHTML usage <a name="posthtml"></a>
+```jsx
+import React from 'react'
+import { render } from 'react-dom'
 
-## Create Plugin <a name="plugin"></a>
+import BBCode from '@bbob/react'
+import reactPreset from '@bbob/preset-react'
+
+const MyComponent = () => (
+  <BBCode plugins={[reactPreset()]}>
+    [quote]Text[/quote]
+  </BBCode>
+)
+
+render(<MyComponent />) // <div><blockquote><p>Text</p></blockquote></div>
+```
+
+#### Render prop <a name="react-render"></a>
+
+### PostHTML usage <a name="posthtml"></a>
+
+### Create Plugin <a name="plugin"></a>
