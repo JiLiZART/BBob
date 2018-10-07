@@ -1,8 +1,10 @@
-# BBob
 
-<div align="center">
+<p align="center">
   <img alt="BBob a BBCode processor" src="https://github.com/JiLiZART/bbob/blob/master/.github/logo.png?raw=true" />
-</div>
+</p>
+
+BBob is a tool to parse and transform [BBCode](https://en.wikipedia.org/wiki/BBCode)
+written in pure javascript, no dependencies
 
 <a href="https://travis-ci.org/JiLiZART/bbob">
   <img src="https://travis-ci.org/JiLiZART/bbob.svg?branch=master" alt="Build Status">
@@ -19,9 +21,6 @@
 <a href="https://snyk.io/test/github/JiLiZART/bbob?targetFile=package.json">
   <img src="https://snyk.io/test/github/JiLiZART/bbob/badge.svg?targetFile=package.json" alt="Known Vulnerabilities">
 </a>
-
-BBob is a tool to parse and transform [BBCode](https://en.wikipedia.org/wiki/BBCode)
-written in pure javascript, no dependencies
 
 ## Packages
 
