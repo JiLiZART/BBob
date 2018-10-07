@@ -31,7 +31,7 @@ suite
     });
   })
   .add('BBob Parser', () => {
-    const parse = require('../packages/bbob-parser/lib/index');
+    const parse = require('../packages/bbob-parser/lib/index').parse;
 
     const result = parse(stub);
   })

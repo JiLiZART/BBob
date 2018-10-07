@@ -26,7 +26,6 @@ const plugins = [
   commonjs(),
 ];
 
-
 export default [
   {
     input,
