@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.1.0"></a>
+## 2.1.0 (2018-10-07)
+
+* feat(core): raw tree property support ([bdfd3f6](https://github.com/JiLiZART/bbob/commit/bdfd3f6))
+
+
+
+
 <a name="2.0.2"></a>
 ## [2.0.2](https://github.com/JiLiZART/bbob/compare/@bbob/core@2.0.1...@bbob/core@2.0.2) (2018-10-07)
 
