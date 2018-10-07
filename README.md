@@ -19,7 +19,7 @@
 </div>
 
 BBob is a tool to parse and transform [BBCode](https://en.wikipedia.org/wiki/BBCode)
-Written in pure javascript, no dependencies
+written in pure javascript, no dependencies
 
 ## Packages
 
@@ -58,6 +58,10 @@ Written in pure javascript, no dependencies
 * [Create Plugin](#plugin)
 
 ### Basic usage <a name="basic"></a>
+
+```shell
+npm i @bbob/core @bbob/html @bbob/preset-html5
+```
 
 ```js
 import bbob from '@bbob/core'
