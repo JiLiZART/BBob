@@ -1,4 +1,4 @@
-const { attrValue } = require('@bbob/plugin-helper');
+import { attrValue } from '@bbob/plugin-helper';
 
 /**
  * Transforms attrs to html params string
