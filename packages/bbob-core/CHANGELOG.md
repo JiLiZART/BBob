@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/JiLiZART/bbob/compare/@bbob/core@2.0.1...@bbob/core@2.0.2) (2018-10-07)
+
+
+### Bug Fixes
+
+* **core:** string walk api test error ([bdd8bbd](https://github.com/JiLiZART/bbob/commit/bdd8bbd))
+
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/JiLiZART/bbob/compare/@bbob/core@2.0.0...@bbob/core@2.0.1) (2018-09-23)
 

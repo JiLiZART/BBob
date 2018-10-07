@@ -1,6 +1,6 @@
 {
   "name": "@bbob/parser",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Just parses BBcode to AST array",
   "keywords": [
     "bbcode",

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.2.0"></a>
+# [2.2.0](https://github.com/JiLiZART/bbob/compare/@bbob/parser@2.1.0...@bbob/parser@2.2.0) (2018-10-07)
+
+
+### Features
+
+* **parser:** better line and column counting support in tokens ([1c3bebe](https://github.com/JiLiZART/bbob/commit/1c3bebe))
+
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/JiLiZART/bbob/compare/@bbob/parser@2.0.0...@bbob/parser@2.1.0) (2018-09-23)
 
