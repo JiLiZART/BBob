@@ -27,6 +27,9 @@ export default function bbob(plugs) {
         ? input || []
         : parseFn(input, options);
 
+      // raw tree before modification with plugins
+      const raw = tree;
+
       tree.walk = walk;
       tree.match = match;
 
@@ -47,6 +50,7 @@ export default function bbob(plugs) {
           return renderFn(tree, tree.options);
         },
         tree,
+        raw,
         messages: tree.messages,
       };
     },
