@@ -1,11 +1,19 @@
 {
   "lerna": "2.11.0",
   "packages": [
-    "packages/*"
+    "packages/bbob-cli",
+    "packages/bbob-core",
+    "packages/bbob-html",
+    "packages/bbob-parser",
+    "packages/bbob-plugin-helper",
+    "packages/bbob-preset",
+    "packages/bbob-preset-html5",
+    "packages/bbob-preset-react",
+    "packages/bbob-react"
   ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "version": "independent"
+  "version": "2.1.2"
 }
