@@ -15,11 +15,15 @@ import { Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE
 
 const EM = '!';
 
-const createCharGrabber = (source) => {
+const createCharGrabber = (source, { onSkip } = {}) => {
   let idx = 0;
 
   const skip = () => {
     idx += 1;
+
+    if (onSkip) {
+      onSkip();
+    }
   };
   const hasNext = () => source.length > idx;
   const getRest = () => source.substr(idx);
@@ -40,9 +44,6 @@ const createCharGrabber = (source) => {
     getNext: () => source[idx + 1],
     getPrev: () => source[idx - 1],
     getCurr: () => source[idx],
-    moveIdxTo: (val) => {
-      idx += val;
-    },
     getRest,
     substrUntilChar: (char) => {
       const restStr = getRest();
@@ -72,6 +73,20 @@ const trimChar = (str, charToRemove) => {
 const unquote = str => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
 const createToken = (type, value, r = 0, cl = 0) => new Token(type, value, r, cl);
 
+/**
+ * @typedef {Object} Lexer
+ * @property {Function} tokenize
+ * @property {Function} isTokenNested
+ */
+
+/**
+ * @param {String} buffer
+ * @param {Object} options
+ * @param {Function} options.onToken
+ * @param {String} options.openTag
+ * @param {String} options.closeTag
+ * @return {Lexer}
+ */
 function createLexer(buffer, options = {}) {
   let row = 0;
   let col = 0;
@@ -158,7 +173,11 @@ function createLexer(buffer, options = {}) {
     return { tag: tagName, attrs: attrTokens };
   };
 
-  const bufferGrabber = createCharGrabber(buffer);
+  const bufferGrabber = createCharGrabber(buffer, {
+    onSkip: () => {
+      col++;
+    },
+  });
 
   const next = () => {
     const char = bufferGrabber.getCurr();

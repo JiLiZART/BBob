@@ -52,6 +52,12 @@ const convertTagToText = (token) => {
 };
 
 class Token {
+  /**
+   * @param {String} type
+   * @param {String} value
+   * @param line
+   * @param row
+   */
   constructor(type, value, line, row) {
     this[TOKEN_TYPE_ID] = String(type);
     this[TOKEN_VALUE_ID] = String(value);
