@@ -47,7 +47,9 @@ written in pure javascript, no dependencies
 [DEMO Playground](https://codepen.io/JiLiZART/full/vzMvpd)
 
 ## Table of contents
-* [Basic usage](#basic)
+* [Usage](#usage)
+  * [Basic usage](#basic-usage)
+  * [React usage](#react-usage)
 * [Presets](#presets)
    * [Create your own preset](#create-preset)
    * [HTML Preset](#html-preset)
@@ -58,7 +60,7 @@ written in pure javascript, no dependencies
 * [PostHTML usage](#posthtml)
 * [Create Plugin](#plugin)
 
-### Basic usage <a name="basic"></a>
+### Basic usage <a name="basic-usage"></a>
 
 ```shell
 npm i @bbob/core @bbob/html @bbob/preset-html5
@@ -74,6 +76,21 @@ const processed = bbob(presetHTML5()).process(`[i]Text[/i]`, { render })
 console.log(processed.html); // <span style="font-style: italic;">Text</span>
 ```
 
+### React usage <a name="react-usage"></a>
+
+```shell
+npm i @bbob/react @bbob/preset-react
+```
+
+```js
+import React from 'react'
+import {render} from 'react-dom'
+import bbobReactRender from '@bbob/react/es/render'
+import presetReact from '@bbob/preset-react'
+
+console.log(render(<span>{bbobReactRender(`[i]Text[/i]`, presetReact())}</span>)); // <span><span style="font-style: italic;">Text</span></span>
+```
+
 ### Presets <a name="basic"></a>
 
 Its a way to transform parsed BBCode AST tree to another tree by rules in preset
@@ -82,10 +99,8 @@ Its a way to transform parsed BBCode AST tree to another tree by rules in preset
 
 ```js
 import { createPreset } from '@bbob/preset'
-import { render } from '@bbob/html'
-import bbob from '@bbob/core'
 
-const preset = createPreset({
+export default createPreset({
   quote: node => ({
     tag: 'blockquote',
     attrs: {},
@@ -96,8 +111,6 @@ const preset = createPreset({
     }],
   }),
 })
-
-console.log(bbob(preset()).process(`[quote]Text[/quote]`, { render }).html) // <blockquote><p>Text</p></blockquote>
 ```
 
 #### HTML Preset <a name="html-preset"></a>
@@ -118,8 +131,7 @@ Also you can use predefined preset for React
 
 ```js
 import reactPreset from '@bbob/preset-react'
-import { render } from '@bbob/react'
-import bbob from '@bbob/core'
+import bbobRender from '@bbob/react/es/render'
 
 console.log(bbob(reactPreset()).process(`[quote]Text[/quote]`, { render }).html) 
 /* It produces a VDOM Nodes equal to
