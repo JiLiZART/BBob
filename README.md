@@ -81,9 +81,9 @@ Its a way to transform parsed BBCode AST tree to another tree by rules in preset
 #### Create your own preset <a name="create-preset"></a>
 
 ```js
-import { createPreset } from '@bbob/preset'
-import { render } from '@bbob/html'
-import bbob from '@bbob/core'
+import { createPreset } from '@bbob/preset/es'
+import { render } from '@bbob/html/es'
+import bbob from '@bbob/core/es'
 
 const preset = createPreset({
   quote: node => ({
@@ -105,8 +105,8 @@ console.log(bbob(preset()).process(`[quote]Text[/quote]`, { render }).html) // <
 Also you can use predefined preset for HTML
 
 ```js
-import html5Preset from '@bbob/preset-html5'
-import { render } from '@bbob/html'
+import html5Preset from '@bbob/preset-html5/es'
+import { render } from '@bbob/html/es'
 import bbob from '@bbob/core'
 
 console.log(bbob(html5Preset()).process(`[quote]Text[/quote]`, { render }).html) // <blockquote><p>Text</p></blockquote>
@@ -117,15 +117,26 @@ console.log(bbob(html5Preset()).process(`[quote]Text[/quote]`, { render }).html)
 Also you can use predefined preset for React
 
 ```js
-import reactPreset from '@bbob/preset-react'
-import { render } from '@bbob/react'
-import bbob from '@bbob/core'
+import reactPreset from "@bbob/preset-react";
+import reactRender from "@bbob/react/es/render";
 
-console.log(bbob(reactPreset()).process(`[quote]Text[/quote]`, { render }).html) 
-/* It produces a VDOM Nodes equal to
-  React.createElement('blockquote', React.createElement('p', 'Text'))
+const preset = reactPreset.extend((tags, options) => ({
+  quote: node => ({
+    tag: "blockquote",
+    content: node.content
+  })
+}));
+
+const result = reactRender(`[quote]Text[/quote]`, reactPreset());
+
+/* 
+It produces a VDOM Nodes equal to
+React.createElement('blockquote', 'Text')
 */
+document.getElementById("root").innerHTML = JSON.stringify(result, 4);
 ```
+
+[![Edit lp7q9yj0lq](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/lp7q9yj0lq)
 
 ### React usage <a name="react"></a>
 
@@ -133,12 +144,12 @@ console.log(bbob(reactPreset()).process(`[quote]Text[/quote]`, { render }).html)
 
 Or you can use React Component
 
-```jsx
+```js
 import React from 'react'
 import { render } from 'react-dom'
 
-import BBCode from '@bbob/react'
-import reactPreset from '@bbob/preset-react'
+import BBCode from '@bbob/react/es/Component'
+import reactPreset from '@bbob/preset-react/es'
 
 const MyComponent = () => (
   <BBCode plugins={[reactPreset()]}>
@@ -148,8 +159,32 @@ const MyComponent = () => (
 
 render(<MyComponent />) // <div><blockquote><p>Text</p></blockquote></div>
 ```
+[![Edit 306pzr9k5p](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/306pzr9k5p)
+
 
 #### Render prop <a name="react-render"></a>
+
+Or pass result as render prop
+
+```js
+import React from "react";
+import { render } from 'react-dom'
+
+import reactRender from '@bbob/react/es/render'
+import reactPreset from '@bbob/preset-react/es'
+
+const toReact = input => reactRender(input, reactPreset())
+
+const text = toReact('[b]Super [i]easy[/i][/b] [u]to[/u] render')
+
+const App = ({ renderProp }) => (
+  <span>{text}</span>
+)
+
+render(<App />) // <span><span style="font-weight: bold;">Super <span style="font-style: italic;">easy</span></span> <span style="text-decoration: underline;">to</span> render</span>
+```
+
+[![Edit x7w52lqmzz](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/x7w52lqmzz)
 
 ### PostHTML usage <a name="posthtml"></a>
 

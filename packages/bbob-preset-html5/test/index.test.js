@@ -1,8 +1,7 @@
-import core from '@bbob/core'
-import { render } from '@bbob/html'
+import html from '@bbob/html'
 import preset from '../src'
 
-const parse = input => core([preset()]).process(input, {render}).html;
+const parse = input => html(input, preset());
 
 describe('@bbob/preset-html5', () => {
   test('[b]bolded text[/b]', () => {

@@ -1,7 +1,6 @@
-const React = require('react');
-const PropTypes = require('prop-types');
-
-const { render } = require('./render');
+import React from 'react';
+import PropTypes from 'prop-types';
+import { render } from './render';
 
 const content = (children, plugins) => React.Children.map(children, child =>
   (typeof child === 'string' ? render(child, plugins) : child));

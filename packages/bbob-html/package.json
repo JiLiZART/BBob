@@ -4,10 +4,8 @@
   "description": "HTML renderer for BBCode pareser BBob",
   "keywords": [],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.0.1"
-  },
-  "devDependencies": {
-    "@bbob/parser": "^2.2.0"
+    "@bbob/plugin-helper": "^2.0.1",
+    "@bbob/core": "^2.0.1"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
