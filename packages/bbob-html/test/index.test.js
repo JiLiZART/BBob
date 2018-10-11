@@ -1,8 +1,8 @@
-import {parse} from '@bbob/parser'
+import core from '@bbob/core'
 import {render} from '../src';
 
 const process = (input, params) => {
-  const ast = parse(input);
+  const ast = core().process(input).tree;
 
   return render(ast, params)
 };

@@ -10,7 +10,6 @@
     "lib": "lib"
   },
   "dependencies": {
-    "@bbob/core": "^2.1.0",
     "@bbob/html": "^2.1.1",
     "@bbob/preset-html5": "^2.1.2",
     "commander": "^2.15.1"

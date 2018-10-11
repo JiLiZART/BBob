@@ -21,9 +21,6 @@
   "dependencies": {
     "@bbob/parser": "^2.2.0"
   },
-  "devDependencies": {
-    "@bbob/html": "^2.1.1"
-  },
   "peerDependencies": {
     "@bbob/html": "^1.x",
     "@bbob/preset-html5": "^1.x",

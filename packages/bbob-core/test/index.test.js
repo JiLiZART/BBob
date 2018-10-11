@@ -1,17 +1,16 @@
-import render from '@bbob/html'
 import { TagNode } from '@bbob/parser'
 import core from '../src'
 
 const stringify = val => JSON.stringify(val);
 
-const process = (plugins, input) => core(plugins).process(input, { render });
+const process = (plugins, input) => core(plugins).process(input, { render: stringify });
 
 describe('@bbob/core', () => {
   test('parse bbcode string to ast and html', () => {
     const res = process([], '[style size="15px"]Large Text[/style]');
     const ast = res.tree;
 
-    expect(res.html).toBe(`<style size="15px">Large Text</style>`);
+    expect(res.html).toBe('[{"tag":"style","attrs":{"size":"15px"},"content":["Large"," ","Text"]}]');
     expect(ast).toBeInstanceOf(Array);
     expect(stringify(ast)).toEqual(stringify([
       {

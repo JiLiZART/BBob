@@ -14,7 +14,6 @@
     "@bbob/preset": "^2.1.0"
   },
   "devDependencies": {
-    "@bbob/core": "^2.1.0",
     "@bbob/html": "^2.1.1"
   },
   "main": "lib/index.js",

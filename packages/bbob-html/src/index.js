@@ -1,3 +1,4 @@
+import core from '@bbob/core';
 import { attrValue } from '@bbob/plugin-helper';
 
 /**
@@ -48,5 +49,7 @@ const renderNodes = (nodes, { stripTags = false } = {}) => []
   .concat(nodes)
   .reduce((r, node) => r + renderNode(node, { stripTags }), '');
 
+const toHTML = (source, plugins) => core(plugins).process(source, { render: renderNodes }).html;
+
 export const render = renderNodes;
-export default renderNodes;
+export default toHTML;
