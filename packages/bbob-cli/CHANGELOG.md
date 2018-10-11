@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.2.0"></a>
+# 2.2.0 (2018-10-11)
+
+
+### Features
+
+* new [@bbob](https://github.com/bbob)/html api ([#4](https://github.com/JiLiZART/bbob/issues/4)) ([575c1bb](https://github.com/JiLiZART/bbob/commit/575c1bb))
+
+
+
+
 <a name="2.0.3"></a>
 ## <small>2.0.3 (2018-10-07)</small>
 

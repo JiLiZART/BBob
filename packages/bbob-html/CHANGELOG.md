@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.2.0"></a>
+# 2.2.0 (2018-10-11)
+
+
+### Bug Fixes
+
+* **html:** add more tests ([4ebc512](https://github.com/JiLiZART/bbob/commit/4ebc512))
+* **html:** rigt import to support three shaking ([485852d](https://github.com/JiLiZART/bbob/commit/485852d))
+
+
+### Features
+
+* react render support, move some helper functions to plugin-helper ([1a84968](https://github.com/JiLiZART/bbob/commit/1a84968))
+* **parser:** custom open and close tags support, html tags tests ([#3](https://github.com/JiLiZART/bbob/issues/3)) ([790825a](https://github.com/JiLiZART/bbob/commit/790825a))
+* base preset package '[@bbob](https://github.com/bbob)/preset' ([b63864c](https://github.com/JiLiZART/bbob/commit/b63864c))
+* new [@bbob](https://github.com/bbob)/html api ([#4](https://github.com/JiLiZART/bbob/issues/4)) ([575c1bb](https://github.com/JiLiZART/bbob/commit/575c1bb))
+
+
+
+
 <a name="2.1.1"></a>
 ## [2.1.1](https://github.com/JiLiZART/bbob/compare/@bbob/html@2.1.0...@bbob/html@2.1.1) (2018-10-07)
 

@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset-react",
-  "version": "2.0.3",
+  "version": "2.2.0",
   "description": "React preset to transform BBCode to React Components",
   "keywords": [
     "bbcode",
@@ -10,10 +10,10 @@
     "transform"
   ],
   "dependencies": {
-    "@bbob/preset-html5": "^2.1.2"
+    "@bbob/preset-html5": "^2.2.0"
   },
   "devDependencies": {
-    "@bbob/core": "^2.1.0"
+    "@bbob/core": "^2.2.0"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.2.0"></a>
+# 2.2.0 (2018-10-11)
+
+
+
+
+**Note:** Version bump only for package @bbob/preset-react
+
 <a name="2.0.3"></a>
 ## <small>2.0.3 (2018-10-07)</small>
 
