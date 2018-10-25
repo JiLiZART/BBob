@@ -8,8 +8,8 @@ import Adapter from 'enzyme-adapter-react-15';
 import BBCode from '../src';
 Enzyme.configure({ adapter: new Adapter() });
 
-const renderBBCode = input => shallow(
-    <BBCode plugins={[preset()]}>{input}</BBCode>
+const renderBBCode = (input, options) => shallow(
+    <BBCode plugins={[preset()]} options={options}>{input}</BBCode>
 ).html();
 
 describe('@bbob/react', () => {
@@ -42,4 +42,13 @@ describe('@bbob/react', () => {
 
     expect(html).toBe('<span><a href="https://en.wikipedia.org">https://en.wikipedia.org</a></span>')
   });
+
+  describe('options.onlyAllowTags', () => {
+    test('render "[Super Feature] and [i]super[/i]" when only [i] allowed', () => {
+      const html = renderBBCode('[Super Feature] and [i]super[/i]', { onlyAllowTags: ['i'] });
+
+      expect(html).toBe('<span>[Super Feature] and <span style="font-style:italic;">super</span></span>')
+    });
+  });
+
 });

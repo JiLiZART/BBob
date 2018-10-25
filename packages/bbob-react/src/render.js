@@ -6,7 +6,7 @@ import { isTagNode, isStringNode } from '@bbob/plugin-helper';
 
 const toAST = (source, plugins, options) => core(plugins)
   .process(source, {
-      ...options,
+    ...options,
     render: input => html.render(input, { stripTags: true }),
   }).tree;
 
