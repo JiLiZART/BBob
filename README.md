@@ -88,7 +88,7 @@ import {render} from 'react-dom'
 import bbobReactRender from '@bbob/react/es/render'
 import presetReact from '@bbob/preset-react'
 
-console.log(render(<span>{bbobReactRender(`[i]Text[/i]`, presetReact())}</span>)); // <span><span style="font-style: italic;">Text</span></span>
+console.log(render(<span>{bbobReactRender(`[i]Text[/i]`, presetReact(), { onlyAllowTags: ['i'] })}</span>)); // <span><span style="font-style: italic;">Text</span></span>
 ```
 
 ### Presets <a name="basic"></a>
@@ -165,7 +165,7 @@ import BBCode from '@bbob/react/es/Component'
 import reactPreset from '@bbob/preset-react/es'
 
 const MyComponent = () => (
-  <BBCode plugins={[reactPreset()]}>
+  <BBCode plugins={[reactPreset()]} options={{ onlyAllowTags: ['i'] }}>
     [quote]Text[/quote]
   </BBCode>
 )

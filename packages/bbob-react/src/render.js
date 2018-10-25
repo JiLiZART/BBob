@@ -4,8 +4,9 @@ import * as html from '@bbob/html';
 
 import { isTagNode, isStringNode } from '@bbob/plugin-helper';
 
-const toAST = (source, plugins) => core(plugins)
+const toAST = (source, plugins, options) => core(plugins)
   .process(source, {
+      ...options,
     render: input => html.render(input, { stripTags: true }),
   }).tree;
 
@@ -32,8 +33,8 @@ function renderToReactNodes(nodes) {
   return els;
 }
 
-function render(source, plugins) {
-  return renderToReactNodes(toAST(source, plugins));
+function render(source, plugins, options) {
+  return renderToReactNodes(toAST(source, plugins, options));
 }
 
 export { render };
