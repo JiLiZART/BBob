@@ -39,11 +39,18 @@
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
     "lint": "../../node_modules/.bin/eslint .",
-    "size": "../../node_modules/.bin/size-limit"
+    "size": "../../node_modules/.bin/size-limit",
+    "bundlesize": "../../node_modules/.bin/bundlesize"
   },
   "size-limit": [
     {
       "path": "lib/index.js"
+    }
+  ],
+  "bundlesize": [
+    {
+      "path": "./dist/index.min.js",
+      "maxSize": "1.6 KB"
     }
   ],
   "publishConfig": {

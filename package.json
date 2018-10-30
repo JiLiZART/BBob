@@ -3,9 +3,10 @@
     "prepublishOnly": "npm run test",
     "bootstrap": "lerna bootstrap",
     "publish-all": "lerna run build && lerna publish --conventional-commits --registry=https://registry.npmjs.org/",
-    "test": "lerna run build && lerna run link && lerna run test",
-    "cover": "lerna run cover",
-    "lint": "lerna run build && lerna run link && lerna run lint"
+    "size": "lerna run --parallel bundlesize",
+    "test": "lerna run --parallel build && lerna run link && lerna run --parallel test && lerna run --parallel size",
+    "cover": "lerna run --parallel cover",
+    "lint": "lerna run build && lerna run link && lerna run lint && lerna"
   },
   "author": {
     "name": "Nikolay Kostyurin <jilizart@gmail.com>",
@@ -26,6 +27,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "benchmark": "^2.1.4",
+    "bundlesize": "^0.17.0",
     "cross-env": "^5.2.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
