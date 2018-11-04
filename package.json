@@ -2,11 +2,11 @@
   "scripts": {
     "prepublishOnly": "npm run test",
     "bootstrap": "lerna bootstrap",
-    "publish-all": "lerna run build && lerna publish --conventional-commits --registry=https://registry.npmjs.org/",
+    "publish-all": "lerna run --parallel build && lerna publish --conventional-commits --registry=https://registry.npmjs.org/",
     "size": "lerna run --parallel bundlesize",
     "test": "lerna run --parallel build && lerna run link && lerna run --parallel test && lerna run --parallel size",
     "cover": "lerna run --parallel cover",
-    "lint": "lerna run build && lerna run link && lerna run lint && lerna"
+    "lint": "lerna run --parallel build && lerna run --parallel link && lerna run --parallel lint"
   },
   "author": {
     "name": "Nikolay Kostyurin <jilizart@gmail.com>",
