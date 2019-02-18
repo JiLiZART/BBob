@@ -26,17 +26,24 @@ written in pure javascript, no dependencies
 
 | Package              | Status                                                     | Size    | Description               |
 |----------------------|------------------------------------------------------------|---------|---------------------------|
-| @bbob/core           | [![@bbob/core-status]][@bbob/core-package]                 | `3.2K`  | Core package              |
-| @bbob/react          | [![@bbob/react-status]][@bbob/react-package]               | `1.0K`  | React renderer            |
-| @bbob/preset-react   | [![@bbob/preset-react-status]][@bbob/preset-react-package] | `1.8K`  | React default tags preset |
-| @bbob/html           | [![@bbob/html-status]][@bbob/html-package]                 | `689B`  | HTML renderer             |
-| @bbob/preset-html5   | [![@bbob/preset-html5-status]][@bbob/preset-html5-package] | `1.6K`  | HTML5 default tags preset |
+| @bbob/core           | [![@bbob/core-status]][@bbob/core-package]                 | ![@bbob/core-size] | Core package              |
+| @bbob/react          | [![@bbob/react-status]][@bbob/react-package]               | ![@bbob/react-size]  | React renderer            |
+| @bbob/preset-react   | [![@bbob/preset-react-status]][@bbob/preset-react-package] | ![@bbob/preset-react-size]  | React default tags preset |
+| @bbob/html           | [![@bbob/html-status]][@bbob/html-package]                 | ![@bbob/html-size]  | HTML renderer             |
+| @bbob/preset-html5   | [![@bbob/preset-html5-status]][@bbob/preset-html5-package] | ![@bbob/preset-html5-size]  | HTML5 default tags preset |
 
 [@bbob/core-status]: https://img.shields.io/npm/v/@bbob/core.svg
 [@bbob/react-status]: https://img.shields.io/npm/v/@bbob/react.svg
 [@bbob/preset-react-status]: https://img.shields.io/npm/v/@bbob/preset-react.svg
 [@bbob/html-status]: https://img.shields.io/npm/v/@bbob/html.svg
 [@bbob/preset-html5-status]: https://img.shields.io/npm/v/@bbob/preset-html5.svg
+
+[@bbob/core-size]: https://badgen.net/bundlephobia/minzip/@bbob/core
+[@bbob/react-size]: https://badgen.net/bundlephobia/minzip/@bbob/react
+[@bbob/preset-react-size]: https://badgen.net/bundlephobia/minzip/@bbob/preset-react
+[@bbob/html-size]: https://badgen.net/bundlephobia/minzip/@bbob/html
+[@bbob/preset-html5-size]: https://badgen.net/bundlephobia/minzip/@bbob/preset-html5
+
 
 [@bbob/core-package]: https://npmjs.com/package/@bbob/core
 [@bbob/react-package]: https://npmjs.com/package/@bbob/react
