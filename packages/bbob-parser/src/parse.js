@@ -59,7 +59,7 @@ const createTagNodeAttrName = token => tagNodesAttrName.push(token.getValue());
  * @return {Array}
  */
 const getTagNodeAttrName = () =>
-  (tagNodesAttrName.length ? tagNodesAttrName[tagNodesAttrName.length - 1] : null);
+    (tagNodesAttrName.length ? tagNodesAttrName[tagNodesAttrName.length - 1] : null);
 
 /**
  * @private
@@ -153,6 +153,7 @@ const handleTagEnd = (token) => {
 
       options.onError({
         message: `Inconsistent tag '${tag}' on line ${line} and column ${column}`,
+        tagName: tag,
         lineNumber: line,
         columnNumber: column,
       });
@@ -218,6 +219,12 @@ const parseToken = (token) => {
 
 /**
  * @public
+ * @param input
+ * @param opts
+ * @param {Function} opts.createTokenizer
+ * @param {Array<string>} opts.onlyAllowTags
+ * @param {String} opts.openTag
+ * @param {String} opts.closeTag
  * @return {Array}
  */
 const parse = (input, opts = {}) => {

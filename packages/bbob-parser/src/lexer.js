@@ -12,65 +12,18 @@ import {
 } from '@bbob/plugin-helper/lib/char';
 
 import { Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD } from './Token';
+import { createCharGrabber, trimChar, unquote } from './utils';
 
+// for cases <!-- -->
 const EM = '!';
 
-const createCharGrabber = (source, { onSkip } = {}) => {
-  let idx = 0;
-
-  const skip = () => {
-    idx += 1;
-
-    if (onSkip) {
-      onSkip();
-    }
-  };
-  const hasNext = () => source.length > idx;
-  const getRest = () => source.substr(idx);
-
-  return {
-    skip,
-    hasNext,
-    isLast: () => (idx === source.length),
-    grabWhile: (cond) => {
-      const start = idx;
-
-      while (hasNext() && cond(source[idx])) {
-        skip();
-      }
-
-      return source.substr(start, idx - start);
-    },
-    getNext: () => source[idx + 1],
-    getPrev: () => source[idx - 1],
-    getCurr: () => source[idx],
-    getRest,
-    substrUntilChar: (char) => {
-      const restStr = getRest();
-      const indexOfChar = restStr.indexOf(char);
-
-      if (indexOfChar >= 0) {
-        return restStr.substr(0, indexOfChar);
-      }
-
-      return '';
-    },
-  };
-};
-
-const trimChar = (str, charToRemove) => {
-  while (str.charAt(0) === charToRemove) {
-    str = str.substring(1);
-  }
-
-  while (str.charAt(str.length - 1) === charToRemove) {
-    str = str.substring(0, str.length - 1);
-  }
-
-  return str;
-};
-
-const unquote = str => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
+/**
+ * Creates a Token entity class
+ * @param {String} type
+ * @param {String} value
+ * @param {Number} r line number
+ * @param {Number} cl char number in line
+ */
 const createToken = (type, value, r = 0, cl = 0) => new Token(type, value, r, cl);
 
 /**
@@ -106,6 +59,10 @@ function createLexer(buffer, options = {}) {
   const isCharToken = char => (NOT_CHAR_TOKENS.indexOf(char) === -1);
   const isSpecialChar = char => (SPECIAL_CHARS.indexOf(char) >= 0);
 
+  /**
+   * Emits newly created token to subscriber
+   * @param token
+   */
   const emitToken = (token) => {
     if (options.onToken) {
       options.onToken(token);
@@ -115,6 +72,11 @@ function createLexer(buffer, options = {}) {
     tokens[tokenIndex] = token;
   };
 
+  /**
+   * Parses params inside [myTag---params goes here---]content[/myTag]
+   * @param str
+   * @returns {{tag: *, attrs: Array}}
+   */
   const parseAttrs = (str) => {
     let tagName = null;
     let skipSpecialChars = false;
@@ -153,7 +115,7 @@ function createLexer(buffer, options = {}) {
       const attrStr = attrCharGrabber.grabWhile(validAttr);
       const currChar = attrCharGrabber.getCurr();
 
-      // first string before space is a tag name
+      // first string before space is a tag name [tagName params...]
       if (tagName === null) {
         tagName = attrStr;
       } else if (isWhiteSpace(currChar) || currChar === QUOTEMARK || !attrCharGrabber.hasNext()) {
@@ -180,18 +142,18 @@ function createLexer(buffer, options = {}) {
   });
 
   const next = () => {
-    const char = bufferGrabber.getCurr();
+    const currChar = bufferGrabber.getCurr();
 
-    if (char === N) {
+    if (currChar === N) {
       bufferGrabber.skip();
       col = 0;
       row++;
 
-      emitToken(createToken(TYPE_NEW_LINE, char, row, col));
-    } else if (isWhiteSpace(char)) {
+      emitToken(createToken(TYPE_NEW_LINE, currChar, row, col));
+    } else if (isWhiteSpace(currChar)) {
       const str = bufferGrabber.grabWhile(isWhiteSpace);
       emitToken(createToken(TYPE_SPACE, str, row, col));
-    } else if (char === openTag) {
+    } else if (currChar === openTag) {
       const nextChar = bufferGrabber.getNext();
       bufferGrabber.skip(); // skip openTag
 
@@ -200,12 +162,15 @@ function createLexer(buffer, options = {}) {
       const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
 
       if (isCharReserved(nextChar) || hasInvalidChars || bufferGrabber.isLast()) {
-        emitToken(createToken(TYPE_WORD, char, row, col));
+        emitToken(createToken(TYPE_WORD, currChar, row, col));
       } else {
+        //
         const str = bufferGrabber.grabWhile(val => val !== closeTag);
 
         bufferGrabber.skip(); // skip closeTag
+        // [myTag   ]
         const isNoAttrsInTag = str.indexOf(EQ) === -1;
+        // [/myTag]
         const isClosingTag = str[0] === SLASH;
 
         if (isNoAttrsInTag || isClosingTag) {
@@ -214,14 +179,15 @@ function createLexer(buffer, options = {}) {
           const parsed = parseAttrs(str);
 
           emitToken(createToken(TYPE_TAG, parsed.tag, row, col));
+
           parsed.attrs.map(emitToken);
         }
       }
-    } else if (char === closeTag) {
-      bufferGrabber.skip();
+    } else if (currChar === closeTag) {
+      bufferGrabber.skip(); // skip closeTag
 
-      emitToken(createToken(TYPE_WORD, char, row, col));
-    } else if (isCharToken(char)) {
+      emitToken(createToken(TYPE_WORD, currChar, row, col));
+    } else if (isCharToken(currChar)) {
       const str = bufferGrabber.grabWhile(isCharToken);
 
       emitToken(createToken(TYPE_WORD, str, row, col));
@@ -240,6 +206,7 @@ function createLexer(buffer, options = {}) {
 
   const isTokenNested = (token) => {
     const value = openTag + SLASH + token.getValue();
+    // potential bottleneck
     return buffer.indexOf(value) > -1;
   };
 
