@@ -41,10 +41,6 @@ const getTagName = (token) => {
 const convertTagToText = (token) => {
   let text = OPEN_BRAKET;
 
-  if (isTagEnd(token)) {
-    text += SLASH;
-  }
-
   text += getTokenValue(token);
   text += CLOSE_BRAKET;
 

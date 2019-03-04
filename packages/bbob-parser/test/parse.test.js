@@ -50,7 +50,9 @@ describe('Parser', () => {
 
     expectOutput(ast, [
       {
-        attrs: {},
+        attrs: {
+          name: 'value'
+        },
         tag: 'h1',
         content: []
       },
@@ -92,6 +94,20 @@ describe('Parser', () => {
           text: 'Foo Bar',
         },
         content: ['Text'],
+      },
+    ]);
+  });
+
+  test('parse single tag with params', () => {
+    const ast = parse('[url=https://github.com/jilizart/bbob]');
+
+    expectOutput(ast, [
+      {
+        tag: 'url',
+        attrs: {
+          'https://github.com/jilizart/bbob': 'https://github.com/jilizart/bbob',
+        },
+        content: [],
       },
     ]);
   });

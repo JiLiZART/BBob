@@ -1,151 +1,135 @@
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
 import { createLexer } from './lexer';
+import { createList } from './utils';
 
 /**
- * @private
- * @type {Array}
- */
-let nodes;
-/**
- * @private
- * @type {Array}
- */
-let nestedNodes;
-/**
- * @private
- * @type {Array}
- */
-let tagNodes;
-/**
- * @private
- * @type {Array}
- */
-let tagNodesAttrName;
-
-let options = {};
-let tokenizer = null;
-
-// eslint-disable-next-line no-unused-vars
-let tokens = null;
-
-/**
- * @private
- * @param token
- * @return {*}
- */
-const isTagNested = token => tokenizer.isTokenNested(token);
-
-/**
- * @private
- * @return {TagNode}
- */
-const getLastTagNode = () => (tagNodes.length ? tagNodes[tagNodes.length - 1] : null);
-
-/**
- * @private
- * @param {Token} token
+ * @public
+ * @param {String} input
+ * @param {Object} opts
+ * @param {Function} opts.createTokenizer
+ * @param {Array<string>} opts.onlyAllowTags
+ * @param {String} opts.openTag
+ * @param {String} opts.closeTag
  * @return {Array}
  */
-const createTagNode = token => tagNodes.push(TagNode.create(token.getValue()));
-/**
- * @private
- * @param {Token} token
- * @return {Array}
- */
-const createTagNodeAttrName = token => tagNodesAttrName.push(token.getValue());
+const parse = (input, opts = {}) => {
+  const options = opts;
 
-/**
- * @private
- * @return {Array}
- */
-const getTagNodeAttrName = () =>
-    (tagNodesAttrName.length ? tagNodesAttrName[tagNodesAttrName.length - 1] : null);
+  let tokenizer = null;
 
-/**
- * @private
- * @return {Array}
- */
-const clearTagNodeAttrName = () => {
-  if (tagNodesAttrName.length) {
-    tagNodesAttrName.pop();
-  }
-};
+  /**
+   * Result AST of nodes
+   * @private
+   * @type {ItemList}
+   */
+  const nodes = createList();
+  /**
+   * Temp buffer of nodes that's nested to another node
+   * @private
+   * @type {ItemList}
+   */
+  const nestedNodes = createList();
+  /**
+   * Temp buffer of nodes [tag..]...[/tag]
+   * @private
+   * @type {ItemList}
+   */
+  const tagNodes = createList();
+  /**
+   * Temp buffer of tag attributes
+   * @private
+   * @type {ItemList}
+   */
+  const tagNodesAttrName = createList();
 
-/**
- * @private
- * @return {Array}
- */
-const clearTagNode = () => {
-  if (tagNodes.length) {
-    tagNodes.pop();
+  /**
+   * Cache for nested tags checks
+   * @type {{}}
+   */
+  const nestedTagsMap = {};
 
-    clearTagNodeAttrName();
-  }
-};
-
-/**
- * @private
- * @return {Array}
- */
-const getNodes = () => {
-  if (nestedNodes.length) {
-    const nestedNode = nestedNodes[nestedNodes.length - 1];
-
-    return nestedNode.content;
-  }
-
-  return nodes;
-};
-
-/**
- * @private
- * @param tag
- */
-const appendNode = (tag) => {
-  getNodes().push(tag);
-};
-
-/**
- * @private
- * @param value
- * @return {boolean}
- */
-const isAllowedTag = (value) => {
-  if (options.onlyAllowTags && options.onlyAllowTags.length) {
-    return options.onlyAllowTags.indexOf(value) >= 0;
-  }
-
-  return true;
-};
-/**
- * @private
- * @param {Token} token
- */
-const handleTagStart = (token) => {
-  if (token.isStart()) {
-    createTagNode(token);
-
-    if (isTagNested(token)) {
-      nestedNodes.push(getLastTagNode());
-    } else {
-      appendNode(getLastTagNode());
-      clearTagNode();
+  const isTokenNested = (token) => {
+    if (typeof nestedTagsMap[token.getValue()] === 'undefined') {
+      nestedTagsMap[token.getValue()] = tokenizer.isTokenNested(token);
     }
-  }
-};
 
-/**
- * @private
- * @param {Token} token
- */
-const handleTagEnd = (token) => {
-  if (token.isEnd()) {
-    clearTagNode();
+    return nestedTagsMap[token.getValue()];
+  };
 
-    const lastNestedNode = nestedNodes.pop();
+  const isTagNested = tagName => !!nestedTagsMap[tagName];
+
+  /**
+   * Flushes temp tag nodes and its attributes buffers
+   * @private
+   * @return {Array}
+   */
+  const flushTagNodes = () => {
+    if (tagNodes.flushLast()) {
+      tagNodesAttrName.flushLast();
+    }
+  };
+
+  /**
+   * @private
+   * @return {Array}
+   */
+  const getNodes = () => {
+    const lastNestedNode = nestedNodes.getLast();
+
+    return lastNestedNode ? lastNestedNode.content : nodes.toArray();
+  };
+
+  /**
+   * @private
+   * @param {TagNode} tag
+   */
+  const appendNodes = (tag) => {
+    getNodes().push(tag);
+  };
+
+  /**
+   * @private
+   * @param {String} value
+   * @return {boolean}
+   */
+  const isAllowedTag = (value) => {
+    if (options.onlyAllowTags && options.onlyAllowTags.length) {
+      return options.onlyAllowTags.indexOf(value) >= 0;
+    }
+
+    return true;
+  };
+
+  /**
+   * @private
+   * @param {Token} token
+   */
+  const handleTagStart = (token) => {
+    flushTagNodes();
+
+    const tagNode = TagNode.create(token.getValue());
+    const isNested = isTokenNested(token);
+
+    tagNodes.push(tagNode);
+
+    if (isNested) {
+      nestedNodes.push(tagNode);
+    } else {
+      appendNodes(tagNode);
+    }
+  };
+
+  /**
+   * @private
+   * @param {Token} token
+   */
+  const handleTagEnd = (token) => {
+    flushTagNodes();
+
+    const lastNestedNode = nestedNodes.flushLast();
 
     if (lastNestedNode) {
-      appendNode(lastNestedNode);
+      appendNodes(lastNestedNode);
     } else if (options.onError) {
       const tag = token.getValue();
       const line = token.getLine();
@@ -158,92 +142,90 @@ const handleTagEnd = (token) => {
         columnNumber: column,
       });
     }
-  }
-};
+  };
 
-/**
- * @private
- * @param {Token} token
- */
-const handleTagToken = (token) => {
-  if (token.isTag()) {
-    if (isAllowedTag(token.getName())) {
-      // [tag]
+  /**
+   * @private
+   * @param {Token} token
+   */
+  const handleTag = (token) => {
+    // [tag]
+    if (token.isStart()) {
       handleTagStart(token);
-
-      // [/tag]
-      handleTagEnd(token);
-    } else {
-      appendNode(token.toString());
     }
-  }
-};
 
-/**
- * @private
- * @param {Token} token
- */
-const handleTagNode = (token) => {
-  const tagNode = getLastTagNode();
+    // [/tag]
+    if (token.isEnd()) {
+      handleTagEnd(token);
+    }
+  };
 
-  if (tagNode) {
-    if (token.isAttrName()) {
-      createTagNodeAttrName(token);
-      tagNode.attr(getTagNodeAttrName(), '');
-    } else if (token.isAttrValue()) {
-      const attrName = getTagNodeAttrName();
-      const attrValue = token.getValue();
+  /**
+   * @private
+   * @param {Token} token
+   */
+  const handleNode = (token) => {
+    /**
+     * @type {TagNode}
+     */
+    const lastTagNode = tagNodes.getLast();
+    const tokenValue = token.getValue();
+    const isNested = isTagNested(token);
 
-      if (attrName) {
-        tagNode.attr(getTagNodeAttrName(), attrValue);
-        clearTagNodeAttrName();
-      } else {
-        tagNode.attr(attrValue, attrValue);
+    if (lastTagNode) {
+      if (token.isAttrName()) {
+        tagNodesAttrName.push(tokenValue);
+        lastTagNode.attr(tagNodesAttrName.getLast(), '');
+      } else if (token.isAttrValue()) {
+        const attrName = tagNodesAttrName.getLast();
+
+        if (attrName) {
+          lastTagNode.attr(attrName, tokenValue);
+          tagNodesAttrName.flushLast();
+        } else {
+          lastTagNode.attr(tokenValue, tokenValue);
+        }
+      } else if (token.isText()) {
+        if (isNested) {
+          lastTagNode.append(tokenValue);
+        } else {
+          appendNodes(tokenValue);
+        }
+      } else if (token.isTag()) {
+        // if tag is not allowed, just past it as is
+        appendNodes(token.toString());
       }
     } else if (token.isText()) {
-      tagNode.append(token.getValue());
+      appendNodes(tokenValue);
+    } else if (token.isTag()) {
+      // if tag is not allowed, just past it as is
+      appendNodes(token.toString());
     }
-  } else if (token.isText()) {
-    appendNode(token.getValue());
-  }
-};
+  };
 
-/**
- * @private
- * @param token
- */
-const parseToken = (token) => {
-  handleTagToken(token);
-  handleTagNode(token);
-};
+  /**
+   * @private
+   * @param {Token} token
+   */
+  const onToken = (token) => {
+    if (token.isTag() && isAllowedTag(token.getName())) {
+      handleTag(token);
+    } else {
+      handleNode(token);
+    }
+  };
 
-/**
- * @public
- * @param input
- * @param opts
- * @param {Function} opts.createTokenizer
- * @param {Array<string>} opts.onlyAllowTags
- * @param {String} opts.openTag
- * @param {String} opts.closeTag
- * @return {Array}
- */
-const parse = (input, opts = {}) => {
-  options = opts;
   tokenizer = (opts.createTokenizer ? opts.createTokenizer : createLexer)(input, {
-    onToken: parseToken,
+    onToken,
     onlyAllowTags: options.onlyAllowTags,
     openTag: options.openTag,
     closeTag: options.closeTag,
   });
 
-  nodes = [];
-  nestedNodes = [];
-  tagNodes = [];
-  tagNodesAttrName = [];
+  // eslint-disable-next-line no-unused-vars
+  const tokens = tokenizer.tokenize();
 
-  tokens = tokenizer.tokenize();
-
-  return nodes;
+  return nodes.toArray();
 };
 
 export { parse };

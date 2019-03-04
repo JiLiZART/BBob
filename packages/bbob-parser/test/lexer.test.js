@@ -1,13 +1,13 @@
-const Token = require('../src/Token');
-const { createLexer } = require('../src/lexer');
+import {TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE} from '../src/Token'
+import { createLexer } from '../src/lexer'
 
 const TYPE = {
-  WORD: Token.TYPE_WORD,
-  TAG: Token.TYPE_TAG,
-  ATTR_NAME: Token.TYPE_ATTR_NAME,
-  ATTR_VALUE: Token.TYPE_ATTR_VALUE,
-  SPACE: Token.TYPE_SPACE,
-  NEW_LINE: Token.TYPE_NEW_LINE,
+  WORD: TYPE_WORD,
+  TAG: TYPE_TAG,
+  ATTR_NAME: TYPE_ATTR_NAME,
+  ATTR_VALUE: TYPE_ATTR_VALUE,
+  SPACE: TYPE_SPACE,
+  NEW_LINE: TYPE_NEW_LINE,
 };
 
 const tokenize = input => (createLexer(input).tokenize());
@@ -28,6 +28,17 @@ describe('lexer', () => {
     const tokens = tokenize(input);
     const output = [
       [TYPE.TAG, 'SingleTag', '0', '0'],
+    ];
+
+    expectOutput(output, tokens);
+  });
+
+  test('single tag with params', () => {
+    const input = '[user=111]';
+    const tokens = tokenize(input);
+    const output = [
+      [TYPE.TAG, 'user', '0', '0'],
+      [TYPE.ATTR_VALUE, '111', '0', '0'],
     ];
 
     expectOutput(output, tokens);
@@ -245,7 +256,6 @@ describe('lexer', () => {
     });
   });
 
-
   test('bad unclosed tag', () => {
     const input = `[Finger Part A [Finger]`;
     const tokens = tokenize(input);
@@ -278,11 +288,10 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
-
   describe('html', () => {
     const tokenizeHTML = input => createLexer(input, { openTag: '<', closeTag: '>' }).tokenize();
 
-    test('Normal attributes', () => {
+    test('normal attributes', () => {
       const content = `<button id="test0" class="value0" title="value1">class="value0" title="value1"</button>`;
       const tokens = tokenizeHTML(content);
       const output = [
@@ -302,7 +311,7 @@ describe('lexer', () => {
       expectOutput(output, tokens);
     });
 
-    test('Attributes with no quotes or value', () => {
+    test('attributes with no quotes or value', () => {
       const content = `<button id="test1" class=value2 disabled>class=value2 disabled</button>`;
       const tokens = tokenizeHTML(content);
       const output = [
@@ -321,7 +330,7 @@ describe('lexer', () => {
       expectOutput(output, tokens);
     });
 
-    test('Attributes with no space between them. No valid, but accepted by the browser', () => {
+    test('attributes with no space between them. No valid, but accepted by the browser', () => {
       const content = `<button id="test2" class="value4"title="value5">class="value4"title="value5"</button>`;
       const tokens = tokenizeHTML(content);
       const output = [
@@ -338,5 +347,42 @@ describe('lexer', () => {
 
       expectOutput(output, tokens);
     });
+
+    test.skip('style tag', () => {
+      const content = `<style type="text/css">
+<!--
+p{font-family:geneva,helvetica,arial,"lucida sans",sans-serif}
+p{font-size:10pt}
+p{color:#333}
+span{font-family:geneva,helvetica,arial,"lucida sans",sans-serif}
+span{font-size:10pt}
+.sp2{font-size:2px}
+div{font-family:geneva,helvetica,arial,"lucida sans",sans-serif}
+div{font-size:10pt}
+div.sitelinks{padding:0px 10px 0px 10px;font-size:9pt}
+input{font-family:geneva,helvetica,arial,"lucida sans",sans-serif}
+input{padding:0px;margin:0px;font-size:9pt}
+input.medium{width:100px;height:18px}
+input.buttonred{cursor:hand;font-family:verdana;background:#d12124;color:#fff;height:1.4em;font-weight:bold;font-size:9pt;padding:0px 2px;margin:0px;border:0px none #000}
+-->
+</style>`
+    const tokens = tokenizeHTML(content);
+    const output = [];
+
+    expectOutput(output, tokens);
+    });
+
+    test.skip('script tag', () => {
+      const content = `<script language="JavaScript" type="text/javascript">
+		<!--//
+		if ((navigator.platform=='MacPPC')&&(navigator.appVersion.substr(17,8) != "MSIE 5.0")) {document.write('<LINK rel="stylesheet" href="styles/main-3.css" type="text/css">')}
+		if (screen.width > 1200)	{document.write('<LINK rel="stylesheet" href="styles/main-3.css" type="text/css">')}
+		//-->
+	</script>`;
+      const tokens = tokenizeHTML(content);
+      const output = [];
+
+      expectOutput(output, tokens);
+    })
   })
 });

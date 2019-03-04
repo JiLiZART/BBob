@@ -164,7 +164,6 @@ function createLexer(buffer, options = {}) {
       if (isCharReserved(nextChar) || hasInvalidChars || bufferGrabber.isLast()) {
         emitToken(createToken(TYPE_WORD, currChar, row, col));
       } else {
-        //
         const str = bufferGrabber.grabWhile(val => val !== closeTag);
 
         bufferGrabber.skip(); // skip closeTag
