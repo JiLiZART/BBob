@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.3.1"></a>
+## [2.3.1](https://github.com/JiLiZART/bbob/compare/v2.3.0...v2.3.1) (2019-03-04)
+
+
+
+
+**Note:** Version bump only for package @bbob/preset
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/JiLiZART/bbob/compare/@bbob/preset@2.0.0...@bbob/preset@2.1.0) (2018-09-23)
 

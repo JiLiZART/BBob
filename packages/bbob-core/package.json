@@ -1,6 +1,6 @@
 {
   "name": "@bbob/core",
-  "version": "2.2.0",
+  "version": "2.3.1",
   "description": "Fast, flexible, and lean implementation of BBcode parser with plugins",
   "keywords": [
     "bbcode",
@@ -19,7 +19,7 @@
     "transform"
   ],
   "dependencies": {
-    "@bbob/parser": "^2.2.0"
+    "@bbob/parser": "^2.3.1"
   },
   "peerDependencies": {
     "@bbob/html": "^1.x",

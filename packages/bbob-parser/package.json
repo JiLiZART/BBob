@@ -1,6 +1,6 @@
 {
   "name": "@bbob/parser",
-  "version": "2.2.0",
+  "version": "2.3.1",
   "description": "Just parses BBcode to AST array",
   "keywords": [
     "bbcode",
@@ -13,7 +13,7 @@
     "parse"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.0.1"
+    "@bbob/plugin-helper": "^2.3.1"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
