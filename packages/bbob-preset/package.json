@@ -1,7 +1,7 @@
 {
   "name": "@bbob/preset",
   "version": "2.3.1",
-  "description": "Base preset for creating extensible presets for BBob",
+  "description": "Base preset for creating extensible presets for @bbob bbcode parser",
   "keywords": [
     "bbcode",
     "preset",

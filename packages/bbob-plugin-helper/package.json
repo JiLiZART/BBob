@@ -1,7 +1,7 @@
 {
   "name": "@bbob/plugin-helper",
   "version": "2.3.1",
-  "description": "Set of utils to help write plugins",
+  "description": "Set of utils to help write plugins for @bbob bbcode parser",
   "keywords": [
     "bbob",
     "plugin",

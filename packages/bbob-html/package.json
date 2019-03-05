@@ -1,7 +1,7 @@
 {
   "name": "@bbob/html",
   "version": "2.3.1",
-  "description": "HTML renderer for BBCode pareser BBob",
+  "description": "HTML renderer for @bbob bbcode parser",
   "keywords": [],
   "dependencies": {
     "@bbob/core": "^2.3.1",
