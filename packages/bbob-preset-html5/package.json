@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset-html5",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "HTML5 Preset to transform BBCode to HTML",
   "keywords": [
     "bbcode",
@@ -10,11 +10,11 @@
     "transform"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.3.1",
-    "@bbob/preset": "^2.3.1"
+    "@bbob/plugin-helper": "^2.3.2",
+    "@bbob/preset": "^2.3.2"
   },
   "devDependencies": {
-    "@bbob/html": "^2.3.1"
+    "@bbob/html": "^2.3.2"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
