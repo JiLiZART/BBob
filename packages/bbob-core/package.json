@@ -21,12 +21,6 @@
   "dependencies": {
     "@bbob/parser": "^2.3.1"
   },
-  "peerDependencies": {
-    "@bbob/html": "^1.x",
-    "@bbob/preset-html5": "^1.x",
-    "@bbob/preset-react": "^1.x",
-    "@bbob/react": "^1.x"
-  },
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
