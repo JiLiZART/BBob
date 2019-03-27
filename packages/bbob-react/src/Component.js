@@ -5,8 +5,8 @@ import { render } from './render';
 const content = (children, plugins, options) => React.Children.map(children, child =>
   (typeof child === 'string' ? render(child, plugins, options) : child));
 
-const Component = props =>
-  React.createElement(props.container, { ...props.componentProps }, content(props.children, props.plugins, props.options));
+const Component = ({ container, componentProps, children, plugins, options }) =>
+  React.createElement(container, { ...componentProps }, content(children, plugins, options));
 
 if (process.env.NODE_ENV !== 'production') {
   Component.propTypes = {
