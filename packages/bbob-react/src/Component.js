@@ -13,7 +13,9 @@ if (process.env.NODE_ENV !== 'production') {
     container: PropTypes.node,
     children: PropTypes.node.isRequired,
     plugins: PropTypes.arrayOf(Function),
-    componentProps: PropTypes.object,
+    componentProps: PropTypes.shape({
+      className: PropTypes.string,
+    }),
     options: PropTypes.shape({
       parser: PropTypes.func,
       skipParse: PropTypes.bool,
