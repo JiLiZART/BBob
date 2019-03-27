@@ -6,13 +6,14 @@ const content = (children, plugins, options) => React.Children.map(children, chi
   (typeof child === 'string' ? render(child, plugins, options) : child));
 
 const Component = props =>
-  React.createElement(props.container, {}, content(props.children, props.plugins, props.options));
+  React.createElement(props.container, { ...props.componentProps }, content(props.children, props.plugins, props.options));
 
 if (process.env.NODE_ENV !== 'production') {
   Component.propTypes = {
     container: PropTypes.node,
     children: PropTypes.node.isRequired,
     plugins: PropTypes.arrayOf(Function),
+    componentProps: PropTypes.object,
     options: PropTypes.shape({
       parser: PropTypes.func,
       skipParse: PropTypes.bool,
@@ -27,6 +28,7 @@ Component.defaultProps = {
   container: 'span',
   plugins: [],
   options: {},
+  componentProps: {},
 };
 
 export default Component;
