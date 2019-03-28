@@ -12,9 +12,9 @@ const Component = ({
   plugins,
   options,
 }) => React.createElement(
-    container,
-    { ...componentProps },
-    content(children, plugins, options)
+  container,
+  { ...componentProps },
+  content(children, plugins, options),
 );
 
 if (process.env.NODE_ENV !== 'production') {
