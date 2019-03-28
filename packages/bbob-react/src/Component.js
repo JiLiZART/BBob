@@ -13,7 +13,7 @@ const Component = ({
   options,
 }) => React.createElement(
   container,
-  { ...componentProps },
+  componentProps,
   content(children, plugins, options),
 );
 
