@@ -3,14 +3,13 @@ const stub = require('./test/stub');
 
 const suite = new Benchmark.Suite();
 
-// add tests
 suite
-  .add('Regex Based Parser', () => {
-    const RegexParser = require('./test/RegexParser');
-
-    const result = RegexParser.parse(stub);
-  })
-  .add('xBBCode Parser', () => {
+  .add('regex/parser', () => require('./test/RegexParser').parse(stub, {
+    ch: {
+      closable: true,
+    },
+  }))
+  .add('xbbcode/parser', () => {
     const xbbcode = require('xbbcode-parser');
     xbbcode.addTags({
       ch: {
@@ -24,17 +23,15 @@ suite
       },
     });
 
-    const result = xbbcode.process({
+    return xbbcode.process({
       text: stub,
       removeMisalignedTags: false,
       addInLineBreaks: false,
     });
   })
-  .add('BBob Parser', () => {
-    const parse = require('../packages/bbob-parser/lib/index').parse;
-
-    const result = parse(stub);
-  })
+  .add('@bbob/parser', () => require('../packages/bbob-parser/lib/index').parse(stub, {
+    onlyAllowTags: ['ch'],
+  }))
 // add listeners
   .on('cycle', (event) => {
     console.log(String(event.target));
@@ -43,4 +40,4 @@ suite
     console.log(`Fastest is ${this.filter('fastest').map('name')}`);
   })
 // run async
-  .run({ async: true });
+  .run({ async: false });
