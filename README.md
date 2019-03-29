@@ -74,13 +74,12 @@ npm i @bbob/core @bbob/html @bbob/preset-html5
 ```
 
 ```js
-import bbob from '@bbob/core'
-import { render } from '@bbob/html'
+import bbobHTML from '@bbob/html'
 import presetHTML5 from '@bbob/preset-html5'
 
-const processed = bbob(presetHTML5()).process(`[i]Text[/i]`, { render })
+const processed = bbobHTML(`[i]Text[/i]`, presetHTML5())
 
-console.log(processed.html); // <span style="font-style: italic;">Text</span>
+console.log(processed); // <span style="font-style: italic;">Text</span>
 ```
 
 ### React usage <a name="react-usage"></a>
@@ -108,9 +107,9 @@ Its a way to transform parsed BBCode AST tree to another tree by rules in preset
 import { createPreset } from '@bbob/preset'
 
 export default createPreset({
-  quote: node => ({
+  quote: (node) => ({
     tag: 'blockquote',
-    attrs: {},
+    attrs: node.attrs,
     content: [{
       tag: 'p',
       attrs: {},

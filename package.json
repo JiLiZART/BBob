@@ -6,6 +6,7 @@
     "size": "lerna run --parallel bundlesize",
     "test": "lerna run --parallel build && lerna run link && lerna run --parallel test && lerna run --parallel size",
     "cover": "lerna run --parallel cover",
+    "build": "lerna run --parallel build",
     "lint": "lerna run --parallel build && lerna run --parallel link && lerna run --parallel lint"
   },
   "author": {
