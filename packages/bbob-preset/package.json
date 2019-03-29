@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset",
-  "version": "2.3.4",
+  "version": "2.4.0",
   "description": "Base preset for creating extensible presets for @bbob/core",
   "keywords": [
     "preset",
@@ -8,7 +8,7 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.3.4"
+    "@bbob/plugin-helper": "^2.4.0"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

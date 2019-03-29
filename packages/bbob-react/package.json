@@ -1,6 +1,6 @@
 {
   "name": "@bbob/react",
-  "version": "2.3.4",
+  "version": "2.4.0",
   "description": "Render BBCode to React using @bbob/parser",
   "keywords": [
     "react",
@@ -9,10 +9,10 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "^2.3.4",
-    "@bbob/html": "^2.3.4",
-    "@bbob/plugin-helper": "^2.3.4",
-    "@bbob/preset-react": "^2.3.4"
+    "@bbob/core": "^2.4.0",
+    "@bbob/html": "^2.4.0",
+    "@bbob/plugin-helper": "^2.4.0",
+    "@bbob/preset-react": "^2.4.0"
   },
   "peerDependencies": {
     "prop-types": "15.x",
