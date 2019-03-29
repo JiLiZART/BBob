@@ -1,4 +1,5 @@
 import {
+  attrsToString,
   attrValue,
   appendToNode,
   getNodeLength,
@@ -69,5 +70,13 @@ describe('@bbob/plugin-helper', () => {
 
   test('isEOL', () => {
     expect(isEOL('\n')).toBe(true)
+  });
+
+  test('attrsToString', () => {
+    expect(attrsToString({
+      tag: 'test',
+      foo: 'bar',
+      disabled: true
+    })).toBe(` tag="test" foo="bar" disabled`)
   })
 });

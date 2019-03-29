@@ -1,14 +1,5 @@
 import core from '@bbob/core';
-import { attrValue } from '@bbob/plugin-helper';
-
-/**
- * Transforms attrs to html params string
- * @param values
- */
-const attrs = values =>
-  Object.keys(values)
-    .reduce((arr, key) => [...arr, attrValue(key, values[key])], [''])
-    .join(' ');
+import { attrsToString } from '@bbob/plugin-helper';
 
 const SELFCLOSE_END_TAG = '/>';
 const CLOSE_START_TAG = '</';
@@ -30,11 +21,11 @@ const renderNode = (node, { stripTags = false }) => {
     }
 
     if (node.content === null) {
-      return [START_TAG, node.tag, attrs(node.attrs), SELFCLOSE_END_TAG].join('');
+      return [START_TAG, node.tag, attrsToString(node.attrs), SELFCLOSE_END_TAG].join('');
     }
 
     // eslint-disable-next-line no-use-before-define
-    return [START_TAG, node.tag, attrs(node.attrs), END_TAG, renderNodes(node.content), CLOSE_START_TAG, node.tag, END_TAG].join('');
+    return [START_TAG, node.tag, attrsToString(node.attrs), END_TAG, renderNodes(node.content), CLOSE_START_TAG, node.tag, END_TAG].join('');
   }
 
   if (Array.isArray(node)) {
@@ -49,7 +40,8 @@ const renderNodes = (nodes, { stripTags = false } = {}) => []
   .concat(nodes)
   .reduce((r, node) => r + renderNode(node, { stripTags }), '');
 
-const toHTML = (source, plugins) => core(plugins).process(source, { render: renderNodes }).html;
+const toHTML = (source, plugins, options) => core(plugins)
+  .process(source, { ...options, render: renderNodes }).html;
 
 export const render = renderNodes;
 export default toHTML;

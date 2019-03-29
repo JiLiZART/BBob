@@ -14,12 +14,27 @@ const getNodeLength = (node) => {
   return 0;
 };
 
+/**
+ * Appends value to Tag Node
+ * @param {TagNode} node
+ * @param value
+ */
 const appendToNode = (node, value) => {
   node.content.push(value);
 };
 
+/**
+ * Replaces " to &qquot;
+ * @param {String} value
+ */
 const escapeQuote = value => value.replace(/"/g, '&quot;');
 
+/**
+ * Acept name and value and return valid html5 attribute string
+ * @param {String} name
+ * @param {String} value
+ * @return {string}
+ */
 const attrValue = (name, value) => {
   const type = typeof value;
 
@@ -33,7 +48,17 @@ const attrValue = (name, value) => {
   return types[type] ? types[type]() : '';
 };
 
+/**
+ * Transforms attrs to html params string
+ * @param values
+ */
+const attrsToString = values =>
+  Object.keys(values)
+    .reduce((arr, key) => [...arr, attrValue(key, values[key])], [''])
+    .join(' ');
+
 export {
+  attrsToString,
   attrValue,
   appendToNode,
   getNodeLength,

@@ -1,11 +1,6 @@
-import core from '@bbob/core'
-import {render} from '../src';
+import toHTML, {render} from '../src';
 
-const process = (input, params) => {
-  const ast = core().process(input).tree;
-
-  return render(ast, params)
-};
+const process = (input, params) => toHTML(input, [], params);
 
 describe('@bbob/html', () => {
   test('render bbcode tag with single param as html tag', () => {
