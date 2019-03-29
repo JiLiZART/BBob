@@ -1,16 +1,14 @@
 {
   "name": "@bbob/preset",
-  "version": "2.3.2",
-  "description": "Base preset for creating extensible presets for @bbob bbcode parser",
+  "version": "2.3.4",
+  "description": "Base preset for creating extensible presets for @bbob/core",
   "keywords": [
-    "bbcode",
     "preset",
-    "html5",
-    "bbode",
-    "transform"
+    "base",
+    "bbob"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.3.2"
+    "@bbob/plugin-helper": "^2.3.4"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

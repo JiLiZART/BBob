@@ -1,19 +1,18 @@
 {
   "name": "@bbob/react",
-  "version": "2.3.2",
-  "description": "React renderer for @bbob bbcode parser",
+  "version": "2.3.4",
+  "description": "Render BBCode to React using @bbob/parser",
   "keywords": [
     "react",
     "bbcode",
-    "render",
-    "bbob",
-    "parser"
+    "parser",
+    "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "^2.3.2",
-    "@bbob/html": "^2.3.2",
-    "@bbob/plugin-helper": "^2.3.2",
-    "@bbob/preset-react": "^2.3.2"
+    "@bbob/core": "^2.3.4",
+    "@bbob/html": "^2.3.4",
+    "@bbob/plugin-helper": "^2.3.4",
+    "@bbob/preset-react": "^2.3.4"
   },
   "peerDependencies": {
     "prop-types": "15.x",

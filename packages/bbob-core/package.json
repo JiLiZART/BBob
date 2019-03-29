@@ -1,14 +1,13 @@
 {
   "name": "@bbob/core",
-  "version": "2.3.2",
-  "description": "Fast, flexible, and lean implementation of BBcode parser with plugins",
+  "version": "2.3.4",
+  "description": "⚡️Blazing fast BBCode transforming and parsing tool in pure javascript, no dependencies ",
   "keywords": [
     "bbcode",
-    "parser",
     "fast",
+    "parser",
     "bbcode parser",
     "bbcodeparser",
-    "bbob",
     "serializer",
     "bbcode serializer",
     "bbcode serializer",
@@ -16,10 +15,12 @@
     "parse",
     "serialize",
     "html",
-    "transform"
+    "transform",
+    "bbob",
+    "core"
   ],
   "dependencies": {
-    "@bbob/parser": "^2.3.2"
+    "@bbob/parser": "^2.3.4"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
