@@ -30,6 +30,8 @@ export default function bbob(plugs) {
       // raw tree before modification with plugins
       const raw = tree;
 
+      tree.messages = [];
+      tree.options = options;
       tree.walk = walk;
       tree.match = match;
 
