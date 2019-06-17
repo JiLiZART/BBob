@@ -99,6 +99,20 @@ describe('@bbob/preset-html5', () => {
     expect(parse(input)).toBe(result);
   });
 
+  test('[list=1][/list]', () => {
+    const input = `[list=1][/list]`;
+    const result = `<ol type="1"></ol>`;
+
+    expect(parse(input)).toBe(result);
+  });
+
+  test('[list=A][/list]', () => {
+    const input = `[list=A][/list]`;
+    const result = `<ol type="A"></ol>`;
+
+    expect(parse(input)).toBe(result);
+  });
+
   test(`[table][/table]`, () => {
     const input = `[table][tr][td]table 1[/td][td]table 2[/td][/tr][tr][td]table 3[/td][td]table 4[/td][/tr][/table]`;
     const result = `<table><tr><td>table 1</td><td>table 2</td></tr><tr><td>table 3</td><td>table 4</td></tr></table>`;

@@ -125,8 +125,10 @@ export default {
     content: node.content,
   }),
   list: node => ({
-    tag: 'ul',
-    attrs: {},
+    tag: getUniqAttr(node.attrs) ? 'ol' : 'ul',
+    attrs: getUniqAttr(node.attrs) ? {
+      type: getUniqAttr(node.attrs),
+    } : {},
     content: asListItems(node.content),
   }),
 };
