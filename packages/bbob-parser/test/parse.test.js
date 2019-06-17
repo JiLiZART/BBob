@@ -183,5 +183,21 @@ describe('Parser', () => {
         }
       ]);
     });
+
+    test('parse escaped tags tags', () => {
+      const ast = parse('\\[b\\]test\\[/b\\]', {
+        enableEscapeTags: true
+      });
+
+      expectOutput(ast, [
+        '[',
+        'b',
+        ']',
+        'test',
+        '[',
+        '/b',
+        ']',
+      ]);
+    });
   });
 });

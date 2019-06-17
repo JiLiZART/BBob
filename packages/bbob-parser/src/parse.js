@@ -10,6 +10,7 @@ import { createList } from './utils';
  * @param {Array<string>} opts.onlyAllowTags
  * @param {String} opts.openTag
  * @param {String} opts.closeTag
+ * @param {Boolean} opts.enableEscapeTags
  * @return {Array}
  */
 const parse = (input, opts = {}) => {
@@ -220,6 +221,7 @@ const parse = (input, opts = {}) => {
     onlyAllowTags: options.onlyAllowTags,
     openTag: options.openTag,
     closeTag: options.closeTag,
+    enableEscapeTags: options.enableEscapeTags,
   });
 
   // eslint-disable-next-line no-unused-vars
