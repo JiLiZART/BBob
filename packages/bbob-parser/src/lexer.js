@@ -51,7 +51,10 @@ function createLexer(buffer, options = {}) {
   const closeTag = options.closeTag || CLOSE_BRAKET;
 
   const RESERVED_CHARS = [closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM];
-  const NOT_CHAR_TOKENS = options.enableEscapeTags ? [openTag, SPACE, TAB, N, BACKSLASH] : [openTag, SPACE, TAB, N];
+  const NOT_CHAR_TOKENS = [
+    ...(options.enableEscapeTags ? [BACKSLASH] : []),
+    openTag, SPACE, TAB, N, BACKSLASH
+  ];
   const WHITESPACES = [SPACE, TAB];
   const SPECIAL_CHARS = [EQ, SPACE, TAB];
 
@@ -155,12 +158,12 @@ function createLexer(buffer, options = {}) {
     } else if (isWhiteSpace(currChar)) {
       const str = bufferGrabber.grabWhile(isWhiteSpace);
       emitToken(createToken(TYPE_SPACE, str, row, col));
-    } else if (currChar === BACKSLASH && (nextChar === openTag || nextChar === closeTag) && options.enableEscapeTags) {
+    } else if (options.enableEscapeTags && currChar === BACKSLASH &&
+               (nextChar === openTag || nextChar === closeTag)) {
       bufferGrabber.skip(); // skip the \ without emitting anything
       bufferGrabber.skip(); // skip past the [ or ] as well
       emitToken(createToken(TYPE_WORD, nextChar, row, col));
     } else if (currChar === openTag) {
-      const nextChar = bufferGrabber.getNext();
       bufferGrabber.skip(); // skip openTag
 
       // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
