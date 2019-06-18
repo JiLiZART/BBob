@@ -3,6 +3,7 @@
     "prepublishOnly": "npm run test",
     "bootstrap": "lerna bootstrap",
     "publish-all": "lerna run --parallel build && lerna publish --conventional-commits --registry=https://registry.npmjs.org/",
+    "publish-patch": "lerna run --parallel build && lerna publish --conventional-commits --cd-version patch --registry=https://registry.npmjs.org/",
     "size": "lerna run --parallel bundlesize",
     "test": "lerna run --parallel build && lerna run link && lerna run --parallel test && lerna run --parallel size",
     "cover": "lerna run --parallel cover",
