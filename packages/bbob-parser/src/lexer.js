@@ -53,7 +53,7 @@ function createLexer(buffer, options = {}) {
   const RESERVED_CHARS = [closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM];
   const NOT_CHAR_TOKENS = [
     ...(options.enableEscapeTags ? [BACKSLASH] : []),
-    openTag, SPACE, TAB, N, BACKSLASH,
+    openTag, SPACE, TAB, N,
   ];
   const WHITESPACES = [SPACE, TAB];
   const SPECIAL_CHARS = [EQ, SPACE, TAB];
@@ -162,6 +162,10 @@ function createLexer(buffer, options = {}) {
                && (nextChar === openTag || nextChar === closeTag)) {
       bufferGrabber.skip(); // skip the \ without emitting anything
       bufferGrabber.skip(); // skip past the [ or ] as well
+      emitToken(createToken(TYPE_WORD, nextChar, row, col));
+    } else if (options.enableEscapeTags && currChar === BACKSLASH && nextChar === BACKSLASH) {
+      bufferGrabber.skip(); // skip the first \ without emitting anything
+      bufferGrabber.skip(); // skip past the second \ and emit it
       emitToken(createToken(TYPE_WORD, nextChar, row, col));
     } else if (currChar === openTag) {
       bufferGrabber.skip(); // skip openTag

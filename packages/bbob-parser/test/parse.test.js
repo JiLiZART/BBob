@@ -184,7 +184,7 @@ describe('Parser', () => {
       ]);
     });
 
-    test('parse escaped tags tags', () => {
+    test('parse escaped tags', () => {
       const ast = parse('\\[b\\]test\\[/b\\]', {
         enableEscapeTags: true
       });
@@ -196,6 +196,26 @@ describe('Parser', () => {
         'test',
         '[',
         '/b',
+        ']',
+      ]);
+    });
+
+    test('parse escaped tags and escaped backslash', () => {
+      const ast = parse('\\\\\\[b\\\\\\]test\\\\\\[/b\\\\\\]', {
+        enableEscapeTags: true
+      });
+
+      expectOutput(ast, [
+        '\\',
+        '[',
+        'b',
+        '\\',
+        ']',
+        'test',
+        '\\',
+        '[',
+        '/b',
+        '\\',
         ']',
       ]);
     });
