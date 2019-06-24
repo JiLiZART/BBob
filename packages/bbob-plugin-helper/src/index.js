@@ -54,8 +54,8 @@ const attrValue = (name, value) => {
  */
 const attrsToString = (values) => {
   // To avoid some malformed attributes
-  if (!!values) {
-  	return '';
+  if (undefined === values) {
+    return '';
   }
 
   return Object.keys(values)
