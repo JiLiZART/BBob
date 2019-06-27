@@ -54,7 +54,7 @@ const attrValue = (name, value) => {
  */
 const attrsToString = (values) => {
   // To avoid some malformed attributes
-  if (undefined === values) {
+  if (typeof values === 'undefined') {
     return '';
   }
 
