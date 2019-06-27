@@ -52,10 +52,16 @@ const attrValue = (name, value) => {
  * Transforms attrs to html params string
  * @param values
  */
-const attrsToString = values =>
-  Object.keys(values)
+const attrsToString = (values) => {
+  // To avoid some malformed attributes
+  if (typeof values === 'undefined') {
+    return '';
+  }
+
+  return Object.keys(values)
     .reduce((arr, key) => [...arr, attrValue(key, values[key])], [''])
     .join(' ');
+};
 
 export {
   attrsToString,
