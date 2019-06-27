@@ -79,4 +79,8 @@ describe('@bbob/plugin-helper', () => {
       disabled: true
     })).toBe(` tag="test" foo="bar" disabled`)
   })
+  
+  test('attrsToString undefined', () => {
+    expect(attrsToString(undefined)).toBe('')
+  })  
 });
