@@ -140,6 +140,7 @@ import reactPreset from "@bbob/preset-react";
 import reactRender from "@bbob/react/es/render";
 
 const preset = reactPreset.extend((tags, options) => ({
+  ...tags,
   quote: node => ({
     tag: "blockquote",
     content: node.content
