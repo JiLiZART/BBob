@@ -21,7 +21,7 @@ if (process.env.NODE_ENV !== 'production') {
   Component.propTypes = {
     container: PropTypes.node,
     children: PropTypes.node.isRequired,
-    plugins: PropTypes.arrayOf(Function),
+    plugins: PropTypes.arrayOf(PropTypes.func),
     componentProps: PropTypes.shape({
       className: PropTypes.string,
     }),
