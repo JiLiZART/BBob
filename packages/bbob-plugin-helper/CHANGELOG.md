@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.5.2"></a>
+## [2.5.2](https://github.com/JiLiZART/bbob/compare/v2.4.1...v2.5.2) (2019-06-30)
+
+
+### Bug Fixes
+
+* **plugin-helper:** avoid some malformed attributes in attrsToString ([#26](https://github.com/JiLiZART/bbob/issues/26)) ([09ff9af](https://github.com/JiLiZART/bbob/commit/09ff9af))
+
+
+
+
 <a name="2.4.0"></a>
 # [2.4.0](https://github.com/JiLiZART/bbob/compare/v2.3.4...v2.4.0) (2019-03-29)
 
