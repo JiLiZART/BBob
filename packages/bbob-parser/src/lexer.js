@@ -49,10 +49,11 @@ function createLexer(buffer, options = {}) {
   const tokens = new Array(Math.floor(buffer.length));
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
+  const escapeTags = options.enableEscapeTags;
 
   const RESERVED_CHARS = [closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM];
   const NOT_CHAR_TOKENS = [
-    ...(options.enableEscapeTags ? [BACKSLASH] : []),
+    // ...(options.enableEscapeTags ? [BACKSLASH] : []),
     openTag, SPACE, TAB, N,
   ];
   const WHITESPACES = [SPACE, TAB];
@@ -62,6 +63,8 @@ function createLexer(buffer, options = {}) {
   const isWhiteSpace = char => (WHITESPACES.indexOf(char) >= 0);
   const isCharToken = char => (NOT_CHAR_TOKENS.indexOf(char) === -1);
   const isSpecialChar = char => (SPECIAL_CHARS.indexOf(char) >= 0);
+  const isEscapableChar = char => (char === openTag || char === closeTag || char === BACKSLASH);
+  const isEscapeChar = char => char === BACKSLASH;
 
   /**
    * Emits newly created token to subscriber
@@ -158,14 +161,9 @@ function createLexer(buffer, options = {}) {
     } else if (isWhiteSpace(currChar)) {
       const str = bufferGrabber.grabWhile(isWhiteSpace);
       emitToken(createToken(TYPE_SPACE, str, row, col));
-    } else if (options.enableEscapeTags && currChar === BACKSLASH
-               && (nextChar === openTag || nextChar === closeTag)) {
+    } else if (escapeTags && isEscapeChar(currChar) && isEscapableChar(nextChar)) {
       bufferGrabber.skip(); // skip the \ without emitting anything
-      bufferGrabber.skip(); // skip past the [ or ] as well
-      emitToken(createToken(TYPE_WORD, nextChar, row, col));
-    } else if (options.enableEscapeTags && currChar === BACKSLASH && nextChar === BACKSLASH) {
-      bufferGrabber.skip(); // skip the first \ without emitting anything
-      bufferGrabber.skip(); // skip past the second \ and emit it
+      bufferGrabber.skip(); // skip past the [, ] or \ as well
       emitToken(createToken(TYPE_WORD, nextChar, row, col));
     } else if (currChar === openTag) {
       bufferGrabber.skip(); // skip openTag
@@ -200,9 +198,19 @@ function createLexer(buffer, options = {}) {
 
       emitToken(createToken(TYPE_WORD, currChar, row, col));
     } else if (isCharToken(currChar)) {
-      const str = bufferGrabber.grabWhile(isCharToken);
+      if (escapeTags && isEscapeChar(currChar) && !isEscapableChar(nextChar)) {
+        bufferGrabber.skip();
+        emitToken(createToken(TYPE_WORD, currChar, row, col));
+      } else {
+        const str = bufferGrabber.grabWhile((char) => {
+          if (escapeTags) {
+            return isCharToken(char) && !isEscapeChar(char);
+          }
+          return isCharToken(char);
+        });
 
-      emitToken(createToken(TYPE_WORD, str, row, col));
+        emitToken(createToken(TYPE_WORD, str, row, col));
+      }
     }
   };
 

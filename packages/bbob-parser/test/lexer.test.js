@@ -11,6 +11,7 @@ const TYPE = {
 };
 
 const tokenize = input => (createLexer(input).tokenize());
+const tokenizeEscape = input => (createLexer(input, { enableEscapeTags: true }).tokenize());
 
 describe('lexer', () => {
   const expectOutput = (output, tokens) => {
@@ -289,11 +290,9 @@ describe('lexer', () => {
   });
 
   test('escaped tag', () => {
-    const tokenizeEscape = input => (createLexer(input, {
-      enableEscapeTags: true
-    }).tokenize());
     const input = '\\[b\\]test\\[';
     const tokens = tokenizeEscape(input);
+
     const output = [
       [TYPE.WORD, '[', '0', '0'],
       [TYPE.WORD, 'b', '0', '0'],
@@ -306,9 +305,6 @@ describe('lexer', () => {
   });
 
   test('escaped tag and escaped backslash', () => {
-    const tokenizeEscape = input => (createLexer(input, {
-      enableEscapeTags: true
-    }).tokenize());
     const input = '\\\\\\[b\\\\\\]test\\\\\\[/b\\\\\\]';
     const tokens = tokenizeEscape(input);
     const output = [
@@ -323,6 +319,20 @@ describe('lexer', () => {
       [TYPE.WORD, '/b', '0', '0'],
       [TYPE.WORD, '\\', '0', '0'],
       [TYPE.WORD, ']', '0', '0'],
+    ];
+
+    expectOutput(output, tokens);
+  });
+
+  test('bad closed tag with escaped backslash', () => {
+    const input = `[b]test[\\b]`;
+    const tokens = tokenizeEscape(input);
+    const output = [
+      [TYPE.TAG, 'b', '0', '3'],
+      [TYPE.WORD, 'test', '0', '7'],
+      [TYPE.WORD, '[', '0', '8'],
+      [TYPE.WORD, '\\', '0', '9'],
+      [TYPE.WORD, 'b]', '0', '11'],
     ];
 
     expectOutput(output, tokens);
