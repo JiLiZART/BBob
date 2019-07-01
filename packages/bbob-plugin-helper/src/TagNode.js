@@ -3,7 +3,7 @@ import { getNodeLength, appendToNode } from './index';
 
 class TagNode {
   constructor(tag, attrs, content) {
-    this.tag = tag;
+    this.tag = tag.toLowerCase();
     this.attrs = attrs;
     this.content = [].concat(content);
   }
