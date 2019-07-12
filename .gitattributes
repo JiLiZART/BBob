@@ -1,0 +1,2 @@
+#Tell Linguist to ignore all benchmark stuff
+benchmark/* linguist-vendored
