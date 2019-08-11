@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.5.3"></a>
+## [2.5.3](https://github.com/JiLiZART/bbob/compare/v2.4.1...v2.5.3) (2019-08-11)
+
+
+### Bug Fixes
+
+* **bbob-react:** remove `unique "key" prop` warning ([#30](https://github.com/JiLiZART/bbob/issues/30)) ([3d5c1f1](https://github.com/JiLiZART/bbob/commit/3d5c1f1)), closes [#28](https://github.com/JiLiZART/bbob/issues/28)
+* **parser:** infinity loop problem when escape `[\b]` ([#31](https://github.com/JiLiZART/bbob/issues/31)) ([b4cf271](https://github.com/JiLiZART/bbob/commit/b4cf271)), closes [#23](https://github.com/JiLiZART/bbob/issues/23)
+* **plugin-helper:** avoid some malformed attributes in attrsToString ([#26](https://github.com/JiLiZART/bbob/issues/26)) ([09ff9af](https://github.com/JiLiZART/bbob/commit/09ff9af))
+* **react:** fix broken prop type definition ([#27](https://github.com/JiLiZART/bbob/issues/27)) ([19d7ff2](https://github.com/JiLiZART/bbob/commit/19d7ff2))
+
+
+### Features
+
+* **parse:** allow tags to be escaped with backslash ([#17](https://github.com/JiLiZART/bbob/issues/17)) ([c4f78c1](https://github.com/JiLiZART/bbob/commit/c4f78c1))
+* **plugin-helper:** lowercase resulting tag names ([#42](https://github.com/JiLiZART/bbob/issues/42)) ([597c2a9](https://github.com/JiLiZART/bbob/commit/597c2a9))
+* **preset-html5:** list type attribute support ([#18](https://github.com/JiLiZART/bbob/issues/18)) ([847c55e](https://github.com/JiLiZART/bbob/commit/847c55e))
+
+
+
+
 <a name="2.5.2"></a>
 ## [2.5.2](https://github.com/JiLiZART/bbob/compare/v2.4.1...v2.5.2) (2019-06-30)
 
