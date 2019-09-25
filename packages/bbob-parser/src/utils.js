@@ -45,10 +45,14 @@ export const createCharGrabber = (source, options) => {
      * @returns {string}
      */
     grabWhile: (cond) => {
-      const start = cursor.pos;
+      let start = 0;
 
-      while (hasNext() && cond(getCurr())) {
-        skip();
+      if (hasNext()) {
+        start = cursor.pos;
+
+        while (hasNext() && cond(getCurr())) {
+          skip();
+        }
       }
 
       return source.substr(start, cursor.pos - start);
