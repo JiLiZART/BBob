@@ -1,11 +1,11 @@
 {
   "name": "@bbob/html",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "HTML renderer for @bbob bbcode parser",
   "keywords": [],
   "dependencies": {
-    "@bbob/core": "^2.5.3",
-    "@bbob/plugin-helper": "^2.5.3"
+    "@bbob/core": "^2.5.4",
+    "@bbob/plugin-helper": "^2.5.4"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

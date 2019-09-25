@@ -1,6 +1,6 @@
 {
   "name": "@bbob/core",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "⚡️Blazing fast BBCode transforming and parsing tool in pure javascript, no dependencies ",
   "keywords": [
     "bbcode",
@@ -20,7 +20,7 @@
     "core"
   ],
   "dependencies": {
-    "@bbob/parser": "^2.5.3"
+    "@bbob/parser": "^2.5.4"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
