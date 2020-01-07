@@ -1,5 +1,6 @@
 import {TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE} from '../src/Token'
-import { createLexer } from '../src/lexer'
+// import { createLexer } from '../src/lexer'
+import { createLexer } from '../src/lexer2'
 
 const TYPE = {
   WORD: TYPE_WORD,
@@ -51,6 +52,25 @@ describe('lexer', () => {
 
     const output = [
       [TYPE.TAG, 'Single Tag', '0', '0'],
+    ];
+
+    expectOutput(output, tokens);
+  });
+
+  test('string with open tag bracket', () => {
+    const input = 'Some text to [some another';
+    const tokens = tokenize(input);
+
+    const output = [
+        [TYPE.WORD, 'Some', '0', '0'],
+        [TYPE.SPACE, ' ', '0', '0'],
+        [TYPE.WORD, 'text', '0', '0'],
+        [TYPE.SPACE, ' ', '0', '0'],
+        [TYPE.WORD, 'to', '0', '0'],
+        [TYPE.SPACE, ' ', '0', '0'],
+        [TYPE.WORD, '[some', '0', '0'],
+        [TYPE.SPACE, ' ', '0', '0'],
+        [TYPE.WORD, 'another', '0', '0'],
     ];
 
     expectOutput(output, tokens);
