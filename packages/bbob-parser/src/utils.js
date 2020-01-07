@@ -40,6 +40,7 @@ export const createCharGrabber = (source, options) => {
     skip,
     hasNext,
     isLast: () => (cursor.pos === cursor.length),
+    includes: searchValue => source.indexOf(searchValue, cursor.pos) >= 0,
     /**
      * @param {Function} cond
      * @returns {string}
@@ -67,11 +68,10 @@ export const createCharGrabber = (source, options) => {
      * @return {String}
      */
     substrUntilChar: (char) => {
-      const restStr = getRest();
-      const indexOfChar = restStr.indexOf(char);
+      const indexOfChar = source.indexOf(char, cursor.pos);
 
       if (indexOfChar >= 0) {
-        return restStr.substr(0, indexOfChar);
+        return source.substr(cursor.pos, indexOfChar);
       }
 
       return '';
