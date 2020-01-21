@@ -106,7 +106,7 @@ export const trimChar = (str, charToRemove) => {
  * @param str
  * @return {String}
  */
-export const unquote = str => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
+export const unquote = (str) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
 
 /**
  * @typedef {Object} ItemList
@@ -143,7 +143,7 @@ export const createList = (values = []) => {
    * @callback pushCb
    * @param value
    */
-  const push = value => nodes.push(value);
+  const push = (value) => nodes.push(value);
 
   /**
    * @callback toArrayCb

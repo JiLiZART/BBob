@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { render } from './render';
 
-const content = (children, plugins, options) => React.Children.map(children, child =>
-  (typeof child === 'string' ? render(child, plugins, options) : child));
+const content = (children, plugins, options) => React.Children.map(children, (child) => (typeof child === 'string' ? render(child, plugins, options) : child));
 
 const Component = ({
   container,
