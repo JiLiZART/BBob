@@ -1,33 +1,56 @@
 module.exports = {
   presets: [
-    '@babel/preset-env',
     '@babel/preset-react',
   ],
   env: {
     test: {
-      plugins: [
+      presets: [
         [
-          '@babel/plugin-transform-modules-commonjs',
+          '@babel/preset-env',
           {
-            loose: true,
+            modules: 'commonjs',
+            targets: {
+              node: true,
+            },
           },
         ],
       ],
     },
+    // src/index.js ==> lib/index.js
     commonjs: {
-      plugins: [
+      presets: [
         [
-          '@babel/plugin-transform-modules-commonjs',
+          '@babel/preset-env',
+          { loose: true, modules: 'commonjs' },
+        ],
+      ],
+    },
+    // src/index.js ==> es/index.js
+    es: {
+      presets: [
+        [
+          '@babel/preset-env',
           {
             loose: true,
+            targets: {
+              esmodules: true,
+            },
           },
         ],
       ],
     },
+    // src/index.js ==> dist/index.js
     rollup: {
-      // plugins: [
-      //   '@babel/plugin-external-helpers',
-      // ],
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            modules: false,
+            loose: true,
+            targets: '> 0.25%, not dead',
+          },
+        ],
+      ],
     },
   },
 };
