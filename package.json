@@ -4,11 +4,12 @@
     "bootstrap": "lerna bootstrap",
     "publish-all": "lerna run --parallel build && lerna publish --conventional-commits --registry=https://registry.npmjs.org/",
     "publish-patch": "lerna run --parallel build && lerna publish --conventional-commits --cd-version patch --registry=https://registry.npmjs.org/",
-    "size": "lerna run --parallel bundlesize",
-    "test": "lerna run --parallel build && lerna run link && lerna run --parallel test && lerna run --parallel size",
+    "size": "lerna run --parallel size",
+    "bundlesize": "lerna run --parallel bundlesize",
+    "test": "npm run build && lerna run --parallel link && lerna run --parallel test && npm run bundlesize",
     "cover": "lerna run --parallel cover",
     "build": "lerna run --parallel build",
-    "lint": "lerna run --parallel build && lerna run --parallel link && lerna run --parallel lint"
+    "lint": "lerna run --parallel link && npm run build && lerna run --parallel lint"
   },
   "author": {
     "name": "Nikolay Kostyurin <jilizart@gmail.com>",
@@ -27,6 +28,7 @@
     "@rollup/plugin-commonjs": "11.0.1",
     "@rollup/plugin-node-resolve": "7.0.0",
     "@rollup/plugin-replace": "2.3.0",
+    "@size-limit/preset-small-lib": "3.0.0",
     "babel-jest": "24.9.0",
     "benchmark": "2.1.4",
     "bundlesize": "0.18.0",
