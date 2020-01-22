@@ -6,7 +6,7 @@
     "publish-patch": "lerna run --parallel build && lerna publish --conventional-commits --cd-version patch --registry=https://registry.npmjs.org/",
     "size": "lerna run --parallel size",
     "bundlesize": "lerna run --parallel bundlesize",
-    "test": "npm run build && lerna run --parallel link && lerna run --parallel test && npm run bundlesize",
+    "test": "npm run build && lerna run --parallel link && lerna run --parallel test",
     "cover": "lerna run --parallel cover",
     "build": "lerna run --parallel build",
     "lint": "lerna run --parallel link && npm run build && lerna run --parallel lint"
