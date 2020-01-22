@@ -5,15 +5,14 @@ import TagNode from '@bbob/plugin-helper/lib/TagNode';
 const isStartsWith = (node, type) => (node[0] === type);
 
 const styleMap = {
-  color: val => `color:${val};`,
-  size: val => `font-size:${val};`,
+  color: (val) => `color:${val};`,
+  size: (val) => `font-size:${val};`,
 };
 
-const getStyleFromAttrs = attrs =>
-  Object
-    .keys(attrs)
-    .reduce((acc, key) => (styleMap[key] ? acc.concat(styleMap[key](attrs[key])) : acc), [])
-    .join(' ');
+const getStyleFromAttrs = (attrs) => Object
+  .keys(attrs)
+  .reduce((acc, key) => (styleMap[key] ? acc.concat(styleMap[key](attrs[key])) : acc), [])
+  .join(' ');
 
 const asListItems = (content) => {
   let listIdx = 0;
@@ -56,33 +55,33 @@ const asListItems = (content) => {
   return [].concat(listItems);
 };
 
-const getUniqAttr = attrs => Object
+const getUniqAttr = (attrs) => Object
   .keys(attrs)
   .reduce((res, key) => (attrs[key] === key ? attrs[key] : null), null);
 
 export default {
-  b: node => ({
+  b: (node) => ({
     tag: 'span',
     attrs: {
       style: 'font-weight: bold;',
     },
     content: node.content,
   }),
-  i: node => ({
+  i: (node) => ({
     tag: 'span',
     attrs: {
       style: 'font-style: italic;',
     },
     content: node.content,
   }),
-  u: node => ({
+  u: (node) => ({
     tag: 'span',
     attrs: {
       style: 'text-decoration: underline;',
     },
     content: node.content,
   }),
-  s: node => ({
+  s: (node) => ({
     tag: 'span',
     attrs: {
       style: 'text-decoration: line-through;',
@@ -103,7 +102,7 @@ export default {
     },
     content: null,
   }),
-  quote: node => ({
+  quote: (node) => ({
     tag: 'blockquote',
     attrs: {},
     content: [{
@@ -112,19 +111,19 @@ export default {
       content: node.content,
     }],
   }),
-  code: node => ({
+  code: (node) => ({
     tag: 'pre',
     attrs: {},
     content: node.content,
   }),
-  style: node => ({
+  style: (node) => ({
     tag: 'span',
     attrs: {
       style: getStyleFromAttrs(node.attrs),
     },
     content: node.content,
   }),
-  list: node => ({
+  list: (node) => ({
     tag: getUniqAttr(node.attrs) ? 'ol' : 'ul',
     attrs: getUniqAttr(node.attrs) ? {
       type: getUniqAttr(node.attrs),

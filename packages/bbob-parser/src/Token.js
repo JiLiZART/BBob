@@ -17,20 +17,19 @@ const TOKEN_TYPE_ATTR_VALUE = 'attr-value';
 const TOKEN_TYPE_SPACE = 'space';
 const TOKEN_TYPE_NEW_LINE = 'new-line';
 
-const getTokenValue = token => token[TOKEN_VALUE_ID];
-const getTokenLine = token => token[TOKEN_LINE_ID];
-const getTokenColumn = token => token[TOKEN_COLUMN_ID];
+const getTokenValue = (token) => token[TOKEN_VALUE_ID];
+const getTokenLine = (token) => token[TOKEN_LINE_ID];
+const getTokenColumn = (token) => token[TOKEN_COLUMN_ID];
 
-const isTextToken = token =>
-  token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE ||
-    token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE ||
-    token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
+const isTextToken = (token) => token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE
+    || token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE
+    || token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
 
-const isTagToken = token => token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
-const isTagEnd = token => getTokenValue(token).charCodeAt(0) === SLASH.charCodeAt(0);
-const isTagStart = token => !isTagEnd(token);
-const isAttrNameToken = token => token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
-const isAttrValueToken = token => token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
+const isTagToken = (token) => token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
+const isTagEnd = (token) => getTokenValue(token).charCodeAt(0) === SLASH.charCodeAt(0);
+const isTagStart = (token) => !isTagEnd(token);
+const isAttrNameToken = (token) => token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
+const isAttrValueToken = (token) => token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
 
 const getTagName = (token) => {
   const value = getTokenValue(token);

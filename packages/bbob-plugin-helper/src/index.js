@@ -1,13 +1,13 @@
 import { N } from './char';
 
-const isTagNode = el => typeof el === 'object' && !!el.tag;
-const isStringNode = el => typeof el === 'string';
-const isEOL = el => el === N;
+const isTagNode = (el) => typeof el === 'object' && !!el.tag;
+const isStringNode = (el) => typeof el === 'string';
+const isEOL = (el) => el === N;
 
 const getNodeLength = (node) => {
   if (isTagNode(node)) {
     return node.content.reduce((count, contentNode) => count + getNodeLength(contentNode), 0);
-  } else if (isStringNode(node)) {
+  } if (isStringNode(node)) {
     return node.length;
   }
 
@@ -27,7 +27,7 @@ const appendToNode = (node, value) => {
  * Replaces " to &qquot;
  * @param {String} value
  */
-const escapeQuote = value => value.replace(/"/g, '&quot;');
+const escapeQuote = (value) => value.replace(/"/g, '&quot;');
 
 /**
  * Acept name and value and return valid html5 attribute string

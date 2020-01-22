@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
-const isObj = value => (typeof value === 'object');
-const isBool = value => (typeof value === 'boolean');
+const isObj = (value) => (typeof value === 'object');
+const isBool = (value) => (typeof value === 'boolean');
 
 function iterate(t, cb) {
   const tree = t;
@@ -26,7 +26,7 @@ function same(expected, actual) {
   }
 
   if (Array.isArray(expected)) {
-    return expected.every(exp => [].some.call(actual, act => same(exp, act)));
+    return expected.every((exp) => [].some.call(actual, (act) => same(exp, act)));
   }
 
   return Object.keys(expected).every((key) => {
@@ -56,7 +56,7 @@ function match(expression, cb) {
 
       return node;
     })
-    : iterate(this, node => (same(expression, node) ? cb(node) : node));
+    : iterate(this, (node) => (same(expression, node) ? cb(node) : node));
 }
 
 export {

@@ -57,7 +57,7 @@ const parse = (input, opts = {}) => {
     return nestedTagsMap[token.getValue()];
   };
 
-  const isTagNested = tagName => !!nestedTagsMap[tagName];
+  const isTagNested = (tagName) => !!nestedTagsMap[tagName];
 
   /**
    * Flushes temp tag nodes and its attributes buffers
