@@ -14,38 +14,51 @@ import {
 /**
  * Creates a grabber wrapper for source string, that helps to iterate over string char by char
  * @param {String} source
- * @param {Function} onSkip
+ * @param {Object} options
+ * @param {Function} options.onSkip
  * @returns
  */
-export const createCharGrabber = (source, { onSkip } = {}) => {
-  let idx = 0;
+export const createCharGrabber = (source, options) => {
+  // let idx = 0;
+  const cursor = {
+    pos: 0,
+    length: source.length,
+  };
 
   const skip = () => {
-    idx += 1;
+    cursor.pos += 1;
 
-    if (onSkip) {
-      onSkip();
+    if (options && options.onSkip) {
+      options.onSkip();
     }
   };
-  const hasNext = () => source.length > idx;
-  const getRest = () => source.substr(idx);
-  const getCurr = () => source[idx];
+  const hasNext = () => cursor.length > cursor.pos;
+  const getRest = () => source.substr(cursor.pos);
+  const getCurr = () => source[cursor.pos];
 
   return {
     skip,
     hasNext,
-    isLast: () => (idx === source.length),
+    isLast: () => (cursor.pos === cursor.length),
+    /**
+     * @param {Function} cond
+     * @returns {string}
+     */
     grabWhile: (cond) => {
-      const start = idx;
+      let start = 0;
 
-      while (hasNext() && cond(getCurr())) {
-        skip();
+      if (hasNext()) {
+        start = cursor.pos;
+
+        while (hasNext() && cond(getCurr())) {
+          skip();
+        }
       }
 
-      return source.substr(start, idx - start);
+      return source.substr(start, cursor.pos - start);
     },
-    getNext: () => source[idx + 1],
-    getPrev: () => source[idx - 1],
+    getNext: () => source[cursor.pos + 1],
+    getPrev: () => source[cursor.pos - 1],
     getCurr,
     getRest,
     /**
@@ -93,7 +106,7 @@ export const trimChar = (str, charToRemove) => {
  * @param str
  * @return {String}
  */
-export const unquote = str => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
+export const unquote = (str) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
 
 /**
  * @typedef {Object} ItemList
@@ -130,7 +143,7 @@ export const createList = (values = []) => {
    * @callback pushCb
    * @param value
    */
-  const push = value => nodes.push(value);
+  const push = (value) => nodes.push(value);
 
   /**
    * @callback toArrayCb

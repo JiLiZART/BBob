@@ -7,22 +7,22 @@ import { isTagNode, isStringNode } from '@bbob/plugin-helper';
 const toAST = (source, plugins, options) => core(plugins)
   .process(source, {
     ...options,
-    render: input => html.render(input, { stripTags: true }),
+    render: (input) => html.render(input, { stripTags: true }),
   }).tree;
 
-function tagToReactElement(node) {
+function tagToReactElement(node, index) {
   return React.createElement(
     node.tag,
-    node.attrs,
+    { ...node.attrs, key: index },
     // eslint-disable-next-line no-use-before-define
     node.content ? renderToReactNodes(node.content) : null,
   );
 }
 
 function renderToReactNodes(nodes) {
-  const els = [].concat(nodes).reduce((arr, node) => {
+  const els = [].concat(nodes).reduce((arr, node, index) => {
     if (isTagNode(node)) {
-      arr.push(tagToReactElement(node));
+      arr.push(tagToReactElement(node, index));
     } else if (isStringNode(node)) {
       arr.push(node);
     }

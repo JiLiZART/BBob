@@ -1,58 +1,48 @@
-import nodeResolve from 'rollup-plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
-import replace from 'rollup-plugin-replace';
-import commonjs from 'rollup-plugin-commonjs';
-import { uglify } from 'rollup-plugin-uglify';
+import replace from '@rollup/plugin-replace';
+import commonjs from '@rollup/plugin-commonjs';
+import { terser } from 'rollup-plugin-terser';
 
 const pkg = require(`${process.cwd()}/package.json`);
-const env = process.env.NODE_ENV;
+const { NODE_ENV } = process.env;
 
-const globals = {
-  react: 'React',
-  vue: 'Vue',
-};
-const external = ['react', 'vue'];
-
-const input = 'src/index.js';
-
-const plugins = [
-  nodeResolve(),
-  babel({
-    exclude: '**/node_modules/**',
-  }),
-  replace({
-    'process.env.NODE_ENV': JSON.stringify(env),
-  }),
-  commonjs(),
-];
-
-export default [
-  {
-    input,
-    external,
-    output: {
-      file: pkg.browser,
-      format: 'umd',
-      name: pkg.browserName,
-      globals: {
-        react: 'React',
-        vue: 'Vue',
-      },
+const baseConfig = {
+  input: 'src/index.js',
+  external: ['react', 'vue'],
+  output: {
+    file: pkg.browser,
+    format: 'umd',
+    name: pkg.browserName,
+    globals: {
+      react: 'React',
+      vue: 'Vue',
     },
-    plugins,
   },
+  plugins: [
+    resolve(),
+    babel({
+      exclude: '**/node_modules/**',
+    }),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
+    }),
+    commonjs(),
+  ],
+};
+
+// only for dist
+export default [
+  baseConfig,
   {
-    input,
-    external,
+    ...baseConfig,
     output: {
+      ...baseConfig.output,
       file: pkg.browser.replace('.js', '.min.js'),
-      format: 'umd',
-      name: pkg.browserName,
-      globals,
     },
     plugins: [
-      ...plugins,
-      uglify({
+      ...baseConfig.plugins,
+      terser({
         compress: {
           pure_getters: true,
           unsafe: true,

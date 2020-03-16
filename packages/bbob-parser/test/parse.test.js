@@ -59,7 +59,7 @@ describe('Parser', () => {
       'Foo',
       ' ',
       {
-        tag: 'Bar',
+        tag: 'bar',
         attrs: {},
         content: []
       },

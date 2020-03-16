@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { render } from './render';
 
-const content = (children, plugins, options) => React.Children.map(children, child =>
-  (typeof child === 'string' ? render(child, plugins, options) : child));
+const content = (children, plugins, options) => React.Children.map(children, (child) => (typeof child === 'string' ? render(child, plugins, options) : child));
 
 const Component = ({
   container,
@@ -21,7 +20,7 @@ if (process.env.NODE_ENV !== 'production') {
   Component.propTypes = {
     container: PropTypes.node,
     children: PropTypes.node.isRequired,
-    plugins: PropTypes.arrayOf(Function),
+    plugins: PropTypes.arrayOf(PropTypes.func),
     componentProps: PropTypes.shape({
       className: PropTypes.string,
     }),

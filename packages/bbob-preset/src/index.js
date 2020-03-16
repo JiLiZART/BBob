@@ -2,7 +2,7 @@
 import { isTagNode } from '@bbob/plugin-helper';
 
 function process(tags, tree, core) {
-  tree.walk(node => (isTagNode(node) && tags[node.tag]
+  tree.walk((node) => (isTagNode(node) && tags[node.tag]
       ? tags[node.tag](node, core)
       : node));
 }
@@ -17,7 +17,7 @@ function createPreset(defTags) {
     return (tree, core) => process(defTags, tree, core);
   };
 
-  instance.extend = callback => createPreset(callback(defTags, instance.options));
+  instance.extend = (callback) => createPreset(callback(defTags, instance.options));
 
   return instance;
 }
