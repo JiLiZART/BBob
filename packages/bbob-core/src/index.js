@@ -18,6 +18,7 @@ export default function bbob(plugs) {
 
       const parseFn = options.parser || parse;
       const renderFn = options.render;
+      const data = options.data || null;
 
       if (typeof parseFn !== 'function') {
         throw new Error('"parser" is not a function, please pass to "process(input, { parser })" right function');
@@ -41,6 +42,7 @@ export default function bbob(plugs) {
           render: renderFn,
           iterate,
           match,
+          data,
         }) || tree;
       });
 
