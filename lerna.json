@@ -1,5 +1,6 @@
 {
   "lerna": "2.11.0",
+  "version": "2.5.4",
   "packages": [
     "packages/bbob-cli",
     "packages/bbob-core",
@@ -15,5 +16,9 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "version": "2.5.4"
+  "command": {
+    "version": {
+      "message": "chore(release): publish %s"
+    }
+  }
 }
