@@ -204,7 +204,7 @@ const App = ({ renderProp }) => (
 render(<App />) // <span><span style="font-weight: bold;">Super <span style="font-style: italic;">easy</span></span> <span style="text-decoration: underline;">to</span> render</span>
 ```
 
-[![Edit x7w52lqmzz](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/x7w52lqmzz)
+[![Edit x7w52lqmzz](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/jovial-cohen-bvo08)
 
 ### PostHTML usage <a name="posthtml"></a>
 
