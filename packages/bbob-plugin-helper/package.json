@@ -1,6 +1,6 @@
 {
   "name": "@bbob/plugin-helper",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "description": "Set of utils to help write plugins for @bbob/core",
   "keywords": [
     "bbob",
