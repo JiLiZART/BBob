@@ -63,11 +63,23 @@ const attrsToString = (values) => {
     .join(' ');
 };
 
+/**
+ * Gets value from
+ * @example
+ * getUniqAttr({ 'foo': true, 'bar': bar' }) => 'bar'
+ * @param attrs
+ * @returns {string}
+ */
+const getUniqAttr = (attrs) => Object
+  .keys(attrs)
+  .reduce((res, key) => (attrs[key] === key ? attrs[key] : null), null);
+
 export {
   attrsToString,
   attrValue,
   appendToNode,
   getNodeLength,
+  getUniqAttr,
   isTagNode,
   isStringNode,
   isEOL,

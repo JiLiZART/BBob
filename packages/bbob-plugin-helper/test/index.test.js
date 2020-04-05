@@ -3,6 +3,7 @@ import {
   attrValue,
   appendToNode,
   getNodeLength,
+  getUniqAttr,
   isTagNode,
   isStringNode,
   isEOL,
@@ -78,9 +79,17 @@ describe('@bbob/plugin-helper', () => {
       foo: 'bar',
       disabled: true
     })).toBe(` tag="test" foo="bar" disabled`)
-  })
+  });
   
   test('attrsToString undefined', () => {
     expect(attrsToString(undefined)).toBe('')
-  })  
+  });
+
+  test('getUniqAttr with unq attr', () => {
+    expect(getUniqAttr({foo: true, 'http://bar.com': 'http://bar.com'})).toBe('http://bar.com')
+  });
+
+  test('getUniqAttr without unq attr', () => {
+    expect(getUniqAttr({foo: true})).toBe(null)
+  })
 });
