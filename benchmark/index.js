@@ -9,16 +9,25 @@ suite
       closable: true,
     },
   }))
+  .add('ya-bbcode', () => {
+    const Yabbcode = require('ya-bbcode');
+    const parser = new Yabbcode();
+
+    parser.clearTags();
+    parser.registerTag('ch', {
+      type: 'replace',
+      open: () => '<div>',
+      close: () => '</div>',
+    });
+
+    return parser.parse(stub);
+  })
   .add('xbbcode/parser', () => {
     const xbbcode = require('xbbcode-parser');
     xbbcode.addTags({
       ch: {
-        openTag(params, content) {
-          return '<div>';
-        },
-        closeTag(params, content) {
-          return '</div>';
-        },
+        openTag: () => '<div>',
+        closeTag: () => '</div>',
         restrictChildrenTo: [],
       },
     });
