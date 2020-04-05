@@ -57,8 +57,22 @@ export const createCharGrabber = (source, options) => {
 
       return source.substr(start, cursor.pos - start);
     },
-    getNext: () => source[cursor.pos + 1],
-    getPrev: () => source[cursor.pos - 1],
+    getNext: () => {
+      const nextPos = cursor.pos + 1;
+
+      if (nextPos <= (source.length - 1)) {
+        return source[nextPos];
+      }
+      return null;
+    },
+    getPrev: () => {
+      const prevPos = cursor.pos - 1;
+
+      if (typeof source[prevPos] !== 'undefined') {
+        return source[prevPos];
+      }
+      return null;
+    },
     getCurr,
     getRest,
     /**
@@ -127,7 +141,13 @@ export const createList = (values = []) => {
   /**
    * @callback getLastCb
    */
-  const getLast = () => (nodes.length ? nodes[nodes.length - 1] : null);
+  const getLast = () => {
+    if (Array.isArray(nodes) && nodes.length > 0 && typeof nodes[nodes.length - 1] !== 'undefined') {
+      return nodes[nodes.length - 1];
+    }
+
+    return null;
+  };
   /**
    * @callback flushLastCb
    * @return {*}

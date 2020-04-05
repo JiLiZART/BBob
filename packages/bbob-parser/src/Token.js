@@ -17,19 +17,70 @@ const TOKEN_TYPE_ATTR_VALUE = 'attr-value';
 const TOKEN_TYPE_SPACE = 'space';
 const TOKEN_TYPE_NEW_LINE = 'new-line';
 
-const getTokenValue = (token) => token[TOKEN_VALUE_ID];
-const getTokenLine = (token) => token[TOKEN_LINE_ID];
-const getTokenColumn = (token) => token[TOKEN_COLUMN_ID];
+/**
+ * @param {Token} token
+ * @returns {string}
+ */
+const getTokenValue = (token) => {
+  if (token && typeof token[TOKEN_VALUE_ID] !== 'undefined') {
+    return token[TOKEN_VALUE_ID];
+  }
 
-const isTextToken = (token) => token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE
-    || token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE
-    || token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
+  return '';
+};
+/**
+ * @param {Token}token
+ * @returns {number}
+ */
+const getTokenLine = (token) => (token && token[TOKEN_LINE_ID]) || 0;
+const getTokenColumn = (token) => (token && token[TOKEN_COLUMN_ID]) || 0;
 
-const isTagToken = (token) => token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
+/**
+ * @param {Token} token
+ * @returns {boolean}
+ */
+const isTextToken = (token) => {
+  if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
+    return token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE
+        || token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE
+        || token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
+  }
+
+  return false;
+};
+
+/**
+ * @param {Token} token
+ * @returns {boolean}
+ */
+const isTagToken = (token) => {
+  if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
+    return token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
+  }
+
+  return false;
+};
 const isTagEnd = (token) => getTokenValue(token).charCodeAt(0) === SLASH.charCodeAt(0);
 const isTagStart = (token) => !isTagEnd(token);
-const isAttrNameToken = (token) => token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
-const isAttrValueToken = (token) => token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
+const isAttrNameToken = (token) => {
+  if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
+    return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
+  }
+
+  return false;
+};
+
+/**
+ * @param {Token} token
+ * @returns {boolean}
+ */
+const isAttrValueToken = (token) => {
+  if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
+    return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
+  }
+
+  return false;
+};
 
 const getTagName = (token) => {
   const value = getTokenValue(token);

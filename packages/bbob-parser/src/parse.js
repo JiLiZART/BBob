@@ -77,7 +77,11 @@ const parse = (input, opts = {}) => {
   const getNodes = () => {
     const lastNestedNode = nestedNodes.getLast();
 
-    return lastNestedNode ? lastNestedNode.content : nodes.toArray();
+    if (lastNestedNode && Array.isArray(lastNestedNode.content)) {
+      return lastNestedNode.content;
+    }
+
+    return nodes.toArray();
   };
 
   /**
@@ -85,7 +89,11 @@ const parse = (input, opts = {}) => {
    * @param {TagNode} tag
    */
   const appendNodes = (tag) => {
-    getNodes().push(tag);
+    const items = getNodes();
+
+    if (Array.isArray(items)) {
+      items.push(tag);
+    }
   };
 
   /**
