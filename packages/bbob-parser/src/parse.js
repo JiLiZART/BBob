@@ -1,4 +1,5 @@
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
+import { isTagNode } from '@bbob/plugin-helper';
 import { createLexer } from './lexer';
 import { createList } from './utils';
 
@@ -57,7 +58,24 @@ const parse = (input, opts = {}) => {
     return nestedTagsMap[token.getValue()];
   };
 
+  /**
+   * @param tagName
+   * @returns {boolean}
+   */
   const isTagNested = (tagName) => !!nestedTagsMap[tagName];
+
+  /**
+   * @private
+   * @param {String} value
+   * @return {boolean}
+   */
+  const isAllowedTag = (value) => {
+    if (options.onlyAllowTags && options.onlyAllowTags.length) {
+      return options.onlyAllowTags.indexOf(value) >= 0;
+    }
+
+    return true;
+  };
 
   /**
    * Flushes temp tag nodes and its attributes buffers
@@ -86,27 +104,22 @@ const parse = (input, opts = {}) => {
 
   /**
    * @private
-   * @param {TagNode} tag
+   * @param {string|TagNode} node
    */
-  const appendNodes = (tag) => {
+  const appendNodes = (node) => {
     const items = getNodes();
 
     if (Array.isArray(items)) {
-      items.push(tag);
+      if (isTagNode(node)) {
+        if (isAllowedTag(node.tag)) {
+          items.push(node.toTagNode());
+        } else {
+          items.push(node.toString());
+        }
+      } else {
+        items.push(node);
+      }
     }
-  };
-
-  /**
-   * @private
-   * @param {String} value
-   * @return {boolean}
-   */
-  const isAllowedTag = (value) => {
-    if (options.onlyAllowTags && options.onlyAllowTags.length) {
-      return options.onlyAllowTags.indexOf(value) >= 0;
-    }
-
-    return true;
   };
 
   /**
@@ -124,7 +137,7 @@ const parse = (input, opts = {}) => {
     if (isNested) {
       nestedNodes.push(tagNode);
     } else {
-      appendNodes(tagNode);
+      appendNodes(tagNode, token);
     }
   };
 
@@ -138,8 +151,8 @@ const parse = (input, opts = {}) => {
     const lastNestedNode = nestedNodes.flushLast();
 
     if (lastNestedNode) {
-      appendNodes(lastNestedNode);
-    } else if (options.onError) {
+      appendNodes(lastNestedNode, token);
+    } else if (typeof options.onError === 'function') {
       const tag = token.getValue();
       const line = token.getLine();
       const column = token.getColumn();
@@ -217,7 +230,7 @@ const parse = (input, opts = {}) => {
    * @param {Token} token
    */
   const onToken = (token) => {
-    if (token.isTag() && isAllowedTag(token.getName())) {
+    if (token.isTag()) {
       handleTag(token);
     } else {
       handleNode(token);

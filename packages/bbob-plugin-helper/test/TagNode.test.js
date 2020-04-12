@@ -13,9 +13,35 @@ describe('@bbob/plugin-helper/lib/TagNode', () => {
     expect(TagNode.isOf(tagNode, 'test')).toBe(true);
   });
 
-  test('toString', () => {
-    const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
+  describe('toString', () => {
+    test('tag with content and params', () => {
+      const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
 
-    expect(String(tagNode)).toBe('[test]Hello[/test]');
-  });
+      expect(String(tagNode)).toBe('[test test="1"]Hello[/test]');
+    });
+
+    test('tag with content and uniq attr', () => {
+      const tagNode = TagNode.create('test', {test: 'test'}, ['Hello']);
+
+      expect(String(tagNode)).toBe('[test="test"]Hello[/test]');
+    });
+
+    test('tag without content', () => {
+      const tagNode = TagNode.create('test');
+
+      expect(String(tagNode)).toBe('[test]');
+    });
+
+    test('tag without content', () => {
+      const tagNode = TagNode.create('test', {}, 'Content');
+
+      expect(String(tagNode)).toBe('[test]Content[/test]');
+    });
+
+    test('tag with snakeCase', () => {
+      const tagNode = TagNode.create('snakeCaseTag');
+
+      expect(String(tagNode)).toBe('[snakeCaseTag]');
+    });
+  })
 });
