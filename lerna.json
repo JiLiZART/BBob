@@ -1,6 +1,6 @@
 {
   "lerna": "2.11.0",
-  "version": "2.5.5",
+  "version": "2.5.6",
   "packages": [
     "packages/bbob-cli",
     "packages/bbob-core",
