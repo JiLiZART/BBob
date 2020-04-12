@@ -51,7 +51,8 @@
     "rollup-plugin-babel": "4.3.3",
     "rollup-plugin-terser": "5.2.0",
     "size-limit": "3.0.0",
-    "xbbcode-parser": "0.1.2"
+    "xbbcode-parser": "0.1.2",
+    "ya-bbcode": "1.0.12"
   },
   "publishConfig": {
     "access": "public",
