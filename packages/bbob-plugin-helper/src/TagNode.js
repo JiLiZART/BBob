@@ -7,8 +7,8 @@ const getTagAttrs = (tag, params) => {
   const uniqAattr = getUniqAttr(params);
 
   if (uniqAattr) {
-    const tagAttr = attrValue(this.tag, uniqAattr);
-    const attrs = { ...this.attrs };
+    const tagAttr = attrValue(tag, uniqAattr);
+    const attrs = { ...params };
 
     delete attrs[uniqAattr];
 
