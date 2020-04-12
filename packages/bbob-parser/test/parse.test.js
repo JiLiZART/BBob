@@ -119,7 +119,7 @@ describe('Parser', () => {
     expect(onError).toHaveBeenCalled();
   });
 
-  test('parse only allowed tags', () => {
+  test('parse only allowed tags with params', () => {
     const options = {
       onlyAllowTags: ['b', 'i', 'u']
     };
@@ -128,9 +128,20 @@ describe('Parser', () => {
     expectOutput(ast, [
         'hello',
         ' ',
-        '[blah foo="bar"]',
-        'world',
-        '[/blah]'
+        '[blah foo="bar"]world[/blah]',
+    ])
+  });
+
+  test('parse only allowed tags with named param', () => {
+    const options = {
+      onlyAllowTags: ['b', 'i', 'u']
+    };
+    const ast = parse('hello [blah="bar"]world[/blah]', options);
+
+    expectOutput(ast, [
+        'hello',
+        ' ',
+        '[blah="bar"]world[/blah]',
     ])
   });
 
