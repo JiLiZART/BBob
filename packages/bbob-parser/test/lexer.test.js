@@ -1,6 +1,5 @@
-import {TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE} from '../src/Token'
-// import { createLexer } from '../src/lexer'
-import { createLexer } from '../src/lexer2'
+import { TYPE_ID, VALUE_ID, TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE} from '../src/Token'
+import { createLexer } from '../src/lexer'
 
 const TYPE = {
   WORD: TYPE_WORD,
@@ -18,10 +17,13 @@ describe('lexer', () => {
   const expectOutput = (output, tokens) => {
     expect(tokens.length).toBe(output.length);
     expect(tokens).toBeInstanceOf(Array);
+
     tokens.forEach((token, idx) => {
+      const [type, value] = output[idx];
+
       expect(token).toBeInstanceOf(Object);
-      expect(token.type).toEqual(output[idx][0]);
-      expect(token.value).toEqual(output[idx][1]);
+      expect(token[TYPE_ID]).toEqual(type);
+      expect(token[VALUE_ID]).toEqual(value);
     });
   };
 
@@ -52,25 +54,6 @@ describe('lexer', () => {
 
     const output = [
       [TYPE.TAG, 'Single Tag', '0', '0'],
-    ];
-
-    expectOutput(output, tokens);
-  });
-
-  test('string with open tag bracket', () => {
-    const input = 'Some text to [some another';
-    const tokens = tokenize(input);
-
-    const output = [
-        [TYPE.WORD, 'Some', '0', '0'],
-        [TYPE.SPACE, ' ', '0', '0'],
-        [TYPE.WORD, 'text', '0', '0'],
-        [TYPE.SPACE, ' ', '0', '0'],
-        [TYPE.WORD, 'to', '0', '0'],
-        [TYPE.SPACE, ' ', '0', '0'],
-        [TYPE.WORD, '[some', '0', '0'],
-        [TYPE.SPACE, ' ', '0', '0'],
-        [TYPE.WORD, 'another', '0', '0'],
     ];
 
     expectOutput(output, tokens);
@@ -436,10 +419,10 @@ input.medium{width:100px;height:18px}
 input.buttonred{cursor:hand;font-family:verdana;background:#d12124;color:#fff;height:1.4em;font-weight:bold;font-size:9pt;padding:0px 2px;margin:0px;border:0px none #000}
 -->
 </style>`
-    const tokens = tokenizeHTML(content);
-    const output = [];
+      const tokens = tokenizeHTML(content);
+      const output = [];
 
-    expectOutput(output, tokens);
+      expectOutput(output, tokens);
     });
 
     test.skip('script tag', () => {
