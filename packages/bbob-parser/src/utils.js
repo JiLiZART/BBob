@@ -25,8 +25,8 @@ export const createCharGrabber = (source, options) => {
     length: source.length,
   };
 
-  const skip = () => {
-    cursor.pos += 1;
+  const skip = (num = 1) => {
+    cursor.pos += num;
 
     if (options && options.onSkip) {
       options.onSkip();
@@ -40,7 +40,7 @@ export const createCharGrabber = (source, options) => {
     skip,
     hasNext,
     isLast: () => (cursor.pos === cursor.length),
-    includes: searchValue => source.indexOf(searchValue, cursor.pos) >= 0,
+    includes: (searchValue) => source.indexOf(searchValue, cursor.pos) >= 0,
     /**
      * @param {Function} cond
      * @returns {string}
@@ -82,10 +82,11 @@ export const createCharGrabber = (source, options) => {
      * @return {String}
      */
     substrUntilChar: (char) => {
-      const indexOfChar = source.indexOf(char, cursor.pos);
+      const { pos } = cursor;
+      const idx = source.indexOf(char, pos);
 
-      if (indexOfChar >= 0) {
-        return source.substr(cursor.pos, indexOfChar);
+      if (idx >= 0) {
+        return source.substr(pos, idx - pos);
       }
 
       return '';
