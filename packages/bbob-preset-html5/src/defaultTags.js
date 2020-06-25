@@ -55,6 +55,27 @@ const asListItems = (content) => {
   return [].concat(listItems);
 };
 
+const filterJS = (url) => {
+  // eslint-disable-next-line no-script-url
+  const filteredValue = 'javascript:';
+
+  if (url.indexOf(filteredValue) === 0) {
+    return url.replace(filteredValue, '');
+  }
+
+  return url;
+};
+
+const renderUrl = (node, render, options) => {
+  const content = getUniqAttr(node.attrs) ? getUniqAttr(node.attrs) : render(node.content);
+
+  if (typeof options.filterJS === 'undefined' || options.filterJS === true) {
+    return filterJS(content);
+  }
+
+  return content;
+};
+
 export default {
   b: (node) => ({
     tag: 'span',
@@ -84,10 +105,10 @@ export default {
     },
     content: node.content,
   }),
-  url: (node, { render }) => ({
+  url: (node, { render }, options) => ({
     tag: 'a',
     attrs: {
-      href: getUniqAttr(node.attrs) ? getUniqAttr(node.attrs) : render(node.content),
+      href: renderUrl(node, render, options),
     },
     content: node.content,
   }),
