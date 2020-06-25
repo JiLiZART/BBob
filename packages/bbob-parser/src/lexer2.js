@@ -109,14 +109,11 @@ function createLexer(buffer, options = {}) {
     }
 
     if (isNewLine(currChar)) {
-      bufferGrabber.skip();
-      col = 0;
-      row++;
-      return emitToken(createToken(TYPE_NEW_LINE, currChar, row, col));
+      return switchMode(STATE_NEW_LINE);
     }
 
     if (isWhiteSpace(currChar)) {
-      return emitToken(createToken(TYPE_SPACE, bufferGrabber.grabWhile(isWhiteSpace), row, col));
+      return switchMode(STATE_SPACE);
     }
 
     if (escapeTags) {
@@ -140,8 +137,10 @@ function createLexer(buffer, options = {}) {
 
     if (currChar === closeTag) {
       bufferGrabber.skip(); // skip closeTag
-      switchMode(STATE_WORD);
-      return emitToken(createToken(TYPE_WORD, currChar, row, col));
+
+      return switchMode(STATE_WORD);
+
+      // return emitToken(createToken(TYPE_WORD, currChar, row, col));
     }
 
     if (currChar === openTag) {
@@ -170,12 +169,24 @@ function createLexer(buffer, options = {}) {
   };
   const processAttrName = () => {};
   const processAttrValue = () => {};
+  const processSpace = () => {
+    return emitToken(createToken(TYPE_SPACE, bufferGrabber.grabWhile(isWhiteSpace), row, col));
+  };
+  const processNewLine = () => {
+    const currChar = bufferGrabber.getCurr();
+    bufferGrabber.skip();
+    col = 0;
+    row++;
+    return emitToken(createToken(TYPE_NEW_LINE, currChar, row, col));
+  };
 
   const stateMap = {
     [STATE_WORD]: processWord,
     [STATE_TAG]: processTag,
     [STATE_ATTR_NAME]: processAttrName,
     [STATE_ATTR_VALUE]: processAttrValue,
+    [STATE_SPACE]: processSpace,
+    [STATE_NEW_LINE]: processNewLine,
   };
 
   const tokenize = () => {
