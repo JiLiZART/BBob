@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus,no-lonely-if */
-import { isStringNode, isTagNode, getUniqAttr } from '@bbob/plugin-helper';
+import { getUniqAttr, isStringNode, isTagNode } from '@bbob/plugin-helper';
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
 
 const isStartsWith = (node, type) => (node[0] === type);
@@ -55,26 +55,9 @@ const asListItems = (content) => {
   return [].concat(listItems);
 };
 
-const filterJS = (url) => {
-  // eslint-disable-next-line no-script-url
-  const filteredValue = 'javascript:';
-
-  if (url.indexOf(filteredValue) === 0) {
-    return url.replace(filteredValue, '');
-  }
-
-  return url;
-};
-
-const renderUrl = (node, render, options) => {
-  const content = getUniqAttr(node.attrs) ? getUniqAttr(node.attrs) : render(node.content);
-
-  if (typeof options.filterJS === 'undefined' || options.filterJS === true) {
-    return filterJS(content);
-  }
-
-  return content;
-};
+const renderUrl = (node, render) => (getUniqAttr(node.attrs)
+  ? getUniqAttr(node.attrs)
+  : render(node.content));
 
 export default {
   b: (node) => ({

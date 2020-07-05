@@ -42,21 +42,6 @@ describe('@bbob/preset-html5', () => {
     expect(parse(input)).toBe(result);
   });
 
-  test(`filter [url]javascript:alert("hello")[/url]`, () => {
-    const input = `[url]javascript:alert('hello')[/url]`;
-    const result = `<a href="alert('hello')">javascript:alert('hello')</a>`;
-
-    expect(parse(input)).toBe(result);
-  });
-
-  test(`dont filter [url]javascript:alert("hello")[/url]`, () => {
-    const input = `[url]javascript:alert('hello')[/url]`;
-    const result = `<a href="javascript:alert('hello')">javascript:alert('hello')</a>`;
-
-    expect(html(input, preset({ filterJS: false })))
-      .toBe(result);
-  });
-
   test('[img]https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Go-home-2.svg/100px-Go-home-2.svg.png[/img]', () => {
     const input = '[img]https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Go-home-2.svg/100px-Go-home-2.svg.png[/img]';
     const result = '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Go-home-2.svg/100px-Go-home-2.svg.png"/>';
