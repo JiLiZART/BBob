@@ -80,9 +80,24 @@ describe('@bbob/plugin-helper', () => {
       disabled: true
     })).toBe(` tag="test" foo="bar" disabled`)
   });
-  
+
   test('attrsToString undefined', () => {
     expect(attrsToString(undefined)).toBe('')
+  });
+
+  describe('attrsToString escape', () => {
+    test(`javascript:alert("hello")`, () => {
+      expect(attrsToString({
+        onclick: `javascript:alert('hello')`,
+        href: `javascript:alert('hello')`,
+      })).toBe(` onclick="javascript%3Aalert(&#039;hello&#039;)" href="javascript%3Aalert(&#039;hello&#039;)"`)
+    });
+    test(`<tag>`, () => {
+      expect(attrsToString({
+        onclick: `<tag>`,
+        href: `<tag>`,
+      })).toBe(` onclick="&lt;tag&gt;" href="&lt;tag&gt;"`)
+    });
   });
 
   test('getUniqAttr with unq attr', () => {

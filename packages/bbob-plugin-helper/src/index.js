@@ -27,7 +27,14 @@ const appendToNode = (node, value) => {
  * Replaces " to &qquot;
  * @param {String} value
  */
-const escapeQuote = (value) => value.replace(/"/g, '&quot;');
+const escapeHTML = (value) => value
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#039;')
+  // eslint-disable-next-line no-script-url
+  .replace('javascript:', 'javascript%3A');
 
 /**
  * Acept name and value and return valid html5 attribute string
@@ -41,8 +48,8 @@ const attrValue = (name, value) => {
   const types = {
     boolean: () => (value ? `${name}` : ''),
     number: () => `${name}="${value}"`,
-    string: () => `${name}="${escapeQuote(value)}"`,
-    object: () => `${name}="${escapeQuote(JSON.stringify(value))}"`,
+    string: () => `${name}="${escapeHTML(value)}"`,
+    object: () => `${name}="${escapeHTML(JSON.stringify(value))}"`,
   };
 
   return types[type] ? types[type]() : '';
@@ -78,6 +85,7 @@ export {
   attrsToString,
   attrValue,
   appendToNode,
+  escapeHTML,
   getNodeLength,
   getUniqAttr,
   isTagNode,

@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus,no-lonely-if */
-import { isStringNode, isTagNode, getUniqAttr } from '@bbob/plugin-helper';
+import { getUniqAttr, isStringNode, isTagNode } from '@bbob/plugin-helper';
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
 
 const isStartsWith = (node, type) => (node[0] === type);
@@ -55,6 +55,10 @@ const asListItems = (content) => {
   return [].concat(listItems);
 };
 
+const renderUrl = (node, render) => (getUniqAttr(node.attrs)
+  ? getUniqAttr(node.attrs)
+  : render(node.content));
+
 export default {
   b: (node) => ({
     tag: 'span',
@@ -84,10 +88,10 @@ export default {
     },
     content: node.content,
   }),
-  url: (node, { render }) => ({
+  url: (node, { render }, options) => ({
     tag: 'a',
     attrs: {
-      href: getUniqAttr(node.attrs) ? getUniqAttr(node.attrs) : render(node.content),
+      href: renderUrl(node, render, options),
     },
     content: node.content,
   }),
