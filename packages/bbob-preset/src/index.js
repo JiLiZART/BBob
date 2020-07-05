@@ -14,7 +14,12 @@ function process(tags, tree, core, options) {
 function createPreset(defTags) {
   const instance = (opts = {}) => {
     instance.options = Object.assign(instance.options || {}, opts);
-    return (tree, core) => process(defTags, tree, core, instance.options);
+
+    const creator = (tree, core) => process(defTags, tree, core, instance.options);
+
+    creator.options = instance.options;
+
+    return creator;
   };
 
   instance.extend = (callback) => createPreset(callback(defTags, instance.options));
