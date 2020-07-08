@@ -92,6 +92,12 @@ describe('@bbob/plugin-helper', () => {
         href: `javascript:alert('hello')`,
       })).toBe(` onclick="javascript%3Aalert(&#039;hello&#039;)" href="javascript%3Aalert(&#039;hello&#039;)"`)
     });
+    test(`JAVASCRIPT:alert("hello")`, () => {
+      expect(attrsToString({
+        onclick: `JAVASCRIPT:alert('hello')`,
+        href: `JAVASCRIPT:alert('hello')`,
+      })).toBe(` onclick="JAVASCRIPT%3Aalert(&#039;hello&#039;)" href="JAVASCRIPT%3Aalert(&#039;hello&#039;)"`)
+    });
     test(`<tag>`, () => {
       expect(attrsToString({
         onclick: `<tag>`,
