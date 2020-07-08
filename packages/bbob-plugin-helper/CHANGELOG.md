@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.8](https://github.com/JiLiZART/bbob/compare/v2.5.7...v2.5.8) (2020-07-08)
+
+
+### Bug Fixes
+
+* **plugin-helper:** escape case insensitive javascript: attrs ([5ceb2f0](https://github.com/JiLiZART/bbob/commit/5ceb2f0fa4bb5c7b48ec18010fabc406a4d0b8c5))
+
+
+
+
+
 ## [2.5.7](https://github.com/JiLiZART/bbob/compare/v2.5.6...v2.5.7) (2020-07-05)
 
 
