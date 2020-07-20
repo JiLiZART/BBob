@@ -94,7 +94,7 @@ import {render} from 'react-dom'
 import bbobReactRender from '@bbob/react/es/render'
 import presetReact from '@bbob/preset-react'
 
-console.log(render(<span>{bbobReactRender(`[i]Text[/i]`, presetReact(), { onlyAllowTags: ['i'] })}</span>)); // <span><span style="font-style: italic;">Text</span></span>
+console.log(render(<span>{bbobReactRender(`[i]Text[/i]`, presetReact(), { onlyAllowTags: ['i'], enableEscapeTags: true })}</span>)); // <span><span style="font-style: italic;">Text</span></span>
 ```
 
 ### Presets <a name="basic"></a>
