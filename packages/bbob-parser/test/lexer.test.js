@@ -1,5 +1,5 @@
 import { TYPE_ID, VALUE_ID, TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE} from '../src/Token'
-import { createLexer } from '../src/lexer'
+import { createLexer } from '../src/lexer2'
 
 const TYPE = {
   WORD: TYPE_WORD,

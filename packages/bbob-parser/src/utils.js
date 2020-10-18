@@ -3,23 +3,7 @@ import {
   BACKSLASH,
 } from '@bbob/plugin-helper/lib/char';
 
-/**
- * @typedef {Object} CharGrabber
- * @property {Function} skip
- * @property {Function} hasNext
- * @property {Function} isLast
- * @property {Function} grabWhile
- */
-
-/**
- * Creates a grabber wrapper for source string, that helps to iterate over string char by char
- * @param {String} source
- * @param {Object} options
- * @param {Function} options.onSkip
- * @returns
- */
-export const createCharGrabber = (source, options) => {
-  // let idx = 0;
+function CharGrabber(source, options) {
   const cursor = {
     pos: 0,
     length: source.length,
@@ -36,63 +20,71 @@ export const createCharGrabber = (source, options) => {
   const getRest = () => source.substr(cursor.pos);
   const getCurr = () => source[cursor.pos];
 
-  return {
-    skip,
-    hasNext,
-    isLast: () => (cursor.pos === cursor.length),
-    includes: (searchValue) => source.indexOf(searchValue, cursor.pos) >= 0,
-    /**
-     * @param {Function} cond
-     * @returns {string}
-     */
-    grabWhile: (cond) => {
-      let start = 0;
+  this.cursor = cursor;
+  this.skip = skip;
+  this.hasNext = hasNext;
+  this.getCurr = getCurr;
+  this.getRest = getRest;
+  this.isLast = () => (cursor.pos === cursor.length);
+  this.includes = (searchValue) => source.indexOf(searchValue, cursor.pos) >= 0;
+  /**
+   * @param {Function} cond
+   * @returns {string}
+   */
+  this.grabWhile = (cond) => {
+    let start = 0;
 
-      if (hasNext()) {
-        start = cursor.pos;
+    if (hasNext()) {
+      start = cursor.pos;
 
-        while (hasNext() && cond(getCurr())) {
-          skip();
-        }
+      while (hasNext() && cond(getCurr())) {
+        skip();
       }
+    }
 
-      return source.substr(start, cursor.pos - start);
-    },
-    getNext: () => {
-      const nextPos = cursor.pos + 1;
-
-      if (nextPos <= (source.length - 1)) {
-        return source[nextPos];
-      }
-      return null;
-    },
-    getPrev: () => {
-      const prevPos = cursor.pos - 1;
-
-      if (typeof source[prevPos] !== 'undefined') {
-        return source[prevPos];
-      }
-      return null;
-    },
-    getCurr,
-    getRest,
-    /**
-     * Grabs rest of string until it find a char
-     * @param {String} char
-     * @return {String}
-     */
-    substrUntilChar: (char) => {
-      const { pos } = cursor;
-      const idx = source.indexOf(char, pos);
-
-      if (idx >= 0) {
-        return source.substr(pos, idx - pos);
-      }
-
-      return '';
-    },
+    return source.substr(start, cursor.pos - start);
   };
-};
+  this.getNext = () => {
+    const nextPos = cursor.pos + 1;
+
+    if (nextPos <= (source.length - 1)) {
+      return source[nextPos];
+    }
+    return null;
+  };
+  this.getPrev = () => {
+    const prevPos = cursor.pos - 1;
+
+    if (typeof source[prevPos] !== 'undefined') {
+      return source[prevPos];
+    }
+    return null;
+  };
+  /**
+   * Grabs rest of string until it find a char
+   * @param {String} char
+   * @return {String}
+   */
+  this.substrUntilChar = (char) => {
+    const { pos } = cursor;
+    const idx = source.indexOf(char, pos);
+
+    if (idx >= 0) {
+      return source.substr(pos, idx - pos);
+    }
+
+    return '';
+  };
+}
+
+/**
+ * Creates a grabber wrapper for source string, that helps to iterate over string char by char
+ * @param {String} source
+ * @param {Object} options
+ * @param {Function} options.onSkip
+ * @return CharGrabber
+ */
+export const createCharGrabber = (source, options) => new CharGrabber(source, options);
 
 /**
  * Trims string from start and end by char
@@ -123,58 +115,30 @@ export const trimChar = (str, charToRemove) => {
  */
 export const unquote = (str) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
 
-/**
- * @typedef {Object} ItemList
- * @type {Object}
- * @property {getLastCb} getLast
- * @property {flushLastCb} flushLast
- * @property {pushCb} push
- * @property {toArrayCb} toArray
- */
-
-/**
- *
- * @param values
- * @return {ItemList}
- */
-export const createList = (values = []) => {
+function NodeList(values = []) {
   const nodes = values;
-  /**
-   * @callback getLastCb
-   */
-  const getLast = () => {
+
+  this.getLast = () => {
     if (Array.isArray(nodes) && nodes.length > 0 && typeof nodes[nodes.length - 1] !== 'undefined') {
       return nodes[nodes.length - 1];
     }
 
     return null;
   };
-  /**
-   * @callback flushLastCb
-   * @return {*}
-   */
-  const flushLast = () => {
+  this.flushLast = () => {
     if (nodes.length) {
       return nodes.pop();
     }
 
     return false;
   };
-  /**
-   * @callback pushCb
-   * @param value
-   */
-  const push = (value) => nodes.push(value);
+  this.push = (value) => nodes.push(value);
+  this.toArray = () => nodes;
+}
 
-  /**
-   * @callback toArrayCb
-   * @return {Array}
-   */
-
-  return {
-    getLast,
-    flushLast,
-    push,
-    toArray: () => nodes,
-  };
-};
+/**
+ *
+ * @param values
+ * @return {NodeList}
+ */
+export const createList = (values = []) => new NodeList(values);
