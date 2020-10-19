@@ -6,9 +6,38 @@ import {
 function CharGrabber(source, options) {
   const cursor = {
     pos: 0,
-    length: source.length,
-  };
+    len: source.length,
+    get curr() {
+      return source[cursor.pos];
+    },
+    get prev() {
+      const prevPos = cursor.pos - 1;
 
+      if (typeof source[prevPos] !== 'undefined') {
+        return source[prevPos];
+      }
+
+      return null;
+    },
+    get next() {
+      const nextPos = cursor.pos + 1;
+
+      if (nextPos <= (source.length - 1)) {
+        return source[nextPos];
+      }
+
+      return null;
+    },
+    get rest() {
+      return source.substr(cursor.pos);
+    },
+    get hasNext() {
+      return cursor.len > cursor.pos;
+    },
+    get isLast() {
+      return cursor.pos === cursor.len;
+    },
+  };
   const skip = (num = 1) => {
     cursor.pos += num;
 
@@ -16,16 +45,15 @@ function CharGrabber(source, options) {
       options.onSkip();
     }
   };
-  const hasNext = () => cursor.length > cursor.pos;
-  const getRest = () => source.substr(cursor.pos);
-  const getCurr = () => source[cursor.pos];
 
-  this.cursor = cursor;
+  this.c = cursor;
   this.skip = skip;
-  this.hasNext = hasNext;
-  this.getCurr = getCurr;
-  this.getRest = getRest;
-  this.isLast = () => (cursor.pos === cursor.length);
+  this.hasNext = () => cursor.hasNext;
+  this.getCurr = () => cursor.curr;
+  this.getRest = () => cursor.rest;
+  this.getNext = () => cursor.next;
+  this.getPrev = () => cursor.prev;
+  this.isLast = () => cursor.isLast;
   this.includes = (searchValue) => source.indexOf(searchValue, cursor.pos) >= 0;
   /**
    * @param {Function} cond
@@ -34,31 +62,15 @@ function CharGrabber(source, options) {
   this.grabWhile = (cond) => {
     let start = 0;
 
-    if (hasNext()) {
+    if (cursor.hasNext) {
       start = cursor.pos;
 
-      while (hasNext() && cond(getCurr())) {
+      while (cursor.hasNext && cond(cursor.curr)) {
         skip();
       }
     }
 
     return source.substr(start, cursor.pos - start);
-  };
-  this.getNext = () => {
-    const nextPos = cursor.pos + 1;
-
-    if (nextPos <= (source.length - 1)) {
-      return source[nextPos];
-    }
-    return null;
-  };
-  this.getPrev = () => {
-    const prevPos = cursor.pos - 1;
-
-    if (typeof source[prevPos] !== 'undefined') {
-      return source[prevPos];
-    }
-    return null;
   };
   /**
    * Grabs rest of string until it find a char
