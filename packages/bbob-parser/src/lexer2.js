@@ -47,8 +47,6 @@ function createLexer(buffer, options = {}) {
   const STATE_WORD = 0;
   const STATE_TAG = 1;
   const STATE_TAG_ATTRS = 2;
-  const STATE_SPACE = 3;
-  const STATE_NEW_LINE = 4;
 
   const TAG_STATE_NAME = 0;
   const TAG_STATE_ATTR = 1;
@@ -180,64 +178,10 @@ function createLexer(buffer, options = {}) {
   }
 
   function nextState() {
-    if (stateMode === STATE_WORD) {
+    if (stateMode === STATE_TAG) {
       const currChar = bufferGrabber.getCurr();
-      const nextChar = bufferGrabber.getNext();
-
-      if (isNewLine(currChar)) {
-        return STATE_NEW_LINE;
-      }
-
-      if (isWhiteSpace(currChar)) {
-        return STATE_SPACE;
-      }
 
       if (currChar === openTag) {
-        if (bufferGrabber.includes(closeTag)) {
-          return STATE_TAG;
-        }
-
-        bufferGrabber.skip();
-
-        emitToken(TYPE_WORD, currChar);
-
-        return STATE_WORD;
-      }
-
-      if (escapeTags) {
-        if (isEscapeChar(currChar)) {
-          bufferGrabber.skip(); // skip the \ without emitting anything
-
-          if (isEscapableChar(nextChar)) {
-            bufferGrabber.skip(); // skip past the [, ] or \ as well
-
-            emitToken(TYPE_WORD, nextChar);
-
-            return STATE_WORD;
-          }
-
-          emitToken(TYPE_WORD, currChar);
-
-          return STATE_WORD;
-        }
-
-        const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
-
-        emitToken(TYPE_WORD, bufferGrabber.grabWhile(isChar));
-
-        return STATE_WORD;
-      }
-
-      emitToken(TYPE_WORD, bufferGrabber.grabWhile(isCharToken));
-
-      return STATE_WORD;
-    }
-
-    if (stateMode === STATE_TAG) {
-      const char = bufferGrabber.getCurr();
-
-      if (char === openTag) {
-        const currChar = bufferGrabber.getCurr();
         const nextChar = bufferGrabber.getNext();
 
         bufferGrabber.skip();
@@ -270,7 +214,7 @@ function createLexer(buffer, options = {}) {
         return STATE_TAG_ATTRS;
       }
 
-      if (char === closeTag) {
+      if (currChar === closeTag) {
         bufferGrabber.skip();
 
         return STATE_WORD;
@@ -294,23 +238,64 @@ function createLexer(buffer, options = {}) {
       return STATE_WORD;
     }
 
-    if (stateMode === STATE_SPACE) {
-      const name = bufferGrabber.grabWhile(isWhiteSpace);
+    if (stateMode === STATE_WORD) {
+      if (isNewLine(bufferGrabber.getCurr())) {
+        emitToken(TYPE_NEW_LINE, bufferGrabber.getCurr());
 
-      emitToken(TYPE_SPACE, name);
+        bufferGrabber.skip();
 
-      return STATE_WORD;
-    }
+        col = 0;
+        row++;
 
-    if (stateMode === STATE_NEW_LINE) {
-      const currChar = bufferGrabber.getCurr();
+        return STATE_WORD;
+      }
 
-      bufferGrabber.skip();
+      if (isWhiteSpace(bufferGrabber.getCurr())) {
+        emitToken(TYPE_SPACE, bufferGrabber.grabWhile(isWhiteSpace));
 
-      col = 0;
-      row++;
+        return STATE_WORD;
+      }
 
-      emitToken(TYPE_NEW_LINE, currChar);
+      if (bufferGrabber.getCurr() === openTag) {
+        if (bufferGrabber.includes(closeTag)) {
+          return STATE_TAG;
+        }
+
+        emitToken(TYPE_WORD, bufferGrabber.getCurr());
+
+        bufferGrabber.skip();
+
+        return STATE_WORD;
+      }
+
+      if (escapeTags) {
+        if (isEscapeChar(bufferGrabber.getCurr())) {
+          const currChar = bufferGrabber.getCurr();
+          const nextChar = bufferGrabber.getNext();
+
+          bufferGrabber.skip(); // skip the \ without emitting anything
+
+          if (isEscapableChar(nextChar)) {
+            bufferGrabber.skip(); // skip past the [, ] or \ as well
+
+            emitToken(TYPE_WORD, nextChar);
+
+            return STATE_WORD;
+          }
+
+          emitToken(TYPE_WORD, currChar);
+
+          return STATE_WORD;
+        }
+
+        const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
+
+        emitToken(TYPE_WORD, bufferGrabber.grabWhile(isChar));
+
+        return STATE_WORD;
+      }
+
+      emitToken(TYPE_WORD, bufferGrabber.grabWhile(isCharToken));
 
       return STATE_WORD;
     }
