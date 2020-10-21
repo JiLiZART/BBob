@@ -111,6 +111,7 @@ function createLexer(buffer, options = {}) {
     const currChar = bufferGrabber.getCurr();
     const nextChar = bufferGrabber.getNext();
 
+
     if (isNewLine(currChar)) {
       return switchMode(STATE_NEW_LINE);
     }
@@ -132,7 +133,16 @@ function createLexer(buffer, options = {}) {
     }
 
     if (escapeTags) {
-      if (isEscapeChar(currChar) && !isEscapableChar(nextChar)) {
+      if (isEscapeChar(currChar)) {
+        if (isEscapableChar(nextChar)) {
+          bufferGrabber.skip(); // skip the \ without emitting anything
+          bufferGrabber.skip(); // skip past the [, ] or \ as well
+
+          emitToken(TYPE_WORD, nextChar);
+
+          return switchMode(STATE_WORD);
+        }
+
         bufferGrabber.skip();
 
         emitToken(TYPE_WORD, currChar);
@@ -141,8 +151,9 @@ function createLexer(buffer, options = {}) {
       }
 
       const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
+      const word = bufferGrabber.grabWhile(isChar);
 
-      emitToken(TYPE_WORD, bufferGrabber.grabWhile(isChar));
+      emitToken(TYPE_WORD, word);
 
       return switchMode(STATE_WORD);
     }
