@@ -214,8 +214,8 @@ describe('lexer', () => {
       [
         [TYPE.WORD, '!', '0', '0'],
         [TYPE.WORD, '[', '1', '0'],
-        [TYPE.WORD, ']', '1', '0'],
-        [TYPE.WORD, '(image.jpg)', '1', '0'],
+        [TYPE.WORD, '](image.jpg)', '1', '0'],
+        // [TYPE.WORD, '', '1', '0'],
       ],
       [
         [TYPE.WORD, 'x', '0', '0'],

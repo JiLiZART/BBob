@@ -48,16 +48,37 @@ function CharGrabber(source, options) {
 
   this.c = cursor;
   this.skip = skip;
+  /**
+   * @returns {Boolean}
+   */
   this.hasNext = () => cursor.hasNext;
+  /**
+   * @returns {String}
+   */
   this.getCurr = () => cursor.curr;
+  /**
+   * @returns {String}
+   */
   this.getRest = () => cursor.rest;
+  /**
+   * @returns {String}
+   */
   this.getNext = () => cursor.next;
+  /**
+   * @returns {String}
+   */
   this.getPrev = () => cursor.prev;
+  /**
+   * @returns {Boolean}
+   */
   this.isLast = () => cursor.isLast;
+  /**
+   * @returns {Boolean}
+   */
   this.includes = (searchValue) => source.indexOf(searchValue, cursor.pos) >= 0;
   /**
    * @param {Function} cond
-   * @returns {string}
+   * @return {String}
    */
   this.grabWhile = (cond) => {
     let start = 0;
