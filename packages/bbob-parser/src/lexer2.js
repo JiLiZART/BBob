@@ -228,7 +228,11 @@ function createLexer(buffer, options = {}) {
 
       const isEnd = tagGrabber.isLast();
 
-      emitToken(isEnd ? TYPE_ATTR_VALUE : TYPE_ATTR_NAME, name);
+      if (isEnd) {
+        emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
+      } else {
+        emitToken(TYPE_ATTR_NAME, name);
+      }
 
       return switchTagMode(TAG_STATE_VALUE);
     },
