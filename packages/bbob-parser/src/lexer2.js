@@ -111,6 +111,14 @@ function createLexer(buffer, options = {}) {
     const currChar = bufferGrabber.getCurr();
     const nextChar = bufferGrabber.getNext();
 
+    if (isNewLine(currChar)) {
+      return switchMode(STATE_NEW_LINE);
+    }
+
+    if (isWhiteSpace(currChar)) {
+      return switchMode(STATE_SPACE);
+    }
+
     if (currChar === openTag) {
       if (bufferGrabber.includes(closeTag)) {
         return switchMode(STATE_TAG);
@@ -123,14 +131,6 @@ function createLexer(buffer, options = {}) {
       return switchMode(STATE_WORD);
     }
 
-    if (isNewLine(currChar)) {
-      return switchMode(STATE_NEW_LINE);
-    }
-
-    if (isWhiteSpace(currChar)) {
-      return switchMode(STATE_SPACE);
-    }
-
     if (escapeTags) {
       if (isEscapeChar(currChar) && !isEscapableChar(nextChar)) {
         bufferGrabber.skip();
@@ -140,31 +140,24 @@ function createLexer(buffer, options = {}) {
         return switchMode(STATE_WORD);
       }
 
-      const str = bufferGrabber.grabWhile((char) => isCharToken(char) && !isEscapeChar(char));
+      const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
 
-      emitToken(TYPE_WORD, str);
+      emitToken(TYPE_WORD, bufferGrabber.grabWhile(isChar));
 
       return switchMode(STATE_WORD);
     }
 
-    const str = bufferGrabber.grabWhile(isCharToken);
-
-    emitToken(TYPE_WORD, str);
+    emitToken(TYPE_WORD, bufferGrabber.grabWhile(isCharToken));
 
     return switchMode(STATE_WORD);
   };
-  const processTag = () => {
-    const currChar = bufferGrabber.getCurr();
-    const nextChar = bufferGrabber.getNext();
 
-    if (currChar === closeTag) {
-      bufferGrabber.skip(); // skip closeTag
+  const tagMap = {
+    [openTag]: () => {
+      const currChar = bufferGrabber.getCurr();
+      const nextChar = bufferGrabber.getNext();
 
-      return switchMode(STATE_WORD);
-    }
-
-    if (currChar === openTag) {
-      bufferGrabber.skip(); // skip openTag
+      bufferGrabber.skip();
 
       // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
       const substr = bufferGrabber.substrUntilChar(closeTag);
@@ -192,9 +185,12 @@ function createLexer(buffer, options = {}) {
       }
 
       return switchMode(STATE_TAG_ATTRS);
-    }
+    },
+    [closeTag]: () => {
+      bufferGrabber.skip();
 
-    return switchMode(STATE_WORD);
+      return switchMode(STATE_WORD);
+    },
   };
 
   const tagStateMap = {
@@ -206,9 +202,8 @@ function createLexer(buffer, options = {}) {
       }
 
       const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagGrabber.isLast());
-      const name = tagGrabber.grabWhile(validName);
 
-      emitToken(TYPE_TAG, name);
+      emitToken(TYPE_TAG, tagGrabber.grabWhile(validName));
 
       const hasEQ = tagGrabber.includes(EQ);
 
@@ -251,13 +246,23 @@ function createLexer(buffer, options = {}) {
 
         return (isEQ || isWS) === false;
       });
-      const escaped = unquote(trimChar(name, QUOTEMARK));
 
-      emitToken(TYPE_ATTR_VALUE, escaped);
+      emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
 
       return switchTagMode(TAG_STATE_ATTR);
     },
   };
+
+  const processTag = () => {
+    const char = bufferGrabber.getCurr();
+
+    if (tagMap[char]) {
+      return tagMap[char]();
+    }
+
+    return switchMode(STATE_WORD);
+  };
+
   const processTagAttrs = () => {
     const tagStr = bufferGrabber.grabWhile((char) => char !== closeTag);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
@@ -281,7 +286,9 @@ function createLexer(buffer, options = {}) {
   };
   const processNewLine = () => {
     const currChar = bufferGrabber.getCurr();
+
     bufferGrabber.skip();
+
     col = 0;
     row++;
 
