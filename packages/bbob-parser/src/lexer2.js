@@ -100,65 +100,15 @@ function createLexer(buffer, options = {}) {
   };
 
   const switchMode = (newMode) => {
-    stateMode = newMode;
+    if (stateMode !== newMode) {
+      stateMode = newMode;
+    }
   };
 
   const switchTagMode = (newMode) => {
-    tagMode = newMode;
-  };
-
-  const processWord = () => {
-    const currChar = bufferGrabber.getCurr();
-    const nextChar = bufferGrabber.getNext();
-
-    if (isNewLine(currChar)) {
-      return switchMode(STATE_NEW_LINE);
+    if (tagMode !== newMode) {
+      tagMode = newMode;
     }
-
-    if (isWhiteSpace(currChar)) {
-      return switchMode(STATE_SPACE);
-    }
-
-    if (currChar === openTag) {
-      if (bufferGrabber.includes(closeTag)) {
-        return switchMode(STATE_TAG);
-      }
-
-      bufferGrabber.skip();
-
-      emitToken(TYPE_WORD, currChar);
-
-      return switchMode(STATE_WORD);
-    }
-
-    if (escapeTags) {
-      if (isEscapeChar(currChar)) {
-        bufferGrabber.skip(); // skip the \ without emitting anything
-
-        if (isEscapableChar(nextChar)) {
-          bufferGrabber.skip(); // skip past the [, ] or \ as well
-
-          emitToken(TYPE_WORD, nextChar);
-
-          return switchMode(STATE_WORD);
-        }
-
-        emitToken(TYPE_WORD, currChar);
-
-        return switchMode(STATE_WORD);
-      }
-
-      const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
-      const word = bufferGrabber.grabWhile(isChar);
-
-      emitToken(TYPE_WORD, word);
-
-      return switchMode(STATE_WORD);
-    }
-
-    emitToken(TYPE_WORD, bufferGrabber.grabWhile(isCharToken));
-
-    return switchMode(STATE_WORD);
   };
 
   const tagMap = {
@@ -175,7 +125,7 @@ function createLexer(buffer, options = {}) {
       if (isCharReserved(nextChar) || hasInvalidChars || bufferGrabber.isLast()) {
         emitToken(TYPE_WORD, currChar);
 
-        return switchMode(STATE_WORD);
+        return STATE_WORD;
       }
 
       // [myTag   ]
@@ -190,15 +140,15 @@ function createLexer(buffer, options = {}) {
 
         emitToken(TYPE_TAG, name);
 
-        return switchMode(STATE_WORD);
+        return STATE_WORD;
       }
 
-      return switchMode(STATE_TAG_ATTRS);
+      return STATE_TAG_ATTRS;
     },
     [closeTag]: () => {
       bufferGrabber.skip();
 
-      return switchMode(STATE_WORD);
+      return STATE_WORD;
     },
   };
 
@@ -207,7 +157,7 @@ function createLexer(buffer, options = {}) {
       const currChar = tagGrabber.getCurr();
 
       if (isWhiteSpace(currChar) || currChar === QUOTEMARK || !tagGrabber.hasNext()) {
-        return switchTagMode(TAG_STATE_VALUE);
+        return TAG_STATE_VALUE;
       }
 
       const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagGrabber.isLast());
@@ -217,10 +167,10 @@ function createLexer(buffer, options = {}) {
       const hasEQ = tagGrabber.includes(EQ);
 
       if (hasEQ) {
-        return switchTagMode(TAG_STATE_ATTR);
+        return TAG_STATE_ATTR;
       }
 
-      return switchTagMode(TAG_STATE_VALUE);
+      return TAG_STATE_VALUE;
     },
     [TAG_STATE_ATTR]: (tagGrabber) => {
       const validAttrName = (char) => !(char === EQ || isWhiteSpace(char));
@@ -234,7 +184,7 @@ function createLexer(buffer, options = {}) {
         emitToken(TYPE_ATTR_NAME, name);
       }
 
-      return switchTagMode(TAG_STATE_VALUE);
+      return TAG_STATE_VALUE;
     },
     [TAG_STATE_VALUE]: (tagGrabber) => {
       let skipSpecialChars = false;
@@ -262,65 +212,110 @@ function createLexer(buffer, options = {}) {
 
       emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
 
-      return switchTagMode(TAG_STATE_ATTR);
+      return TAG_STATE_ATTR;
     },
   };
 
-  const processTag = () => {
-    const char = bufferGrabber.getCurr();
-
-    if (tagMap[char]) {
-      return tagMap[char]();
-    }
-
-    return switchMode(STATE_WORD);
-  };
-
-  const processTagAttrs = () => {
-    const tagStr = bufferGrabber.grabWhile((char) => char !== closeTag);
-    const tagGrabber = createCharGrabber(tagStr, { onSkip });
-
-    while (tagGrabber.hasNext()) {
-      tagStateMap[tagMode](tagGrabber);
-
-      tagGrabber.skip();
-    }
-
-    bufferGrabber.skip(); // skip closeTag
-
-    return switchMode(STATE_WORD);
-  };
-  const processSpace = () => {
-    const name = bufferGrabber.grabWhile(isWhiteSpace);
-
-    emitToken(TYPE_SPACE, name);
-
-    return switchMode(STATE_WORD);
-  };
-  const processNewLine = () => {
-    const currChar = bufferGrabber.getCurr();
-
-    bufferGrabber.skip();
-
-    col = 0;
-    row++;
-
-    emitToken(TYPE_NEW_LINE, currChar);
-
-    return switchMode(STATE_WORD);
-  };
-
   const stateMap = {
-    [STATE_WORD]: processWord,
-    [STATE_TAG]: processTag,
-    [STATE_TAG_ATTRS]: processTagAttrs,
-    [STATE_SPACE]: processSpace,
-    [STATE_NEW_LINE]: processNewLine,
+    [STATE_WORD]: () => {
+      const currChar = bufferGrabber.getCurr();
+      const nextChar = bufferGrabber.getNext();
+
+      if (isNewLine(currChar)) {
+        return STATE_NEW_LINE;
+      }
+
+      if (isWhiteSpace(currChar)) {
+        return STATE_SPACE;
+      }
+
+      if (currChar === openTag) {
+        if (bufferGrabber.includes(closeTag)) {
+          return STATE_TAG;
+        }
+
+        bufferGrabber.skip();
+
+        emitToken(TYPE_WORD, currChar);
+
+        return STATE_WORD;
+      }
+
+      if (escapeTags) {
+        if (isEscapeChar(currChar)) {
+          bufferGrabber.skip(); // skip the \ without emitting anything
+
+          if (isEscapableChar(nextChar)) {
+            bufferGrabber.skip(); // skip past the [, ] or \ as well
+
+            emitToken(TYPE_WORD, nextChar);
+
+            return STATE_WORD;
+          }
+
+          emitToken(TYPE_WORD, currChar);
+
+          return STATE_WORD;
+        }
+
+        const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
+
+        emitToken(TYPE_WORD, bufferGrabber.grabWhile(isChar));
+
+        return STATE_WORD;
+      }
+
+      emitToken(TYPE_WORD, bufferGrabber.grabWhile(isCharToken));
+
+      return STATE_WORD;
+    },
+    [STATE_TAG]: () => {
+      const char = bufferGrabber.getCurr();
+
+      if (tagMap[char]) {
+        return tagMap[char]();
+      }
+
+      return STATE_WORD;
+    },
+    [STATE_TAG_ATTRS]: () => {
+      const tagStr = bufferGrabber.grabWhile((char) => char !== closeTag);
+      const tagGrabber = createCharGrabber(tagStr, { onSkip });
+
+      while (tagGrabber.hasNext()) {
+        switchTagMode(tagStateMap[tagMode](tagGrabber));
+
+        tagGrabber.skip();
+      }
+
+      bufferGrabber.skip(); // skip closeTag
+
+      return STATE_WORD;
+    },
+    [STATE_SPACE]: () => {
+      const name = bufferGrabber.grabWhile(isWhiteSpace);
+
+      emitToken(TYPE_SPACE, name);
+
+      return STATE_WORD;
+    },
+    [STATE_NEW_LINE]: () => {
+      const currChar = bufferGrabber.getCurr();
+
+      bufferGrabber.skip();
+
+      col = 0;
+      row++;
+
+      emitToken(TYPE_NEW_LINE, currChar);
+
+      return STATE_WORD;
+    },
   };
 
   const tokenize = () => {
     while (bufferGrabber.hasNext()) {
-      stateMap[stateMode](bufferGrabber);
+      switchMode(stateMap[stateMode]());
     }
 
     tokens.length = tokenIndex + 1;
