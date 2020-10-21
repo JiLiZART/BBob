@@ -114,20 +114,16 @@ function createLexer(buffer, options = {}) {
       const currChar = tagGrabber.getCurr();
 
       if (isWhiteSpace(currChar) || currChar === QUOTEMARK || !tagGrabber.hasNext()) {
-        return TAG_STATE_VALUE;
+        switchTagMode(TAG_STATE_VALUE);
+      } else {
+        const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagGrabber.isLast());
+
+        emitToken(TYPE_TAG, tagGrabber.grabWhile(validName));
+
+        switchTagMode(tagGrabber.includes(EQ) ? TAG_STATE_ATTR : TAG_STATE_VALUE);
+
+        tagGrabber.skip();
       }
-
-      const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagGrabber.isLast());
-
-      emitToken(TYPE_TAG, tagGrabber.grabWhile(validName));
-
-      const hasEQ = tagGrabber.includes(EQ);
-
-      if (hasEQ) {
-        return TAG_STATE_ATTR;
-      }
-
-      return TAG_STATE_VALUE;
     }
 
     if (tagMode === TAG_STATE_ATTR) {
@@ -141,6 +137,8 @@ function createLexer(buffer, options = {}) {
       } else {
         emitToken(TYPE_ATTR_NAME, name);
       }
+
+      tagGrabber.skip();
 
       return TAG_STATE_VALUE;
     }
@@ -170,6 +168,8 @@ function createLexer(buffer, options = {}) {
       });
 
       emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
+
+      tagGrabber.skip();
 
       return TAG_STATE_ATTR;
     }
@@ -229,13 +229,9 @@ function createLexer(buffer, options = {}) {
 
       while (tagGrabber.hasNext()) {
         switchTagMode(nextTagState(tagGrabber));
-
-        tagGrabber.skip();
       }
 
       bufferGrabber.skip(); // skip closeTag
-
-      return STATE_WORD;
     }
 
     if (stateMode === STATE_WORD) {
