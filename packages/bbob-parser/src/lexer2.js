@@ -90,70 +90,29 @@ function createLexer(buffer, options = {}) {
    * @param {Number} type
    * @param {String} value
    */
-  const emitToken = (type, value) => {
+  function emitToken(type, value) {
     const token = createToken(type, value, row, col);
 
     onToken(token);
 
     tokenIndex += 1;
     tokens[tokenIndex] = token;
-  };
+  }
 
-  const switchMode = (newMode) => {
+  function switchMode(newMode) {
     if (stateMode !== newMode) {
       stateMode = newMode;
     }
-  };
+  }
 
-  const switchTagMode = (newMode) => {
+  function switchTagMode(newMode) {
     if (tagMode !== newMode) {
       tagMode = newMode;
     }
-  };
+  }
 
-  const tagMap = {
-    [openTag]: () => {
-      const currChar = bufferGrabber.getCurr();
-      const nextChar = bufferGrabber.getNext();
-
-      bufferGrabber.skip();
-
-      // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
-      const substr = bufferGrabber.substrUntilChar(closeTag);
-      const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
-
-      if (isCharReserved(nextChar) || hasInvalidChars || bufferGrabber.isLast()) {
-        emitToken(TYPE_WORD, currChar);
-
-        return STATE_WORD;
-      }
-
-      // [myTag   ]
-      const isNoAttrsInTag = substr.indexOf(EQ) === -1;
-      // [/myTag]
-      const isClosingTag = substr[0] === SLASH;
-
-      if (isNoAttrsInTag || isClosingTag) {
-        const name = bufferGrabber.grabWhile((char) => char !== closeTag);
-
-        bufferGrabber.skip(); // skip closeTag
-
-        emitToken(TYPE_TAG, name);
-
-        return STATE_WORD;
-      }
-
-      return STATE_TAG_ATTRS;
-    },
-    [closeTag]: () => {
-      bufferGrabber.skip();
-
-      return STATE_WORD;
-    },
-  };
-
-  const tagStateMap = {
-    [TAG_STATE_NAME]: (tagGrabber) => {
+  function nextTagState(tagGrabber) {
+    if (tagMode === TAG_STATE_NAME) {
       const currChar = tagGrabber.getCurr();
 
       if (isWhiteSpace(currChar) || currChar === QUOTEMARK || !tagGrabber.hasNext()) {
@@ -171,8 +130,9 @@ function createLexer(buffer, options = {}) {
       }
 
       return TAG_STATE_VALUE;
-    },
-    [TAG_STATE_ATTR]: (tagGrabber) => {
+    }
+
+    if (tagMode === TAG_STATE_ATTR) {
       const validAttrName = (char) => !(char === EQ || isWhiteSpace(char));
       const name = tagGrabber.grabWhile(validAttrName);
 
@@ -185,8 +145,9 @@ function createLexer(buffer, options = {}) {
       }
 
       return TAG_STATE_VALUE;
-    },
-    [TAG_STATE_VALUE]: (tagGrabber) => {
+    }
+
+    if (tagMode === TAG_STATE_VALUE) {
       let skipSpecialChars = false;
       const name = tagGrabber.grabWhile((char) => {
         const isEQ = char === EQ;
@@ -213,11 +174,13 @@ function createLexer(buffer, options = {}) {
       emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
 
       return TAG_STATE_ATTR;
-    },
-  };
+    }
 
-  const stateMap = {
-    [STATE_WORD]: () => {
+    return TAG_STATE_NAME;
+  }
+
+  function nextState() {
+    if (stateMode === STATE_WORD) {
       const currChar = bufferGrabber.getCurr();
       const nextChar = bufferGrabber.getNext();
 
@@ -268,22 +231,60 @@ function createLexer(buffer, options = {}) {
       emitToken(TYPE_WORD, bufferGrabber.grabWhile(isCharToken));
 
       return STATE_WORD;
-    },
-    [STATE_TAG]: () => {
+    }
+
+    if (stateMode === STATE_TAG) {
       const char = bufferGrabber.getCurr();
 
-      if (tagMap[char]) {
-        return tagMap[char]();
+      if (char === openTag) {
+        const currChar = bufferGrabber.getCurr();
+        const nextChar = bufferGrabber.getNext();
+
+        bufferGrabber.skip();
+
+        // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
+        const substr = bufferGrabber.substrUntilChar(closeTag);
+        const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
+
+        if (isCharReserved(nextChar) || hasInvalidChars || bufferGrabber.isLast()) {
+          emitToken(TYPE_WORD, currChar);
+
+          return STATE_WORD;
+        }
+
+        // [myTag   ]
+        const isNoAttrsInTag = substr.indexOf(EQ) === -1;
+        // [/myTag]
+        const isClosingTag = substr[0] === SLASH;
+
+        if (isNoAttrsInTag || isClosingTag) {
+          const name = bufferGrabber.grabWhile((char) => char !== closeTag);
+
+          bufferGrabber.skip(); // skip closeTag
+
+          emitToken(TYPE_TAG, name);
+
+          return STATE_WORD;
+        }
+
+        return STATE_TAG_ATTRS;
+      }
+
+      if (char === closeTag) {
+        bufferGrabber.skip();
+
+        return STATE_WORD;
       }
 
       return STATE_WORD;
-    },
-    [STATE_TAG_ATTRS]: () => {
+    }
+
+    if (stateMode === STATE_TAG_ATTRS) {
       const tagStr = bufferGrabber.grabWhile((char) => char !== closeTag);
       const tagGrabber = createCharGrabber(tagStr, { onSkip });
 
       while (tagGrabber.hasNext()) {
-        switchTagMode(tagStateMap[tagMode](tagGrabber));
+        switchTagMode(nextTagState(tagGrabber));
 
         tagGrabber.skip();
       }
@@ -291,15 +292,17 @@ function createLexer(buffer, options = {}) {
       bufferGrabber.skip(); // skip closeTag
 
       return STATE_WORD;
-    },
-    [STATE_SPACE]: () => {
+    }
+
+    if (stateMode === STATE_SPACE) {
       const name = bufferGrabber.grabWhile(isWhiteSpace);
 
       emitToken(TYPE_SPACE, name);
 
       return STATE_WORD;
-    },
-    [STATE_NEW_LINE]: () => {
+    }
+
+    if (stateMode === STATE_NEW_LINE) {
       const currChar = bufferGrabber.getCurr();
 
       bufferGrabber.skip();
@@ -310,25 +313,26 @@ function createLexer(buffer, options = {}) {
       emitToken(TYPE_NEW_LINE, currChar);
 
       return STATE_WORD;
-    },
-  };
+    }
 
-  const tokenize = () => {
+    return STATE_WORD;
+  }
+
+  function tokenize() {
     while (bufferGrabber.hasNext()) {
-      switchMode(stateMap[stateMode]());
+      switchMode(nextState());
     }
 
     tokens.length = tokenIndex + 1;
 
     return tokens;
-  };
+  }
 
-  const isTokenNested = (token) => {
+  function isTokenNested(token) {
     const value = openTag + SLASH + token.getValue();
     // potential bottleneck
     return buffer.indexOf(value) > -1;
-  };
-
+  }
 
   return {
     tokenize,
