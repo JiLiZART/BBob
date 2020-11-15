@@ -145,6 +145,34 @@ describe('Parser', () => {
     ])
   });
 
+  test('parse url tag with get params', () => {
+    const ast = parse('[url=https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any]GET[/url]');
+
+    expectOutput(ast, [
+      {
+        tag: 'url',
+        attrs: {
+          'https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any': 'https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any',
+        },
+        content: ['GET'],
+      },
+    ]);
+  });
+
+  test('parse url tag with # and = symbols [google docs]', () => {
+    const ast = parse('[url href=https://docs.google.com/spreadsheets/d/1W9VPUESF_NkbSa_HtRFrQNl0nYo8vPCxJFy7jD3Tpio/edit#gid=0]Docs[/url]');
+
+    expectOutput(ast, [
+      {
+        tag: 'url',
+        attrs: {
+          href: 'https://docs.google.com/spreadsheets/d/1W9VPUESF_NkbSa_HtRFrQNl0nYo8vPCxJFy7jD3Tpio/edit#gid=0',
+        },
+        content: ['Docs'],
+      },
+    ]);
+  });
+
   describe('html', () => {
     const parseHTML = input => parse(input, { openTag: '<', closeTag: '>' });
 

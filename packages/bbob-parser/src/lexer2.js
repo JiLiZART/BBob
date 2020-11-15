@@ -100,7 +100,7 @@ function createLexer(buffer, options = {}) {
     tokens[tokenIndex] = token;
   }
 
-  function nextTagState(tagChars) {
+  function nextTagState(tagChars, isSingleValueTag) {
     if (tagMode === TAG_STATE_NAME) {
       const currChar = tagChars.getCurr();
 
@@ -114,6 +114,11 @@ function createLexer(buffer, options = {}) {
 
       tagChars.skip();
 
+      // in cases when we has [url=someval]GET[/url] and we dont need to parse all
+      if (isSingleValueTag) {
+        return TAG_STATE_VALUE;
+      }
+
       return tagChars.includes(EQ) ? TAG_STATE_ATTR : TAG_STATE_VALUE;
     }
     if (tagMode === TAG_STATE_ATTR) {
@@ -121,39 +126,54 @@ function createLexer(buffer, options = {}) {
       const name = tagChars.grabWhile(validAttrName);
 
       const isEnd = tagChars.isLast();
+      const curr = tagChars.getCurr();
+      const isSingleValueAttr = curr !== EQ;
 
-      if (isEnd) {
+      tagChars.skip();
+
+      if (isEnd || isSingleValueAttr) {
         emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
       } else {
         emitToken(TYPE_ATTR_NAME, name);
       }
 
-      tagChars.skip();
+      if (isSingleValueAttr) {
+        return TAG_STATE_ATTR;
+      }
 
       return TAG_STATE_VALUE;
     }
     if (tagMode === TAG_STATE_VALUE) {
       let skipSpecialChars = false;
       const name = tagChars.grabWhile((char) => {
-        const isEQ = char === EQ;
-        const isWS = isWhiteSpace(char);
+        // const isEQ = char === EQ;
+        const isQM = char === QUOTEMARK;
         const prevChar = tagChars.getPrev();
         const nextChar = tagChars.getNext();
         const isPrevSLASH = prevChar === BACKSLASH;
+        const isNextEQ = nextChar === EQ;
+        const isWS = isWhiteSpace(char);
+        // const isPrevWS = isWhiteSpace(prevChar);
+        const isNextWS = isWhiteSpace(nextChar);
 
         if (skipSpecialChars && isSpecialChar(char)) {
           return true;
         }
 
-        if (char === QUOTEMARK && !isPrevSLASH) {
+        if (isQM && !isPrevSLASH) {
           skipSpecialChars = !skipSpecialChars;
 
-          if (!skipSpecialChars && !(nextChar === EQ || isWhiteSpace(nextChar))) {
+          if (!skipSpecialChars && !(isNextEQ || isNextWS)) {
             return false;
           }
         }
 
-        return (isEQ || isWS) === false;
+        if (!isSingleValueTag) {
+          return isWS === false;
+          // return (isEQ || isWS) === false;
+        }
+
+        return true;
       });
 
       emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
@@ -213,9 +233,10 @@ function createLexer(buffer, options = {}) {
   function stateAttrs() {
     const tagStr = chars.grabWhile((char) => char !== closeTag);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
+    const hasSpace = tagGrabber.includes(SPACE);
 
     while (tagGrabber.hasNext()) {
-      tagMode = nextTagState(tagGrabber);
+      tagMode = nextTagState(tagGrabber, !hasSpace);
     }
 
     chars.skip(); // skip closeTag
