@@ -46,7 +46,6 @@ function CharGrabber(source, options) {
     }
   };
 
-  this.c = cursor;
   this.skip = skip;
   /**
    * @returns {Boolean}
