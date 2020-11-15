@@ -166,120 +166,43 @@ function createLexer(buffer, options = {}) {
     return TAG_STATE_NAME;
   }
 
-  function nextState() {
-    if (stateMode === STATE_TAG) {
-      const currChar = chars.getCurr();
+  function stateTag() {
+    const currChar = chars.getCurr();
 
-      if (currChar === openTag) {
-        const nextChar = chars.getNext();
+    if (currChar === openTag) {
+      const nextChar = chars.getNext();
 
-        chars.skip();
+      chars.skip();
 
-        // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
-        const substr = chars.substrUntilChar(closeTag);
-        const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
+      // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
+      const substr = chars.substrUntilChar(closeTag);
+      const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
 
-        if (isCharReserved(nextChar) || hasInvalidChars || chars.isLast()) {
-          emitToken(TYPE_WORD, currChar);
-
-          return STATE_WORD;
-        }
-
-        // [myTag   ]
-        const isNoAttrsInTag = substr.indexOf(EQ) === -1;
-        // [/myTag]
-        const isClosingTag = substr[0] === SLASH;
-
-        if (isNoAttrsInTag || isClosingTag) {
-          const name = chars.grabWhile((char) => char !== closeTag);
-
-          chars.skip(); // skip closeTag
-
-          emitToken(TYPE_TAG, name);
-
-          return STATE_WORD;
-        }
-
-        return STATE_TAG_ATTRS;
-      }
-      if (currChar === closeTag) {
-        chars.skip();
+      if (isCharReserved(nextChar) || hasInvalidChars || chars.isLast()) {
+        emitToken(TYPE_WORD, currChar);
 
         return STATE_WORD;
       }
 
-      return STATE_WORD;
+      // [myTag   ]
+      const isNoAttrsInTag = substr.indexOf(EQ) === -1;
+      // [/myTag]
+      const isClosingTag = substr[0] === SLASH;
+
+      if (isNoAttrsInTag || isClosingTag) {
+        const name = chars.grabWhile((char) => char !== closeTag);
+
+        chars.skip(); // skip closeTag
+
+        emitToken(TYPE_TAG, name);
+
+        return STATE_WORD;
+      }
+
+      return STATE_TAG_ATTRS;
     }
-    if (stateMode === STATE_TAG_ATTRS) {
-      const tagStr = chars.grabWhile((char) => char !== closeTag);
-      const tagGrabber = createCharGrabber(tagStr, { onSkip });
-
-      while (tagGrabber.hasNext()) {
-        tagMode = nextTagState(tagGrabber);
-      }
-
-      chars.skip(); // skip closeTag
-
-      return STATE_WORD;
-    }
-    if (stateMode === STATE_WORD) {
-      if (isNewLine(chars.getCurr())) {
-        emitToken(TYPE_NEW_LINE, chars.getCurr());
-
-        chars.skip();
-
-        col = 0;
-        row++;
-
-        return STATE_WORD;
-      }
-
-      if (isWhiteSpace(chars.getCurr())) {
-        emitToken(TYPE_SPACE, chars.grabWhile(isWhiteSpace));
-
-        return STATE_WORD;
-      }
-
-      if (chars.getCurr() === openTag) {
-        if (chars.includes(closeTag)) {
-          return STATE_TAG;
-        }
-
-        emitToken(TYPE_WORD, chars.getCurr());
-
-        chars.skip();
-
-        return STATE_WORD;
-      }
-
-      if (escapeTags) {
-        if (isEscapeChar(chars.getCurr())) {
-          const currChar = chars.getCurr();
-          const nextChar = chars.getNext();
-
-          chars.skip(); // skip the \ without emitting anything
-
-          if (isEscapableChar(nextChar)) {
-            chars.skip(); // skip past the [, ] or \ as well
-
-            emitToken(TYPE_WORD, nextChar);
-
-            return STATE_WORD;
-          }
-
-          emitToken(TYPE_WORD, currChar);
-
-          return STATE_WORD;
-        }
-
-        const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
-
-        emitToken(TYPE_WORD, chars.grabWhile(isChar));
-
-        return STATE_WORD;
-      }
-
-      emitToken(TYPE_WORD, chars.grabWhile(isCharToken));
+    if (currChar === closeTag) {
+      chars.skip();
 
       return STATE_WORD;
     }
@@ -287,9 +210,97 @@ function createLexer(buffer, options = {}) {
     return STATE_WORD;
   }
 
+  function stateAttrs() {
+    const tagStr = chars.grabWhile((char) => char !== closeTag);
+    const tagGrabber = createCharGrabber(tagStr, { onSkip });
+
+    while (tagGrabber.hasNext()) {
+      tagMode = nextTagState(tagGrabber);
+    }
+
+    chars.skip(); // skip closeTag
+
+    return STATE_WORD;
+  }
+
+  function stateWord() {
+    if (isNewLine(chars.getCurr())) {
+      emitToken(TYPE_NEW_LINE, chars.getCurr());
+
+      chars.skip();
+
+      col = 0;
+      row++;
+
+      return STATE_WORD;
+    }
+
+    if (isWhiteSpace(chars.getCurr())) {
+      emitToken(TYPE_SPACE, chars.grabWhile(isWhiteSpace));
+
+      return STATE_WORD;
+    }
+
+    if (chars.getCurr() === openTag) {
+      if (chars.includes(closeTag)) {
+        return STATE_TAG;
+      }
+
+      emitToken(TYPE_WORD, chars.getCurr());
+
+      chars.skip();
+
+      return STATE_WORD;
+    }
+
+    if (escapeTags) {
+      if (isEscapeChar(chars.getCurr())) {
+        const currChar = chars.getCurr();
+        const nextChar = chars.getNext();
+
+        chars.skip(); // skip the \ without emitting anything
+
+        if (isEscapableChar(nextChar)) {
+          chars.skip(); // skip past the [, ] or \ as well
+
+          emitToken(TYPE_WORD, nextChar);
+
+          return STATE_WORD;
+        }
+
+        emitToken(TYPE_WORD, currChar);
+
+        return STATE_WORD;
+      }
+
+      const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
+
+      emitToken(TYPE_WORD, chars.grabWhile(isChar));
+
+      return STATE_WORD;
+    }
+
+    emitToken(TYPE_WORD, chars.grabWhile(isCharToken));
+
+    return STATE_WORD;
+  }
+
   function tokenize() {
     while (chars.hasNext()) {
-      stateMode = nextState();
+      switch (stateMode) {
+        case STATE_TAG:
+          stateMode = stateTag();
+          break;
+        case STATE_TAG_ATTRS:
+          stateMode = stateAttrs();
+          break;
+        case STATE_WORD:
+          stateMode = stateWord();
+          break;
+        default:
+          stateMode = STATE_WORD;
+          break;
+      }
     }
 
     tokens.length = tokenIndex + 1;
