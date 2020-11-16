@@ -4,6 +4,8 @@ const isTagNode = (el) => typeof el === 'object' && !!el.tag;
 const isStringNode = (el) => typeof el === 'string';
 const isEOL = (el) => el === N;
 
+const keysReduce = (obj, reduce, def) => Object.keys(obj).reduce(reduce, def);
+
 const getNodeLength = (node) => {
   if (isTagNode(node)) {
     return node.content.reduce((count, contentNode) => count + getNodeLength(contentNode), 0);
@@ -61,13 +63,15 @@ const attrValue = (name, value) => {
  */
 const attrsToString = (values) => {
   // To avoid some malformed attributes
-  if (typeof values === 'undefined') {
+  if (values == null) {
     return '';
   }
 
-  return Object.keys(values)
-    .reduce((arr, key) => [...arr, attrValue(key, values[key])], [''])
-    .join(' ');
+  return keysReduce(
+    values,
+    (arr, key) => [...arr, attrValue(key, values[key])],
+    [''],
+  ).join(' ');
 };
 
 /**
@@ -77,9 +81,11 @@ const attrsToString = (values) => {
  * @param attrs
  * @returns {string}
  */
-const getUniqAttr = (attrs) => Object
-  .keys(attrs)
-  .reduce((res, key) => (attrs[key] === key ? attrs[key] : null), null);
+const getUniqAttr = (attrs) => keysReduce(
+  attrs,
+  (res, key) => (attrs[key] === key ? attrs[key] : null),
+  null,
+);
 
 export {
   attrsToString,
