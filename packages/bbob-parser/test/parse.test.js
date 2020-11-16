@@ -145,6 +145,32 @@ describe('Parser', () => {
     ])
   });
 
+  test('parse few tags without spaces', () => {
+    const ast = parse('[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]');
+
+    expectOutput(ast, [
+      {
+        tag: 'mytag1',
+        attrs: {
+          size: '15',
+        },
+        content: ['Tag1'],
+      },
+      {
+        tag: 'mytag2',
+        attrs: {
+          size: '15',
+        },
+        content: ['Tag1'],
+      },
+      {
+        tag: 'mytag3',
+        attrs: {},
+        content: ['Tag3'],
+      },
+    ]);
+  });
+
   test('parse url tag with get params', () => {
     const ast = parse('[url=https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any]GET[/url]');
 

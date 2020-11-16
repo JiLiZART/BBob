@@ -190,6 +190,14 @@ describe('lexer', () => {
     expectOutput(output, tokens);
   });
 
+  test('few tags without spaces', () => {
+    const input = '[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]';
+    const tokens = tokenize(input);
+    const output = [];
+
+    expectOutput(output, tokens);
+  });
+
   test('bad tags as texts', () => {
     const inputs = [
       '[]',

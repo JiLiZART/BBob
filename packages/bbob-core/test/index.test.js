@@ -97,7 +97,7 @@ describe('@bbob/core', () => {
       return node
     });
 
-    const res = process([testPlugin()], `[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]`);
+    const res = process([], `[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]`);
     const ast = res.tree;
 
     expect(ast).toBeInstanceOf(Array);
