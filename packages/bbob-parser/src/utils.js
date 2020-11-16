@@ -46,6 +46,11 @@ function CharGrabber(source, options) {
     }
   };
 
+  this.cursor = cursor;
+
+  /**
+   * @type {skip}
+   */
   this.skip = skip;
   /**
    * @returns {Boolean}
