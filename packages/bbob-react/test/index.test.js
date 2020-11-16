@@ -43,6 +43,12 @@ describe('@bbob/react', () => {
     expect(html).toBe('<span><a href="https://en.wikipedia.org">https://en.wikipedia.org</a></span>')
   });
 
+  test('[b]Testing[/b][hr]', () => {
+    const html = renderBBCode('[b]Testing[/b][hr]');
+
+    expect(html).toBe('<span><span style="font-weight:bold;">Testing</span><hr/></span>')
+  });
+
   describe('options.onlyAllowTags', () => {
     test('render "[Super Feature] and [i]super[/i]" when only [i] allowed', () => {
       const html = renderBBCode('[Super Feature] and [i]super[/i]', { onlyAllowTags: ['i'] });
