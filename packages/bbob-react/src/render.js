@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import React from 'react';
 import core from '@bbob/core';
 import * as html from '@bbob/html';
@@ -10,12 +11,13 @@ const toAST = (source, plugins, options) => core(plugins)
     render: (input) => html.render(input, { stripTags: true }),
   }).tree;
 
+const isContentEmpty = (content) => (!content || content.length === 0);
+
 function tagToReactElement(node, index) {
   return React.createElement(
     node.tag,
     { ...node.attrs, key: index },
-    // eslint-disable-next-line no-use-before-define
-    node.content ? renderToReactNodes(node.content) : null,
+    isContentEmpty(node.content) ? null : renderToReactNodes(node.content),
   );
 }
 
