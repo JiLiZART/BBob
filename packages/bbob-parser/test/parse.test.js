@@ -171,6 +171,26 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse tags with single attributes like disabled', () => {
+    const ast = parse('[b]hello[/b] [textarea disabled]world[/textarea]');
+
+    expectOutput(ast, [
+      {
+        tag: 'b',
+        attrs: {},
+        content: ['hello'],
+      },
+        ' ',
+      {
+        tag: 'textarea',
+        attrs: {
+          disabled: 'disabled',
+        },
+        content: ['world'],
+      },
+    ]);
+  });
+
   test('parse url tag with get params', () => {
     const ast = parse('[url=https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any]GET[/url]');
 
