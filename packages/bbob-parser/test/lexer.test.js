@@ -10,22 +10,58 @@ const TYPE = {
   NEW_LINE: TYPE_NEW_LINE,
 };
 
+const TYPE_NAMES = Object.fromEntries(Object.keys(TYPE).map(key => [TYPE[key], key]));
+
 const tokenize = input => (createLexer(input).tokenize());
 const tokenizeEscape = input => (createLexer(input, { enableEscapeTags: true }).tokenize());
 
 describe('lexer', () => {
-  const expectOutput = (output, tokens) => {
-    expect(tokens.length).toBe(output.length);
-    expect(tokens).toBeInstanceOf(Array);
+  expect.extend({
+    toBeMantchOutput(tokens, output) {
+      if (tokens.length !== output.length) {
+        return {
+          message: () =>
+              `expected tokens length ${tokens.length} to be ${output.length}`,
+          pass: false,
+        };
+      }
 
-    tokens.forEach((token, idx) => {
-      const [type, value] = output[idx];
+      for (let idx = 0; idx < tokens.length; idx++) {
+        const token = tokens[idx];
+        const [type, value] = output[idx];
 
-      expect(token).toBeInstanceOf(Object);
-      expect(token[TYPE_ID]).toEqual(type);
-      expect(token[VALUE_ID]).toEqual(value);
-    });
-  };
+        if (typeof token !== 'object') {
+          return {
+            message: () =>
+                `token must to be Object`,
+            pass: false,
+          };
+        }
+
+        if (token[TYPE_ID] !== type) {
+          return {
+            message: () =>
+                `expected token type ${TYPE_NAMES[type]} but recieved ${TYPE_NAMES[token[TYPE_ID]]} for ${JSON.stringify(output[idx])}`,
+            pass: false,
+          };
+        }
+
+        if (token[VALUE_ID] !== value) {
+          return {
+            message: () =>
+                `expected token value ${value} but recieved ${token[VALUE_ID]} for ${JSON.stringify(output[idx])}`,
+            pass: false,
+          };
+        }
+      }
+
+      return {
+        message: () =>
+            `no valid output`,
+        pass: true,
+      };
+    },
+  });
 
   test('single tag', () => {
     const input = '[SingleTag]';
@@ -34,7 +70,7 @@ describe('lexer', () => {
       [TYPE.TAG, 'SingleTag', '0', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('single tag with params', () => {
@@ -45,7 +81,7 @@ describe('lexer', () => {
       [TYPE.ATTR_VALUE, '111', '0', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('single tag with spaces', () => {
@@ -56,7 +92,7 @@ describe('lexer', () => {
       [TYPE.TAG, 'Single Tag', '0', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('string with quotemarks', () => {
@@ -75,7 +111,7 @@ describe('lexer', () => {
       [TYPE.WORD, 'Adele', '21', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('tags in brakets', () => {
@@ -92,7 +128,7 @@ describe('lexer', () => {
       [TYPE.WORD, ']', '7', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('tag as param', () => {
@@ -105,7 +141,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/color', '21', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('tag with quotemark params with spaces', () => {
@@ -121,7 +157,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/url', '24', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('tag with escaped quotemark param', () => {
@@ -135,7 +171,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/url', '26', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('tag param without quotemarks', () => {
@@ -149,7 +185,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/style', '25', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('list tag with items', () => {
@@ -187,15 +223,29 @@ describe('lexer', () => {
       [TYPE.TAG, '/list', '0', '4'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('few tags without spaces', () => {
     const input = '[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]';
     const tokens = tokenize(input);
-    const output = [];
+    const output = [
+      [TYPE.TAG, 'mytag1', 0, 0],
+      [TYPE.ATTR_NAME, 'size', 0, 0],
+      [TYPE.ATTR_VALUE, '15', 0, 0],
+      [TYPE.WORD, 'Tag1', 0, 0],
+      [TYPE.TAG, '/mytag1', 0, 0],
+      [TYPE.TAG, 'mytag2', 0, 0],
+      [TYPE.ATTR_NAME, 'size', 0, 0],
+      [TYPE.ATTR_VALUE, '16', 0, 0],
+      [TYPE.WORD, 'Tag2', 0, 0],
+      [TYPE.TAG, '/mytag2', 0, 0],
+      [TYPE.TAG, 'mytag3', 0, 0],
+      [TYPE.WORD, 'Tag3', 0, 0],
+      [TYPE.TAG, '/mytag3', 0, 0],
+    ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('bad tags as texts', () => {
@@ -264,7 +314,7 @@ describe('lexer', () => {
       const tokens = tokenize(input);
       const output = asserts[idx];
 
-      expectOutput(output, tokens);
+      expect(tokens).toBeMantchOutput(output);
     });
   });
 
@@ -282,7 +332,7 @@ describe('lexer', () => {
       [TYPE.TAG, 'Finger', '0', '0']
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('no close tag', () => {
@@ -297,7 +347,7 @@ describe('lexer', () => {
       [TYPE.WORD, 'A', '0', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('escaped tag', () => {
@@ -312,7 +362,7 @@ describe('lexer', () => {
       [TYPE.WORD, '[', '0', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('escaped tag and escaped backslash', () => {
@@ -332,7 +382,7 @@ describe('lexer', () => {
       [TYPE.WORD, ']', '0', '0'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   test('bad closed tag with escaped backslash', () => {
@@ -346,7 +396,7 @@ describe('lexer', () => {
       [TYPE.WORD, 'b]', '0', '11'],
     ];
 
-    expectOutput(output, tokens);
+    expect(tokens).toBeMantchOutput(output);
   });
 
   describe('html', () => {
@@ -369,7 +419,7 @@ describe('lexer', () => {
         [TYPE.TAG, '/button', 2, 0]
       ];
 
-      expectOutput(output, tokens);
+      expect(tokens).toBeMantchOutput(output);
     });
 
     test('attributes with no quotes or value', () => {
@@ -388,7 +438,7 @@ describe('lexer', () => {
         [TYPE.TAG, '/button', 2, 0]
       ];
 
-      expectOutput(output, tokens);
+      expect(tokens).toBeMantchOutput(output);
     });
 
     test('attributes with no space between them. No valid, but accepted by the browser', () => {
@@ -406,7 +456,7 @@ describe('lexer', () => {
         [TYPE.TAG, '/button', 2, 0]
       ];
 
-      expectOutput(output, tokens);
+      expect(tokens).toBeMantchOutput(output);
     });
 
     test.skip('style tag', () => {
@@ -430,7 +480,7 @@ input.buttonred{cursor:hand;font-family:verdana;background:#d12124;color:#fff;he
       const tokens = tokenizeHTML(content);
       const output = [];
 
-      expectOutput(output, tokens);
+      expect(tokens).toBeMantchOutput(output);
     });
 
     test.skip('script tag', () => {
@@ -443,7 +493,7 @@ input.buttonred{cursor:hand;font-family:verdana;background:#d12124;color:#fff;he
       const tokens = tokenizeHTML(content);
       const output = [];
 
-      expectOutput(output, tokens);
+      expect(tokens).toBeMantchOutput(output);
     })
   })
 });

@@ -84,6 +84,8 @@ function createLexer(buffer, options = {}) {
     col++;
   };
 
+  const unq = (val) => unquote(trimChar(val, QUOTEMARK));
+
   const chars = createCharGrabber(buffer, { onSkip });
 
   /**
@@ -103,14 +105,18 @@ function createLexer(buffer, options = {}) {
   function nextTagState(tagChars, isSingleValueTag) {
     if (tagMode === TAG_STATE_NAME) {
       const currChar = tagChars.getCurr();
+      const hasNext = tagChars.hasNext();
+      const isWS = isWhiteSpace(currChar);
+      const isQM = currChar === QUOTEMARK;
 
-      if (isWhiteSpace(currChar) || currChar === QUOTEMARK || !tagChars.hasNext()) {
+      if (isWS || isQM || !hasNext) {
         return TAG_STATE_VALUE;
       }
 
       const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagChars.isLast());
+      const name = tagChars.grabWhile(validName);
 
-      emitToken(TYPE_TAG, tagChars.grabWhile(validName));
+      emitToken(TYPE_TAG, name);
 
       tagChars.skip();
 
@@ -119,33 +125,38 @@ function createLexer(buffer, options = {}) {
         return TAG_STATE_VALUE;
       }
 
-      return tagChars.includes(EQ) ? TAG_STATE_ATTR : TAG_STATE_VALUE;
+      const hasEQ = tagChars.includes(EQ);
+
+      return hasEQ ? TAG_STATE_ATTR : TAG_STATE_VALUE;
     }
     if (tagMode === TAG_STATE_ATTR) {
       const validAttrName = (char) => !(char === EQ || isWhiteSpace(char));
       const name = tagChars.grabWhile(validAttrName);
-
       const isEnd = tagChars.isLast();
-      const curr = tagChars.getCurr();
-      const isSingleValueAttr = curr !== EQ;
+      const isValue = tagChars.getCurr() !== EQ;
 
       tagChars.skip();
 
-      if (isEnd || isSingleValueAttr) {
-        emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
+      if (isEnd || isValue) {
+        emitToken(TYPE_ATTR_VALUE, unq(name));
       } else {
         emitToken(TYPE_ATTR_NAME, name);
       }
 
-      if (isSingleValueAttr) {
+      if (isEnd) {
+        return TAG_STATE_NAME;
+      }
+
+      if (isValue) {
         return TAG_STATE_ATTR;
       }
 
       return TAG_STATE_VALUE;
     }
     if (tagMode === TAG_STATE_VALUE) {
-      let skipSpecialChars = false;
-      const name = tagChars.grabWhile((char) => {
+      let stateSpecial = false;
+
+      const validAttrValue = (char) => {
         // const isEQ = char === EQ;
         const isQM = char === QUOTEMARK;
         const prevChar = tagChars.getPrev();
@@ -156,14 +167,14 @@ function createLexer(buffer, options = {}) {
         // const isPrevWS = isWhiteSpace(prevChar);
         const isNextWS = isWhiteSpace(nextChar);
 
-        if (skipSpecialChars && isSpecialChar(char)) {
+        if (stateSpecial && isSpecialChar(char)) {
           return true;
         }
 
         if (isQM && !isPrevSLASH) {
-          skipSpecialChars = !skipSpecialChars;
+          stateSpecial = !stateSpecial;
 
-          if (!skipSpecialChars && !(isNextEQ || isNextWS)) {
+          if (!stateSpecial && !(isNextEQ || isNextWS)) {
             return false;
           }
         }
@@ -174,11 +185,16 @@ function createLexer(buffer, options = {}) {
         }
 
         return true;
-      });
-
-      emitToken(TYPE_ATTR_VALUE, unquote(trimChar(name, QUOTEMARK)));
+      };
+      const name = tagChars.grabWhile(validAttrValue);
 
       tagChars.skip();
+
+      emitToken(TYPE_ATTR_VALUE, unq(name));
+
+      if (tagChars.isLast()) {
+        return TAG_STATE_NAME;
+      }
 
       return TAG_STATE_ATTR;
     }
@@ -224,6 +240,8 @@ function createLexer(buffer, options = {}) {
     if (currChar === closeTag) {
       chars.skip();
 
+      emitToken(TYPE_WORD, currChar);
+
       return STATE_WORD;
     }
 
@@ -231,7 +249,8 @@ function createLexer(buffer, options = {}) {
   }
 
   function stateAttrs() {
-    const tagStr = chars.grabWhile((char) => char !== closeTag);
+    const silent = true;
+    const tagStr = chars.grabWhile((char) => char !== closeTag, silent);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
     const hasSpace = tagGrabber.includes(SPACE);
 

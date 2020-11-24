@@ -38,10 +38,10 @@ function CharGrabber(source, options) {
       return cursor.pos === cursor.len;
     },
   };
-  const skip = (num = 1) => {
+  const skip = (num = 1, silent) => {
     cursor.pos += num;
 
-    if (options && options.onSkip) {
+    if (options && options.onSkip && !silent) {
       options.onSkip();
     }
   };
@@ -82,16 +82,17 @@ function CharGrabber(source, options) {
   this.includes = (searchValue) => source.indexOf(searchValue, cursor.pos) >= 0;
   /**
    * @param {Function} cond
+   * @param {Boolean} silent
    * @return {String}
    */
-  this.grabWhile = (cond) => {
+  this.grabWhile = (cond, silent) => {
     let start = 0;
 
     if (cursor.hasNext) {
       start = cursor.pos;
 
       while (cursor.hasNext && cond(cursor.curr)) {
-        skip();
+        skip(1, silent);
       }
     }
 

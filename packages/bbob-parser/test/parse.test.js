@@ -159,9 +159,9 @@ describe('Parser', () => {
       {
         tag: 'mytag2',
         attrs: {
-          size: '15',
+          size: '16',
         },
-        content: ['Tag1'],
+        content: ['Tag2'],
       },
       {
         tag: 'mytag3',
