@@ -95,6 +95,22 @@ describe('lexer', () => {
     expect(tokens).toBeMantchOutput(output);
   });
 
+  // @TODO: this is breaking change behavior
+  test.skip('tags with single attrs like disabled', () => {
+    const input = '[textarea disabled]world[/textarea]';
+    const tokens = tokenize(input);
+
+    const output = [
+      [TYPE.TAG, 'textarea', '0', '0'],
+      [TYPE.ATTR_VALUE, 'disabled', '0', '0'],
+      [TYPE.WORD, 'world"', '0', '0'],
+      [TYPE.TAG, '/textarea', '0', '0'],
+    ];
+
+    expect(tokens).toBeMantchOutput(output);
+  });
+
+
   test('string with quotemarks', () => {
     const input = '"Someone Like You" by Adele';
     const tokens = tokenize(input);
