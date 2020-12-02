@@ -13,11 +13,7 @@ function CharGrabber(source, options) {
     const { pos } = cursor;
     const idx = source.indexOf(char, pos);
 
-    if (idx >= 0) {
-      return source.substr(pos, idx - pos);
-    }
-
-    return '';
+    return idx >= 0 ? source.substr(pos, idx - pos) : '';
   };
   const includes = (val) => source.indexOf(val, cursor.pos) >= 0;
   const hasNext = () => cursor.len > cursor.pos;
@@ -34,20 +30,12 @@ function CharGrabber(source, options) {
   const prev = () => {
     const prevPos = cursor.pos - 1;
 
-    if (typeof source[prevPos] !== 'undefined') {
-      return source[prevPos];
-    }
-
-    return null;
+    return typeof source[prevPos] !== 'undefined' ? source[prevPos] : null;
   };
   const next = () => {
     const nextPos = cursor.pos + 1;
 
-    if (nextPos <= (source.length - 1)) {
-      return source[nextPos];
-    }
-
-    return null;
+    return nextPos <= (source.length - 1) ? source[nextPos] : null;
   };
   const grabWhile = (cond, silent) => {
     let start = 0;
