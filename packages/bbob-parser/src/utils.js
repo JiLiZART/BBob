@@ -7,103 +7,9 @@ function CharGrabber(source, options) {
   const cursor = {
     pos: 0,
     len: source.length,
-    get curr() {
-      return source[cursor.pos];
-    },
-    get prev() {
-      const prevPos = cursor.pos - 1;
-
-      if (typeof source[prevPos] !== 'undefined') {
-        return source[prevPos];
-      }
-
-      return null;
-    },
-    get next() {
-      const nextPos = cursor.pos + 1;
-
-      if (nextPos <= (source.length - 1)) {
-        return source[nextPos];
-      }
-
-      return null;
-    },
-    get rest() {
-      return source.substr(cursor.pos);
-    },
-    get hasNext() {
-      return cursor.len > cursor.pos;
-    },
-    get isLast() {
-      return cursor.pos === cursor.len;
-    },
-  };
-  const skip = (num = 1, silent) => {
-    cursor.pos += num;
-
-    if (options && options.onSkip && !silent) {
-      options.onSkip();
-    }
   };
 
-  this.cursor = cursor;
-
-  /**
-   * @type {skip}
-   */
-  this.skip = skip;
-  /**
-   * @returns {Boolean}
-   */
-  this.hasNext = () => cursor.hasNext;
-  /**
-   * @returns {String}
-   */
-  this.getCurr = () => cursor.curr;
-  /**
-   * @returns {String}
-   */
-  this.getRest = () => cursor.rest;
-  /**
-   * @returns {String}
-   */
-  this.getNext = () => cursor.next;
-  /**
-   * @returns {String}
-   */
-  this.getPrev = () => cursor.prev;
-  /**
-   * @returns {Boolean}
-   */
-  this.isLast = () => cursor.isLast;
-  /**
-   * @returns {Boolean}
-   */
-  this.includes = (searchValue) => source.indexOf(searchValue, cursor.pos) >= 0;
-  /**
-   * @param {Function} cond
-   * @param {Boolean} silent
-   * @return {String}
-   */
-  this.grabWhile = (cond, silent) => {
-    let start = 0;
-
-    if (cursor.hasNext) {
-      start = cursor.pos;
-
-      while (cursor.hasNext && cond(cursor.curr)) {
-        skip(1, silent);
-      }
-    }
-
-    return source.substr(start, cursor.pos - start);
-  };
-  /**
-   * Grabs rest of string until it find a char
-   * @param {String} char
-   * @return {String}
-   */
-  this.substrUntilChar = (char) => {
+  const substrUntilChar = (char) => {
     const { pos } = cursor;
     const idx = source.indexOf(char, pos);
 
@@ -113,6 +19,93 @@ function CharGrabber(source, options) {
 
     return '';
   };
+  const includes = (val) => source.indexOf(val, cursor.pos) >= 0;
+  const hasNext = () => cursor.len > cursor.pos;
+  const isLast = () => cursor.pos === cursor.len;
+  const skip = (num = 1, silent) => {
+    cursor.pos += num;
+
+    if (options && options.onSkip && !silent) {
+      options.onSkip();
+    }
+  };
+  const rest = () => source.substr(cursor.pos);
+  const curr = () => source[cursor.pos];
+  const prev = () => {
+    const prevPos = cursor.pos - 1;
+
+    if (typeof source[prevPos] !== 'undefined') {
+      return source[prevPos];
+    }
+
+    return null;
+  };
+  const next = () => {
+    const nextPos = cursor.pos + 1;
+
+    if (nextPos <= (source.length - 1)) {
+      return source[nextPos];
+    }
+
+    return null;
+  };
+  const grabWhile = (cond, silent) => {
+    let start = 0;
+
+    if (hasNext()) {
+      start = cursor.pos;
+
+      while (hasNext() && cond(curr())) {
+        skip(1, silent);
+      }
+    }
+
+    return source.substr(start, cursor.pos - start);
+  };
+  /**
+   * @type {skip}
+   */
+  this.skip = skip;
+  /**
+   * @returns {Boolean}
+   */
+  this.hasNext = hasNext;
+  /**
+   * @returns {String}
+   */
+  this.getCurr = curr;
+  /**
+   * @returns {String}
+   */
+  this.getRest = rest;
+  /**
+   * @returns {String}
+   */
+  this.getNext = next;
+  /**
+   * @returns {String}
+   */
+  this.getPrev = prev;
+  /**
+   * @returns {Boolean}
+   */
+  this.isLast = isLast;
+  /**
+   * @returns {Boolean}
+   */
+  this.includes = includes;
+  /**
+   * @param {Function} cond
+   * @param {Boolean} silent
+   * @return {String}
+   */
+  this.grabWhile = grabWhile;
+  /**
+   * Grabs rest of string until it find a char
+   * @param {String} char
+   * @return {String}
+   */
+  this.substrUntilChar = substrUntilChar;
 }
 
 /**
@@ -156,22 +149,18 @@ export const unquote = (str) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
 function NodeList(values = []) {
   const nodes = values;
 
-  this.getLast = () => {
-    if (Array.isArray(nodes) && nodes.length > 0 && typeof nodes[nodes.length - 1] !== 'undefined') {
-      return nodes[nodes.length - 1];
-    }
+  const getLast = () => (
+    Array.isArray(nodes) && nodes.length > 0 && typeof nodes[nodes.length - 1] !== 'undefined'
+      ? nodes[nodes.length - 1]
+      : null);
+  const flushLast = () => (nodes.length ? nodes.pop() : false);
+  const push = (value) => nodes.push(value);
+  const toArray = () => nodes;
 
-    return null;
-  };
-  this.flushLast = () => {
-    if (nodes.length) {
-      return nodes.pop();
-    }
-
-    return false;
-  };
-  this.push = (value) => nodes.push(value);
-  this.toArray = () => nodes;
+  this.push = push;
+  this.toArray = toArray;
+  this.getLast = getLast;
+  this.flushLast = flushLast;
 }
 
 /**

@@ -40,7 +40,7 @@ suite
     });
   })
   .add('@bbob/parser lexer1', () => {
-    const lexer1 = require('../packages/bbob-parser/lib/lexer');
+    const lexer1 = require('../packages/bbob-parser/lib/lexer_old');
 
     return require('../packages/bbob-parser/lib/index').parse(stub, {
       onlyAllowTags: ['ch'],

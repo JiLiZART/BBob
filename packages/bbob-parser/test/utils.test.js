@@ -2,9 +2,7 @@ import { createCharGrabber } from '../src/utils';
 
 
 describe('utils', () => {
-
   describe('createCharGrabber', () => {
-
 
     test('#substrUntilChar ] 1', () => {
       /**
@@ -53,6 +51,40 @@ describe('utils', () => {
       const substr = bufferGrabber.substrUntilChar('[');
 
       expect(substr).toBe('hello ');
+    });
+
+    test('#substrUntilChar not existed', () => {
+      /**
+       console.log src/utils.js:95
+       substrUntilChar { char: ']', indexOfChar: 14, curPos: 7 } {
+        result: 'blah foo="bar"',
+        source: 'hello [blah foo="bar"]world[/blah]'
+      }
+       console.log src/utils.js:104
+       substrUntilChar.new { char: ']', indexOfCharNew: 21, curPos: 7 } {
+        result: 'blah foo="bar"]world[/',
+        source: 'hello [blah foo="bar"]world[/blah]'
+      }
+       */
+      const bufferGrabber = createCharGrabber('hello');
+      const substr = bufferGrabber.substrUntilChar('[');
+
+      expect(substr).toBe('');
+    });
+
+    test('getPrev is null', () => {
+      const bufferGrabber = createCharGrabber('');
+      const prev = bufferGrabber.getPrev();
+
+      expect(prev).toBe(null);
+    });
+
+    test('getRest', () => {
+      const bufferGrabber = createCharGrabber('hello [blah foo="bar"]world[/blah]');
+      bufferGrabber.skip();
+      const rest = bufferGrabber.getRest();
+
+      expect(rest).toBe('ello [blah foo="bar"]world[/blah]');
     });
 
   })
