@@ -21,7 +21,7 @@ const EM = '!';
 
 /**
  * Creates a Token entity class
- * @param {String} type
+ * @param {Number} type
  * @param {String} value
  * @param {Number} r line number
  * @param {Number} cl char number in line
@@ -44,14 +44,26 @@ const createToken = (type, value, r = 0, cl = 0) => new Token(type, value, r, cl
  * @return {Lexer}
  */
 function createLexer(buffer, options = {}) {
+  const STATE_WORD = 0;
+  const STATE_TAG = 1;
+  const STATE_TAG_ATTRS = 2;
+
+  const TAG_STATE_NAME = 0;
+  const TAG_STATE_ATTR = 1;
+  const TAG_STATE_VALUE = 2;
+
   let row = 0;
   let col = 0;
 
   let tokenIndex = -1;
+  let stateMode = STATE_WORD;
+  let tagMode = TAG_STATE_NAME;
   const tokens = new Array(Math.floor(buffer.length));
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
-  const escapeTags = options.enableEscapeTags;
+  const escapeTags = !!options.enableEscapeTags;
+  const onToken = options.onToken || (() => {
+  });
 
   const RESERVED_CHARS = [closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM];
   const NOT_CHAR_TOKENS = [
@@ -62,175 +74,266 @@ function createLexer(buffer, options = {}) {
   const SPECIAL_CHARS = [EQ, SPACE, TAB];
 
   const isCharReserved = (char) => (RESERVED_CHARS.indexOf(char) >= 0);
+  const isNewLine = (char) => char === N;
   const isWhiteSpace = (char) => (WHITESPACES.indexOf(char) >= 0);
   const isCharToken = (char) => (NOT_CHAR_TOKENS.indexOf(char) === -1);
   const isSpecialChar = (char) => (SPECIAL_CHARS.indexOf(char) >= 0);
   const isEscapableChar = (char) => (char === openTag || char === closeTag || char === BACKSLASH);
   const isEscapeChar = (char) => char === BACKSLASH;
+  const onSkip = () => {
+    col++;
+  };
+
+  const unq = (val) => unquote(trimChar(val, QUOTEMARK));
+
+  const chars = createCharGrabber(buffer, { onSkip });
 
   /**
    * Emits newly created token to subscriber
-   * @param token
+   * @param {Number} type
+   * @param {String} value
    */
-  const emitToken = (token) => {
-    if (options.onToken) {
-      options.onToken(token);
-    }
+  function emitToken(type, value) {
+    const token = createToken(type, value, row, col);
+
+    onToken(token);
 
     tokenIndex += 1;
     tokens[tokenIndex] = token;
-  };
+  }
 
-  /**
-   * Parses params inside [myTag---params goes here---]content[/myTag]
-   * @param str
-   * @returns {{tag: *, attrs: Array}}
-   */
-  const parseAttrs = (str) => {
-    let tagName = null;
-    let skipSpecialChars = false;
+  function nextTagState(tagChars, isSingleValueTag) {
+    if (tagMode === TAG_STATE_ATTR) {
+      const validAttrName = (char) => !(char === EQ || isWhiteSpace(char));
+      const name = tagChars.grabWhile(validAttrName);
+      const isEnd = tagChars.isLast();
+      const isValue = tagChars.getCurr() !== EQ;
 
-    const attrTokens = [];
-    const attrCharGrabber = createCharGrabber(str);
+      tagChars.skip();
 
-    const validAttr = (char) => {
-      const isEQ = char === EQ;
-      const isWS = isWhiteSpace(char);
-      const prevChar = attrCharGrabber.getPrev();
-      const nextChar = attrCharGrabber.getNext();
-      const isPrevSLASH = prevChar === BACKSLASH;
-      const isTagNameEmpty = tagName === null;
-
-      if (isTagNameEmpty) {
-        return (isEQ || isWS || attrCharGrabber.isLast()) === false;
-      }
-
-      if (skipSpecialChars && isSpecialChar(char)) {
-        return true;
-      }
-
-      if (char === QUOTEMARK && !isPrevSLASH) {
-        skipSpecialChars = !skipSpecialChars;
-
-        if (!skipSpecialChars && !(nextChar === EQ || isWhiteSpace(nextChar))) {
-          return false;
-        }
-      }
-
-      return (isEQ || isWS) === false;
-    };
-
-    const nextAttr = () => {
-      const attrStr = attrCharGrabber.grabWhile(validAttr);
-      const currChar = attrCharGrabber.getCurr();
-
-      // first string before space is a tag name [tagName params...]
-      if (tagName === null) {
-        tagName = attrStr;
-      } else if (isWhiteSpace(currChar) || currChar === QUOTEMARK || !attrCharGrabber.hasNext()) {
-        const escaped = unquote(trimChar(attrStr, QUOTEMARK));
-        attrTokens.push(createToken(TYPE_ATTR_VALUE, escaped, row, col));
+      if (isEnd || isValue) {
+        emitToken(TYPE_ATTR_VALUE, unq(name));
       } else {
-        attrTokens.push(createToken(TYPE_ATTR_NAME, attrStr, row, col));
+        emitToken(TYPE_ATTR_NAME, name);
       }
 
-      attrCharGrabber.skip();
-    };
+      if (isEnd) {
+        return TAG_STATE_NAME;
+      }
 
-    while (attrCharGrabber.hasNext()) {
-      nextAttr();
+      if (isValue) {
+        return TAG_STATE_ATTR;
+      }
+
+      return TAG_STATE_VALUE;
+    }
+    if (tagMode === TAG_STATE_VALUE) {
+      let stateSpecial = false;
+
+      const validAttrValue = (char) => {
+        // const isEQ = char === EQ;
+        const isQM = char === QUOTEMARK;
+        const prevChar = tagChars.getPrev();
+        const nextChar = tagChars.getNext();
+        const isPrevSLASH = prevChar === BACKSLASH;
+        const isNextEQ = nextChar === EQ;
+        const isWS = isWhiteSpace(char);
+        // const isPrevWS = isWhiteSpace(prevChar);
+        const isNextWS = isWhiteSpace(nextChar);
+
+        if (stateSpecial && isSpecialChar(char)) {
+          return true;
+        }
+
+        if (isQM && !isPrevSLASH) {
+          stateSpecial = !stateSpecial;
+
+          if (!stateSpecial && !(isNextEQ || isNextWS)) {
+            return false;
+          }
+        }
+
+        if (!isSingleValueTag) {
+          return isWS === false;
+          // return (isEQ || isWS) === false;
+        }
+
+        return true;
+      };
+      const name = tagChars.grabWhile(validAttrValue);
+
+      tagChars.skip();
+
+      emitToken(TYPE_ATTR_VALUE, unq(name));
+
+      if (tagChars.isLast()) {
+        return TAG_STATE_NAME;
+      }
+
+      return TAG_STATE_ATTR;
     }
 
-    return { tag: tagName, attrs: attrTokens };
-  };
+    const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagChars.isLast());
+    const name = tagChars.grabWhile(validName);
 
-  const bufferGrabber = createCharGrabber(buffer, {
-    onSkip: () => {
-      col++;
-    },
-  });
+    emitToken(TYPE_TAG, name);
 
-  const next = () => {
-    const currChar = bufferGrabber.getCurr();
-    const nextChar = bufferGrabber.getNext();
+    tagChars.skip();
 
-    if (currChar === N) {
-      bufferGrabber.skip();
+    // in cases when we has [url=someval]GET[/url] and we dont need to parse all
+    if (isSingleValueTag) {
+      return TAG_STATE_VALUE;
+    }
+
+    const hasEQ = tagChars.includes(EQ);
+
+    return hasEQ ? TAG_STATE_ATTR : TAG_STATE_VALUE;
+  }
+
+  function stateTag() {
+    const currChar = chars.getCurr();
+
+    if (currChar === openTag) {
+      const nextChar = chars.getNext();
+
+      chars.skip();
+
+      // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
+      const substr = chars.substrUntilChar(closeTag);
+      const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
+
+      if (isCharReserved(nextChar) || hasInvalidChars || chars.isLast()) {
+        emitToken(TYPE_WORD, currChar);
+
+        return STATE_WORD;
+      }
+
+      // [myTag   ]
+      const isNoAttrsInTag = substr.indexOf(EQ) === -1;
+      // [/myTag]
+      const isClosingTag = substr[0] === SLASH;
+
+      if (isNoAttrsInTag || isClosingTag) {
+        const name = chars.grabWhile((char) => char !== closeTag);
+
+        chars.skip(); // skip closeTag
+
+        emitToken(TYPE_TAG, name);
+
+        return STATE_WORD;
+      }
+
+      return STATE_TAG_ATTRS;
+    }
+
+    return STATE_WORD;
+  }
+
+  function stateAttrs() {
+    const silent = true;
+    const tagStr = chars.grabWhile((char) => char !== closeTag, silent);
+    const tagGrabber = createCharGrabber(tagStr, { onSkip });
+    const hasSpace = tagGrabber.includes(SPACE);
+
+    while (tagGrabber.hasNext()) {
+      tagMode = nextTagState(tagGrabber, !hasSpace);
+    }
+
+    chars.skip(); // skip closeTag
+
+    return STATE_WORD;
+  }
+
+  function stateWord() {
+    if (isNewLine(chars.getCurr())) {
+      emitToken(TYPE_NEW_LINE, chars.getCurr());
+
+      chars.skip();
+
       col = 0;
       row++;
 
-      emitToken(createToken(TYPE_NEW_LINE, currChar, row, col));
-    } else if (isWhiteSpace(currChar)) {
-      const str = bufferGrabber.grabWhile(isWhiteSpace);
-      emitToken(createToken(TYPE_SPACE, str, row, col));
-    } else if (escapeTags && isEscapeChar(currChar) && isEscapableChar(nextChar)) {
-      bufferGrabber.skip(); // skip the \ without emitting anything
-      bufferGrabber.skip(); // skip past the [, ] or \ as well
-      emitToken(createToken(TYPE_WORD, nextChar, row, col));
-    } else if (currChar === openTag) {
-      bufferGrabber.skip(); // skip openTag
-
-      // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
-      const substr = bufferGrabber.substrUntilChar(closeTag);
-      const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
-
-      if (isCharReserved(nextChar) || hasInvalidChars || bufferGrabber.isLast()) {
-        emitToken(createToken(TYPE_WORD, currChar, row, col));
-      } else {
-        const str = bufferGrabber.grabWhile((val) => val !== closeTag);
-
-        bufferGrabber.skip(); // skip closeTag
-        // [myTag   ]
-        const isNoAttrsInTag = str.indexOf(EQ) === -1;
-        // [/myTag]
-        const isClosingTag = str[0] === SLASH;
-
-        if (isNoAttrsInTag || isClosingTag) {
-          emitToken(createToken(TYPE_TAG, str, row, col));
-        } else {
-          const parsed = parseAttrs(str);
-
-          emitToken(createToken(TYPE_TAG, parsed.tag, row, col));
-
-          parsed.attrs.map(emitToken);
-        }
-      }
-    } else if (currChar === closeTag) {
-      bufferGrabber.skip(); // skip closeTag
-
-      emitToken(createToken(TYPE_WORD, currChar, row, col));
-    } else if (isCharToken(currChar)) {
-      if (escapeTags && isEscapeChar(currChar) && !isEscapableChar(nextChar)) {
-        bufferGrabber.skip();
-        emitToken(createToken(TYPE_WORD, currChar, row, col));
-      } else {
-        const str = bufferGrabber.grabWhile((char) => {
-          if (escapeTags) {
-            return isCharToken(char) && !isEscapeChar(char);
-          }
-          return isCharToken(char);
-        });
-
-        emitToken(createToken(TYPE_WORD, str, row, col));
-      }
+      return STATE_WORD;
     }
-  };
 
-  const tokenize = () => {
-    while (bufferGrabber.hasNext()) {
-      next();
+    if (isWhiteSpace(chars.getCurr())) {
+      emitToken(TYPE_SPACE, chars.grabWhile(isWhiteSpace));
+
+      return STATE_WORD;
+    }
+
+    if (chars.getCurr() === openTag) {
+      if (chars.includes(closeTag)) {
+        return STATE_TAG;
+      }
+
+      emitToken(TYPE_WORD, chars.getCurr());
+
+      chars.skip();
+
+      return STATE_WORD;
+    }
+
+    if (escapeTags) {
+      if (isEscapeChar(chars.getCurr())) {
+        const currChar = chars.getCurr();
+        const nextChar = chars.getNext();
+
+        chars.skip(); // skip the \ without emitting anything
+
+        if (isEscapableChar(nextChar)) {
+          chars.skip(); // skip past the [, ] or \ as well
+
+          emitToken(TYPE_WORD, nextChar);
+
+          return STATE_WORD;
+        }
+
+        emitToken(TYPE_WORD, currChar);
+
+        return STATE_WORD;
+      }
+
+      const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
+
+      emitToken(TYPE_WORD, chars.grabWhile(isChar));
+
+      return STATE_WORD;
+    }
+
+    emitToken(TYPE_WORD, chars.grabWhile(isCharToken));
+
+    return STATE_WORD;
+  }
+
+  function tokenize() {
+    while (chars.hasNext()) {
+      switch (stateMode) {
+        case STATE_TAG:
+          stateMode = stateTag();
+          break;
+        case STATE_TAG_ATTRS:
+          stateMode = stateAttrs();
+          break;
+        case STATE_WORD:
+          stateMode = stateWord();
+          break;
+        default:
+          stateMode = STATE_WORD;
+          break;
+      }
     }
 
     tokens.length = tokenIndex + 1;
 
     return tokens;
-  };
+  }
 
-  const isTokenNested = (token) => {
+  function isTokenNested(token) {
     const value = openTag + SLASH + token.getValue();
     // potential bottleneck
     return buffer.indexOf(value) > -1;
-  };
+  }
 
   return {
     tokenize,

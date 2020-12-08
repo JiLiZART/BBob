@@ -8,8 +8,7 @@ describe('Parser', () => {
 
   test('parse paired tags tokens', () => {
     const ast = parse('[best name=value]Foo Bar[/best]');
-
-    expectOutput(ast, [
+    const output = [
       {
         tag: 'best',
         attrs: {
@@ -21,15 +20,16 @@ describe('Parser', () => {
           'Bar',
         ],
       },
-    ]);
+    ];
+
+    expectOutput(ast, output);
   });
 
   test('parse only allowed tags', () => {
     const ast = parse('[h1 name=value]Foo [Bar] [/h1]', {
       onlyAllowTags: ['h1']
     });
-
-    expectOutput(ast, [
+    const output = [
       {
         tag: 'h1',
         attrs: {
@@ -42,13 +42,14 @@ describe('Parser', () => {
           ' '
         ],
       },
-    ]);
+    ];
+
+    expectOutput(ast, output);
   });
 
   test('parse inconsistent tags', () => {
     const ast = parse('[h1 name=value]Foo [Bar] /h1]');
-
-    expectOutput(ast, [
+    const output = [
       {
         attrs: {
           name: 'value'
@@ -65,13 +66,14 @@ describe('Parser', () => {
       },
       ' ',
       '/h1]',
-    ]);
+    ];
+
+    expectOutput(ast, output);
   });
 
   test('parse tag with value param', () => {
     const ast = parse('[url=https://github.com/jilizart/bbob]BBob[/url]');
-
-    expectOutput(ast, [
+    const output = [
       {
         tag: 'url',
         attrs: {
@@ -79,13 +81,14 @@ describe('Parser', () => {
         },
         content: ['BBob'],
       },
-    ]);
+    ];
+
+    expectOutput(ast, output);
   });
 
   test('parse tag with quoted param with spaces', () => {
     const ast = parse('[url href=https://ru.wikipedia.org target=_blank text="Foo Bar"]Text[/url]');
-
-    expectOutput(ast, [
+    const output = [
       {
         tag: 'url',
         attrs: {
@@ -95,13 +98,14 @@ describe('Parser', () => {
         },
         content: ['Text'],
       },
-    ]);
+    ];
+
+    expectOutput(ast, output);
   });
 
   test('parse single tag with params', () => {
     const ast = parse('[url=https://github.com/jilizart/bbob]');
-
-    expectOutput(ast, [
+    const output = [
       {
         tag: 'url',
         attrs: {
@@ -109,12 +113,15 @@ describe('Parser', () => {
         },
         content: [],
       },
-    ]);
+    ];
+
+    expectOutput(ast, output);
   });
 
   test('detect inconsistent tag', () => {
     const onError = jest.fn();
-    const ast = parse('[c][/c][b]hello[/c][/b][b]', { onError });
+
+    parse('[c][/c][b]hello[/c][/b][b]', { onError });
 
     expect(onError).toHaveBeenCalled();
   });
@@ -143,6 +150,82 @@ describe('Parser', () => {
         ' ',
         '[blah="bar"]world[/blah]',
     ])
+  });
+
+  test('parse few tags without spaces', () => {
+    const ast = parse('[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]');
+    const output = [
+      {
+        tag: 'mytag1',
+        attrs: {
+          size: '15',
+        },
+        content: ['Tag1'],
+      },
+      {
+        tag: 'mytag2',
+        attrs: {
+          size: '16',
+        },
+        content: ['Tag2'],
+      },
+      {
+        tag: 'mytag3',
+        attrs: {},
+        content: ['Tag3'],
+      },
+    ];
+
+    expectOutput(ast, output);
+  });
+
+  // @TODO: this is breaking change behavior
+  test.skip('parse tags with single attributes like disabled', () => {
+    const ast = parse('[b]hello[/b] [textarea disabled]world[/textarea]');
+
+    expectOutput(ast, [
+      {
+        tag: 'b',
+        attrs: {},
+        content: ['hello'],
+      },
+        ' ',
+      {
+        tag: 'textarea',
+        attrs: {
+          disabled: 'disabled',
+        },
+        content: ['world'],
+      },
+    ]);
+  });
+
+  test('parse url tag with get params', () => {
+    const ast = parse('[url=https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any]GET[/url]');
+
+    expectOutput(ast, [
+      {
+        tag: 'url',
+        attrs: {
+          'https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any': 'https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any',
+        },
+        content: ['GET'],
+      },
+    ]);
+  });
+
+  test('parse url tag with # and = symbols [google docs]', () => {
+    const ast = parse('[url href=https://docs.google.com/spreadsheets/d/1W9VPUESF_NkbSa_HtRFrQNl0nYo8vPCxJFy7jD3Tpio/edit#gid=0]Docs[/url]');
+
+    expectOutput(ast, [
+      {
+        tag: 'url',
+        attrs: {
+          href: 'https://docs.google.com/spreadsheets/d/1W9VPUESF_NkbSa_HtRFrQNl0nYo8vPCxJFy7jD3Tpio/edit#gid=0',
+        },
+        content: ['Docs'],
+      },
+    ]);
   });
 
   describe('html', () => {

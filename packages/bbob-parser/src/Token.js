@@ -10,12 +10,12 @@ const TOKEN_VALUE_ID = 'value'; // 1;
 const TOKEN_COLUMN_ID = 'row'; // 2;
 const TOKEN_LINE_ID = 'line'; // 3;
 
-const TOKEN_TYPE_WORD = 'word';
-const TOKEN_TYPE_TAG = 'tag';
-const TOKEN_TYPE_ATTR_NAME = 'attr-name';
-const TOKEN_TYPE_ATTR_VALUE = 'attr-value';
-const TOKEN_TYPE_SPACE = 'space';
-const TOKEN_TYPE_NEW_LINE = 'new-line';
+const TOKEN_TYPE_WORD = 1; // 'word';
+const TOKEN_TYPE_TAG = 2; // 'tag';
+const TOKEN_TYPE_ATTR_NAME = 3; // 'attr-name';
+const TOKEN_TYPE_ATTR_VALUE = 4; // 'attr-value';
+const TOKEN_TYPE_SPACE = 5; // 'space';
+const TOKEN_TYPE_NEW_LINE = 6; // 'new-line';
 
 /**
  * @param {Token} token
@@ -105,14 +105,15 @@ class Token {
    * @param row
    */
   constructor(type, value, line, row) {
-    this[TOKEN_TYPE_ID] = String(type);
+    this[TOKEN_TYPE_ID] = Number(type);
     this[TOKEN_VALUE_ID] = String(value);
     this[TOKEN_LINE_ID] = Number(line);
     this[TOKEN_COLUMN_ID] = Number(row);
   }
 
   isEmpty() {
-    return !!this[TOKEN_TYPE_ID];
+    // eslint-disable-next-line no-restricted-globals
+    return isNaN(this[TOKEN_TYPE_ID]);
   }
 
   isText() {

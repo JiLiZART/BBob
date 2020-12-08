@@ -3,95 +3,107 @@ import {
   BACKSLASH,
 } from '@bbob/plugin-helper/lib/char';
 
-/**
- * @typedef {Object} CharGrabber
- * @property {Function} skip
- * @property {Function} hasNext
- * @property {Function} isLast
- * @property {Function} grabWhile
- */
+function CharGrabber(source, options) {
+  const cursor = {
+    pos: 0,
+    len: source.length,
+  };
+
+  const substrUntilChar = (char) => {
+    const { pos } = cursor;
+    const idx = source.indexOf(char, pos);
+
+    return idx >= 0 ? source.substr(pos, idx - pos) : '';
+  };
+  const includes = (val) => source.indexOf(val, cursor.pos) >= 0;
+  const hasNext = () => cursor.len > cursor.pos;
+  const isLast = () => cursor.pos === cursor.len;
+  const skip = (num = 1, silent) => {
+    cursor.pos += num;
+
+    if (options && options.onSkip && !silent) {
+      options.onSkip();
+    }
+  };
+  const rest = () => source.substr(cursor.pos);
+  const curr = () => source[cursor.pos];
+  const prev = () => {
+    const prevPos = cursor.pos - 1;
+
+    return typeof source[prevPos] !== 'undefined' ? source[prevPos] : null;
+  };
+  const next = () => {
+    const nextPos = cursor.pos + 1;
+
+    return nextPos <= (source.length - 1) ? source[nextPos] : null;
+  };
+  const grabWhile = (cond, silent) => {
+    let start = 0;
+
+    if (hasNext()) {
+      start = cursor.pos;
+
+      while (hasNext() && cond(curr())) {
+        skip(1, silent);
+      }
+    }
+
+    return source.substr(start, cursor.pos - start);
+  };
+  /**
+   * @type {skip}
+   */
+  this.skip = skip;
+  /**
+   * @returns {Boolean}
+   */
+  this.hasNext = hasNext;
+  /**
+   * @returns {String}
+   */
+  this.getCurr = curr;
+  /**
+   * @returns {String}
+   */
+  this.getRest = rest;
+  /**
+   * @returns {String}
+   */
+  this.getNext = next;
+  /**
+   * @returns {String}
+   */
+  this.getPrev = prev;
+  /**
+   * @returns {Boolean}
+   */
+  this.isLast = isLast;
+  /**
+   * @returns {Boolean}
+   */
+  this.includes = includes;
+  /**
+   * @param {Function} cond
+   * @param {Boolean} silent
+   * @return {String}
+   */
+  this.grabWhile = grabWhile;
+  /**
+   * Grabs rest of string until it find a char
+   * @param {String} char
+   * @return {String}
+   */
+  this.substrUntilChar = substrUntilChar;
+}
 
 /**
  * Creates a grabber wrapper for source string, that helps to iterate over string char by char
  * @param {String} source
  * @param {Object} options
  * @param {Function} options.onSkip
- * @returns
+ * @return CharGrabber
  */
-export const createCharGrabber = (source, options) => {
-  // let idx = 0;
-  const cursor = {
-    pos: 0,
-    length: source.length,
-  };
-
-  const skip = () => {
-    cursor.pos += 1;
-
-    if (options && options.onSkip) {
-      options.onSkip();
-    }
-  };
-  const hasNext = () => cursor.length > cursor.pos;
-  const getRest = () => source.substr(cursor.pos);
-  const getCurr = () => source[cursor.pos];
-
-  return {
-    skip,
-    hasNext,
-    isLast: () => (cursor.pos === cursor.length),
-    /**
-     * @param {Function} cond
-     * @returns {string}
-     */
-    grabWhile: (cond) => {
-      let start = 0;
-
-      if (hasNext()) {
-        start = cursor.pos;
-
-        while (hasNext() && cond(getCurr())) {
-          skip();
-        }
-      }
-
-      return source.substr(start, cursor.pos - start);
-    },
-    getNext: () => {
-      const nextPos = cursor.pos + 1;
-
-      if (nextPos <= (source.length - 1)) {
-        return source[nextPos];
-      }
-      return null;
-    },
-    getPrev: () => {
-      const prevPos = cursor.pos - 1;
-
-      if (typeof source[prevPos] !== 'undefined') {
-        return source[prevPos];
-      }
-      return null;
-    },
-    getCurr,
-    getRest,
-    /**
-     * Grabs rest of string until it find a char
-     * @param {String} char
-     * @return {String}
-     */
-    substrUntilChar: (char) => {
-      const restStr = getRest();
-      const indexOfChar = restStr.indexOf(char);
-
-      if (indexOfChar >= 0) {
-        return restStr.substr(0, indexOfChar);
-      }
-
-      return '';
-    },
-  };
-};
+export const createCharGrabber = (source, options) => new CharGrabber(source, options);
 
 /**
  * Trims string from start and end by char
@@ -122,58 +134,26 @@ export const trimChar = (str, charToRemove) => {
  */
 export const unquote = (str) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
 
-/**
- * @typedef {Object} ItemList
- * @type {Object}
- * @property {getLastCb} getLast
- * @property {flushLastCb} flushLast
- * @property {pushCb} push
- * @property {toArrayCb} toArray
- */
+function NodeList(values = []) {
+  const nodes = values;
+
+  const getLast = () => (
+    Array.isArray(nodes) && nodes.length > 0 && typeof nodes[nodes.length - 1] !== 'undefined'
+      ? nodes[nodes.length - 1]
+      : null);
+  const flushLast = () => (nodes.length ? nodes.pop() : false);
+  const push = (value) => nodes.push(value);
+  const toArray = () => nodes;
+
+  this.push = push;
+  this.toArray = toArray;
+  this.getLast = getLast;
+  this.flushLast = flushLast;
+}
 
 /**
  *
  * @param values
- * @return {ItemList}
+ * @return {NodeList}
  */
-export const createList = (values = []) => {
-  const nodes = values;
-  /**
-   * @callback getLastCb
-   */
-  const getLast = () => {
-    if (Array.isArray(nodes) && nodes.length > 0 && typeof nodes[nodes.length - 1] !== 'undefined') {
-      return nodes[nodes.length - 1];
-    }
-
-    return null;
-  };
-  /**
-   * @callback flushLastCb
-   * @return {*}
-   */
-  const flushLast = () => {
-    if (nodes.length) {
-      return nodes.pop();
-    }
-
-    return false;
-  };
-  /**
-   * @callback pushCb
-   * @param value
-   */
-  const push = (value) => nodes.push(value);
-
-  /**
-   * @callback toArrayCb
-   * @return {Array}
-   */
-
-  return {
-    getLast,
-    flushLast,
-    push,
-    toArray: () => nodes,
-  };
-};
+export const createList = (values = []) => new NodeList(values);

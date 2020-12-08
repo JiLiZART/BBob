@@ -22,25 +22,25 @@ const parse = (input, opts = {}) => {
   /**
    * Result AST of nodes
    * @private
-   * @type {ItemList}
+   * @type {NodeList}
    */
   const nodes = createList();
   /**
    * Temp buffer of nodes that's nested to another node
    * @private
-   * @type {ItemList}
+   * @type {NodeList}
    */
   const nestedNodes = createList();
   /**
    * Temp buffer of nodes [tag..]...[/tag]
    * @private
-   * @type {ItemList}
+   * @type {NodeList}
    */
   const tagNodes = createList();
   /**
    * Temp buffer of tag attributes
    * @private
-   * @type {ItemList}
+   * @type {NodeList}
    */
   const tagNodesAttrName = createList();
 

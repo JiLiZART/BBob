@@ -24,7 +24,7 @@ class TagNode {
   constructor(tag, attrs, content) {
     this.tag = tag;
     this.attrs = attrs;
-    this.content = [].concat(content);
+    this.content = Array.isArray(content) ? content : [content];
   }
 
   attr(name, value) {

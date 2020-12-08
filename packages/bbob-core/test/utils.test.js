@@ -1,4 +1,7 @@
-import { iterate } from '../src/utils';
+import { iterate, match } from '../src/utils';
+
+const stringify = val => JSON.stringify(val);
+
 
 describe('@bbob/core utils', () => {
   test('iterate', () => {
@@ -16,14 +19,47 @@ describe('@bbob/core utils', () => {
       return node;
     });
 
-    expect(resultArr).toEqual([{
-      one: true,
-      pass: 1,
-      content: [{ oneInside: true, pass: 1, }]
-    }, {
-      two: true,
-      pass: 1,
-      content: [{ twoInside: true, pass: 1, }]
-    }]);
+    const expected = [
+      {
+        one: true,
+        content: [{ oneInside: true, pass: 1, }],
+        pass: 1,
+      }, {
+        two: true,
+        content: [{ twoInside: true, pass: 1, }],
+        pass: 1,
+      }
+    ];
+
+    expect(stringify(resultArr)).toEqual(stringify(expected));
   });
+  test('match', () => {
+    const testArr = [
+      { tag: 'mytag1', one: 1 },
+      { tag: 'mytag2', two: 1 },
+      { tag: 'mytag3', three: 1 },
+      { tag: 'mytag4', four: 1 },
+      { tag: 'mytag5', five: 1 },
+      { tag: 'mytag6', six: 1 },
+    ];
+
+    testArr.match = match;
+
+    const resultArr = testArr.match([{ tag: 'mytag1' }, { tag: 'mytag2' }], node => {
+      node.pass = 1;
+
+      return node;
+    });
+
+    const expected = [
+      { tag: 'mytag1', one: 1, pass: 1 },
+      { tag: 'mytag2', two: 1, pass: 1 },
+      { tag: 'mytag3', three: 1 },
+      { tag: 'mytag4', four: 1 },
+      { tag: 'mytag5', five: 1 },
+      { tag: 'mytag6', six: 1 },
+    ];
+
+    expect(stringify(resultArr)).toEqual(stringify(expected))
+  })
 });

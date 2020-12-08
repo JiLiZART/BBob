@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const Benchmark = require('benchmark');
 const stub = require('./test/stub');
 
@@ -38,9 +39,22 @@ suite
       addInLineBreaks: false,
     });
   })
-  .add('@bbob/parser', () => require('../packages/bbob-parser/lib/index').parse(stub, {
-    onlyAllowTags: ['ch'],
-  }))
+  .add('@bbob/parser lexer old', () => {
+    const lexer1 = require('../packages/bbob-parser/lib/lexer_old');
+
+    return require('../packages/bbob-parser/lib/index').parse(stub, {
+      onlyAllowTags: ['ch'],
+      createTokenizer: lexer1.createLexer,
+    });
+  })
+  .add('@bbob/parser lexer', () => {
+    const lexer2 = require('../packages/bbob-parser/lib/lexer');
+
+    return require('../packages/bbob-parser/lib/index').parse(stub, {
+      onlyAllowTags: ['ch'],
+      createTokenizer: lexer2.createLexer,
+    });
+  })
 // add listeners
   .on('cycle', (event) => {
     console.log(String(event.target));
