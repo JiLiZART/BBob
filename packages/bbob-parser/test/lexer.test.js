@@ -84,6 +84,18 @@ describe('lexer', () => {
     expect(tokens).toBeMantchOutput(output);
   });
 
+  test('single fake tag', () => {
+    const input = '[ user=111]';
+    const tokens = tokenize(input);
+    const output = [
+      [TYPE.WORD, '[', '0', '0'],
+      [TYPE.SPACE, ' ', '0', '0'],
+      [TYPE.WORD, 'user=111]', '0', '0'],
+    ];
+
+    expect(tokens).toBeMantchOutput(output);
+  });
+
   test('single tag with spaces', () => {
     const input = '[Single Tag]';
     const tokens = tokenize(input);

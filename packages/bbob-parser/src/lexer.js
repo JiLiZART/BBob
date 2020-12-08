@@ -103,32 +103,6 @@ function createLexer(buffer, options = {}) {
   }
 
   function nextTagState(tagChars, isSingleValueTag) {
-    if (tagMode === TAG_STATE_NAME) {
-      const currChar = tagChars.getCurr();
-      const hasNext = tagChars.hasNext();
-      const isWS = isWhiteSpace(currChar);
-      const isQM = currChar === QUOTEMARK;
-
-      if (isWS || isQM || !hasNext) {
-        return TAG_STATE_VALUE;
-      }
-
-      const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagChars.isLast());
-      const name = tagChars.grabWhile(validName);
-
-      emitToken(TYPE_TAG, name);
-
-      tagChars.skip();
-
-      // in cases when we has [url=someval]GET[/url] and we dont need to parse all
-      if (isSingleValueTag) {
-        return TAG_STATE_VALUE;
-      }
-
-      const hasEQ = tagChars.includes(EQ);
-
-      return hasEQ ? TAG_STATE_ATTR : TAG_STATE_VALUE;
-    }
     if (tagMode === TAG_STATE_ATTR) {
       const validAttrName = (char) => !(char === EQ || isWhiteSpace(char));
       const name = tagChars.grabWhile(validAttrName);
@@ -199,7 +173,21 @@ function createLexer(buffer, options = {}) {
       return TAG_STATE_ATTR;
     }
 
-    return TAG_STATE_NAME;
+    const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagChars.isLast());
+    const name = tagChars.grabWhile(validName);
+
+    emitToken(TYPE_TAG, name);
+
+    tagChars.skip();
+
+    // in cases when we has [url=someval]GET[/url] and we dont need to parse all
+    if (isSingleValueTag) {
+      return TAG_STATE_VALUE;
+    }
+
+    const hasEQ = tagChars.includes(EQ);
+
+    return hasEQ ? TAG_STATE_ATTR : TAG_STATE_VALUE;
   }
 
   function stateTag() {
