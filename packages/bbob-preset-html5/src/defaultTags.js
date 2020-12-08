@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus,no-lonely-if */
-import { getUniqAttr, isStringNode, isTagNode } from '@bbob/plugin-helper';
+import { getUniqAttr, isStringNode, isTagNode } from '@bbob/plugin-helper/lib/index';
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
 
 const isStartsWith = (node, type) => (node[0] === type);
@@ -59,75 +59,39 @@ const renderUrl = (node, render) => (getUniqAttr(node.attrs)
   ? getUniqAttr(node.attrs)
   : render(node.content));
 
+const toNode = (tag, attrs, content) => ({
+  tag,
+  attrs,
+  content,
+});
+
 export default {
-  b: (node) => ({
-    tag: 'span',
-    attrs: {
-      style: 'font-weight: bold;',
-    },
-    content: node.content,
-  }),
-  i: (node) => ({
-    tag: 'span',
-    attrs: {
-      style: 'font-style: italic;',
-    },
-    content: node.content,
-  }),
-  u: (node) => ({
-    tag: 'span',
-    attrs: {
-      style: 'text-decoration: underline;',
-    },
-    content: node.content,
-  }),
-  s: (node) => ({
-    tag: 'span',
-    attrs: {
-      style: 'text-decoration: line-through;',
-    },
-    content: node.content,
-  }),
-  url: (node, { render }, options) => ({
-    tag: 'a',
-    attrs: {
-      href: renderUrl(node, render, options),
-    },
-    content: node.content,
-  }),
-  img: (node, { render }) => ({
-    tag: 'img',
-    attrs: {
-      src: render(node.content),
-    },
-    content: null,
-  }),
-  quote: (node) => ({
-    tag: 'blockquote',
-    attrs: {},
-    content: [{
-      tag: 'p',
-      attrs: {},
-      content: node.content,
-    }],
-  }),
-  code: (node) => ({
-    tag: 'pre',
-    attrs: {},
-    content: node.content,
-  }),
-  style: (node) => ({
-    tag: 'span',
-    attrs: {
-      style: getStyleFromAttrs(node.attrs),
-    },
-    content: node.content,
-  }),
-  list: (node) => ({
-    tag: getUniqAttr(node.attrs) ? 'ol' : 'ul',
-    attrs: getUniqAttr(node.attrs) ? {
-      type: getUniqAttr(node.attrs),
-    } : {},
-    content: asListItems(node.content),
-  }),
+  b: (node) => toNode('span', {
+    style: 'font-weight: bold;',
+  }, node.content),
+  i: (node) => toNode('span', {
+    style: 'font-style: italic;',
+  }, node.content),
+  u: (node) => toNode('span', {
+    style: 'text-decoration: underline;',
+  }, node.content),
+  s: (node) => toNode('span', {
+    style: 'text-decoration: line-through;',
+  }, node.content),
+  url: (node, { render }, options) => toNode('a', {
+    href: renderUrl(node, render, options),
+  }, node.content),
+  img: (node, { render }) => toNode('img', {
+    src: render(node.content),
+  }, null),
+  quote: (node) => toNode('blockquote', {}, [toNode('p', {}, node.content)]),
+  code: (node) => toNode('pre', {}, node.content),
+  style: (node) => toNode('span', {
+    style: getStyleFromAttrs(node.attrs),
+  }, node.content),
+  list: (node) => {
+    const type = getUniqAttr(node.attrs);
+
+    return toNode(type ? 'ol' : 'ul', type ? { type } : {}, asListItems(node.content));
+  },
 };
