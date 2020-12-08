@@ -1,5 +1,5 @@
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
-import { isTagNode } from '@bbob/plugin-helper';
+import { isTagNode } from '@bbob/plugin-helper/lib/index';
 import { createLexer } from './lexer';
 import { createList } from './utils';
 

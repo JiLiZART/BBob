@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { isTagNode } from '@bbob/plugin-helper';
+import { isTagNode } from '@bbob/plugin-helper/lib/index';
 
 function process(tags, tree, core, options) {
   tree.walk((node) => (isTagNode(node) && tags[node.tag]
