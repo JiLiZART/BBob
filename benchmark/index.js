@@ -39,7 +39,7 @@ suite
       addInLineBreaks: false,
     });
   })
-  .add('@bbob/parser lexer1', () => {
+  .add('@bbob/parser lexer old', () => {
     const lexer1 = require('../packages/bbob-parser/lib/lexer_old');
 
     return require('../packages/bbob-parser/lib/index').parse(stub, {
@@ -47,8 +47,8 @@ suite
       createTokenizer: lexer1.createLexer,
     });
   })
-  .add('@bbob/parser lexer2', () => {
-    const lexer2 = require('../packages/bbob-parser/lib/lexer2');
+  .add('@bbob/parser lexer', () => {
+    const lexer2 = require('../packages/bbob-parser/lib/lexer');
 
     return require('../packages/bbob-parser/lib/index').parse(stub, {
       onlyAllowTags: ['ch'],
