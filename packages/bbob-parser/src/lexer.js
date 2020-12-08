@@ -225,13 +225,6 @@ function createLexer(buffer, options = {}) {
 
       return STATE_TAG_ATTRS;
     }
-    if (currChar === closeTag) {
-      chars.skip();
-
-      emitToken(TYPE_WORD, currChar);
-
-      return STATE_WORD;
-    }
 
     return STATE_WORD;
   }
