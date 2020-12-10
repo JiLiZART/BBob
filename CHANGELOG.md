@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/JiLiZART/bbob/compare/v2.5.8...v2.6.0) (2020-12-10)
+
+
+### Bug Fixes
+
+* **react:** rendering self-closed tags and tags without content ([#74](https://github.com/JiLiZART/bbob/issues/74)) ([5a7211d](https://github.com/JiLiZART/bbob/commit/5a7211db918fd773ffc5b3ec5c82a2a3d1c2821c))
+
+
+### Features
+
+* **parser:** rewrite lexer to make it faster ([#50](https://github.com/JiLiZART/bbob/issues/50)) ([772d422](https://github.com/JiLiZART/bbob/commit/772d422d770b0f7716a86ac82c10eb3baaf77828))
+
+
+
+
+
 ## [2.5.9](https://github.com/JiLiZART/bbob/compare/v2.5.8...v2.5.9) (2020-11-16)
 
 
