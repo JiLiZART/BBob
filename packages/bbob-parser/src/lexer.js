@@ -235,6 +235,8 @@ function createLexer(buffer, options = {}) {
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
     const hasSpace = tagGrabber.includes(SPACE);
 
+    tagMode = TAG_STATE_NAME;
+
     while (tagGrabber.hasNext()) {
       tagMode = nextTagState(tagGrabber, !hasSpace);
     }
@@ -307,6 +309,8 @@ function createLexer(buffer, options = {}) {
   }
 
   function tokenize() {
+    stateMode = STATE_WORD;
+
     while (chars.hasNext()) {
       switch (stateMode) {
         case STATE_TAG:
