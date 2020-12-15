@@ -214,6 +214,44 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse tag with camelCase params', () => {
+    const ast = parse(`[url href="/groups/123/" isNowrap=true isTextOverflow=true state=primary]
+        [avatar href="/avatar/4/3/b/1606.jpg@20x20?cache=1561462725&bgclr=ffffff" size=xs][/avatar]
+         Group Name Go[/url]    `);
+
+    expectOutput(ast, [
+      {
+        tag: 'url',
+        attrs: {
+          href: '/groups/123/',
+          isNowrap: 'true',
+          isTextOverflow: 'true',
+          state: 'primary'
+        },
+        content: [
+          '\n',
+          '        ',
+          {
+            tag: 'avatar',
+            attrs: {
+              href: '/avatar/4/3/b/1606.jpg@20x20?cache=1561462725&bgclr=ffffff',
+              size: 'xs'
+            },
+            content: []
+          },
+          '\n',
+          '         ',
+          'Group',
+          ' ',
+          'Name',
+          ' ',
+          'Go',
+        ],
+      },
+      '    ',
+    ]);
+  });
+
   test('parse url tag with # and = symbols [google docs]', () => {
     const ast = parse('[url href=https://docs.google.com/spreadsheets/d/1W9VPUESF_NkbSa_HtRFrQNl0nYo8vPCxJFy7jD3Tpio/edit#gid=0]Docs[/url]');
 

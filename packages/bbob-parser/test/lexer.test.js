@@ -122,6 +122,43 @@ describe('lexer', () => {
     expect(tokens).toBeMantchOutput(output);
   });
 
+  test('tags with single word and camel case params', () => {
+    const input = `[url href="/groups/123/" isNowrap=true isTextOverflow=true state=primary]
+        [avatar href="/avatar/4/3/b/1606.jpg@20x20?cache=1561462725&bgclr=ffffff" size=xs][/avatar]
+         Group Name Go[/url]    `;
+    const tokens = tokenize(input);
+
+    const output = [
+      [TYPE.TAG, 'url', '0', '0'],
+      [TYPE.ATTR_NAME, 'href', '0', '0'],
+      [TYPE.ATTR_VALUE, '/groups/123/', '0', '0'],
+      [TYPE.ATTR_NAME, 'isNowrap', '0', '0'],
+      [TYPE.ATTR_VALUE, 'true', '0', '0'],
+      [TYPE.ATTR_NAME, 'isTextOverflow', '0', '0'],
+      [TYPE.ATTR_VALUE, 'true', '0', '0'],
+      [TYPE.ATTR_NAME, 'state', '0', '0'],
+      [TYPE.ATTR_VALUE, 'primary', '0', '0'],
+      [TYPE.NEW_LINE, '\n', '0', '0'],
+      [TYPE.SPACE, '        ', '0', '0'],
+      [TYPE.TAG, 'avatar', '0', '0'],
+      [TYPE.ATTR_NAME, 'href', '0', '0'],
+      [TYPE.ATTR_VALUE, '/avatar/4/3/b/1606.jpg@20x20?cache=1561462725&bgclr=ffffff', '0', '0'],
+      [TYPE.ATTR_NAME, 'size', '0', '0'],
+      [TYPE.ATTR_VALUE, 'xs', '0', '0'],
+      [TYPE.TAG, '/avatar', '0', '0'],
+      [TYPE.NEW_LINE, '\n', '0', '0'],
+      [TYPE.SPACE, '         ', '0', '0'],
+      [TYPE.WORD, 'Group', '0', '0'],
+      [TYPE.SPACE, ' ', '0', '0'],
+      [TYPE.WORD, 'Name', '0', '0'],
+      [TYPE.SPACE, ' ', '0', '0'],
+      [TYPE.WORD, 'Go', '0', '0'],
+      [TYPE.TAG, '/url', '0', '0'],
+      [TYPE.SPACE, '    ', '0', '0'],
+    ];
+
+    expect(tokens).toBeMantchOutput(output);
+  });
 
   test('string with quotemarks', () => {
     const input = '"Someone Like You" by Adele';
