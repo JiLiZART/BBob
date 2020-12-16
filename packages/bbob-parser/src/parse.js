@@ -46,23 +46,31 @@ const parse = (input, opts = {}) => {
 
   /**
    * Cache for nested tags checks
-   * @type {{}}
    */
-  const nestedTagsMap = {};
+  const nestedTagsMap = new Set();
 
+  /**
+   *
+   * @param token
+   * @returns {boolean}
+   */
   const isTokenNested = (token) => {
-    if (typeof nestedTagsMap[token.getValue()] === 'undefined') {
-      nestedTagsMap[token.getValue()] = tokenizer.isTokenNested(token);
+    const value = token.getValue();
+
+    if (!nestedTagsMap.has(value) && tokenizer.isTokenNested && tokenizer.isTokenNested(token)) {
+      nestedTagsMap.add(value);
+
+      return true;
     }
 
-    return nestedTagsMap[token.getValue()];
+    return nestedTagsMap.has(value);
   };
 
   /**
    * @param tagName
    * @returns {boolean}
    */
-  const isTagNested = (tagName) => !!nestedTagsMap[tagName];
+  const isTagNested = (tagName) => Boolean(nestedTagsMap.has(tagName));
 
   /**
    * @private
