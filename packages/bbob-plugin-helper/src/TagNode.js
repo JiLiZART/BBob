@@ -43,22 +43,34 @@ class TagNode {
     return getNodeLength(this);
   }
 
+  toTagStart({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}) {
+    const tagAttrs = getTagAttrs(this.tag, this.attrs);
+
+    return `${openTag}${tagAttrs}${closeTag}`;
+  }
+
+  toTagEnd({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}) {
+    return `${openTag}${SLASH}${this.tag}${closeTag}`;
+  }
+
   toTagNode() {
     return new TagNode(this.tag.toLowerCase(), this.attrs, this.content);
   }
 
-  toString() {
-    const OB = OPEN_BRAKET;
-    const CB = CLOSE_BRAKET;
+  toTagString({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}) {
     const isEmpty = this.content.length === 0;
-    const content = this.content.reduce((r, node) => r + node.toString(), '');
-    const tagAttrs = getTagAttrs(this.tag, this.attrs);
+    const content = this.content.reduce((r, node) => r + node.toTagString({ openTag, closeTag }), '');
+    const tagStart = this.toTagStart({ openTag, closeTag });
 
     if (isEmpty) {
-      return `${OB}${tagAttrs}${CB}`;
+      return tagStart;
     }
 
-    return `${OB}${tagAttrs}${CB}${content}${OB}${SLASH}${this.tag}${CB}`;
+    return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
+  }
+
+  toString() {
+    return this.toTagString();
   }
 }
 
