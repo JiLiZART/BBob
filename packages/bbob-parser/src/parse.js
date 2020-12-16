@@ -1,4 +1,5 @@
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
+import { CLOSE_BRAKET, OPEN_BRAKET } from '@bbob/plugin-helper/lib/char';
 import { isTagNode } from '@bbob/plugin-helper/lib/index';
 import { createLexer } from './lexer';
 import { createList } from './utils';
@@ -16,6 +17,8 @@ import { createList } from './utils';
  */
 const parse = (input, opts = {}) => {
   const options = opts;
+  const openTag = options.openTag || OPEN_BRAKET;
+  const closeTag = options.closeTag || CLOSE_BRAKET;
 
   let tokenizer = null;
 
@@ -122,7 +125,15 @@ const parse = (input, opts = {}) => {
         if (isAllowedTag(node.tag)) {
           items.push(node.toTagNode());
         } else {
-          items.push(node.toString());
+          items.push(node.toTagStart({ openTag, closeTag }));
+
+          if (node.content.length) {
+            node.content.forEach((item) => {
+              items.push(item);
+            });
+
+            items.push(node.toTagEnd({ openTag, closeTag }));
+          }
         }
       } else {
         items.push(node);
@@ -248,8 +259,8 @@ const parse = (input, opts = {}) => {
   tokenizer = (opts.createTokenizer ? opts.createTokenizer : createLexer)(input, {
     onToken,
     onlyAllowTags: options.onlyAllowTags,
-    openTag: options.openTag,
-    closeTag: options.closeTag,
+    openTag,
+    closeTag,
     enableEscapeTags: options.enableEscapeTags,
   });
 

@@ -25,27 +25,106 @@ describe('Parser', () => {
     expectOutput(ast, output);
   });
 
-  test('parse only allowed tags', () => {
-    const ast = parse('[h1 name=value]Foo [Bar] [/h1]', {
-      onlyAllowTags: ['h1']
-    });
-    const output = [
-      {
-        tag: 'h1',
-        attrs: {
-          name: 'value',
+  describe('onlyAllowTags', () => {
+    test('parse only allowed tags', () => {
+      const ast = parse('[h1 name=value]Foo [Bar] [/h1]', {
+        onlyAllowTags: ['h1']
+      });
+      const output = [
+        {
+          tag: 'h1',
+          attrs: {
+            name: 'value',
+          },
+          content: [
+            'Foo',
+            ' ',
+            '[Bar]',
+            ' '
+          ],
         },
-        content: [
-          'Foo',
-          ' ',
-          '[Bar]',
-          ' '
-        ],
-      },
-    ];
+      ];
 
-    expectOutput(ast, output);
-  });
+      expectOutput(ast, output);
+    });
+
+    test('parse only allowed tags with params', () => {
+      const options = {
+        onlyAllowTags: ['b', 'i', 'u']
+      };
+      const ast = parse('hello [blah foo="bar"]world[/blah]', options);
+
+      expectOutput(ast, [
+        'hello',
+        ' ',
+        '[blah foo="bar"]',
+        'world',
+        '[/blah]'
+      ])
+    });
+
+    test('parse only allowed tags with named param', () => {
+      const options = {
+        onlyAllowTags: ['b', 'i', 'u']
+      };
+      const ast = parse('hello [blah="bar"]world[/blah]', options);
+
+      expectOutput(ast, [
+        'hello',
+        ' ',
+        '[blah="bar"]',
+        'world',
+        '[/blah]'
+      ])
+    });
+
+    test('parse only allowed tags inside disabled tags', () => {
+      const ast = parse('[tab]  [ch]E[/ch]\nA cripple walks amongst you[/tab]\n[tab]                        [ch]A[/ch]\nAll you tired human beings[/tab]', {
+        onlyAllowTags: ['ch']
+      });
+      const output = [
+        '[tab]',
+        '  ',
+        {
+          tag: 'ch',
+          attrs: {},
+          content: ['E'],
+        },
+        '\n',
+        'A',
+        ' ',
+        'cripple',
+        ' ',
+        'walks',
+        ' ',
+        'amongst',
+        ' ',
+        'you',
+        '[/tab]',
+        '\n',
+        '[tab]',
+        '                        ',
+        {
+          tag: 'ch',
+          attrs: {},
+          content: ['A'],
+        },
+        '\n',
+        'All',
+        ' ',
+        'you',
+        ' ',
+        'tired',
+        ' ',
+        'human',
+        ' ',
+        'beings',
+        '[/tab]',
+      ];
+
+      expectOutput(ast, output);
+    });
+  })
 
   test('parse inconsistent tags', () => {
     const ast = parse('[h1 name=value]Foo [Bar] /h1]');
@@ -126,32 +205,6 @@ describe('Parser', () => {
     expect(onError).toHaveBeenCalled();
   });
 
-  test('parse only allowed tags with params', () => {
-    const options = {
-      onlyAllowTags: ['b', 'i', 'u']
-    };
-    const ast = parse('hello [blah foo="bar"]world[/blah]', options);
-
-    expectOutput(ast, [
-        'hello',
-        ' ',
-        '[blah foo="bar"]world[/blah]',
-    ])
-  });
-
-  test('parse only allowed tags with named param', () => {
-    const options = {
-      onlyAllowTags: ['b', 'i', 'u']
-    };
-    const ast = parse('hello [blah="bar"]world[/blah]', options);
-
-    expectOutput(ast, [
-        'hello',
-        ' ',
-        '[blah="bar"]world[/blah]',
-    ])
-  });
-
   test('parse few tags without spaces', () => {
     const ast = parse('[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]');
     const output = [
@@ -189,7 +242,7 @@ describe('Parser', () => {
         attrs: {},
         content: ['hello'],
       },
-        ' ',
+      ' ',
       {
         tag: 'textarea',
         attrs: {
