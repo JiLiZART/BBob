@@ -66,6 +66,7 @@ written in pure javascript, no dependencies
    * [Render prop](#react-render)
 * [PostHTML usage](#posthtml)
 * [Create Plugin](#plugin)
+* [Benchmarks](#benchmarks)
 
 ### Basic usage <a name="basic-usage"></a>
 
@@ -209,3 +210,20 @@ render(<App />) // <span><span style="font-weight: bold;">Super <span style="fon
 ### PostHTML usage <a name="posthtml"></a>
 
 ### Create Plugin <a name="plugin"></a>
+
+### Benchmarks <a name="benchmarks"></a>
+
+To test on your machine run
+```shell
+npm run build
+node benchmark
+```
+
+Tested on Node v12.18.3
+
+| Package              | Ops/sec              | Runs sampled      |
+|----------------------|----------------------|-------------------|
+| regex/parser         | 6.02 ops/sec ±2.77%  | (20 runs sampled) |
+| ya-bbcode            | 10.70 ops/sec ±1.94% | (31 runs sampled) |
+| xbbcode/parser       | 107 ops/sec ±2.29%   | (69 runs sampled) |
+| @bbob/parser         | 137 ops/sec ±1.11%   | (78 runs sampled) |
