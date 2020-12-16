@@ -57,9 +57,9 @@ class TagNode {
     return new TagNode(this.tag.toLowerCase(), this.attrs, this.content);
   }
 
-  toTagString({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}) {
+  toString({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}) {
     const isEmpty = this.content.length === 0;
-    const content = this.content.reduce((r, node) => r + node.toTagString({ openTag, closeTag }), '');
+    const content = this.content.reduce((r, node) => r + node.toString({ openTag, closeTag }), '');
     const tagStart = this.toTagStart({ openTag, closeTag });
 
     if (isEmpty) {
@@ -67,10 +67,6 @@ class TagNode {
     }
 
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
-  }
-
-  toString() {
-    return this.toTagString();
   }
 }
 
