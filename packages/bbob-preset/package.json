@@ -10,11 +10,12 @@
   "dependencies": {
     "@bbob/plugin-helper": "^2.6.2"
   },
+  "unpkg": "dist/index.js",
+  "unpkgName": "BbobPreset",
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
-  "browser": "dist/index.js",
-  "browserName": "BbobPreset",
+  "source": "src/index.js",
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",

@@ -14,11 +14,12 @@
   "devDependencies": {
     "@bbob/html": "^2.6.2"
   },
+  "unpkg": "dist/index.js",
+  "unpkgName": "BbobPresetHTML5",
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
-  "browser": "dist/index.js",
-  "browserName": "BbobPresetHTML5",
+  "source": "src/index.js",
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
