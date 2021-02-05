@@ -1,0 +1,69 @@
+{
+  "name": "@bbob/react",
+  "version": "2.6.2",
+  "description": "Render BBCode to Vue using @bbob/parser",
+  "keywords": [
+    "react",
+    "bbcode",
+    "parser",
+    "bbob"
+  ],
+  "dependencies": {
+    "@bbob/core": "^2.6.2",
+    "@bbob/html": "^2.6.2",
+    "@bbob/plugin-helper": "^2.6.2"
+  },
+  "peerDependencies": {
+    "vue": "2.x"
+  },
+  "devDependencies": {
+    "@bbob/preset-vue": "^2.6.2",
+    "vue": "2.6.12"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "browser": "dist/index.js",
+  "browserName": "BbobReact",
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JiLiZART/bbob/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
+  "scripts": {
+    "build:commonjs": "../../node_modules/.bin/cross-env BABEL_ENV=commonjs NODE_ENV=production ../../node_modules/.bin/babel src --out-dir lib",
+    "build:es": "../../node_modules/.bin/cross-env BABEL_ENV=es NODE_ENV=production ../../node_modules/.bin/babel src --out-dir es",
+    "build:umd": "../../node_modules/.bin/cross-env BABEL_ENV=rollup ../../node_modules/.bin/rollup --config ../../rollup.config.js",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
+    "test": "../../node_modules/.bin/jest --",
+    "cover": "../../node_modules/.bin/jest --coverage",
+    "lint": "../../node_modules/.bin/eslint .",
+    "size": "../../node_modules/.bin/cross-env NODE_ENV=production ../../node_modules/.bin/size-limit",
+    "bundlesize": "../../node_modules/.bin/cross-env NODE_ENV=production ../../node_modules/.bin/bundlesize"
+  },
+  "size-limit": [
+    {
+      "path": "lib/index.js"
+    }
+  ],
+  "bundlesize": [
+    {
+      "path": "./dist/index.min.js",
+      "maxSize": "8 KB"
+    }
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es"
+  ]
+}
