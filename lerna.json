@@ -10,7 +10,9 @@
     "packages/bbob-preset",
     "packages/bbob-preset-html5",
     "packages/bbob-preset-react",
-    "packages/bbob-react"
+    "packages/bbob-react",
+    "packages/bbob-preset-vue",
+    "packages/bbob-vue2"
   ],
   "publishConfig": {
     "access": "public",

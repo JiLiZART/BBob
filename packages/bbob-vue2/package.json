@@ -1,9 +1,9 @@
 {
-  "name": "@bbob/react",
+  "name": "@bbob/vue2",
   "version": "2.6.2",
   "description": "Render BBCode to Vue using @bbob/parser",
   "keywords": [
-    "react",
+    "vue",
     "bbcode",
     "parser",
     "bbob"
@@ -18,13 +18,15 @@
   },
   "devDependencies": {
     "@bbob/preset-vue": "^2.6.2",
-    "vue": "2.6.12"
+    "@testing-library/vue": "^5.6.2",
+    "vue": "2.6.12",
+    "vue-template-compiler": "^2.6.12"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "browser": "dist/index.js",
-  "browserName": "BbobReact",
+  "browserName": "BbobVue",
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
