@@ -1,29 +1,3 @@
-/*
-  Component.propTypes = {
-    container: PropTypes.node,
-    children: PropTypes.node.isRequired,
-    plugins: PropTypes.arrayOf(PropTypes.func),
-    componentProps: PropTypes.shape({
-      className: PropTypes.string,
-    }),
-    options: PropTypes.shape({
-      parser: PropTypes.func,
-      skipParse: PropTypes.bool,
-      onlyAllowTags: PropTypes.arrayOf(PropTypes.string),
-      openTag: PropTypes.string,
-      closeTag: PropTypes.string,
-    }),
-  };
-
-  Component.defaultProps = {
-    container: 'span',
-    plugins: [],
-    options: {},
-    componentProps: {},
-  };
-
- */
-
 import { render } from './render';
 
 export default {
@@ -34,11 +8,9 @@ export default {
     },
     plugins: {
       type: Array,
-      default: () => ([]),
     },
     options: {
       type: Object,
-      default: () => ({}),
     },
   },
 

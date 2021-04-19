@@ -4,7 +4,7 @@ import * as html from '@bbob/html';
 
 import { isStringNode, isTagNode } from '@bbob/plugin-helper';
 
-const toAST = (source, plugins, options) => core(plugins)
+const toAST = (source, plugins = [], options = {}) => core(plugins)
   .process(source, {
     ...options,
     render: (input) => html.render(input, { stripTags: true }),

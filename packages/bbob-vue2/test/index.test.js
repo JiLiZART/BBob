@@ -54,6 +54,16 @@ describe('@bbob/vue2', () => {
 <hr></span>`)
   });
 
+  test('render empty <slot></slot>', () => {
+    const { html } = render(Component, {
+      props: {
+        plugins: [preset()],
+      }
+    })
+
+    expect(html()).toBe('')
+  })
+
   describe('options.onlyAllowTags', () => {
     test('render "[Super Feature] and [i]super[/i]" when only [i] allowed', () => {
       const html = renderBBCode('[Super Feature] and [i]super[/i]', { onlyAllowTags: ['i'] });
