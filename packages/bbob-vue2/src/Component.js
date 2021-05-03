@@ -1,6 +1,8 @@
+import Vue from 'vue';
+
 import { render } from './render';
 
-export default {
+const Component = Vue.extend({
   props: {
     container: {
       type: String,
@@ -26,4 +28,6 @@ export default {
 
     return null;
   },
-};
+});
+
+export default Component;

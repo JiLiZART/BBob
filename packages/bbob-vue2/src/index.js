@@ -1,9 +1,10 @@
 import Component from './Component';
 
 export { render } from './render';
+export { Component };
 
-export function install(Vue) {
+function install(Vue) {
   Vue.component('bbob-bbcode', Component);
 }
 
-export default Component;
+export default install;
