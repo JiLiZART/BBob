@@ -1,7 +1,9 @@
 /* eslint-disable indent */
 
+const isTagNode = (el) => typeof el === 'object' && !!el.tag;
+
 function process(tags, tree, core, options) {
-  tree.walk((node) => (!!node.tag && tags[node.tag]
+  tree.walk((node) => (isTagNode(node) && tags[node.tag]
       ? tags[node.tag](node, core, options)
       : node));
 }
