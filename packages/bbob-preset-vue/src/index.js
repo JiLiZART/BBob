@@ -1,6 +1,6 @@
 import presetHTML5 from '@bbob/preset-html5';
 
-const tagAttr = (style) => ({
+export const tagAttr = (style) => ({
   attrs: {
     style,
   },

@@ -1,4 +1,4 @@
-import preset, { createTags } from '../src'
+import preset, { createTags, tagAttr } from '../src'
 
 describe('@bbob/preset-vue', () => {
   test('is a function', () => {
@@ -6,11 +6,18 @@ describe('@bbob/preset-vue', () => {
   })
 
   test('createTags', () => {
-    const tags = createTags()
+    const defFn = jest.fn(() => ({}))
+    const defTags = {
+      b: defFn,
+      i: defFn,
+      u: defFn,
+      s: defFn,
+    }
+    const tags = createTags(defTags)
 
-    expect(tags.b).toBeInstanceOf(Function)
-    expect(tags.i).toBeInstanceOf(Function)
-    expect(tags.u).toBeInstanceOf(Function)
-    expect(tags.s).toBeInstanceOf(Function)
+    expect(tags.b()).toEqual(tagAttr({ fontWeight: 'bold' }))
+    expect(tags.i()).toEqual(tagAttr({ fontStyle: 'italic' }))
+    expect(tags.u()).toEqual(tagAttr({ textDecoration: 'underline' }))
+    expect(tags.s()).toEqual(tagAttr({ textDecoration: 'line-through' }))
   })
 });
