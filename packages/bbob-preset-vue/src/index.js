@@ -6,9 +6,7 @@ const tagAttr = (style) => ({
   },
 });
 
-export default presetHTML5.extend((tags) => ({
-  ...tags,
-
+export const createTags = (tags) => ({
   b: (...args) => ({
     ...tags.b(...args),
     ...tagAttr({ fontWeight: 'bold' }),
@@ -28,4 +26,9 @@ export default presetHTML5.extend((tags) => ({
     ...tags.s(...args),
     ...tagAttr({ textDecoration: 'line-through' }),
   }),
+});
+
+export default presetHTML5.extend((tags) => ({
+  ...tags,
+  ...createTags(tags),
 }));
