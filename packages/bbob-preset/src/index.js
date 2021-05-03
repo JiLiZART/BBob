@@ -1,30 +1,34 @@
 /* eslint-disable indent */
-import { isTagNode } from '@bbob/plugin-helper/lib/index';
 
 function process(tags, tree, core, options) {
-  tree.walk((node) => (isTagNode(node) && tags[node.tag]
+  tree.walk((node) => (!!node.tag && tags[node.tag]
       ? tags[node.tag](node, core, options)
       : node));
 }
 
 /**
- * @param defTags
- * @return {function(*=, *=)}
+ * Creates preset for @bbob/core
+ * @param defTags {Object}
+ * @param processor {Function} a processor function of tree
+ * @returns {function(*=): function(*=, *=): void}
  */
-function createPreset(defTags) {
-  const instance = (opts = {}) => {
-    instance.options = Object.assign(instance.options || {}, opts);
+function createPreset(defTags, processor = process) {
+  const presetFactory = (opts = {}) => {
+    presetFactory.options = Object.assign(presetFactory.options || {}, opts);
 
-    const creator = (tree, core) => process(defTags, tree, core, instance.options);
+    const presetExecutor = (tree, core) => processor(defTags, tree, core, presetFactory.options);
 
-    creator.options = instance.options;
+    presetExecutor.options = presetFactory.options;
 
-    return creator;
+    return presetExecutor;
   };
 
-  instance.extend = (callback) => createPreset(callback(defTags, instance.options));
+  presetFactory.extend = (callback) => createPreset(
+      callback(defTags, presetFactory.options),
+      processor,
+  );
 
-  return instance;
+  return presetFactory;
 }
 
 export { createPreset };
