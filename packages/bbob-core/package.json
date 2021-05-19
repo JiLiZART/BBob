@@ -1,7 +1,7 @@
 {
   "name": "@bbob/core",
   "version": "2.6.2",
-  "description": "⚡️Blazing fast BBCode transforming and parsing tool in pure javascript, no dependencies ",
+  "description": "⚡️Blazing-fast js-bbcode-parser, bbcode js, that transforms and parses to AST with plugin support in pure javascript, no dependencies",
   "keywords": [
     "bbcode",
     "fast",
