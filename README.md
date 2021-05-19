@@ -29,25 +29,42 @@ written in pure javascript, no dependencies
 | @bbob/core           | [![@bbob/core-status]][@bbob/core-package]                 | ![@bbob/core-size] | Core package              |
 | @bbob/react          | [![@bbob/react-status]][@bbob/react-package]               | ![@bbob/react-size]  | React renderer            |
 | @bbob/preset-react   | [![@bbob/preset-react-status]][@bbob/preset-react-package] | ![@bbob/preset-react-size]  | React default tags preset |
+| @bbob/vue2           | [![@bbob/vue2-status]][@bbob/vue2-package]                 | ![@bbob/vue2-size]  | Vue 2 renderer            |
+| @bbob/preset-vue     | [![@bbob/preset-vue-status]][@bbob/preset-vue-package]     | ![@bbob/preset-react-size]  | Vue default tags preset |
 | @bbob/html           | [![@bbob/html-status]][@bbob/html-package]                 | ![@bbob/html-size]  | HTML renderer             |
 | @bbob/preset-html5   | [![@bbob/preset-html5-status]][@bbob/preset-html5-package] | ![@bbob/preset-html5-size]  | HTML5 default tags preset |
 
 [@bbob/core-status]: https://img.shields.io/npm/v/@bbob/core.svg
+
 [@bbob/react-status]: https://img.shields.io/npm/v/@bbob/react.svg
 [@bbob/preset-react-status]: https://img.shields.io/npm/v/@bbob/preset-react.svg
+
+[@bbob/vue2-status]: https://img.shields.io/npm/v/@bbob/vue2.svg
+[@bbob/preset-vue-status]: https://img.shields.io/npm/v/@bbob/preset-vue.svg
+
 [@bbob/html-status]: https://img.shields.io/npm/v/@bbob/html.svg
 [@bbob/preset-html5-status]: https://img.shields.io/npm/v/@bbob/preset-html5.svg
 
 [@bbob/core-size]: https://badgen.net/bundlephobia/minzip/@bbob/core
+
 [@bbob/react-size]: https://badgen.net/bundlephobia/minzip/@bbob/react
 [@bbob/preset-react-size]: https://badgen.net/bundlephobia/minzip/@bbob/preset-react
+
+[@bbob/vue2-size]: https://badgen.net/bundlephobia/minzip/@bbob/vue2
+[@bbob/preset-vue-size]: https://badgen.net/bundlephobia/minzip/@bbob/preset-vue
+
 [@bbob/html-size]: https://badgen.net/bundlephobia/minzip/@bbob/html
 [@bbob/preset-html5-size]: https://badgen.net/bundlephobia/minzip/@bbob/preset-html5
 
 
 [@bbob/core-package]: https://npmjs.com/package/@bbob/core
+
 [@bbob/react-package]: https://npmjs.com/package/@bbob/react
 [@bbob/preset-react-package]: https://npmjs.com/package/@bbob/preset-react
+
+[@bbob/vue2-package]: https://npmjs.com/package/@bbob/vue2
+[@bbob/preset-vue-package]: https://npmjs.com/package/@bbob/preset-vue
+
 [@bbob/html-package]: https://npmjs.com/package/@bbob/html
 [@bbob/preset-html5-package]: https://npmjs.com/package/@bbob/preset-html5
 
@@ -57,6 +74,7 @@ written in pure javascript, no dependencies
 * [Usage](#usage)
   * [Basic usage](#basic-usage)
   * [React usage](#react-usage)
+  * [Vue 2 usage](#vue2-usage)
 * [Presets](#presets)
    * [Create your own preset](#create-preset)
    * [HTML Preset](#html-preset)
@@ -95,8 +113,51 @@ import {render} from 'react-dom'
 import bbobReactRender from '@bbob/react/es/render'
 import presetReact from '@bbob/preset-react'
 
-console.log(render(<span>{bbobReactRender(`[i]Text[/i]`, presetReact(), { onlyAllowTags: ['i'], enableEscapeTags: true })}</span>)); // <span><span style="font-style: italic;">Text</span></span>
+const options = { onlyAllowTags: ['i'], enableEscapeTags: true }
+const content = bbobReactRender(`[i]Text[/i]`, presetReact(), options)
+
+console.log(render(<span>{content}</span>)); // <span><span style="font-style: italic;">Text</span></span>
 ```
+
+### Vue 2 usage <a name="vue2-usage"></a>
+
+```shell
+npm i @bbob/vue2 @bbob/preset-vue
+```
+
+```js
+import Vue from 'vue'
+import VueBbob from '@bbob/vue2';
+
+Vue.use(VueBbob);
+```
+
+```html
+<template>
+  <div class="html">
+    <h2>Generated HTML here</h2>
+    <bbob-bbcode container="div" :plugins="plugins">{{ bbcode }}</bbob-bbcode>
+  </div>
+</template>
+<script>
+  import Vue from 'vue'
+  import preset from '@bbob/preset-vue'
+  
+  export default Vue.extend({
+    name: 'App',
+    data() {
+      return {
+        bbcode: 'Text [b]bolded[/b] and [i]Some Name[/i]',
+        plugins: [
+          preset()
+        ],
+      }
+    }
+  })
+</script>
+```
+More examples available in <a href="https://github.com/JiLiZART/BBob/tree/master/examples">examples folder</a>
+
 
 ### Presets <a name="basic"></a>
 

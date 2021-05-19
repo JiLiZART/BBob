@@ -7,9 +7,7 @@
     "base",
     "bbob"
   ],
-  "dependencies": {
-    "@bbob/plugin-helper": "^2.6.2"
-  },
+  "dependencies": {},
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",

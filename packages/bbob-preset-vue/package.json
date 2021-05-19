@@ -1,32 +1,23 @@
 {
-  "name": "@bbob/core",
+  "name": "@bbob/preset-vue",
   "version": "2.6.2",
-  "description": "⚡️Blazing-fast js-bbcode-parser, bbcode js, that transforms and parses to AST with plugin support in pure javascript, no dependencies",
+  "description": "Vue preset to transform BBCode to Vue for @bbob/vue*",
   "keywords": [
-    "bbcode",
-    "fast",
-    "parser",
-    "bbcode parser",
-    "bbcodeparser",
-    "serializer",
-    "bbcode serializer",
-    "bbcode serializer",
-    "bbcodeserializer",
-    "parse",
-    "serialize",
-    "html",
-    "transform",
     "bbob",
-    "core"
+    "preset",
+    "vue"
   ],
   "dependencies": {
-    "@bbob/parser": "^2.6.2"
+    "@bbob/preset-html5": "^2.6.2"
+  },
+  "devDependencies": {
+    "@bbob/core": "^2.6.2"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "browser": "dist/index.js",
-  "browserName": "BbobCore",
+  "browserName": "BbobPresetVue",
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
@@ -56,7 +47,7 @@
   "bundlesize": [
     {
       "path": "./dist/index.min.js",
-      "maxSize": "3.8 KB"
+      "maxSize": "2 KB"
     }
   ],
   "publishConfig": {

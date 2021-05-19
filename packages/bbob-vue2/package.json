@@ -1,32 +1,32 @@
 {
-  "name": "@bbob/core",
+  "name": "@bbob/vue2",
   "version": "2.6.2",
-  "description": "⚡️Blazing-fast js-bbcode-parser, bbcode js, that transforms and parses to AST with plugin support in pure javascript, no dependencies",
+  "description": "Render BBCode to Vue using @bbob/parser",
   "keywords": [
+    "vue",
     "bbcode",
-    "fast",
     "parser",
-    "bbcode parser",
-    "bbcodeparser",
-    "serializer",
-    "bbcode serializer",
-    "bbcode serializer",
-    "bbcodeserializer",
-    "parse",
-    "serialize",
-    "html",
-    "transform",
-    "bbob",
-    "core"
+    "bbob"
   ],
   "dependencies": {
-    "@bbob/parser": "^2.6.2"
+    "@bbob/core": "^2.6.2",
+    "@bbob/html": "^2.6.2",
+    "@bbob/plugin-helper": "^2.6.2"
+  },
+  "peerDependencies": {
+    "vue": "2.x"
+  },
+  "devDependencies": {
+    "@bbob/preset-vue": "^2.6.2",
+    "@testing-library/vue": "^5.6.2",
+    "vue": "2.6.12",
+    "vue-template-compiler": "^2.6.12"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "browser": "dist/index.js",
-  "browserName": "BbobCore",
+  "browserName": "BbobVue",
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
@@ -40,7 +40,7 @@
   "scripts": {
     "build:commonjs": "../../node_modules/.bin/cross-env BABEL_ENV=commonjs NODE_ENV=production ../../node_modules/.bin/babel src --out-dir lib",
     "build:es": "../../node_modules/.bin/cross-env BABEL_ENV=es NODE_ENV=production ../../node_modules/.bin/babel src --out-dir es",
-    "build:umd": "../../node_modules/.bin/cross-env BABEL_ENV=rollup NODE_ENV=production ../../node_modules/.bin/rollup --config ../../rollup.config.js",
+    "build:umd": "../../node_modules/.bin/cross-env BABEL_ENV=rollup ../../node_modules/.bin/rollup --config ../../rollup.config.js",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
     "test": "../../node_modules/.bin/jest --",
     "cover": "../../node_modules/.bin/jest --coverage",
@@ -56,7 +56,7 @@
   "bundlesize": [
     {
       "path": "./dist/index.min.js",
-      "maxSize": "3.8 KB"
+      "maxSize": "8 KB"
     }
   ],
   "publishConfig": {
