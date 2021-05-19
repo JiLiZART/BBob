@@ -1,7 +1,8 @@
 {
   "lerna": "2.11.0",
-  "version": "2.6.2",
+  "version": "2.7.0",
   "packages": [
+    "examples/*",
     "packages/bbob-cli",
     "packages/bbob-core",
     "packages/bbob-html",
@@ -10,10 +11,9 @@
     "packages/bbob-preset",
     "packages/bbob-preset-html5",
     "packages/bbob-preset-react",
-    "packages/bbob-react",
     "packages/bbob-preset-vue",
-    "packages/bbob-vue2",
-    "examples/*"
+    "packages/bbob-react",
+    "packages/bbob-vue2"
   ],
   "publishConfig": {
     "access": "public",
