@@ -18,7 +18,11 @@ const Component = ({
 
 if (process.env.NODE_ENV !== 'production') {
   Component.propTypes = {
-    container: PropTypes.node,
+    container: PropTypes.oneOfType([
+      PropTypes.node,
+      PropTypes.element,
+      PropTypes.elementType,
+    ]),
     children: PropTypes.node.isRequired,
     plugins: PropTypes.arrayOf(PropTypes.func),
     componentProps: PropTypes.shape({
