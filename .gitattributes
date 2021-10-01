@@ -1,2 +1,2 @@
 #Tell Linguist to ignore all benchmark stuff
-benchmark/* linguist-documentation
+benchmark/** linguist-vendored
