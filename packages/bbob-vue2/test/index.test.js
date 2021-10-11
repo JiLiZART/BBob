@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import preset from '@bbob/preset-vue';
 import { render, fireEvent } from '@testing-library/vue'
 import Component from '../src/Component'
