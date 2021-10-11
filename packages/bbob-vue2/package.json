@@ -1,7 +1,7 @@
 {
   "name": "@bbob/vue2",
   "version": "2.7.0",
-  "description": "Render BBCode to Vue using @bbob/parser",
+  "description": "A BBCode to Vue2 Renderer part of @bbob",
   "keywords": [
     "vue",
     "bbcode",
