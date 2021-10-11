@@ -1,8 +1,13 @@
 {
   "name": "@bbob/html",
   "version": "2.7.0",
-  "description": "HTML renderer for @bbob bbcode parser",
-  "keywords": [],
+  "description": "A BBCode to HTML Renderer part of @bbob",
+  "keywords": [
+    "html",
+    "bbcode",
+    "parser",
+    "bbob"
+  ],
   "dependencies": {
     "@bbob/core": "^2.7.0",
     "@bbob/plugin-helper": "^2.7.0"

@@ -1,7 +1,7 @@
 {
   "name": "@bbob/react",
   "version": "2.7.0",
-  "description": "Render BBCode to React using @bbob/parser",
+  "description": "A BBCode to React Renderer part of @bbob",
   "keywords": [
     "react",
     "bbcode",
