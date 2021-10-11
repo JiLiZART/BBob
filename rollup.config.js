@@ -14,6 +14,7 @@ const baseConfig = {
     file: pkg.browser,
     format: 'umd',
     name: pkg.browserName,
+    exports: 'named',
     globals: {
       react: 'React',
       vue: 'Vue',
@@ -25,6 +26,7 @@ const baseConfig = {
       exclude: '**/node_modules/**',
     }),
     replace({
+      preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
     }),
     commonjs(),
