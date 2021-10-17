@@ -1,0 +1,11 @@
+{
+  "main": "index.js",
+  "private": true,
+  "author": {
+    "name": "Nikolay Kostyurin <jilizart@gmail.com>",
+    "url": "https://artkost.ru/"
+  },
+  "dependencies": {
+    "commander": "8.2.0"
+  }
+}

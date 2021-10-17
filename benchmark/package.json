@@ -1,0 +1,16 @@
+{
+  "main": "index.js",
+  "private": true,
+  "directories": {
+    "test": "test"
+  },
+  "author": {
+    "name": "Nikolay Kostyurin <jilizart@gmail.com>",
+    "url": "https://artkost.ru/"
+  },
+  "dependencies": {
+    "benchmark": "2.1.4",
+    "xbbcode-parser": "0.1.2",
+    "ya-bbcode": "1.0.12"
+  }
+}

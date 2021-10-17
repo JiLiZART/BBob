@@ -1,0 +1,12 @@
+{
+  "module": {
+    "type": "es6"
+  },
+  "env": {
+    "loose": true,
+    "targets": "> 0.25%, not dead"
+  },
+  "jsc": {
+    "loose": true
+  }
+}

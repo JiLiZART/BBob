@@ -1,8 +1,8 @@
 import resolve from '@rollup/plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
 import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
+import swc from 'rollup-plugin-swc';
 
 const pkg = require(`${process.cwd()}/package.json`);
 const { NODE_ENV } = process.env;
@@ -22,14 +22,13 @@ const baseConfig = {
   },
   plugins: [
     resolve(),
-    babel({
-      exclude: '**/node_modules/**',
-    }),
+    swc(),
     replace({
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
     }),
     commonjs(),
+    // gzip(),
   ],
 };
 
