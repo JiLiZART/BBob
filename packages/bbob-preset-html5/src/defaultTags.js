@@ -2,14 +2,14 @@
 import { getUniqAttr, isStringNode, isTagNode } from '@bbob/plugin-helper/lib/index';
 import TagNode from '@bbob/plugin-helper/lib/TagNode';
 
-/* @__PURE__ */const isStartsWith = (node, type) => (node[0] === type);
+const isStartsWith = (node, type) => (node[0] === type);
 
 const styleMap = {
   color: (val) => `color:${val};`,
   size: (val) => `font-size:${val};`,
 };
 
-/* @__PURE__ */const getStyleFromAttrs = (attrs) => Object
+const getStyleFromAttrs = (attrs) => Object
   .keys(attrs)
   .reduce((acc, key) => (styleMap[key] ? acc.concat(styleMap[key](attrs[key])) : acc), [])
   .join(' ');
@@ -59,13 +59,13 @@ const renderUrl = (node, render) => (getUniqAttr(node.attrs)
   ? getUniqAttr(node.attrs)
   : render(node.content));
 
-/* @__PURE__ */const toNode = (tag, attrs, content) => ({
+const toNode = (tag, attrs, content) => ({
   tag,
   attrs,
   content,
 });
 
-/* @__PURE__ */const toStyle = (style) => ({ style });
+const toStyle = (style) => ({ style });
 
 export default {
   b: (node) => toNode('span', toStyle('font-weight: bold;'), node.content),
