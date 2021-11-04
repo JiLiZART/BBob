@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.1](https://github.com/JiLiZART/bbob/compare/v2.7.0...v2.7.1) (2021-11-04)
+
+
+### Bug Fixes
+
+* **react:** adjust PropTypes for React Component `container` ([#107](https://github.com/JiLiZART/bbob/issues/107)) ([93d8027](https://github.com/JiLiZART/bbob/commit/93d802773cbe733ccf4b0124257c6fc6707c873b))
+
+
+
+
+
 # [2.7.0](https://github.com/JiLiZART/bbob/compare/v2.5.8...v2.7.0) (2021-05-19)
 
 
