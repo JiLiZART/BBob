@@ -1,16 +1,11 @@
 {
   "module": {
-    "type": "umd",
+    "type": "commonjs",
     "strict": false,
     "strictMode": true,
     "lazy": false,
     "noInterop": false,
     "ignoreDynamic": false
-  },
-  "env": {
-    "loose": true,
-    "modules": false,
-    "targets": "> 0.25%, not dead"
   },
   "jsc": {
     "loose": true

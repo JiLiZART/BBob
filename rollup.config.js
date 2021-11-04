@@ -22,12 +22,34 @@ const baseConfig = {
   },
   plugins: [
     resolve(),
-    swc(),
+    swc({
+      module: {
+        type: 'umd',
+      },
+      jsc: {
+        transform: {
+          react: {
+            pragma: 'React.createElement',
+            pragmaFrag: 'React.Fragment',
+            throwIfNamespace: true,
+            development: false,
+            useBuiltins: false,
+          },
+        },
+        parser: {
+          jsx: true,
+        },
+        loose: true,
+      },
+      env: {
+        targets: '> 0.25%, not dead',
+      },
+    }),
     replace({
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
     }),
-    commonjs(),
+    // commonjs(),
     // gzip(),
   ],
 };
