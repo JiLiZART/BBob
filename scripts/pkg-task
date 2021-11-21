@@ -5,7 +5,7 @@ const { spawn } = require('child_process')
 const { Command } = require('commander');
 
 const program = new Command();
-const nmBinDir = resolve(`../../node_modules/.bin/`)
+const nmBinDir = resolve(__dirname, '../node_modules/.bin/')
 const shell = { cmd: 'sh', arg: '-c' }
 
 const actionCommand = (command) => () => {
