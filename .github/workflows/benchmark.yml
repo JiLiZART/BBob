@@ -13,9 +13,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14
-      - name: Navigate to package
-        run: cd benchmark
       - name: Install dependencies
-        run: npm install
+        run: cd benchmark && npm install
       - name: Run benchmark
-        run: npm start
+        run: cd benchmark && npm start
