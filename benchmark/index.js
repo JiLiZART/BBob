@@ -1,6 +1,14 @@
 /* eslint-disable global-require */
 const Benchmark = require('benchmark');
+const pico = require('picocolors');
+
 const stub = require('./test/stub');
+
+function formatNumber(number) {
+  return String(number)
+    // .replace(/\d{3}$/, ',$&')
+    .replace(/^(\d|\d\d)(\d{3},)/, '$1,$2');
+}
 
 const suite = new Benchmark.Suite();
 
@@ -40,27 +48,32 @@ suite
     });
   })
   .add('@bbob/parser lexer old', () => {
-    const lexer1 = require('../packages/bbob-parser/lib/lexer_old');
+    const lexer1 = require('@bbob/parser/lib/lexer_old');
 
-    return require('../packages/bbob-parser/lib/index').parse(stub, {
+    return require('@bbob/parser/lib/index').parse(stub, {
       onlyAllowTags: ['ch'],
       createTokenizer: lexer1.createLexer,
     });
   })
   .add('@bbob/parser lexer', () => {
-    const lexer2 = require('../packages/bbob-parser/lib/lexer');
+    const lexer2 = require('@bbob/parser/lib/lexer');
 
-    return require('../packages/bbob-parser/lib/index').parse(stub, {
+    return require('@bbob/parser/lib/index').parse(stub, {
       onlyAllowTags: ['ch'],
       createTokenizer: lexer2.createLexer,
     });
   })
 // add listeners
   .on('cycle', (event) => {
-    console.log(String(event.target));
+    const name = event.target.name.padEnd('@bbob/parser lexer old'.length);
+    const hz = formatNumber(event.target.hz.toFixed(0)).padStart(10);
+
+    process.stdout.write(`${name}${pico.bold(hz)}${pico.dim(' ops/sec')}\n`);
   })
   .on('complete', function onComplete() {
-    console.log(`Fastest is ${this.filter('fastest').map('name')}`);
+    const name = this.filter('fastest').map('name').toString();
+
+    process.stdout.write(`Fastest is ${pico.bold(name)}`);
   })
 // run async
-  .run({ async: false });
+  .run();
