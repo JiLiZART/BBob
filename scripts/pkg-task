@@ -9,7 +9,8 @@ const nmBinDir = resolve(`../../node_modules/.bin/`)
 const shell = { cmd: 'sh', arg: '-c' }
 
 const actionCommand = (command) => () => {
-  spawn(shell.cmd, [shell.arg, `${nmBinDir}/${command}`], {
+  spawn(shell.cmd, [shell.arg, String(command)
+      .replace(new RegExp('@\\/', 'gi'), `${nmBinDir}/`)], {
     env: process.env,
     cwd: process.cwd(),
     stdio: 'inherit',
@@ -17,13 +18,13 @@ const actionCommand = (command) => () => {
 }
 
 const commandMap = {
-  'build-commonjs': `cross-env BABEL_ENV=commonjs NODE_ENV=production ${nmBinDir}/swc --config-file ../../.swcrc-commonjs --out-dir lib src`,
-  'build-es': `cross-env BABEL_ENV=es NODE_ENV=production ${nmBinDir}/swc --out-dir es src`,
-  'build-umd': `cross-env BABEL_ENV=rollup NODE_ENV=production ${nmBinDir}/rollup --config ../../rollup.config.js`,
-  test: `jest`,
-  cover: `jest --config ../../jest.config.js --coverage .`,
-  lint: `eslint .`,
-  bundlesize: `cross-env NODE_ENV=production ${nmBinDir}/bundlesize .`
+  'build-commonjs': `@/cross-env BABEL_ENV=commonjs NODE_ENV=production @/swc --config-file ../../.swcrc-commonjs --out-dir lib src`,
+  'build-es': `@/cross-env BABEL_ENV=es NODE_ENV=production @/swc --out-dir es src`,
+  'build-umd': `@/cross-env BABEL_ENV=rollup NODE_ENV=production @/rollup --config ../../rollup.config.js`,
+  test: `@/jest`,
+  cover: `@/jest --config ../../jest.config.js --coverage .`,
+  lint: `@/eslint .`,
+  bundlesize: `@/cross-env NODE_ENV=production @/bundlesize .`
 }
 
 program.version('1.0.0')
