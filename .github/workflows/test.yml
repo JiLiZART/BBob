@@ -1,0 +1,39 @@
+name: Test
+on:
+  push:
+  pull_request:
+jobs:
+  full:
+    name: Node.js 16 Full
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm ci
+      - name: Link Packages
+        run: npm run bootstrap
+      - name: Run tests
+        run: npm run test
+        env:
+          FORCE_COLOR: 2
+  benchmark:
+    name: Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Navigate to package
+        run: cd benchmark
+      - name: Install dependencies
+        run: npm install
+      - name: Run benchmark
+        run: npm start
