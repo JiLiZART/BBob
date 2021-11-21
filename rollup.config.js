@@ -15,7 +15,6 @@ const baseConfig = {
     file: pkg.browser,
     format: 'umd',
     name: pkg.browserName,
-    exports: 'named',
     globals: {
       react: 'React',
       vue: 'Vue',
