@@ -47,7 +47,7 @@
   "bundlesize": [
     {
       "path": "./dist/index.min.js",
-      "maxSize": "2 KB"
+      "maxSize": "2.5 KB"
     }
   ],
   "publishConfig": {
