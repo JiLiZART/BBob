@@ -74,6 +74,10 @@ suite
     const name = this.filter('fastest').map('name').toString();
 
     process.stdout.write(`Fastest is ${pico.bold(name)}`);
+
+    if (name.indexOf('@bbob') === -1) {
+      process.exit(1);
+    }
   })
 // run async
   .run();
