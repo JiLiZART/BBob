@@ -1,10 +1,9 @@
-name: Running Code Coverage
+name: Tests
 
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -33,9 +32,6 @@ jobs:
 
     - name: Run the lint
       run: npm run lint
-
-    - name: Run the tests
-      run: npm run test
 
     - name: Run the coverage
       run: npm run cover
