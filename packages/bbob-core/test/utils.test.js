@@ -1,4 +1,4 @@
-import { iterate, match } from '../src/utils';
+import { iterate, match, same } from '../src/utils';
 
 const stringify = val => JSON.stringify(val);
 
@@ -61,5 +61,23 @@ describe('@bbob/core utils', () => {
     ];
 
     expect(stringify(resultArr)).toEqual(stringify(expected))
+  })
+
+  describe('same', () => {
+    test('same not same typeof', () => {
+      expect(same(1, {})).toBe(false)
+    })
+    test('same boolean', () => {
+      expect(same(true, true)).toBe(true)
+    })
+    test('same null', () => {
+      expect(same(null, null)).toBe(true)
+    })
+    test('same array', () => {
+      expect(same([1, 2, 3], [1, 2, 3, 4])).toBe(true)
+    })
+    test('same object', () => {
+      expect(same({ foo: true, bar: 'test' }, { foo: true, bar: 'test', ext: true })).toBe(true)
+    })
   })
 });
