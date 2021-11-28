@@ -6,9 +6,8 @@
 BBob is a tool to parse and transform [BBCode](https://en.wikipedia.org/wiki/BBCode)
 written in pure javascript, no dependencies
 
-<a href="https://travis-ci.com/JiLiZART/bbob">
-  <img src="https://travis-ci.com/JiLiZART/bbob.svg?branch=master" alt="Build Status">
-</a> 
+[![Tests](https://github.com/JiLiZART/BBob/actions/workflows/test.yml/badge.svg)](https://github.com/JiLiZART/BBob/actions/workflows/test.yml)
+[![Benchmark](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml/badge.svg)](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml)
 <a href="https://codecov.io/gh/JiLiZART/bbob">
   <img src="https://codecov.io/gh/JiLiZART/bbob/branch/master/graph/badge.svg" alt="codecov">
 </a> 
