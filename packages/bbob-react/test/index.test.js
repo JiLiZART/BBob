@@ -1,8 +1,7 @@
 import React from 'react';
 import preset from '@bbob/preset-react';
 
-import { shallow } from 'enzyme';
-import Enzyme from 'enzyme';
+import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-15';
 
 import BBCode from '../src';
