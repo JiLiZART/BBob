@@ -2,9 +2,9 @@
   "scripts": {
     "prepublishOnly": "npm run test",
     "bootstrap": "lerna bootstrap",
-    "publish-from-packages": "npm run build && lerna publish from-package --yes --include-merged-tags --conventional-commits --create-release github --registry=https://registry.npmjs.org/",
-    "publish-all": "npm run build && lerna publish --include-merged-tags --conventional-commits --create-release github --registry=https://registry.npmjs.org/",
-    "publish-patch": "npm run build && lerna publish --include-merged-tags --conventional-commits --create-release github --cd-version patch --registry=https://registry.npmjs.org/",
+    "publish-from-packages": "npm run build && lerna publish from-package --yes --include-merged-tags --conventional-commits --create-release github --skip-npm",
+    "publish-all": "npm run build && lerna publish --include-merged-tags --conventional-commits --create-release github --skip-npm",
+    "publish-patch": "npm run build && lerna publish --include-merged-tags --conventional-commits --create-release github --cd-version patch --skip-npm",
     "size": "lerna run --parallel size",
     "bundlesize": "lerna run --parallel bundlesize",
     "test": "npm run build && lerna run --parallel link && lerna run --parallel test",
