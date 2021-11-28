@@ -56,5 +56,14 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "pkgTasks": {
+    "build-commonjs": "@/cross-env BABEL_ENV=commonjs NODE_ENV=production @/swc --config-file ../../.swcrc-commonjs --out-dir lib src",
+    "build-es": "@/cross-env BABEL_ENV=es NODE_ENV=production @/swc --out-dir es src",
+    "build-umd": "@/cross-env BABEL_ENV=rollup NODE_ENV=production @/rollup --config ../../rollup.config.js",
+    "test": "@/jest",
+    "cover": "@/jest --config ../../jest.config.js --coverage .",
+    "lint": "@/eslint .",
+    "bundlesize": "@/cross-env NODE_ENV=production @/bundlesize ."
   }
 }

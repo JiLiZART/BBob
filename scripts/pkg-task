@@ -3,33 +3,30 @@
 const { resolve } = require('path')
 const { spawn } = require('child_process')
 const { Command } = require('commander');
+const pkg = require(resolve(__dirname, '../package.json'))
 
 const program = new Command();
 const nmBinDir = resolve(__dirname, '../node_modules/.bin/')
 const shell = { cmd: 'sh', arg: '-c' }
 
+const replaceTokens = str => String(str).replace(new RegExp('@\\/', 'gi'), `${nmBinDir}/`)
+
 const actionCommand = (command) => () => {
-  spawn(shell.cmd, [shell.arg, String(command)
-      .replace(new RegExp('@\\/', 'gi'), `${nmBinDir}/`)], {
+  const proc = spawn(shell.cmd, [shell.arg, replaceTokens(command)], {
     env: process.env,
     cwd: process.cwd(),
     stdio: 'inherit',
   })
-}
 
-const commandMap = {
-  'build-commonjs': `@/cross-env BABEL_ENV=commonjs NODE_ENV=production @/swc --config-file ../../.swcrc-commonjs --out-dir lib src`,
-  'build-es': `@/cross-env BABEL_ENV=es NODE_ENV=production @/swc --out-dir es src`,
-  'build-umd': `@/cross-env BABEL_ENV=rollup NODE_ENV=production @/rollup --config ../../rollup.config.js`,
-  test: `@/jest`,
-  cover: `@/jest --config ../../jest.config.js --coverage .`,
-  lint: `@/eslint .`,
-  bundlesize: `@/cross-env NODE_ENV=production @/bundlesize .`
+  proc.on('close', (code) => {
+    console.log(`command:"${command}" exited with code ${code}`);
+    process.exit(code)
+  });
 }
 
 program.version('1.0.0')
 
-for (const [key, command] of Object.entries(commandMap)) {
+for (const [key, command] of Object.entries(pkg.pkgTasks)) {
   program.command(key).action(actionCommand(command))
 }
 
