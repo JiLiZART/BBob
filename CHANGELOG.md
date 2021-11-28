@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/JiLiZART/BBob/compare/v2.7.0...v2.8.0) (2021-11-28)
+
+
+### Bug Fixes
+
+* **github:** publish using lerna ([2eb9d28](https://github.com/JiLiZART/BBob/commit/2eb9d285153549e6f5b052bf4142ab54c8535789))
+* **react:** adjust PropTypes for React Component `container` ([#107](https://github.com/JiLiZART/BBob/issues/107)) ([93d8027](https://github.com/JiLiZART/BBob/commit/93d802773cbe733ccf4b0124257c6fc6707c873b))
+
+
+### Features
+
+* update core deps ([#120](https://github.com/JiLiZART/BBob/issues/120)) ([da6709d](https://github.com/JiLiZART/BBob/commit/da6709d43799304e62d51cd03921e261308db80f))
+
+
+### BREAKING CHANGES
+
+* now we use swc.rs as main bundler and transpiler instead of babel
+  - jest now uses swc
+  - rollup now uses swc
+
+* feat: benchmark now separate package with `npm start` and colored output
+  - benchmark as separate package with error throw if package drops performance
+
+* feat: all lerna packages now using scripts/pkg-task
+
+* feat(github): publish to npm and github registry
+  - when release was created this action automaticly publish packages to npm and github
+
+* feat(github): move all from Travis CI to Github Actions
+  - code analysis and tests now using github actions
+
+* test: increase tests coverage
+  - add more tests for @bbob/react, @bbob/vue2 and @bbob/parser
+
+
+
+
+
 ## [2.7.1](https://github.com/JiLiZART/bbob/compare/v2.7.0...v2.7.1) (2021-11-04)
 
 
