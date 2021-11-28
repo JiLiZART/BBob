@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: 14
       - run: npm ci
+      - run: npm run bootstrap
       - run: npm test
 
   publish-npm:
@@ -28,6 +29,7 @@ jobs:
           node-version: 14
           registry-url: https://registry.npmjs.org/
       - run: npm ci
+      - run: npm run bootstrap
       - run: npm run publish-ci
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
@@ -45,6 +47,7 @@ jobs:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
       - run: npm ci
+      - run: npm run bootstrap
       - run: npm run publish-ci
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
