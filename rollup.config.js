@@ -11,8 +11,9 @@ const baseConfig = {
   external: ['react', 'vue', 'prop-types'],
   output: {
     file: pkg.browser,
-    format: 'umd',
     name: pkg.browserName,
+    format: 'umd',
+    exports: 'named',
     globals: {
       react: 'React',
       vue: 'Vue',

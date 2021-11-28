@@ -19,7 +19,10 @@ const actionCommand = (command) => () => {
   })
 
   proc.on('close', (code) => {
-    console.log(`command:"${command}" exited with code ${code}`);
+    if (code !== 0) {
+      console.log(`command:"${command}" exited with code ${code}`);
+    }
+
     process.exit(code)
   });
 }
