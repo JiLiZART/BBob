@@ -65,19 +65,13 @@ const toNode = (tag, attrs, content) => ({
   content,
 });
 
+const toStyle = (style) => ({ style });
+
 export default {
-  b: (node) => toNode('span', {
-    style: 'font-weight: bold;',
-  }, node.content),
-  i: (node) => toNode('span', {
-    style: 'font-style: italic;',
-  }, node.content),
-  u: (node) => toNode('span', {
-    style: 'text-decoration: underline;',
-  }, node.content),
-  s: (node) => toNode('span', {
-    style: 'text-decoration: line-through;',
-  }, node.content),
+  b: (node) => toNode('span', toStyle('font-weight: bold;'), node.content),
+  i: (node) => toNode('span', toStyle('font-style: italic;'), node.content),
+  u: (node) => toNode('span', toStyle('text-decoration: underline;'), node.content),
+  s: (node) => toNode('span', toStyle('text-decoration: line-through;'), node.content),
   url: (node, { render }, options) => toNode('a', {
     href: renderUrl(node, render, options),
   }, node.content),
@@ -86,9 +80,7 @@ export default {
   }, null),
   quote: (node) => toNode('blockquote', {}, [toNode('p', {}, node.content)]),
   code: (node) => toNode('pre', {}, node.content),
-  style: (node) => toNode('span', {
-    style: getStyleFromAttrs(node.attrs),
-  }, node.content),
+  style: (node) => toNode('span', toStyle(getStyleFromAttrs(node.attrs)), node.content),
   list: (node) => {
     const type = getUniqAttr(node.attrs);
 

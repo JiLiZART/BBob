@@ -1,5 +1,5 @@
 import {parse} from '../src'
-import render from 'posthtml-render'
+import { render } from 'posthtml-render'
 
 describe('posthtml-render', () => {
 

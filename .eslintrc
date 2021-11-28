@@ -1,11 +1,9 @@
 {
-  "extends": "airbnb",
-  "plugins": [
-    "jest"
+  "extends": [
+    "airbnb"
   ],
   "env": {
-    "node": true,
-    "jest/globals": true
+    "node": true
   },
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]

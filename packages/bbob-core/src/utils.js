@@ -2,7 +2,7 @@
 const isObj = (value) => (typeof value === 'object');
 const isBool = (value) => (typeof value === 'boolean');
 
-function iterate(t, cb) {
+export function iterate(t, cb) {
   const tree = t;
 
   if (Array.isArray(tree)) {
@@ -16,7 +16,7 @@ function iterate(t, cb) {
   return tree;
 }
 
-function same(expected, actual) {
+export function same(expected, actual) {
   if (typeof expected !== typeof actual) {
     return false;
   }
@@ -45,7 +45,7 @@ function same(expected, actual) {
   });
 }
 
-function match(expression, cb) {
+export function match(expression, cb) {
   return Array.isArray(expression)
     ? iterate(this, (node) => {
       for (let idx = 0; idx < expression.length; idx++) {
@@ -58,8 +58,3 @@ function match(expression, cb) {
     })
     : iterate(this, (node) => (same(expression, node) ? cb(node) : node));
 }
-
-export {
-  iterate,
-  match,
-};

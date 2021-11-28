@@ -41,15 +41,15 @@
     "url": "git://github.com/JiLiZART/bbob.git"
   },
   "scripts": {
-    "build:commonjs": "../../node_modules/.bin/cross-env BABEL_ENV=commonjs NODE_ENV=production ../../node_modules/.bin/babel src --out-dir lib",
-    "build:es": "../../node_modules/.bin/cross-env BABEL_ENV=es NODE_ENV=production ../../node_modules/.bin/babel src --out-dir es",
-    "build:umd": "../../node_modules/.bin/cross-env BABEL_ENV=rollup ../../node_modules/.bin/rollup --config ../../rollup.config.js",
+    "build:commonjs": "../../scripts/pkg-task build-commonjs",
+    "build:es": "../../scripts/pkg-task build-es",
+    "build:umd": "../../scripts/pkg-task build-umd",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
-    "test": "../../node_modules/.bin/jest --",
-    "cover": "../../node_modules/.bin/jest --coverage",
-    "lint": "../../node_modules/.bin/eslint .",
-    "size": "../../node_modules/.bin/cross-env NODE_ENV=production ../../node_modules/.bin/size-limit",
-    "bundlesize": "../../node_modules/.bin/cross-env NODE_ENV=production ../../node_modules/.bin/bundlesize"
+    "test": "../../scripts/pkg-task test",
+    "cover": "../../scripts/pkg-task cover",
+    "lint": "../../scripts/pkg-task lint",
+    "size": "../../scripts/pkg-task size",
+    "bundlesize": "../../scripts/pkg-task bundlesize"
   },
   "size-limit": [
     {

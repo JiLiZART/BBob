@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+'use strict';
+const { resolve } = require('path')
+const { spawn } = require('child_process')
+const { Command } = require('commander');
+const pkg = require(resolve(__dirname, '../package.json'))
+
+const program = new Command();
+const nmBinDir = resolve(__dirname, '../node_modules/.bin/')
+const shell = { cmd: 'sh', arg: '-c' }
+
+const replaceTokens = str => String(str).replace(new RegExp('@\\/', 'gi'), `${nmBinDir}/`)
+
+const actionCommand = (command) => () => {
+  const proc = spawn(shell.cmd, [shell.arg, replaceTokens(command)], {
+    env: process.env,
+    cwd: process.cwd(),
+    stdio: 'inherit',
+  })
+
+  proc.on('close', (code) => {
+    if (code !== 0) {
+      console.log(`command:"${command}" exited with code ${code}`);
+    }
+
+    process.exit(code)
+  });
+}
+
+program.version('1.0.0')
+
+for (const [key, command] of Object.entries(pkg.pkgTasks)) {
+  program.command(key).action(actionCommand(command))
+}
+
+program.parse();

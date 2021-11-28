@@ -1,5 +1,4 @@
 import resolve from '@rollup/plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
 import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
@@ -8,26 +7,26 @@ const pkg = require(`${process.cwd()}/package.json`);
 const { NODE_ENV } = process.env;
 
 const baseConfig = {
-  input: 'src/index.js',
-  external: ['react', 'vue'],
+  input: 'es/index.js',
+  external: ['react', 'vue', 'prop-types'],
   output: {
     file: pkg.browser,
-    format: 'umd',
     name: pkg.browserName,
+    format: 'umd',
+    exports: 'named',
     globals: {
       react: 'React',
       vue: 'Vue',
+      'prop-types': 'PropTypes',
     },
   },
   plugins: [
     resolve(),
-    babel({
-      exclude: '**/node_modules/**',
-    }),
+    commonjs(),
     replace({
+      preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
     }),
-    commonjs(),
   ],
 };
 

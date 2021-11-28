@@ -2,6 +2,8 @@
   "lerna": "2.11.0",
   "version": "2.7.1",
   "packages": [
+    "benchmark",
+    "scripts",
     "examples/*",
     "packages/bbob-cli",
     "packages/bbob-core",

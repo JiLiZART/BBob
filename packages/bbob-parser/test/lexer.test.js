@@ -84,6 +84,19 @@ describe('lexer', () => {
     expect(tokens).toBeMantchOutput(output);
   });
 
+  test('paired tag with single param', () => {
+    const input = '[url=someval]GET[/url]';
+    const tokens = tokenize(input);
+    const output = [
+      [TYPE.TAG, 'url', '0', '0'],
+      [TYPE.ATTR_VALUE, 'someval', '0', '0'],
+      [TYPE.WORD, 'GET', '0', '0'],
+      [TYPE.TAG, '/url', '0', '0'],
+    ];
+
+    expect(tokens).toBeMantchOutput(output);
+  });
+
   test('single fake tag', () => {
     const input = '[ user=111]';
     const tokens = tokenize(input);
