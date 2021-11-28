@@ -17,10 +17,10 @@
     "vue": "2.x"
   },
   "devDependencies": {
-    "@bbob/preset-vue": "^2.7.1",
-    "@testing-library/vue": "^5.6.2",
+    "@bbob/preset-vue": "2.7.1",
+    "@testing-library/vue": "5.6.2",
     "vue": "2.6.12",
-    "vue-template-compiler": "^2.6.12"
+    "vue-template-compiler": "2.6.12"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
