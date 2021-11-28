@@ -1,4 +1,5 @@
 {
+  "name": "scripts",
   "main": "index.js",
   "private": true,
   "author": {
