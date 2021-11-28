@@ -26,7 +26,7 @@ jobs:
       run: npm install -g codecov
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
 
     - name: Bootstrap packages
       run: npm run bootstrap
