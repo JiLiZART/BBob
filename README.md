@@ -55,7 +55,6 @@ written in pure javascript, no dependencies
 [@bbob/html-size]: https://badgen.net/bundlephobia/minzip/@bbob/html
 [@bbob/preset-html5-size]: https://badgen.net/bundlephobia/minzip/@bbob/preset-html5
 
-
 [@bbob/core-package]: https://npmjs.com/package/@bbob/core
 
 [@bbob/react-package]: https://npmjs.com/package/@bbob/react
