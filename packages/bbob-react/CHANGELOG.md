@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/JiLiZART/bbob/compare/v2.8.0...v2.8.1) (2022-05-24)
+
+
+### Features
+
+* **react:** update to react 18 and testing-library ([#138](https://github.com/JiLiZART/bbob/issues/138)) ([502362c](https://github.com/JiLiZART/bbob/commit/502362cc8cf63104e6107aa01b7e3b1af6cf464e))
+
+
+
+
+
 # [2.8.0](https://github.com/JiLiZART/bbob/compare/v2.7.0...v2.8.0) (2021-11-28)
 
 
