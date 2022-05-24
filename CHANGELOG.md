@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/JiLiZART/BBob/compare/v2.8.0...v2.8.1) (2022-05-24)
+
+
+### Bug Fixes
+
+* **github:** lerna bootsrap before publish ([4e4b1e6](https://github.com/JiLiZART/BBob/commit/4e4b1e63ddd97e98446ab2413dcabf4bff2819e5))
+* lerna issue and publish patch ([daf9b02](https://github.com/JiLiZART/BBob/commit/daf9b02199cfb80035cb3b629093af0e605c1854))
+* lerna publish scripts ([2b6e11a](https://github.com/JiLiZART/BBob/commit/2b6e11a07732e8f8ca4e476b7d56eeca8613a80a))
+
+
+### Features
+
+* **react:** update to react 18 and testing-library ([#138](https://github.com/JiLiZART/BBob/issues/138)) ([502362c](https://github.com/JiLiZART/BBob/commit/502362cc8cf63104e6107aa01b7e3b1af6cf464e))
+
+
+
+
+
 # [2.8.0](https://github.com/JiLiZART/BBob/compare/v2.7.0...v2.8.0) (2021-11-28)
 
 
