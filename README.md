@@ -270,6 +270,51 @@ render(<App />) // <span><span style="font-weight: bold;">Super <span style="fon
 
 ### Create Plugin <a name="plugin"></a>
 
+For example lets parse all strings that similar to links like "https://some-site.com"
+
+```js
+import { createRoot } from "react-dom/client";
+
+import BBCode from "@bbob/react/es/Component";
+import TagNode from "@bbob/plugin-helper/es/TagNode";
+import { isStringNode } from "@bbob/plugin-helper/es";
+
+const URL_RE = new RegExp(
+  `([--:\\w?@%&+~#=]+\\/*\\.[a-z]{2,4}\\/{0,2})((?:[?&](?:\\w+)=(?:\\w+))+|[^^).|,][--:\\w?@%&+~#=()_]+)?`,
+  "g"
+);
+
+const isValidUrl = (url) => URL_RE.test(url);
+
+const linkParsePlugin = (tree) => {
+  return tree.walk((node) => {
+    if (isStringNode(node) && isValidUrl(node)) {
+      return TagNode.create(
+        "a",
+        {
+          href: node
+        },
+        `Url to: ${node}`
+      );
+    }
+
+    return node;
+  });
+};
+
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
+
+root.render(
+  <BBCode plugins={[linkParsePlugin]}>
+    https://github.com/JiLiZART/BBob Other text without link
+  </BBCode>
+);
+```
+
+[![Edit x7w52lqmzz](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/bbob-plugin-example-dmq1bh)
+
+
 ### Benchmarks <a name="benchmarks"></a>
 
 To test on your machine run
