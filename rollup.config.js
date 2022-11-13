@@ -22,7 +22,9 @@ const baseConfig = {
   },
   plugins: [
     resolve(),
-    commonjs(),
+    commonjs({
+      requireReturnsDefault: true,
+    }),
     replace({
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),

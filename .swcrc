@@ -1,6 +1,9 @@
 {
   "module": {
-    "type": "es6"
+    "type": "es6",
+    "strict": true,
+    "strictMode": true,
+    "noInterop": true
   },
   "env": {
     "loose": true,

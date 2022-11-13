@@ -1,10 +1,10 @@
 {
   "module": {
-    "type": "commonjs",
-    "strict": false,
+    "type": "umd",
+    "strict": true,
     "strictMode": true,
     "lazy": false,
-    "noInterop": false,
+    "noInterop": true,
     "ignoreDynamic": false
   },
   "jsc": {
