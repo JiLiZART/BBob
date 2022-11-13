@@ -2,17 +2,17 @@
 'use strict';
 const { resolve } = require('path')
 const { spawn } = require('child_process')
-const { Command } = require('commander');
-const pkg = require(resolve(__dirname, '../package.json'))
 
-const program = new Command();
+const pkg = require(resolve(__dirname, '../package.json'))
 const nmBinDir = resolve(__dirname, '../node_modules/.bin/')
+
 const shell = { cmd: 'sh', arg: '-c' }
 
+// replace all @/ to node modules bin dir
 const replaceTokens = str => String(str).replace(new RegExp('@\\/', 'gi'), `${nmBinDir}/`)
 
-const actionCommand = (command) => () => {
-  const proc = spawn(shell.cmd, [shell.arg, replaceTokens(command)], {
+function runCommand(command, args = '') {
+  const proc = spawn(shell.cmd, [shell.arg, `${replaceTokens(command)} ${args}`], {
     env: process.env,
     cwd: process.cwd(),
     stdio: 'inherit',
@@ -27,10 +27,18 @@ const actionCommand = (command) => () => {
   });
 }
 
-program.version('1.0.0')
+function runCommandByKey(key, command) {
+  const args = process.argv.slice(2);
 
-for (const [key, command] of Object.entries(pkg.pkgTasks)) {
-  program.command(key).action(actionCommand(command))
+  if (args.length >= 1) {
+    const [name, ...argarr] = args
+
+    if (name === key) {
+      return runCommand(command, argarr.join(' '))
+    }
+  }
 }
 
-program.parse();
+for (const [key, command] of Object.entries(pkg.pkgTasks)) {
+  runCommandByKey(key, command)
+}
