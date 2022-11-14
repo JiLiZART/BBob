@@ -3,14 +3,16 @@
     "type": "es6",
     "strict": true,
     "strictMode": true,
-    "noInterop": true
+    "lazy": false,
+    "noInterop": false
   },
   "env": {
     "loose": true,
     "targets": "> 0.25%, not dead"
   },
   "jsc": {
-      "loose": true,
+      "target": "es6",
+      "loose": false,
       "parser": {
         "syntax": "ecmascript",
         "jsx": true,

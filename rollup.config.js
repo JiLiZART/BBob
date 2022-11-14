@@ -1,8 +1,9 @@
-import resolve from '@rollup/plugin-node-resolve';
-import replace from '@rollup/plugin-replace';
-import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
+const resolve = require('@rollup/plugin-node-resolve');
+const replace = require('@rollup/plugin-replace');
+const commonjs = require('@rollup/plugin-commonjs');
+const terser = require('@rollup/plugin-terser');
 
+// eslint-disable-next-line import/no-dynamic-require
 const pkg = require(`${process.cwd()}/package.json`);
 const { NODE_ENV } = process.env;
 
