@@ -1,29 +1,35 @@
 {
+  "$schema": "https://json.schemastore.org/swcrc",
   "module": {
     "type": "es6",
-    "strict": true,
-    "strictMode": true,
+    "strict": false,
+    "strictMode": false,
     "lazy": false,
     "noInterop": false
   },
+  "minify": false,
   "env": {
     "loose": true,
     "targets": "> 0.25%, not dead"
   },
   "jsc": {
-      "target": "es6",
-      "loose": false,
+      "target": "es2020",
+      "loose": true,
       "parser": {
         "syntax": "ecmascript",
         "jsx": true,
-        "numericSeparator": false,
-        "classPrivateProperty": false,
+        "dynamicImport": false,
         "privateMethod": false,
-        "classProperty": false,
         "functionBind": false,
+        "exportDefaultFrom": false,
+        "exportNamespaceFrom": false,
         "decorators": false,
-        "decoratorsBeforeExport": false
+        "decoratorsBeforeExport": false,
+        "topLevelAwait": false,
+        "importMeta": false
       },
+      "externalHelpers": false,
+      "keepClassNames": true,
       "transform": {
         "react": {
           "pragma": "React.createElement",
