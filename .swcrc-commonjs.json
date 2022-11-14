@@ -1,0 +1,21 @@
+{
+  "module": {
+    "type": "umd",
+    "strict": true,
+    "strictMode": true,
+    "lazy": false,
+    "noInterop": true
+  },
+  "jsc": {
+    "transform": {
+      "optimizer": {
+        "simplify": false
+      }
+    },
+    "loose": true,
+    "parser": {
+      "syntax": "ecmascript",
+      "jsx": true
+    }
+  }
+}

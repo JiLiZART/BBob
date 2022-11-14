@@ -60,9 +60,9 @@
     }
   },
   "pkgTasks": {
-    "build-commonjs": "@/cross-env BABEL_ENV=commonjs NODE_ENV=production @/swc --config-file ../../.swcrc-commonjs --out-dir lib src",
-    "build-es": "@/cross-env BABEL_ENV=es NODE_ENV=production @/swc --config-file ../../.swcrc --out-dir es src",
-    "build-umd": "@/cross-env BABEL_ENV=rollup NODE_ENV=production @/rollup --bundleConfigAsCjs --config ../../rollup.config.js",
+    "build-commonjs": "@/cross-env BABEL_ENV=commonjs NODE_ENV=production @/swc --config-file ../../.swcrc-commonjs.json --out-dir lib src",
+    "build-es": "@/cross-env BABEL_ENV=es NODE_ENV=production @/swc --config-file ../../.swcrc.json --out-dir es src",
+    "build-umd": "@/cross-env BABEL_ENV=rollup NODE_ENV=production @/rollup --config ../../rollup.config.mjs",
     "test": "@/jest",
     "cover": "@/jest --config ../../jest.config.js --coverage .",
     "lint": "@/eslint .",

@@ -1,8 +1,12 @@
-const resolve = require('@rollup/plugin-node-resolve');
-const replace = require('@rollup/plugin-replace');
-const commonjs = require('@rollup/plugin-commonjs');
-const terser = require('@rollup/plugin-terser');
+import { defineConfig } from 'rollup';
 
+import resolve from '@rollup/plugin-node-resolve'
+import replace from '@rollup/plugin-replace'
+import commonjs from '@rollup/plugin-commonjs'
+import terser from '@rollup/plugin-terser'
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 // eslint-disable-next-line import/no-dynamic-require
 const pkg = require(`${process.cwd()}/package.json`);
 const { NODE_ENV } = process.env;
@@ -22,8 +26,11 @@ const baseConfig = {
     },
   },
   plugins: [
-    resolve(),
+    resolve({
+      browser: true,
+    }),
     commonjs({
+      transformMixedEsModules: true,
       requireReturnsDefault: true,
     }),
     replace({
@@ -34,7 +41,7 @@ const baseConfig = {
 };
 
 // only for dist
-export default [
+export default defineConfig([
   baseConfig,
   {
     ...baseConfig,
@@ -50,8 +57,9 @@ export default [
           unsafe: true,
           unsafe_comps: true,
           warnings: false,
+          inline: true,
         },
       }),
     ],
   },
-];
+]);
