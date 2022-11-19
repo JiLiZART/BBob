@@ -8,12 +8,12 @@
     "publish-all": "npm run build && lerna publish --include-merged-tags --conventional-commits --create-release github --skip-npm",
     "publish-patch": "npm run build && lerna version patch --include-merged-tags --conventional-commits --no-git-tag-version --no-private",
     "publish-minor": "npm run build && lerna version minor --include-merged-tags --conventional-commits --no-git-tag-version --no-private",
-    "size": "lerna run --parallel size",
-    "bundlesize": "lerna run --parallel bundlesize",
-    "test": "npm run build && lerna run --parallel link && lerna run --parallel test",
-    "cover": "lerna run --parallel cover",
-    "build": "lerna run build --scope=@bbob/plugin-helper && lerna run --parallel build",
-    "lint": "lerna run --parallel link && npm run build && lerna run --parallel lint"
+    "size": "nx run-many --target=size",
+    "bundlesize": "nx run-many --target=bundlesize",
+    "test": "npm run build && nx run-many --target=link && nx run-many --target=test",
+    "cover": "nx run-many --target=cover",
+    "build": "nx run-many --target=build",
+    "lint": "nx run-many --target=link && npm run build && nx run-many --target=lint"
   },
   "author": {
     "name": "Nikolay Kostyurin <jilizart@gmail.com>",
@@ -49,7 +49,8 @@
     "rollup": "3.3.0",
     "rollup-plugin-gzip": "3.1.0",
     "rollup-plugin-swc": "0.2.1",
-    "size-limit": "6.0.1"
+    "size-limit": "6.0.1",
+    "nx": "15.2.1"
   },
   "publishConfig": {
     "access": "public",
