@@ -39,18 +39,19 @@
     "eslint-plugin-jest": "25.0.1",
     "eslint-plugin-jsx-a11y": "6.4.1",
     "eslint-plugin-react": "7.26.1",
+    "eslint-plugin-react-hooks": "4.6.0",
     "husky": "7.0.2",
     "jest": "27.2.5",
     "lerna": "6.0.3",
     "lint-staged": "11.2.3",
     "microtime": "3.0.0",
+    "nx": "15.2.1",
     "posthtml-render": "^3.0.0",
     "rimraf": "^3.0.2",
     "rollup": "3.3.0",
     "rollup-plugin-gzip": "3.1.0",
     "rollup-plugin-swc": "0.2.1",
-    "size-limit": "6.0.1",
-    "nx": "15.2.1"
+    "size-limit": "6.0.1"
   },
   "publishConfig": {
     "access": "public",
