@@ -12,7 +12,7 @@
     "bundlesize": "lerna run --parallel bundlesize",
     "test": "npm run build && lerna run --parallel link && lerna run --parallel test",
     "cover": "lerna run --parallel cover",
-    "build": "lerna run --parallel build",
+    "build": "lerna run build --scope=@bbob/plugin-helper && lerna run --parallel build",
     "lint": "lerna run --parallel link && npm run build && lerna run --parallel lint"
   },
   "author": {
