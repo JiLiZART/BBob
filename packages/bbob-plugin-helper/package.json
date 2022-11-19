@@ -53,15 +53,5 @@
     "lib",
     "src",
     "es"
-  ],
-  "exports": {
-    ".": {
-      "types": "./src/index.d.ts",
-      "browser": "./dist/index.min.js",
-      "umd": "./lib/index.js",
-      "import": "./es/index.js",
-      "require": "./lib/index.js"
-    },
-    "./package.json": "./package.json"
-  }
+  ]
 }
