@@ -3,6 +3,7 @@
     "prepublishOnly": "npm run test",
     "bootstrap": "lerna bootstrap",
     "publish-ci": "npm run build && lerna publish from-package --yes --include-merged-tags --conventional-commits",
+    "publish-canary": "npm run build && lerna publish --canary --yes --include-merged-tags --conventional-commits",
     "publish-from-packages": "npm run build && lerna publish from-package --yes --include-merged-tags --conventional-commits --create-release github",
     "publish-all": "npm run build && lerna publish --include-merged-tags --conventional-commits --create-release github --skip-npm",
     "publish-patch": "npm run build && lerna version patch --include-merged-tags --conventional-commits --no-git-tag-version --no-private",
