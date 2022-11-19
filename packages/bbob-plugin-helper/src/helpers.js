@@ -36,7 +36,7 @@ const escapeHTML = (value) => value
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#039;')
 // eslint-disable-next-line no-script-url
-  .replace(/(javascript):/gi, '$1%3A');
+  .replace(/(javascript|data|vbscript):/gi, '$1%3A');
 
 /**
  * Acept name and value and return valid html5 attribute string
