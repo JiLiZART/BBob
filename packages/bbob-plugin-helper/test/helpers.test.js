@@ -9,7 +9,7 @@ import {
   isEOL,
 } from '../src';
 
-describe('@bbob/plugin-helper', () => {
+describe('@bbob/plugin-helper/helpers', () => {
   test('appendToNode', () => {
     const value = 'test';
     const node = { content: [] };

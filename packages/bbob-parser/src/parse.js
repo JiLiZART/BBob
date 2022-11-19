@@ -1,6 +1,6 @@
-import TagNode from '@bbob/plugin-helper/lib/TagNode';
-import { CLOSE_BRAKET, OPEN_BRAKET } from '@bbob/plugin-helper/lib/char';
-import { isTagNode } from '@bbob/plugin-helper/lib/index';
+import {
+  TagNode, CLOSE_BRAKET, OPEN_BRAKET, isTagNode,
+} from '@bbob/plugin-helper';
 import { createLexer } from './lexer';
 import { createList } from './utils';
 

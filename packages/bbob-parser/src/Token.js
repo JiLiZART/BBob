@@ -2,7 +2,7 @@ import {
   OPEN_BRAKET,
   CLOSE_BRAKET,
   SLASH,
-} from '@bbob/plugin-helper/lib/char';
+} from '@bbob/plugin-helper';
 
 // type, value, line, row,
 const TOKEN_TYPE_ID = 'type'; // 0;

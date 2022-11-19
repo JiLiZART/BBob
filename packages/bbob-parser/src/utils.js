@@ -1,7 +1,7 @@
 import {
   QUOTEMARK,
   BACKSLASH,
-} from '@bbob/plugin-helper/lib/char';
+} from '@bbob/plugin-helper';
 
 function CharGrabber(source, options) {
   const cursor = {

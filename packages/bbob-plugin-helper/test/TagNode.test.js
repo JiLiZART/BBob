@@ -1,6 +1,6 @@
-import TagNode from '../src/TagNode'
+import { TagNode } from '../src'
 
-describe('@bbob/plugin-helper/lib/TagNode', () => {
+describe('@bbob/plugin-helper/TagNode', () => {
   test('create', () => {
     const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
 
