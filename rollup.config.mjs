@@ -26,9 +26,7 @@ const baseConfig = {
     },
   },
   plugins: [
-    resolve({
-      browser: true,
-    }),
+    resolve(),
     commonjs({
       transformMixedEsModules: true,
       requireReturnsDefault: true,
