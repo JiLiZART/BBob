@@ -3,7 +3,8 @@ import { defineConfig } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import commonjs from '@rollup/plugin-commonjs'
-import terser from '@rollup/plugin-terser'
+import { minify } from 'rollup-plugin-swc3'
+
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -49,13 +50,13 @@ export default defineConfig([
     },
     plugins: [
       ...baseConfig.plugins,
-      terser({
+      minify({
         compress: {
           pure_getters: true,
           unsafe: true,
           unsafe_comps: true,
-          warnings: false,
           inline: true,
+          keep_classnames: true,
         },
       }),
     ],

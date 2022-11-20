@@ -13,7 +13,7 @@
         "simplify": false
       }
     },
-    "target": "es2020",
+    "target": "es2018",
     "loose": true,
     "parser": {
       "syntax": "ecmascript",

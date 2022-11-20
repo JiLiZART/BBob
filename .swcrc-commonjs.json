@@ -1,10 +1,11 @@
 {
   "module": {
-    "type": "umd",
-    "strict": true,
+    "type": "commonjs",
+
+    "strict": false,
     "strictMode": true,
     "lazy": false,
-    "noInterop": true
+    "noInterop": false
   },
   "jsc": {
     "transform": {
