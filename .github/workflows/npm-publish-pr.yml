@@ -1,5 +1,0 @@
-- name: Publish branch package to npm
-  uses: wistia/publish-branch-to-npm@v1.0.0
-  with:
-    github_token: ${{ secrets.GITHUB_TOKEN }}
-    npm_token: ${{ secrets.NPM_TOKEN }}
