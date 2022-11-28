@@ -1,6 +1,6 @@
 {
   "name": "@bbob/html",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "description": "A BBCode to HTML Renderer part of @bbob",
   "keywords": [
     "html",
@@ -9,8 +9,8 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "^2.8.1",
-    "@bbob/plugin-helper": "^2.8.1"
+    "@bbob/core": "^2.8.2",
+    "@bbob/plugin-helper": "^2.8.2"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
