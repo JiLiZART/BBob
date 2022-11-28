@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.2](https://github.com/JiLiZART/bbob/compare/v2.8.1...v2.8.2) (2022-11-28)
+
+
+### Bug Fixes
+
+* **react:** add range of peer deps ([#151](https://github.com/JiLiZART/bbob/issues/151)) ([7cd648d](https://github.com/JiLiZART/bbob/commit/7cd648d876bfdd9c4ed97f57a74f18f70b0e73fb))
+
+
+
+
+
 ## [2.8.1](https://github.com/JiLiZART/bbob/compare/v2.8.0...v2.8.1) (2022-05-24)
 
 
