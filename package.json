@@ -68,6 +68,6 @@
     "test": "@/jest",
     "cover": "@/jest --config ../../jest.config.js --coverage .",
     "lint": "@/eslint .",
-    "bundlesize": "@/cross-env NODE_ENV=production @/bundlesize ."
+    "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize ."
   }
 }
