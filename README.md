@@ -331,3 +331,6 @@ Tested on Node v12.18.3
 | ya-bbcode            | 10.70 ops/sec ±1.94% | (31 runs sampled) |
 | xbbcode/parser       | 107 ops/sec ±2.29%   | (69 runs sampled) |
 | @bbob/parser         | 137 ops/sec ±1.11%   | (78 runs sampled) |
+
+
+Developed with <3 using JetBrains
