@@ -1,6 +1,7 @@
 /* eslint-disable no-plusplus,no-lonely-if */
-import { getUniqAttr, isStringNode, isTagNode } from '@bbob/plugin-helper/lib/index';
-import TagNode from '@bbob/plugin-helper/lib/TagNode';
+import {
+  getUniqAttr, isStringNode, isTagNode, TagNode,
+} from '@bbob/plugin-helper';
 
 const isStartsWith = (node, type) => (node[0] === type);
 

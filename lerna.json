@@ -1,6 +1,6 @@
 {
   "lerna": "2.11.0",
-  "version": "2.8.2",
+  "version": "2.8.3",
   "packages": [
     "benchmark",
     "scripts",
@@ -25,5 +25,6 @@
     "version": {
       "message": "chore(release): publish %s"
     }
-  }
+  },
+  "useNx": true
 }

@@ -50,7 +50,7 @@
   "bundlesize": [
     {
       "path": "./dist/index.min.js",
-      "threshold": "2.7 KB"
+      "maxSize": "3 KB"
     }
   ],
   "publishConfig": {
@@ -61,6 +61,5 @@
     "lib",
     "src",
     "es"
-  ],
-  "gitHead": "01b0916b4a92c14e205397bebd58cf9c691cd540"
+  ]
 }

@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.3](https://github.com/JiLiZART/BBob/compare/v2.8.2...v2.8.3) (2022-12-18)
+
+
+### Bug Fixes
+
+* add nx for parallel build ([683062d](https://github.com/JiLiZART/BBob/commit/683062dec98abee148d022db7c1a339e7b7750b2))
+* bbob plugin helper imports ([5f76548](https://github.com/JiLiZART/BBob/commit/5f76548b78b29f0905f74804e4a1d0634f085c1b))
+* bundle size limits ([edfdfed](https://github.com/JiLiZART/BBob/commit/edfdfedd06214ec9769f892407153d5b023e35aa))
+* bundlephobia version ([8be7dbc](https://github.com/JiLiZART/BBob/commit/8be7dbc30616ec95802ff2c4380cc4843ef4569b))
+* code ql ([d6cbafe](https://github.com/JiLiZART/BBob/commit/d6cbafe8ba24e1e837333e644073a0e76c3eed07))
+* npm ci ([7093e12](https://github.com/JiLiZART/BBob/commit/7093e12afee8dfabebd82e50a229d7b6402cf774))
+* npm publish in PR ([6145965](https://github.com/JiLiZART/BBob/commit/61459659895eecb4364c4f74c34dc0660fef3c1b))
+* plugin helper build priority and circular deps ([cac47c6](https://github.com/JiLiZART/BBob/commit/cac47c6fc7e30c419691f7e8bc33f118211fc044))
+* remove bundlephobia checker ([e912463](https://github.com/JiLiZART/BBob/commit/e9124638d5b628a9e2152414864ba5c4b47498ad))
+* remove exports directive ([a6efc40](https://github.com/JiLiZART/BBob/commit/a6efc4023b5cb09b56436a0dbe698423b2feecf1))
+* remove gitHead from package.json ([2b3ffa9](https://github.com/JiLiZART/BBob/commit/2b3ffa93233decdb3f2c93e91bd93582525f9210))
+* rollup build ([a31c97e](https://github.com/JiLiZART/BBob/commit/a31c97e6cb7b1b2790a96940c2aff137ef2e4f57))
+* secret NPM token ([abccc78](https://github.com/JiLiZART/BBob/commit/abccc78c7f51f3e7fe75c700d4448fe770af2bb5))
+* tests setup ([4c1e066](https://github.com/JiLiZART/BBob/commit/4c1e06683e7164d44ad82541f63ca01918e5f99a))
+* vue2 test and minify ([af3ba58](https://github.com/JiLiZART/BBob/commit/af3ba58c40717f07ce5be4a6df0aaa6f791e81f0))
+
+
+### Features
+
+* bundlephobia more popular action ([8725f04](https://github.com/JiLiZART/BBob/commit/8725f04afff8a089d26f5552ca880e9ec68c1c8b))
+* bundlephobia pr review ([a459045](https://github.com/JiLiZART/BBob/commit/a459045835d0adecdb45c94c4b63f2e2b7920b4e))
+* publish branch to npm ([2200e0a](https://github.com/JiLiZART/BBob/commit/2200e0a6e227d004477c74e63cb73bf5510f9305))
+
+
+
+
+
 ## [2.8.2](https://github.com/JiLiZART/BBob/compare/v2.8.1...v2.8.2) (2022-11-28)
 
 

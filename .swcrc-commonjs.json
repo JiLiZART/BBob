@@ -1,0 +1,22 @@
+{
+  "module": {
+    "type": "commonjs",
+
+    "strict": false,
+    "strictMode": true,
+    "lazy": false,
+    "noInterop": false
+  },
+  "jsc": {
+    "transform": {
+      "optimizer": {
+        "simplify": false
+      }
+    },
+    "loose": true,
+    "parser": {
+      "syntax": "ecmascript",
+      "jsx": true
+    }
+  }
+}

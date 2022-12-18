@@ -1,7 +1,7 @@
 import { OPEN_BRAKET, CLOSE_BRAKET, SLASH } from './char';
 import {
   getNodeLength, appendToNode, attrsToString, attrValue, getUniqAttr,
-} from './index';
+} from './helpers';
 
 const getTagAttrs = (tag, params) => {
   const uniqAattr = getUniqAttr(params);

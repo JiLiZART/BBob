@@ -9,7 +9,7 @@ import {
   TAB,
   EQ,
   N,
-} from '@bbob/plugin-helper/lib/char';
+} from '@bbob/plugin-helper';
 
 import {
   Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD,

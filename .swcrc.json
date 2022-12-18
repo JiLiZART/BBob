@@ -1,0 +1,24 @@
+{
+  "module": {
+    "type": "es6",
+    "strict": false,
+    "strictMode": false,
+    "lazy": false,
+    "noInterop": false
+  },
+  "minify": false,
+  "jsc": {
+    "transform": {
+      "optimizer": {
+        "simplify": false
+      }
+    },
+    "target": "es2018",
+    "loose": true,
+    "parser": {
+      "syntax": "ecmascript",
+      "jsx": true
+    },
+    "externalHelpers": false
+  }
+}

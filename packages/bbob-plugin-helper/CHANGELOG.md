@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.3](https://github.com/JiLiZART/bbob/compare/v2.8.2...v2.8.3) (2022-12-18)
+
+
+### Bug Fixes
+
+* bbob plugin helper imports ([5f76548](https://github.com/JiLiZART/bbob/commit/5f76548b78b29f0905f74804e4a1d0634f085c1b))
+* bundle size limits ([edfdfed](https://github.com/JiLiZART/bbob/commit/edfdfedd06214ec9769f892407153d5b023e35aa))
+* code ql ([d6cbafe](https://github.com/JiLiZART/bbob/commit/d6cbafe8ba24e1e837333e644073a0e76c3eed07))
+* plugin helper build priority and circular deps ([cac47c6](https://github.com/JiLiZART/bbob/commit/cac47c6fc7e30c419691f7e8bc33f118211fc044))
+* remove exports directive ([a6efc40](https://github.com/JiLiZART/bbob/commit/a6efc4023b5cb09b56436a0dbe698423b2feecf1))
+* remove gitHead from package.json ([2b3ffa9](https://github.com/JiLiZART/bbob/commit/2b3ffa93233decdb3f2c93e91bd93582525f9210))
+
+
+
+
+
 ## [2.8.2](https://github.com/JiLiZART/bbob/compare/v2.8.1...v2.8.2) (2022-11-28)
 
 **Note:** Version bump only for package @bbob/plugin-helper

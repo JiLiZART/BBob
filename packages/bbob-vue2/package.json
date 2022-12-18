@@ -18,9 +18,9 @@
   },
   "devDependencies": {
     "@bbob/preset-vue": "^2.8.2",
-    "@testing-library/vue": "5.6.2",
-    "vue": "2.6.12",
-    "vue-template-compiler": "2.6.12"
+    "@testing-library/vue": "5.8.3",
+    "vue": "2.7.14",
+    "vue-template-compiler": "2.7.14"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -67,6 +67,5 @@
     "lib",
     "src",
     "es"
-  ],
-  "gitHead": "01b0916b4a92c14e205397bebd58cf9c691cd540"
+  ]
 }
