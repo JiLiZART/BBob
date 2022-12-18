@@ -7,15 +7,15 @@
     "generate": "vue-cli-service build"
   },
   "dependencies": {
-    "@bbob/preset-vue": "^2.8.0",
-    "@bbob/vue2": "^2.8.0",
-    "core-js": "^3.18.2",
-    "vue": "^2.6.14"
+    "@bbob/preset-vue": "*",
+    "@bbob/vue2": "*",
+    "core-js": "3.26.1",
+    "vue": "2.7.14"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.13",
-    "@vue/cli-service": "^5.0.8",
-    "vue-template-compiler": "^2.6.14"
+    "@vue/cli-plugin-babel": "5.0.8",
+    "@vue/cli-service": "5.0.8",
+    "vue-template-compiler": "2.7.14"
   },
   "browserslist": [
     "> 1%",
