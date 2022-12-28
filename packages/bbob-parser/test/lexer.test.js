@@ -14,6 +14,7 @@ const TYPE_NAMES = Object.fromEntries(Object.keys(TYPE).map(key => [TYPE[key], k
 
 const tokenize = input => (createLexer(input).tokenize());
 const tokenizeEscape = input => (createLexer(input, { enableEscapeTags: true }).tokenize());
+const tokenizeContextFreeTags = (input, tags = []) => (createLexer(input, { contextFreeTags: tags }).tokenize());
 
 describe('lexer', () => {
   expect.extend({
@@ -462,6 +463,24 @@ describe('lexer', () => {
 
     expect(tokens).toBeMantchOutput(output);
   });
+
+  test('context free tag [code]', () => {
+    const input = '[code] [b]some string[/b][/code]'
+    const tokens = tokenizeContextFreeTags(input, ['code']);
+    const output = [
+      [TYPE.TAG, 'code', 0, 0],
+      [TYPE.SPACE, ' ', 0, 0],
+      [TYPE.WORD, '[', 0, 0],
+      [TYPE.WORD, 'b]some', 0, 0],
+      [TYPE.SPACE, ' ', 0, 0],
+      [TYPE.WORD, 'string', 0, 0],
+      [TYPE.WORD, '[', 0, 0],
+      [TYPE.WORD, '/b]', 0, 0],
+      [TYPE.TAG, '/code', 0, 0],
+    ]
+
+    expect(tokens).toBeMantchOutput(output);
+  })
 
   test('bad closed tag with escaped backslash', () => {
     const input = `[b]test[\\b]`;

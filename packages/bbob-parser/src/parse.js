@@ -10,9 +10,10 @@ import { createList } from './utils';
  * @param {Object} opts
  * @param {Function} opts.createTokenizer
  * @param {Array<string>} opts.onlyAllowTags
+ * @param {Array<string>} opts.contextFreeTags
+ * @param {Boolean} opts.enableEscapeTags
  * @param {String} opts.openTag
  * @param {String} opts.closeTag
- * @param {Boolean} opts.enableEscapeTags
  * @return {Array}
  */
 const parse = (input, opts = {}) => {
@@ -211,7 +212,6 @@ const parse = (input, opts = {}) => {
      */
     const lastTagNode = tagNodes.getLast();
     const tokenValue = token.getValue();
-    const isNested = isTagNested(token);
 
     if (lastTagNode) {
       if (token.isAttrName()) {
@@ -227,7 +227,7 @@ const parse = (input, opts = {}) => {
           lastTagNode.attr(tokenValue, tokenValue);
         }
       } else if (token.isText()) {
-        if (isNested) {
+        if (isTagNested(token)) {
           lastTagNode.append(tokenValue);
         } else {
           appendNodes(tokenValue);
@@ -258,9 +258,10 @@ const parse = (input, opts = {}) => {
 
   tokenizer = (opts.createTokenizer ? opts.createTokenizer : createLexer)(input, {
     onToken,
-    onlyAllowTags: options.onlyAllowTags,
     openTag,
     closeTag,
+    onlyAllowTags: options.onlyAllowTags,
+    contextFreeTags: options.contextFreeTags,
     enableEscapeTags: options.enableEscapeTags,
   });
 

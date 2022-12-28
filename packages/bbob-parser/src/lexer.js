@@ -58,10 +58,12 @@ function createLexer(buffer, options = {}) {
   let tokenIndex = -1;
   let stateMode = STATE_WORD;
   let tagMode = TAG_STATE_NAME;
+  let contextFreeTag = '';
   const tokens = new Array(Math.floor(buffer.length));
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
   const escapeTags = !!options.enableEscapeTags;
+  const contextFreeTags = options.contextFreeTags || [];
   const onToken = options.onToken || (() => {
   });
 
@@ -85,6 +87,16 @@ function createLexer(buffer, options = {}) {
   };
 
   const unq = (val) => unquote(trimChar(val, QUOTEMARK));
+
+  const checkContextFreeMode = (name, isClosingTag) => {
+    if (contextFreeTag !== '' && isClosingTag) {
+      contextFreeTag = '';
+    }
+
+    if (contextFreeTag === '' && contextFreeTags.includes(name)) {
+      contextFreeTag = name;
+    }
+  };
 
   const chars = createCharGrabber(buffer, { onSkip });
 
@@ -177,6 +189,7 @@ function createLexer(buffer, options = {}) {
     const name = tagChars.grabWhile(validName);
 
     emitToken(TYPE_TAG, name);
+    checkContextFreeMode(name);
 
     tagChars.skip();
 
@@ -219,6 +232,7 @@ function createLexer(buffer, options = {}) {
         chars.skip(); // skip closeTag
 
         emitToken(TYPE_TAG, name);
+        checkContextFreeMode(name, isClosingTag);
 
         return STATE_WORD;
       }
@@ -259,13 +273,24 @@ function createLexer(buffer, options = {}) {
     }
 
     if (isWhiteSpace(chars.getCurr())) {
-      emitToken(TYPE_SPACE, chars.grabWhile(isWhiteSpace));
+      const word = chars.grabWhile(isWhiteSpace);
+
+      emitToken(TYPE_SPACE, word);
 
       return STATE_WORD;
     }
 
     if (chars.getCurr() === openTag) {
-      if (chars.includes(closeTag)) {
+      if (contextFreeTag) {
+        const fullTagLen = openTag.length + SLASH.length + contextFreeTag.length;
+        const fullTagName = `${openTag}${SLASH}${contextFreeTag}`;
+        const foundTag = chars.grabN(fullTagLen);
+        const isEndContextFreeMode = foundTag === fullTagName;
+
+        if (isEndContextFreeMode) {
+          return STATE_TAG;
+        }
+      } else if (chars.includes(closeTag)) {
         return STATE_TAG;
       }
 
@@ -298,12 +323,16 @@ function createLexer(buffer, options = {}) {
 
       const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
 
-      emitToken(TYPE_WORD, chars.grabWhile(isChar));
+      const word = chars.grabWhile(isChar);
+
+      emitToken(TYPE_WORD, word);
 
       return STATE_WORD;
     }
 
-    emitToken(TYPE_WORD, chars.grabWhile(isCharToken));
+    const word = chars.grabWhile(isCharToken);
+
+    emitToken(TYPE_WORD, word);
 
     return STATE_WORD;
   }

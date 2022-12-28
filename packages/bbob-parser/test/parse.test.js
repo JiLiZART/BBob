@@ -126,6 +126,31 @@ describe('Parser', () => {
     });
   })
 
+  describe('contextFreeTags', () => {
+    test('context free tag [code]', () => {
+      const ast = parse('[code] [b]some string[/b][/code]', {
+        contextFreeTags: ['code']
+      });
+      const output = [
+        {
+          tag: 'code',
+          attrs: {},
+          content: [
+              ' ',
+              '[',
+              'b]some',
+              ' ',
+              'string',
+              '[',
+              '/b]'
+          ]
+        }
+      ]
+
+      expectOutput(ast, output);
+    })
+  })
+
   test('parse inconsistent tags', () => {
     const ast = parse('[h1 name=value]Foo [Bar] /h1]');
     const output = [
