@@ -13,23 +13,16 @@ const CLOSE_BRAKET = ']';
 const SLASH = '/';
 const BACKSLASH = '\\';
 
-const PLACEHOLDER_SPACE_TAB = '    ';
-const PLACEHOLDER_SPACE = ' ';
-
-// const getChar = String.fromCharCode;
-
 export {
   N,
   F,
   R,
-  TAB,
   EQ,
-  QUOTEMARK,
+  TAB,
   SPACE,
+  SLASH,
+  BACKSLASH,
+  QUOTEMARK,
   OPEN_BRAKET,
   CLOSE_BRAKET,
-  SLASH,
-  PLACEHOLDER_SPACE_TAB,
-  PLACEHOLDER_SPACE,
-  BACKSLASH,
 };

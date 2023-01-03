@@ -212,6 +212,7 @@ const parse = (input, opts = {}) => {
      */
     const lastTagNode = tagNodes.getLast();
     const tokenValue = token.getValue();
+    const isNested = isTagNested(token);
 
     if (lastTagNode) {
       if (token.isAttrName()) {
@@ -227,7 +228,7 @@ const parse = (input, opts = {}) => {
           lastTagNode.attr(tokenValue, tokenValue);
         }
       } else if (token.isText()) {
-        if (isTagNested(token)) {
+        if (isNested) {
           lastTagNode.append(tokenValue);
         } else {
           appendNodes(tokenValue);

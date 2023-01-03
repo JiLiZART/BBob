@@ -25,6 +25,23 @@ describe('Parser', () => {
     expectOutput(ast, output);
   });
 
+  test('parse paired tags tokens 2', () => {
+    const ast = parse('[bar]Foo Bar[/bar]');
+    const output = [
+      {
+        tag: 'bar',
+        attrs: {},
+        content: [
+          'Foo',
+          ' ',
+          'Bar',
+        ],
+      },
+    ];
+
+    expectOutput(ast, output);
+  });
+
   describe('onlyAllowTags', () => {
     test('parse only allowed tags', () => {
       const ast = parse('[h1 name=value]Foo [Bar] [/h1]', {

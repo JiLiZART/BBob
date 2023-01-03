@@ -205,42 +205,37 @@ function createLexer(buffer, options = {}) {
 
   function stateTag() {
     const currChar = chars.getCurr();
+    const nextChar = chars.getNext();
 
-    if (currChar === openTag) {
-      const nextChar = chars.getNext();
+    chars.skip();
 
-      chars.skip();
+    // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
+    const substr = chars.substrUntilChar(closeTag);
+    const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
 
-      // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
-      const substr = chars.substrUntilChar(closeTag);
-      const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
+    if (isCharReserved(nextChar) || hasInvalidChars || chars.isLast()) {
+      emitToken(TYPE_WORD, currChar);
 
-      if (isCharReserved(nextChar) || hasInvalidChars || chars.isLast()) {
-        emitToken(TYPE_WORD, currChar);
-
-        return STATE_WORD;
-      }
-
-      // [myTag   ]
-      const isNoAttrsInTag = substr.indexOf(EQ) === -1;
-      // [/myTag]
-      const isClosingTag = substr[0] === SLASH;
-
-      if (isNoAttrsInTag || isClosingTag) {
-        const name = chars.grabWhile((char) => char !== closeTag);
-
-        chars.skip(); // skip closeTag
-
-        emitToken(TYPE_TAG, name);
-        checkContextFreeMode(name, isClosingTag);
-
-        return STATE_WORD;
-      }
-
-      return STATE_TAG_ATTRS;
+      return STATE_WORD;
     }
 
-    return STATE_WORD;
+    // [myTag   ]
+    const isNoAttrsInTag = substr.indexOf(EQ) === -1;
+    // [/myTag]
+    const isClosingTag = substr[0] === SLASH;
+
+    if (isNoAttrsInTag || isClosingTag) {
+      const name = chars.grabWhile((char) => char !== closeTag);
+
+      chars.skip(); // skip closeTag
+
+      emitToken(TYPE_TAG, name);
+      checkContextFreeMode(name, isClosingTag);
+
+      return STATE_WORD;
+    }
+
+    return STATE_TAG_ATTRS;
   }
 
   function stateAttrs() {
@@ -349,10 +344,8 @@ function createLexer(buffer, options = {}) {
           stateMode = stateAttrs();
           break;
         case STATE_WORD:
-          stateMode = stateWord();
-          break;
         default:
-          stateMode = STATE_WORD;
+          stateMode = stateWord();
           break;
       }
     }
