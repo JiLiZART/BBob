@@ -69,7 +69,6 @@ function createLexer(buffer, options = {}) {
 
   const RESERVED_CHARS = [closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM];
   const NOT_CHAR_TOKENS = [
-    // ...(options.enableEscapeTags ? [BACKSLASH] : []),
     openTag, SPACE, TAB, N,
   ];
   const WHITESPACES = [SPACE, TAB];

@@ -73,6 +73,7 @@ written in pure javascript, no dependencies
   * [Basic usage](#basic-usage)
   * [React usage](#react-usage)
   * [Vue 2 usage](#vue2-usage)
+* [Parse Options](#parse-options)
 * [Presets](#presets)
    * [Create your own preset](#create-preset)
    * [HTML Preset](#html-preset)
@@ -111,7 +112,7 @@ import {render} from 'react-dom'
 import bbobReactRender from '@bbob/react/es/render'
 import presetReact from '@bbob/preset-react'
 
-const options = { onlyAllowTags: ['i'], enableEscapeTags: true }
+const options = { onlyAllowTags: ['i'], enableEscapeTags: true, contextFreeTags: ['code'] }
 const content = bbobReactRender(`[i]Text[/i]`, presetReact(), options)
 
 console.log(render(<span>{content}</span>)); // <span><span style="font-style: italic;">Text</span></span>
@@ -155,6 +156,47 @@ Vue.use(VueBbob);
 </script>
 ```
 More examples available in <a href="https://github.com/JiLiZART/BBob/tree/master/examples">examples folder</a>
+
+### Parse options <a name="parse-options"></a>
+
+#### onlyAllowTags
+
+Parse only allowed tags
+
+```js
+import bbobHTML from '@bbob/html'
+import presetHTML5 from '@bbob/preset-html5'
+
+const processed = bbobHTML(`[i][b]Text[/b][/i]`, presetHTML5(), { onlyAllowTags: ['i'] })
+
+console.log(processed); // <span style="font-style: italic;">[b]Text[/b]</span>
+```
+
+#### contextFreeTags
+
+Enable context free mode that ignores parsing all tags inside given tags
+
+```js
+import bbobHTML from '@bbob/html'
+import presetHTML5 from '@bbob/preset-html5'
+
+const processed = bbobHTML(`[b]Text[/b][code][b]Text[/b][/code]`, presetHTML5(), { contextFreeTags: ['code'] })
+
+console.log(processed); // <span style="font-weight: bold;">Text</span><pre>[b]Text[/b]</pre>
+```
+
+#### enableEscapeTags
+
+Enable escape support for tags
+
+```js
+import bbobHTML from '@bbob/html'
+import presetHTML5 from '@bbob/preset-html5'
+
+const processed = bbobHTML(`[b]Text[/b]'\\[b\\]Text\\[/b\\]'`, presetHTML5(), { enableEscapeTags: true })
+
+console.log(processed); // <span style="font-weight: bold;">Text</span>[b]Text[/b]
+```
 
 
 ### Presets <a name="basic"></a>
@@ -330,7 +372,7 @@ Tested on Node v12.18.3
 | regex/parser         | 6.02 ops/sec ±2.77%  | (20 runs sampled) |
 | ya-bbcode            | 10.70 ops/sec ±1.94% | (31 runs sampled) |
 | xbbcode/parser       | 107 ops/sec ±2.29%   | (69 runs sampled) |
-| @bbob/parser         | 137 ops/sec ±1.11%   | (78 runs sampled) |
+| @bbob/parser         | 140 ops/sec ±1.11%   | (78 runs sampled) |
 
 
 Developed with <3 using JetBrains
