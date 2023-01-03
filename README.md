@@ -13,10 +13,7 @@ written in pure javascript, no dependencies
 </a> 
 <a href="https://www.codefactor.io/repository/github/jilizart/bbob">
   <img src="https://www.codefactor.io/repository/github/jilizart/bbob/badge" alt="CodeFactor">
-</a> 
-<a href="https://bettercodehub.com/">
-<img src="https://bettercodehub.com/edge/badge/JiLiZART/bbob?branch=master" alt="BCH compliance">
-</a> 
+</a>
 <a href="https://snyk.io/test/github/JiLiZART/bbob?targetFile=package.json">
   <img src="https://snyk.io/test/github/JiLiZART/bbob/badge.svg?targetFile=package.json" alt="Known Vulnerabilities">
 </a>
