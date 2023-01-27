@@ -171,5 +171,6 @@ export const TYPE_ATTR_NAME = TOKEN_TYPE_ATTR_NAME;
 export const TYPE_ATTR_VALUE = TOKEN_TYPE_ATTR_VALUE;
 export const TYPE_SPACE = TOKEN_TYPE_SPACE;
 export const TYPE_NEW_LINE = TOKEN_TYPE_NEW_LINE;
+
 export { Token };
 export default Token;

@@ -13,7 +13,7 @@ function CharGrabber(source, options) {
     const { pos } = cursor;
     const idx = source.indexOf(char, pos);
 
-    return idx >= 0 ? source.substr(pos, idx - pos) : '';
+    return idx >= 0 ? source.substring(pos, idx) : '';
   };
   const includes = (val) => source.indexOf(val, cursor.pos) >= 0;
   const hasNext = () => cursor.len > cursor.pos;
@@ -25,7 +25,8 @@ function CharGrabber(source, options) {
       options.onSkip();
     }
   };
-  const rest = () => source.substr(cursor.pos);
+  const rest = () => source.substring(cursor.pos);
+  const grabN = (num = 0) => source.substring(cursor.pos, cursor.pos + num);
   const curr = () => source[cursor.pos];
   const prev = () => {
     const prevPos = cursor.pos - 1;
@@ -48,7 +49,7 @@ function CharGrabber(source, options) {
       }
     }
 
-    return source.substr(start, cursor.pos - start);
+    return source.substring(start, cursor.pos);
   };
   /**
    * @type {skip}
@@ -88,6 +89,11 @@ function CharGrabber(source, options) {
    * @return {String}
    */
   this.grabWhile = grabWhile;
+  /**
+   * @param {Number} num
+   * @return {String}
+   */
+  this.grabN = grabN;
   /**
    * Grabs rest of string until it find a char
    * @param {String} char

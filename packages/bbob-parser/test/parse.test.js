@@ -25,6 +25,23 @@ describe('Parser', () => {
     expectOutput(ast, output);
   });
 
+  test('parse paired tags tokens 2', () => {
+    const ast = parse('[bar]Foo Bar[/bar]');
+    const output = [
+      {
+        tag: 'bar',
+        attrs: {},
+        content: [
+          'Foo',
+          ' ',
+          'Bar',
+        ],
+      },
+    ];
+
+    expectOutput(ast, output);
+  });
+
   describe('onlyAllowTags', () => {
     test('parse only allowed tags', () => {
       const ast = parse('[h1 name=value]Foo [Bar] [/h1]', {
@@ -124,6 +141,31 @@ describe('Parser', () => {
 
       expectOutput(ast, output);
     });
+  })
+
+  describe('contextFreeTags', () => {
+    test('context free tag [code]', () => {
+      const ast = parse('[code] [b]some string[/b][/code]', {
+        contextFreeTags: ['code']
+      });
+      const output = [
+        {
+          tag: 'code',
+          attrs: {},
+          content: [
+              ' ',
+              '[',
+              'b]some',
+              ' ',
+              'string',
+              '[',
+              '/b]'
+          ]
+        }
+      ]
+
+      expectOutput(ast, output);
+    })
   })
 
   test('parse inconsistent tags', () => {
