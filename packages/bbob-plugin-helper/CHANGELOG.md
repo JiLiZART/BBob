@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/JiLiZART/bbob/compare/v2.8.3...v2.9.0) (2023-01-29)
+
+
+### Features
+
+* **parser:** context free tag mode ([#165](https://github.com/JiLiZART/bbob/issues/165)) ([19e8dd6](https://github.com/JiLiZART/bbob/commit/19e8dd659e8c36779c73def8d914edfc219fbf72))
+
+
+
+
+
 ## [2.8.3](https://github.com/JiLiZART/bbob/compare/v2.8.2...v2.8.3) (2022-12-18)
 
 

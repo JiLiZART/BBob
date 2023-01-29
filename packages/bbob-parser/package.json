@@ -1,6 +1,6 @@
 {
   "name": "@bbob/parser",
-  "version": "2.8.3",
+  "version": "2.9.0",
   "description": "A BBCode to AST Parser part of @bbob",
   "keywords": [
     "bbcode",
@@ -13,7 +13,7 @@
     "parse"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.8.3"
+    "@bbob/plugin-helper": "^2.9.0"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

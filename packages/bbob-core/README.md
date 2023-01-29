@@ -1,14 +1,4 @@
 # @bbob/core
+[![install size](https://packagephobia.now.sh/badge?p=@bbob/core)](https://packagephobia.now.sh/result?p=@bbob/core) [![Known Vulnerabilities](https://snyk.io/test/github/JiLiZART/bbob/badge.svg?targetFile=packages%2Fbbob-core%2Fpackage.json)](https://snyk.io/test/github/JiLiZART/bbob?targetFile=packages%2Fbbob-core%2Fpackage.json)
 
-## Usage
-
-```js
-import bbob from '@bbob/core'
-import { render } from '@bbob/html'
-import presetHTML5 from '@bbob/preset-html5'
-const code = `[i]Text[/i]`;
-
-const html = bbob(presetHTML5()).process(code, { render }).html;
-
-console.log(html); // <span style="font-style: italic;">Text</span>
-```
+> Internal package for @bbob/html @bbob/react @bbob/vue2
