@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset-html5",
-  "version": "2.8.3",
+  "version": "2.9.0",
   "description": "HTML5 preset to transform BBCode to HTML for @bbob/parser",
   "keywords": [
     "preset",
@@ -8,11 +8,11 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^2.8.3",
-    "@bbob/preset": "^2.8.3"
+    "@bbob/plugin-helper": "^2.9.0",
+    "@bbob/preset": "^2.9.0"
   },
   "devDependencies": {
-    "@bbob/html": "^2.8.3"
+    "@bbob/html": "^2.9.0"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
