@@ -85,7 +85,7 @@ written in pure javascript, no dependencies
 ### Basic usage <a name="basic-usage"></a>
 
 ```shell
-npm i @bbob/core @bbob/html @bbob/preset-html5
+npm i @bbob/html @bbob/preset-html5
 ```
 
 ```js
@@ -103,16 +103,44 @@ console.log(processed); // <span style="font-style: italic;">Text</span>
 npm i @bbob/react @bbob/preset-react
 ```
 
-```js
+```jsx
 import React from 'react'
-import {render} from 'react-dom'
-import bbobReactRender from '@bbob/react/es/render'
-import presetReact from '@bbob/preset-react'
+import BBCode from '@bbob/react';
+import presetReact from '@bbob/preset-react';
 
-const options = { onlyAllowTags: ['i'], enableEscapeTags: true, contextFreeTags: ['code'] }
-const content = bbobReactRender(`[i]Text[/i]`, presetReact(), options)
+const plugins = [presetReact()];
 
-console.log(render(<span>{content}</span>)); // <span><span style="font-style: italic;">Text</span></span>
+export default () => (
+    <BBCode plugins={plugins}>
+    [table]
+      [tr]
+          [td]table 1[/td]
+          [td]table 2[/td]
+      [/tr]
+      [tr]
+          [td]table 3[/td]
+          [td]table 4[/td]
+      [/tr]
+    [/table]
+    </BBCode>
+)
+```
+
+```jsx
+import { render } from '@bbob/react'
+
+export default () => render(`
+[table]
+  [tr]
+      [td]table 1[/td]
+      [td]table 2[/td]
+  [/tr]
+  [tr]
+      [td]table 3[/td]
+      [td]table 4[/td]
+  [/tr]
+[/table]
+`)
 ```
 
 ### Vue 2 usage <a name="vue2-usage"></a>
@@ -152,6 +180,7 @@ Vue.use(VueBbob);
   })
 </script>
 ```
+
 More examples available in <a href="https://github.com/JiLiZART/BBob/tree/master/examples">examples folder</a>
 
 ### Parse options <a name="parse-options"></a>
