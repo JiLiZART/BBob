@@ -20,15 +20,15 @@ written in pure javascript, no dependencies
 
 ## Packages
 
-| Package              | Status                                                     | Size    | Description               |
-|----------------------|------------------------------------------------------------|---------|---------------------------|
-| @bbob/core           | [![@bbob/core-status]][@bbob/core-package]                 | ![@bbob/core-size] | Core package              |
-| @bbob/react          | [![@bbob/react-status]][@bbob/react-package]               | ![@bbob/react-size]  | React renderer            |
+| Package              | Status                                                     | Size                        | Description               |
+|----------------------|------------------------------------------------------------|-----------------------------|---------------------------|
+| @bbob/react          | [![@bbob/react-status]][@bbob/react-package]               | ![@bbob/react-size]         | React renderer            |
 | @bbob/preset-react   | [![@bbob/preset-react-status]][@bbob/preset-react-package] | ![@bbob/preset-react-size]  | React default tags preset |
-| @bbob/vue2           | [![@bbob/vue2-status]][@bbob/vue2-package]                 | ![@bbob/vue2-size]  | Vue 2 renderer            |
-| @bbob/preset-vue     | [![@bbob/preset-vue-status]][@bbob/preset-vue-package]     | ![@bbob/preset-react-size]  | Vue default tags preset |
-| @bbob/html           | [![@bbob/html-status]][@bbob/html-package]                 | ![@bbob/html-size]  | HTML renderer             |
+| @bbob/vue2           | [![@bbob/vue2-status]][@bbob/vue2-package]                 | ![@bbob/vue2-size]          | Vue 2 renderer            |
+| @bbob/preset-vue     | [![@bbob/preset-vue-status]][@bbob/preset-vue-package]     | ![@bbob/preset-vue-size]    | Vue default tags preset   |
+| @bbob/html           | [![@bbob/html-status]][@bbob/html-package]                 | ![@bbob/html-size]          | HTML renderer             |
 | @bbob/preset-html5   | [![@bbob/preset-html5-status]][@bbob/preset-html5-package] | ![@bbob/preset-html5-size]  | HTML5 default tags preset |
+| @bbob/core           | [![@bbob/core-status]][@bbob/core-package]                 | ![@bbob/core-size]          | Core package              |
 
 [@bbob/core-status]: https://img.shields.io/npm/v/@bbob/core.svg
 
@@ -40,6 +40,7 @@ written in pure javascript, no dependencies
 
 [@bbob/html-status]: https://img.shields.io/npm/v/@bbob/html.svg
 [@bbob/preset-html5-status]: https://img.shields.io/npm/v/@bbob/preset-html5.svg
+
 
 [@bbob/core-size]: https://badgen.net/bundlephobia/minzip/@bbob/core
 
