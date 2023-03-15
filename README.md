@@ -402,4 +402,6 @@ Tested on Node v12.18.3
 | @bbob/parser         | 140 ops/sec ±1.11%   | (78 runs sampled) |
 
 
+![Jetbrains IDEA](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.svg)
+
 Developed with <3 using JetBrains
