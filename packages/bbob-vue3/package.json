@@ -1,0 +1,70 @@
+{
+  "name": "@bbob/vue3",
+  "version": "2.9.0",
+  "description": "A BBCode to Vue3 Renderer part of @bbob",
+  "keywords": [
+    "vue",
+    "bbcode",
+    "parser",
+    "bbob"
+  ],
+  "dependencies": {
+    "@bbob/core": "^2.9.0",
+    "@bbob/html": "^2.9.0",
+    "@bbob/plugin-helper": "^2.9.0"
+  },
+  "peerDependencies": {
+    "vue": "3.x"
+  },
+  "devDependencies": {
+    "@bbob/preset-vue": "^2.9.0",
+    "@testing-library/vue": "7.0.0",
+    "vue": "3.3.4"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "browser": "dist/index.js",
+  "browserName": "BbobVue",
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JiLiZART/bbob/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
+  "scripts": {
+    "build:commonjs": "../../scripts/pkg-task build-commonjs",
+    "build:es": "../../scripts/pkg-task build-es",
+    "build:umd": "../../scripts/pkg-task build-umd",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
+    "test": "../../scripts/pkg-task test",
+    "cover": "../../scripts/pkg-task cover",
+    "lint": "../../scripts/pkg-task lint",
+    "size": "../../scripts/pkg-task size",
+    "bundlesize": "../../scripts/pkg-task bundlesize"
+  },
+  "size-limit": [
+    {
+      "path": "lib/index.js"
+    }
+  ],
+  "bundlesize": [
+    {
+      "path": "./dist/index.min.js",
+      "maxSize": "8 KB"
+    }
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es"
+  ]
+}
