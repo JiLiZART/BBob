@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Bootstrap dependencies
-        run: npm run bootstrap
+        run: npm run build && npm run bootstrap
 
       - name: Run benchmark
         run: cd benchmark && npm start
