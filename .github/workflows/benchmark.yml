@@ -11,11 +11,14 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
-      - name: Install Node.js
-        uses: actions/setup-node@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
       - name: Install dependencies
-        run: cd benchmark && npm ci
+        run: npm run bootstrap
       - name: Run benchmark
         run: cd benchmark && npm start
