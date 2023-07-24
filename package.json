@@ -70,5 +70,8 @@
     "cover": "@/jest --config ../../jest.config.js --coverage .",
     "lint": "@/eslint .",
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize ."
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.26.2"
   }
 }
