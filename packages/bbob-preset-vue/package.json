@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset-vue",
-  "version": "2.9.0",
+  "version": "3.0.0",
   "description": "Vue preset to transform BBCode to Vue for @bbob/vue*",
   "keywords": [
     "bbob",
@@ -8,10 +8,10 @@
     "vue"
   ],
   "dependencies": {
-    "@bbob/preset-html5": "^2.9.0"
+    "@bbob/preset-html5": "^3.0.0"
   },
   "devDependencies": {
-    "@bbob/core": "^2.9.0"
+    "@bbob/core": "^3.0.0"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
