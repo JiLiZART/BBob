@@ -1,6 +1,6 @@
 {
   "name": "@bbob/vue2",
-  "version": "2.9.0",
+  "version": "3.0.0",
   "description": "A BBCode to Vue2 Renderer part of @bbob",
   "keywords": [
     "vue",
@@ -9,15 +9,15 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "^2.9.0",
-    "@bbob/html": "^2.9.0",
-    "@bbob/plugin-helper": "^2.9.0"
+    "@bbob/core": "^3.0.0",
+    "@bbob/html": "^3.0.0",
+    "@bbob/plugin-helper": "^3.0.0"
   },
   "peerDependencies": {
     "vue": "2.x"
   },
   "devDependencies": {
-    "@bbob/preset-vue": "^2.9.0",
+    "@bbob/preset-vue": "^3.0.0",
     "@testing-library/vue": "5.8.3",
     "vue": "2.7.14",
     "vue-template-compiler": "2.7.14"
