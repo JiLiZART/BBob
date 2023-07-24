@@ -13,6 +13,7 @@
     "test": "npm run build && nx run-many --target=link && nx run-many --target=test",
     "cover": "nx run-many --target=cover",
     "build": "nx run-many --target=build",
+    "release": "npm build && changeset publish",
     "lint": "nx run-many --target=link && npm run build && nx run-many --target=lint"
   },
   "author": {
@@ -70,5 +71,8 @@
     "cover": "@/jest --config ../../jest.config.js --coverage .",
     "lint": "@/eslint .",
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize ."
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.26.2"
   }
 }
