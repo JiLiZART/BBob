@@ -1,10 +1,37 @@
 import { parse } from '@bbob/parser';
 import { iterate, match } from './utils';
 
+/** @type {import('@bbob/parser/index').Token} */
+
 function walk(cb) {
   return iterate(this, cb);
 }
 
+/**
+ * @typedef Node
+ * @type {object}
+ *
+ */
+
+/**
+ * @typedef BbobTree
+ * @type {Array<string | Node>}
+ */
+
+/**
+ * @typedef BbobCoreResult
+ * @property {String} readonly html
+ */
+
+/**
+ * @typedef BbobCoreOptions
+ * @property {Function} parser
+ */
+
+/**
+ * @param plugs
+ * @returns {{process(input: string|undefined, opts: BbobCoreOptions): BbobCoreResult}}
+ */
 export default function bbob(plugs) {
   const plugins = typeof plugs === 'function' ? [plugs] : plugs || [];
 

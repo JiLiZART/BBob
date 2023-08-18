@@ -1,2 +1,5 @@
 coverage
 dist
+types
+test/*.d.ts
+test/*.map

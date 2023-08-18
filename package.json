@@ -57,7 +57,12 @@
     "rollup": "3.3.0",
     "rollup-plugin-gzip": "3.1.0",
     "rollup-plugin-swc3": "0.7.0",
-    "size-limit": "6.0.1"
+    "size-limit": "6.0.1",
+    "typescript": "5.1.6",
+    "@types/node": "20.4.5",
+    "@types/jest": "29.5.3",
+    "@types/react": "18.2.18",
+    "@types/vue": "2.0.0"
   },
   "publishConfig": {
     "access": "public",
@@ -75,6 +80,7 @@
     "test": "@/jest",
     "cover": "@/jest --config ../../jest.config.js --coverage .",
     "lint": "@/eslint .",
+    "gen-types": "@/tsc",
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize ."
   },
   "packageManager": "pnpm@8.7.6",

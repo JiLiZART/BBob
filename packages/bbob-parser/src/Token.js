@@ -5,6 +5,7 @@ import {
 } from '@bbob/plugin-helper';
 
 // type, value, line, row,
+
 const TOKEN_TYPE_ID = 'type'; // 0;
 const TOKEN_VALUE_ID = 'value'; // 1;
 const TOKEN_COLUMN_ID = 'row'; // 2;
@@ -28,11 +29,17 @@ const getTokenValue = (token) => {
 
   return '';
 };
+
 /**
- * @param {Token}token
+ * @param {Token} token
  * @returns {number}
  */
 const getTokenLine = (token) => (token && token[TOKEN_LINE_ID]) || 0;
+
+/**
+ * @param {Token} token
+ * @returns {number}
+ */
 const getTokenColumn = (token) => (token && token[TOKEN_COLUMN_ID]) || 0;
 
 /**
@@ -60,8 +67,23 @@ const isTagToken = (token) => {
 
   return false;
 };
+
+/**
+ * @param {Token} token
+ * @returns {boolean}
+ */
 const isTagEnd = (token) => getTokenValue(token).charCodeAt(0) === SLASH.charCodeAt(0);
+
+/**
+ * @param {Token} token
+ * @returns {boolean}
+ */
 const isTagStart = (token) => !isTagEnd(token);
+
+/**
+ * @param {Token} token
+ * @returns {boolean}
+ */
 const isAttrNameToken = (token) => {
   if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
     return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
@@ -82,6 +104,10 @@ const isAttrValueToken = (token) => {
   return false;
 };
 
+/**
+ * @param {Token} token
+ * @returns {string}
+ */
 const getTagName = (token) => {
   const value = getTokenValue(token);
 
@@ -97,12 +123,20 @@ const convertTagToText = (token) => {
   return text;
 };
 
+/**
+ * @export
+ * @class Token
+ * @param {String} type
+ * @param {String} value
+ * @param {Number} row
+ * @param {Number} line
+ */
 class Token {
   /**
    * @param {String} type
    * @param {String} value
-   * @param line
-   * @param row
+   * @param {Number} line
+   * @param {Number} row
    */
   constructor(type, value, line, row) {
     this[TOKEN_TYPE_ID] = Number(type);

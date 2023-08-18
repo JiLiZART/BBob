@@ -1,7 +1,6 @@
 import { iterate, match, same } from '../src/utils';
 
-const stringify = val => JSON.stringify(val);
-
+const stringify = (val: string) => JSON.stringify(val);
 
 describe('@bbob/core utils', () => {
   test('iterate', () => {

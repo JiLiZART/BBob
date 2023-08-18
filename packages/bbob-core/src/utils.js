@@ -1,7 +1,20 @@
 /* eslint-disable no-plusplus */
+/**
+ * @param {Boolean} value
+ * @returns {boolean}
+ */
 const isObj = (value) => (typeof value === 'object');
+/**
+ * @param {Boolean} value
+ * @returns {boolean}
+ */
 const isBool = (value) => (typeof value === 'boolean');
 
+/**
+ * @param t
+ * @param cb
+ * @returns {*}
+ */
 export function iterate(t, cb) {
   const tree = t;
 
@@ -16,6 +29,11 @@ export function iterate(t, cb) {
   return tree;
 }
 
+/**
+ * @param expected
+ * @param actual
+ * @returns {Boolean}
+ */
 export function same(expected, actual) {
   if (typeof expected !== typeof actual) {
     return false;

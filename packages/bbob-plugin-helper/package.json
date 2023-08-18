@@ -12,6 +12,7 @@
   "jsnext:main": "es/index.js",
   "browser": "dist/index.js",
   "browserName": "BbobPluginHelper",
+  "types": "types/BbobPluginHelper.d.ts",
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
@@ -32,6 +33,7 @@
     "lint": "../../scripts/pkg-task lint",
     "size": "../../scripts/pkg-task size",
     "bundlesize": "../../scripts/pkg-task bundlesize",
+    "gen-types": "../../scripts/pkg-task gen-types --outFile types/BbobPluginHelper.d.ts",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [
