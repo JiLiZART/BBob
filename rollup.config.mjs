@@ -13,7 +13,7 @@ const pkg = require(`${process.cwd()}/package.json`);
 const { NODE_ENV } = process.env;
 
 const baseConfig = {
-  input: 'es/index.js',
+  input: pkg.module,
   external: ['react', 'vue', 'prop-types'],
   output: {
     file: pkg.browser,

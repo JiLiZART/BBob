@@ -6,15 +6,15 @@ import { createList } from './utils';
 
 /**
  * @public
- * @param {String} input
+ * @param {string} input
  * @param {Object} opts
  * @param {Function} opts.createTokenizer
  * @param {Array<string>} opts.onlyAllowTags
  * @param {Array<string>} opts.contextFreeTags
  * @param {Boolean} opts.enableEscapeTags
- * @param {String} opts.openTag
- * @param {String} opts.closeTag
- * @return {Array}
+ * @param {string} opts.openTag
+ * @param {string} opts.closeTag
+ * @return {Array<string|TagNode>}
  */
 const parse = (input, opts = {}) => {
   const options = opts;
@@ -22,7 +22,6 @@ const parse = (input, opts = {}) => {
   const closeTag = options.closeTag || CLOSE_BRAKET;
 
   let tokenizer = null;
-  let lastToken = null;
 
   /**
    * Result AST of nodes
@@ -51,6 +50,7 @@ const parse = (input, opts = {}) => {
 
   /**
    * Cache for nested tags checks
+   * @type Set<string>
    */
   const nestedTagsMap = new Set();
 
@@ -70,16 +70,16 @@ const parse = (input, opts = {}) => {
     return nestedTagsMap.has(value);
   };
 
-
   /**
-   * @param tagName
+   * @private
+   * @param {string} tagName
    * @returns {boolean}
    */
   const isTagNested = (tagName) => Boolean(nestedTagsMap.has(tagName));
 
   /**
    * @private
-   * @param {String} value
+   * @param {string} value
    * @return {boolean}
    */
   const isAllowedTag = (value) => {
@@ -266,9 +266,6 @@ const parse = (input, opts = {}) => {
    * @param {Token} token
    */
   const onToken = (token) => {
-    // track last token for some problem handling e.g. not closed tags
-    lastToken = token;
-
     if (token.isTag()) {
       handleTag(token);
     } else {
@@ -296,11 +293,7 @@ const parse = (input, opts = {}) => {
     appendNodeAsString(lastNestedNode, false);
   }
 
-  const nodesArr = nodes.toArray();
-
-  debugger
-
-  return nodesArr;
+  return nodes.toArray();
 };
 
 export { parse };
