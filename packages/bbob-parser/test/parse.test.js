@@ -361,6 +361,30 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse with lost closing tag in middle', () => {
+    const str = `[quote]some[/quote][color=red]test[/color]
+[quote]xxxsdfasdf
+sdfasdfasdf
+
+[url=xxx]xxx[/url]`
+
+    expectOutput(
+        parse(str),
+        [
+          { tag: 'quote', attrs: {}, content: ['some'] },
+          { tag: 'color', attrs: { red: 'red' }, content: ['test'] },
+          '\n',
+          '[quote]',
+          'xxxsdfasdf',
+          '\n',
+          'sdfasdfasdf',
+          '\n',
+          '\n',
+          { tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'] }
+        ]
+    )
+  })
+
   describe('html', () => {
     const parseHTML = input => parse(input, { openTag: '<', closeTag: '>' });
 
