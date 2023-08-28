@@ -1,5 +1,6 @@
 ---
-"fix: lost closing tag in the middle #184": patch
+"@bbob/parser": patch
+"@bbob/vue3": patch
 ---
 
 Fixes bug where nested tag `quote` lost
