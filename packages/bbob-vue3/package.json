@@ -25,7 +25,7 @@
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "browser": "dist/index.js",
-  "browserName": "BbobVue",
+  "browserName": "BbobVue3",
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",

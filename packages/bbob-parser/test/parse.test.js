@@ -361,6 +361,62 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse with lost closing tag in middle', () => {
+    const str = `[quote]some[/quote][color=red]test[/color]
+[quote]xxxsdfasdf
+sdfasdfasdf
+
+[url=xxx]xxx[/url]`
+
+    expectOutput(
+        parse(str),
+        [
+          { tag: 'quote', attrs: {}, content: ['some'] },
+          { tag: 'color', attrs: { red: 'red' }, content: ['test'] },
+          '\n',
+          '[quote]',
+          'xxxsdfasdf',
+          '\n',
+          'sdfasdfasdf',
+          '\n',
+          '\n',
+          { tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'] }
+        ]
+    )
+  })
+
+  test('parse with lost closing tag on start', () => {
+    const str = `[quote]xxxsdfasdf[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url]`
+
+    expectOutput(
+        parse(str),
+        [
+          '[quote]',
+          'xxxsdfasdf',
+          { tag: 'quote', attrs: {}, content: ['some'] },
+          { tag: 'color', attrs: { red: 'red' }, content: ['test'] },
+          'sdfasdfasdf',
+          { tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'] }
+        ]
+    )
+  })
+
+  test('parse with lost closing tag on end', () => {
+    const str = `[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url][quote]xxxsdfasdf`
+
+    expectOutput(
+        parse(str),
+        [
+          { tag: 'quote', attrs: {}, content: ['some'] },
+          { tag: 'color', attrs: { red: 'red' }, content: ['test'] },
+          'sdfasdfasdf',
+          { tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'] },
+          '[quote]',
+          'xxxsdfasdf',
+        ]
+    )
+  })
+
   describe('html', () => {
     const parseHTML = input => parse(input, { openTag: '<', closeTag: '>' });
 

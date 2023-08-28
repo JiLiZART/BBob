@@ -6,15 +6,15 @@ import { createList } from './utils';
 
 /**
  * @public
- * @param {String} input
+ * @param {string} input
  * @param {Object} opts
  * @param {Function} opts.createTokenizer
  * @param {Array<string>} opts.onlyAllowTags
  * @param {Array<string>} opts.contextFreeTags
  * @param {Boolean} opts.enableEscapeTags
- * @param {String} opts.openTag
- * @param {String} opts.closeTag
- * @return {Array}
+ * @param {string} opts.openTag
+ * @param {string} opts.closeTag
+ * @return {Array<string|TagNode>}
  */
 const parse = (input, opts = {}) => {
   const options = opts;
@@ -50,12 +50,12 @@ const parse = (input, opts = {}) => {
 
   /**
    * Cache for nested tags checks
+   * @type Set<string>
    */
   const nestedTagsMap = new Set();
 
   /**
-   *
-   * @param token
+   * @param {Token} token
    * @returns {boolean}
    */
   const isTokenNested = (token) => {
@@ -71,14 +71,15 @@ const parse = (input, opts = {}) => {
   };
 
   /**
-   * @param tagName
+   * @private
+   * @param {string} tagName
    * @returns {boolean}
    */
   const isTagNested = (tagName) => Boolean(nestedTagsMap.has(tagName));
 
   /**
    * @private
-   * @param {String} value
+   * @param {string} value
    * @return {boolean}
    */
   const isAllowedTag = (value) => {
@@ -117,6 +118,29 @@ const parse = (input, opts = {}) => {
   /**
    * @private
    * @param {string|TagNode} node
+   * @param {boolean} isNested
+   */
+  const appendNodeAsString = (node, isNested = true) => {
+    const items = getNodes();
+
+    if (Array.isArray(items)) {
+      items.push(node.toTagStart({ openTag, closeTag }));
+
+      if (node.content.length) {
+        node.content.forEach((item) => {
+          items.push(item);
+        });
+
+        if (isNested) {
+          items.push(node.toTagEnd({ openTag, closeTag }));
+        }
+      }
+    }
+  };
+
+  /**
+   * @private
+   * @param {string|TagNode} node
    */
   const appendNodes = (node) => {
     const items = getNodes();
@@ -126,15 +150,7 @@ const parse = (input, opts = {}) => {
         if (isAllowedTag(node.tag)) {
           items.push(node.toTagNode());
         } else {
-          items.push(node.toTagStart({ openTag, closeTag }));
-
-          if (node.content.length) {
-            node.content.forEach((item) => {
-              items.push(item);
-            });
-
-            items.push(node.toTagEnd({ openTag, closeTag }));
-          }
+          appendNodeAsString(node);
         }
       } else {
         items.push(node);
@@ -268,6 +284,14 @@ const parse = (input, opts = {}) => {
 
   // eslint-disable-next-line no-unused-vars
   const tokens = tokenizer.tokenize();
+
+  // handles situations where we open tag, but forgot close them
+  // for ex [q]test[/q][u]some[/u][q]some [u]some[/u] // forgot to close [/q]
+  // so we need to flush nested content to nodes array
+  const lastNestedNode = nestedNodes.flushLast();
+  if (lastNestedNode && isTagNested(lastNestedNode.tag)) {
+    appendNodeAsString(lastNestedNode, false);
+  }
 
   return nodes.toArray();
 };
