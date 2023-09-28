@@ -20,6 +20,9 @@ const parse = (input, opts = {}) => {
   const options = opts;
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
+  const onlyAllowTags = (options.onlyAllowTags || [])
+    .filter(Boolean)
+    .map((tag) => tag.toLowerCase());
 
   let tokenizer = null;
 
@@ -83,8 +86,8 @@ const parse = (input, opts = {}) => {
    * @return {boolean}
    */
   const isAllowedTag = (value) => {
-    if (options.onlyAllowTags && options.onlyAllowTags.length) {
-      return options.onlyAllowTags.indexOf(value) >= 0;
+    if (onlyAllowTags.length) {
+      return onlyAllowTags.indexOf(value.toLowerCase()) >= 0;
     }
 
     return true;

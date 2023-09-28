@@ -77,6 +77,13 @@ describe('@bbob/preset-html5', () => {
     expect(parse(input)).toBe(result);
   });
 
+  test('[color="red"]Red Text[/color]', () => {
+    const input = '[color="red"]Red Text[/color]';
+    const result = '<span style="color: red;">Red Text</span>';
+
+    expect(parse(input)).toBe(result);
+  });
+
   test(`[list][*]Entry 1[/list]`, () => {
     const input = `[list][*]Entry 1[*]Entry 2[/list]`;
     const result = '<ul><li>Entry 1</li><li>Entry 2</li></ul>';
