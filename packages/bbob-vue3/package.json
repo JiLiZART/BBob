@@ -1,6 +1,6 @@
 {
   "name": "@bbob/vue3",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "A BBCode to Vue3 Renderer part of @bbob",
   "keywords": [
     "vue",
@@ -9,15 +9,15 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "^3.0.0",
-    "@bbob/html": "^3.0.0",
-    "@bbob/plugin-helper": "^3.0.0"
+    "@bbob/core": "^3.0.2",
+    "@bbob/html": "^3.0.2",
+    "@bbob/plugin-helper": "^3.0.2"
   },
   "peerDependencies": {
     "vue": "3.x"
   },
   "devDependencies": {
-    "@bbob/preset-vue": "^3.0.0",
+    "@bbob/preset-vue": "^3.0.2",
     "@testing-library/vue": "7.0.0",
     "vue": "3.3.4"
   },
