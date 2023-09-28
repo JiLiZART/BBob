@@ -1,6 +1,6 @@
 {
   "name": "@bbob/react",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "A BBCode to React Renderer part of @bbob",
   "keywords": [
     "react",
@@ -9,16 +9,16 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "^3.0.0",
-    "@bbob/html": "^3.0.0",
-    "@bbob/plugin-helper": "^3.0.0"
+    "@bbob/core": "^3.0.2",
+    "@bbob/html": "^3.0.2",
+    "@bbob/plugin-helper": "^3.0.2"
   },
   "peerDependencies": {
     "prop-types": "> 15.0",
     "react": "> 15.0"
   },
   "devDependencies": {
-    "@bbob/preset-react": "^3.0.0",
+    "@bbob/preset-react": "^3.0.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "13.x",
     "react": "18.x",

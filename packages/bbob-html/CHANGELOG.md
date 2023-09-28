@@ -1,5 +1,22 @@
 # Change Log
 
+## 3.0.2
+
+### Patch Changes
+
+- [#191](https://github.com/JiLiZART/BBob/pull/191) [`0c78831`](https://github.com/JiLiZART/BBob/commit/0c78831372b02216c9be5d95cd8b857c18f81540) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Now HTML5 Preset supports `color` tag
+
+  ```
+  [color="red"]Red Text[/color]
+  ```
+
+  Also fixes bug with case insensitive tags in `onlyAllowTags`
+  Now you can pas `h1` and `H1` and they will be treated as same tags
+
+- Updated dependencies [[`0c78831`](https://github.com/JiLiZART/BBob/commit/0c78831372b02216c9be5d95cd8b857c18f81540)]:
+  - @bbob/core@3.0.2
+  - @bbob/plugin-helper@3.0.2
+
 ## 3.0.0
 
 ### Major Changes
