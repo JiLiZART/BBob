@@ -87,4 +87,11 @@ export default {
 
     return toNode(type ? 'ol' : 'ul', type ? { type } : {}, asListItems(node.content));
   },
+  color: (node) => ({
+    tag: 'color',
+    attrs: {
+      style: `color: ${getUniqAttr(node.attrs)}`
+    },
+    content: node.content
+  })
 };
