@@ -84,7 +84,7 @@ const parse = (input, opts = {}) => {
    */
   const isAllowedTag = (value) => {
     if (options.onlyAllowTags && options.onlyAllowTags.length) {
-      return options.onlyAllowTags.indexOf(value) >= 0;
+      return options.onlyAllowTags.indexOf(value.toLowerCase()) >= 0;
     }
 
     return true;

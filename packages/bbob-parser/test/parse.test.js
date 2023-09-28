@@ -141,6 +141,28 @@ describe('Parser', () => {
 
       expectOutput(ast, output);
     });
+
+    test('parse only allowed tags case insensitive', () => {
+      const ast = parse('[h1 name=value]Foo [Bar] [/h1]', {
+        onlyAllowTags: ['H1']
+      });
+      const output = [
+        {
+          tag: 'h1',
+          attrs: {
+            name: 'value',
+          },
+          content: [
+            'Foo',
+            ' ',
+            '[Bar]',
+            ' '
+          ],
+        },
+      ];
+
+      expectOutput(ast, output);
+    });
   })
 
   describe('contextFreeTags', () => {
