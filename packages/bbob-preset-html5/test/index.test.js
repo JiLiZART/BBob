@@ -79,7 +79,7 @@ describe('@bbob/preset-html5', () => {
 
   test('[color="red"]Red Text[/color]', () => {
     const input = '[color="red"]Red Text[/color]';
-    const result = '<span style="color:red;">Red Text</span>';
+    const result = '<span style="color: red;">Red Text</span>';
 
     expect(parse(input)).toBe(result);
   });
