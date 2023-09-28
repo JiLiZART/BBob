@@ -90,8 +90,8 @@ export default {
   color: (node) => ({
     tag: 'color',
     attrs: {
-      style: `color: ${getUniqAttr(node.attrs)}`
+      style: `color: ${getUniqAttr(node.attrs)}`,
     },
-    content: node.content
-  })
+    content: node.content,
+  }),
 };
