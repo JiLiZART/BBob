@@ -1,0 +1,18 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  '@bbob/plugin-helper':
+    specifier: workspace:*
+    version: link:../bbob-plugin-helper
+  '@bbob/preset':
+    specifier: workspace:*
+    version: link:../bbob-preset
+
+devDependencies:
+  '@bbob/html':
+    specifier: workspace:*
+    version: link:../bbob-html
