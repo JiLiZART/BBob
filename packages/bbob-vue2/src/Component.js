@@ -1,8 +1,8 @@
-import Vue from 'vue';
+import Vue, { defineComponent } from 'vue';
 
 import { render } from './render';
 
-const Component = Vue.extend({
+const Component = defineComponent({
   props: {
     container: {
       type: String,

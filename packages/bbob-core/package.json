@@ -20,7 +20,7 @@
     "core"
   ],
   "dependencies": {
-    "@bbob/parser": "^3.0.2"
+    "@bbob/parser": "workspace:*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
