@@ -3,7 +3,7 @@
  */
 
 import preset from '@bbob/preset-vue';
-import { render, fireEvent } from '@testing-library/vue'
+import { render } from '@testing-library/vue'
 import Component from '../src/Component'
 
 const renderBBCode = (input, options) => {

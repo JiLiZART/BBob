@@ -1,0 +1,22 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  '@bbob/html':
+    specifier: workspace:*
+    version: link:../bbob-html
+  '@bbob/preset-html5':
+    specifier: workspace:*
+    version: link:../bbob-preset-html5
+  commander:
+    specifier: ^2.15.1
+    version: 2.20.3
+
+packages:
+
+  /commander@2.20.3:
+    resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
+    dev: false

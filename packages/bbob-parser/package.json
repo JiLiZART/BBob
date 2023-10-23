@@ -13,7 +13,7 @@
     "parse"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "^3.0.2"
+    "@bbob/plugin-helper": "workspace:*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

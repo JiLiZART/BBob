@@ -9,9 +9,9 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "^3.0.2",
-    "@bbob/html": "^3.0.2",
-    "@bbob/plugin-helper": "^3.0.2"
+    "@bbob/core": "workspace:*",
+    "@bbob/html": "workspace:*",
+    "@bbob/plugin-helper": "workspace:*"
   },
   "peerDependencies": {
     "prop-types": "> 15.0",
