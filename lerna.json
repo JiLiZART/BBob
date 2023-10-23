@@ -27,5 +27,6 @@
       "message": "chore(release): publish %s"
     }
   },
-  "useNx": true
+  "useNx": true,
+  "useWorkspaces": true
 }
