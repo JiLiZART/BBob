@@ -1,4 +1,4 @@
-import Vue, { defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 
 import { render } from './render';
 

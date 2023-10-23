@@ -5,9 +5,15 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@bbob/core':
+    specifier: workspace:*
+    version: link:../bbob-core
   '@bbob/html':
     specifier: workspace:*
     version: link:../bbob-html
+  '@bbob/plugin-helper':
+    specifier: workspace:*
+    version: link:../bbob-plugin-helper
 
 devDependencies:
   '@bbob/preset-vue':

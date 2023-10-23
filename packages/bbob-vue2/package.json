@@ -9,7 +9,9 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/html": "workspace:*"
+    "@bbob/core": "workspace:*",
+    "@bbob/html": "workspace:*",
+    "@bbob/plugin-helper": "workspace:*"
   },
   "peerDependencies": {
     "vue": "2.x"
