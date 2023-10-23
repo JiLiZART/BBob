@@ -22,10 +22,10 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@changesets/changelog-github": "0.4.8",
+    "@changesets/cli": "2.26.2",
     "@commitlint/cli": "13.2.1",
     "@commitlint/config-conventional": "13.2.0",
-    "@changesets/cli": "2.26.2",
-    "@changesets/changelog-github": "0.4.8",
     "@nrwl/cli": "15.3.3",
     "@rollup/plugin-commonjs": "23.0.2",
     "@rollup/plugin-node-resolve": "15.0.1",
@@ -47,6 +47,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "husky": "7.0.2",
     "jest": "29.5.0",
+    "jest-environment-jsdom": "29.6.4",
     "lerna": "6.0.3",
     "lint-staged": "11.2.3",
     "microtime": "3.0.0",
@@ -56,8 +57,7 @@
     "rollup": "3.3.0",
     "rollup-plugin-gzip": "3.1.0",
     "rollup-plugin-swc3": "0.7.0",
-    "size-limit": "6.0.1",
-    "jest-environment-jsdom": "29.6.4"
+    "size-limit": "6.0.1"
   },
   "publishConfig": {
     "access": "public",
@@ -77,5 +77,10 @@
     "lint": "@/eslint .",
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize ."
   },
-  "packageManager": "pnpm@8.7.6"
+  "packageManager": "pnpm@8.7.6",
+  "pnpm": {
+    "overrides": {
+      "semver@>=7.0.0 <7.5.2": ">=7.5.2"
+    }
+  }
 }
