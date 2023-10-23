@@ -11,4 +11,7 @@ module.exports = {
     '\\.[jt]sx?$': ['@swc/jest', { ...config }],
   },
   testEnvironment: 'jest-environment-jsdom',
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
+  },
 };
