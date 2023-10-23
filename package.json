@@ -1,7 +1,7 @@
 {
   "scripts": {
     "prepublishOnly": "npm run test",
-    "bootstrap": "lerna bootstrap --npm-client pnpm",
+    "bootstrap": "lerna bootstrap --no-ci",
     "publish-ci": "npm run build && lerna publish from-package --yes --include-merged-tags --conventional-commits",
     "publish-canary": "npm run build && lerna publish --yes --include-merged-tags --conventional-commits --no-private --no-git-tag-version",
     "publish-from-packages": "npm run build && lerna publish from-package --yes --include-merged-tags --conventional-commits --create-release github",
