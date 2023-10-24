@@ -3,7 +3,9 @@ import {
   getNodeLength, appendToNode, attrsToString, attrValue, getUniqAttr,
 } from './helpers';
 
-type TagAttrs = Record<string, string>
+export type TagAttrs = Record<string, string | boolean | number>
+
+export type TagContent = TagNode | string | Array<TagNode | string>
 
 const getTagAttrs = (tag: string, params: TagAttrs) => {
   const uniqAattr = getUniqAttr(params);
@@ -12,7 +14,7 @@ const getTagAttrs = (tag: string, params: TagAttrs) => {
     const tagAttr = attrValue(tag, uniqAattr);
     const attrs = { ...params };
 
-    delete attrs[uniqAattr];
+    delete attrs[String(uniqAattr)];
 
     const attrsStr = attrsToString(attrs);
 
@@ -31,7 +33,7 @@ class TagNode {
   private readonly attrs: TagAttrs
   public content: Array<TagNode | string>
 
-  constructor(tag: string, attrs: TagAttrs, content: TagNode | Array<TagNode | string>) {
+  constructor(tag: string, attrs: TagAttrs, content: TagContent = []) {
     this.tag = tag;
     this.attrs = attrs;
     this.content = Array.isArray(content) ? content : [content];
@@ -79,7 +81,7 @@ class TagNode {
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create(tag: string, attrs: TagAttrs = {}, content: TagNode[] = []) {
+  static create(tag: string, attrs: TagAttrs = {}, content: TagContent = []) {
     return  new TagNode(tag, attrs, content)
   }
 
@@ -89,4 +91,3 @@ class TagNode {
 }
 
 export { TagNode };
-export default TagNode;
