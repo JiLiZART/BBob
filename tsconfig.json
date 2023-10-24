@@ -23,9 +23,9 @@
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "types",
-    "baseUrl": "./src",
-    "paths": {},
+    "baseUrl": ".",
+    "outDir": "./types",
+    "paths": {}
   },
   "include": [
     "**/*.ts",
