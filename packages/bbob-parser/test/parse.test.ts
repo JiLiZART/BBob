@@ -1,7 +1,8 @@
 import { parse } from '../src'
+import type { TagNodeTree } from "@bbob/plugin-helper";
 
 describe('Parser', () => {
-  const expectOutput = (ast, output) => {
+  const expectOutput = <TagName = string, AttrValue = unknown>(ast: TagNodeTree<TagName, AttrValue>, output: Partial<TagNodeTree<TagName, AttrValue>>) => {
     expect(ast).toBeInstanceOf(Array);
     expect(ast).toEqual(output);
   };
@@ -440,7 +441,7 @@ sdfasdfasdf
   })
 
   describe('html', () => {
-    const parseHTML = input => parse(input, { openTag: '<', closeTag: '>' });
+    const parseHTML = (input: string) => parse(input, { openTag: '<', closeTag: '>' });
 
     test('normal attributes', () => {
       const content = `<button id="test0" class="value0" title="value1">class="value0" title="value1"</button>`;

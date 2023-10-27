@@ -23,15 +23,8 @@
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
-    "baseUrl": ".",
-    "outDir": "./types",
     "paths": {}
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "types.d.ts"
-  ],
   "exclude": [
     "node_modules"
   ],

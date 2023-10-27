@@ -1,7 +1,7 @@
 import html from '@bbob/html'
 import preset from '../src'
 
-const parse = input => html(input, preset());
+const parse = (input: string) => html(input, preset());
 
 describe('@bbob/preset-html5', () => {
   test('[b]bolded text[/b]', () => {

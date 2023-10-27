@@ -3,123 +3,105 @@ import {
   BACKSLASH,
 } from '@bbob/plugin-helper';
 
-function CharGrabber(source, options) {
-  const cursor = {
-    pos: 0,
-    len: source.length,
-  };
+export type CharGrabberOptions = {
+  onSkip?: () => void
+}
 
-  const substrUntilChar = (char) => {
-    const { pos } = cursor;
-    const idx = source.indexOf(char, pos);
+export class CharGrabber {
+  private source: string;
+  private cursor: { len: number; pos: number };
+  private options: CharGrabberOptions;
 
-    return idx >= 0 ? source.substring(pos, idx) : '';
-  };
-  const includes = (val) => source.indexOf(val, cursor.pos) >= 0;
-  const hasNext = () => cursor.len > cursor.pos;
-  const isLast = () => cursor.pos === cursor.len;
-  const skip = (num = 1, silent) => {
-    cursor.pos += num;
+  constructor(source: string, options: CharGrabberOptions = {}) {
+    this.source = source
+    this.cursor = {
+      pos: 0,
+      len: source.length,
+    };
 
-    if (options && options.onSkip && !silent) {
-      options.onSkip();
+    this.options = options
+  }
+
+  skip(num = 1, silent?: boolean) {
+    this.cursor.pos += num;
+
+    if (this.options && this.options.onSkip && !silent) {
+      this.options.onSkip();
     }
-  };
-  const rest = () => source.substring(cursor.pos);
-  const grabN = (num = 0) => source.substring(cursor.pos, cursor.pos + num);
-  const curr = () => source[cursor.pos];
-  const prev = () => {
-    const prevPos = cursor.pos - 1;
+  }
 
-    return typeof source[prevPos] !== 'undefined' ? source[prevPos] : null;
-  };
-  const next = () => {
-    const nextPos = cursor.pos + 1;
+  hasNext() {
+    return this.cursor.len > this.cursor.pos
+  }
 
-    return nextPos <= (source.length - 1) ? source[nextPos] : null;
-  };
-  const grabWhile = (cond, silent) => {
+  getCurr() {
+    return this.source[this.cursor.pos]
+  }
+
+  getRest() {
+    return this.source.substring(this.cursor.pos)
+  }
+
+  getNext() {
+    const nextPos = this.cursor.pos + 1;
+
+    return nextPos <= (this.source.length - 1) ? this.source[nextPos] : null;
+  }
+
+  getPrev() {
+    const prevPos = this.cursor.pos - 1;
+
+    return typeof this.source[prevPos] !== 'undefined' ? this.source[prevPos] : null;
+  }
+
+  isLast() {
+    return this.cursor.pos === this.cursor.len
+  }
+
+  includes(val: string) {
+    return this.source.indexOf(val, this.cursor.pos) >= 0
+  }
+
+  grabWhile(cond: (curr: string) => boolean, silent?: boolean) {
     let start = 0;
 
-    if (hasNext()) {
-      start = cursor.pos;
+    if (this.hasNext()) {
+      start = this.cursor.pos;
 
-      while (hasNext() && cond(curr())) {
-        skip(1, silent);
+      while (this.hasNext() && cond(this.getCurr())) {
+        this.skip(1, silent);
       }
     }
 
-    return source.substring(start, cursor.pos);
-  };
-  /**
-   * @type {skip}
-   */
-  this.skip = skip;
-  /**
-   * @returns {Boolean}
-   */
-  this.hasNext = hasNext;
-  /**
-   * @returns {String}
-   */
-  this.getCurr = curr;
-  /**
-   * @returns {String}
-   */
-  this.getRest = rest;
-  /**
-   * @returns {String}
-   */
-  this.getNext = next;
-  /**
-   * @returns {String}
-   */
-  this.getPrev = prev;
-  /**
-   * @returns {Boolean}
-   */
-  this.isLast = isLast;
-  /**
-   * @returns {Boolean}
-   */
-  this.includes = includes;
-  /**
-   * @param {Function} cond
-   * @param {Boolean} silent
-   * @return {String}
-   */
-  this.grabWhile = grabWhile;
-  /**
-   * @param {Number} num
-   * @return {String}
-   */
-  this.grabN = grabN;
+    return this.source.substring(start, this.cursor.pos);
+  }
+
+  grabN(num: number = 0) {
+    return this.source.substring(this.cursor.pos, this.cursor.pos + num)
+  }
+
   /**
    * Grabs rest of string until it find a char
-   * @param {String} char
-   * @return {String}
    */
-  this.substrUntilChar = substrUntilChar;
+  substrUntilChar(char: string) {
+    const { pos } = this.cursor;
+    const idx = this.source.indexOf(char, pos);
+
+    return idx >= 0 ? this.source.substring(pos, idx) : '';
+  }
 }
 
 /**
  * Creates a grabber wrapper for source string, that helps to iterate over string char by char
- * @param {String} source
- * @param {Object} options
- * @param {Function} options.onSkip
- * @return CharGrabber
  */
-export const createCharGrabber = (source, options) => new CharGrabber(source, options);
+export const createCharGrabber = (source: string, options?: CharGrabberOptions) => new CharGrabber(source, options);
 
 /**
  * Trims string from start and end by char
  * @example
  *  trimChar('*hello*', '*') ==> 'hello'
- * @param {String} str
- * @param {String} charToRemove
- * @returns {String}
  */
-export const trimChar = (str, charToRemove) => {
+export const trimChar = (str: string, charToRemove: string) => {
   while (str.charAt(0) === charToRemove) {
     // eslint-disable-next-line no-param-reassign
     str = str.substring(1);
@@ -135,31 +117,31 @@ export const trimChar = (str, charToRemove) => {
 
 /**
  * Unquotes \" to "
- * @param str
- * @return {String}
  */
-export const unquote = (str) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
+export const unquote = (str: string) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
 
-function NodeList(values = []) {
-  const nodes = values;
+export class NodeList<Value> {
+  constructor(private nodes: Value[] = []) {
+  }
 
-  const getLast = () => (
-    Array.isArray(nodes) && nodes.length > 0 && typeof nodes[nodes.length - 1] !== 'undefined'
-      ? nodes[nodes.length - 1]
-      : null);
-  const flushLast = () => (nodes.length ? nodes.pop() : false);
-  const push = (value) => nodes.push(value);
-  const toArray = () => nodes;
+  getLast() {
+    return (
+        Array.isArray(this.nodes) && this.nodes.length > 0 && typeof this.nodes[this.nodes.length - 1] !== 'undefined'
+            ? this.nodes[this.nodes.length - 1]
+            : null)
+  }
 
-  this.push = push;
-  this.toArray = toArray;
-  this.getLast = getLast;
-  this.flushLast = flushLast;
+  flushLast() {
+    return (this.nodes.length ? this.nodes.pop() : false)
+  }
+
+  push(value: Value) {
+    return this.nodes.push(value)
+  }
+
+  toArray() {
+    return this.nodes
+  }
 }
 
-/**
- *
- * @param values
- * @return {NodeList}
- */
-export const createList = (values = []) => new NodeList(values);
+export const createList = <Type>(values: Type[] = []) => new NodeList(values);

@@ -8,3 +8,6 @@ dependencies:
   '@bbob/parser':
     specifier: workspace:*
     version: link:../bbob-parser
+  '@bbob/plugin-helper':
+    specifier: workspace:*
+    version: link:../bbob-plugin-helper

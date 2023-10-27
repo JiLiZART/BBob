@@ -1,89 +1,116 @@
 import { parse } from '@bbob/parser';
-import { iterate, match } from './utils';
+import { iterate, same } from './utils';
 
-/** @type {import('@bbob/parser/index').Token} */
+import type { IterateCallback } from './utils';
+import type { TagNodeTree, TagNode } from "@bbob/plugin-helper";
+import type { ParseOptions } from "@bbob/parser";
 
-function walk(cb) {
-  return iterate(this, cb);
+export interface BBobCoreOptions<TagName = string, AttrValue = unknown> extends ParseOptions {
+    skipParse?: boolean
+    parser?: (source: string, options: ParseOptions) => TagNode<TagName, AttrValue>[]
+    render: (ast: TagNodeTree<TagName, AttrValue>, options?: ParseOptions) => string
+    data?: unknown | null
 }
 
-/**
- * @typedef Node
- * @type {object}
- *
- */
+export interface BbobPluginOptions {
+    parse: BBobCoreOptions['parser'],
+    render: BBobCoreOptions['render'],
+    iterate: typeof iterate,
+    data: unknown | null,
+}
 
-/**
- * @typedef BbobTree
- * @type {Array<string | Node>}
- */
+export interface BBobPluginFunction<TagName = string, AttrValue = unknown> {
+    (tree: TagNodeTree<TagName, AttrValue>, options: BbobPluginOptions): BbobCoreTagNodeTree<TagName, AttrValue>
+}
 
-/**
- * @typedef BbobCoreResult
- * @property {String} readonly html
- */
+export type BBobCore<TagName = string, AttrValue = unknown, InputValue = string | TagNode<TagName, AttrValue>[]> = {
+    process(input: InputValue, opts?: BBobCoreOptions): {
+        readonly html: string,
+        tree: TagNode<TagName, AttrValue>[],
+        raw: TagNode<TagName, AttrValue>[] | string,
+        messages: unknown[],
+    }
+}
 
-/**
- * @typedef BbobCoreOptions
- * @property {Function} parser
- */
+export type BbobCoreTagNodeTree<TagName = string, AttrValue = unknown> = {
+    messages: unknown[],
+    options: BBobCoreOptions,
+    walk: (cb: IterateCallback<TagName, AttrValue>) => TagNodeTree<TagName, AttrValue>
+    match: (expression: TagNode<TagName, AttrValue>[] | TagNode<TagName, AttrValue>, cb: IterateCallback<TagName, AttrValue>) => TagNode<TagName, AttrValue>[]
+} & TagNode<TagName, AttrValue>[]
 
-/**
- * @param plugs
- * @returns {{process(input: string|undefined, opts: BbobCoreOptions): BbobCoreResult}}
- */
-export default function bbob(plugs) {
-  const plugins = typeof plugs === 'function' ? [plugs] : plugs || [];
+export default function bbob<TagName = string, AttrValue = unknown>(
+    plugs: BBobPluginFunction<TagName, AttrValue> | BBobPluginFunction<TagName, AttrValue>[]
+): BBobCore<TagName, AttrValue> {
+    const plugins = typeof plugs === 'function' ? [plugs] : plugs || [];
+    const mockRender = () => ""
 
-  let options = {
-    skipParse: false,
-  };
+    return {
+        process(input, opts = { skipParse: false, parser: parse, render: mockRender }) {
+            const options = opts
+            const parseFn = options.parser || parse;
+            const renderFn = options.render;
+            const data = options.data || null;
 
-  return {
-    process(input, opts) {
-      options = opts || {};
+            if (typeof parseFn !== 'function') {
+                throw new Error('"parser" is not a function, please pass to "process(input, { parser })" right function');
+            }
 
-      const parseFn = options.parser || parse;
-      const renderFn = options.render;
-      const data = options.data || null;
+            let tree = (options.skipParse ? (input || []) : parseFn(input as string, options)) as TagNode<TagName, AttrValue>[]
 
-      if (typeof parseFn !== 'function') {
-        throw new Error('"parser" is not a function, please pass to "process(input, { parser })" right function');
-      }
+            // raw tree before modification with plugins
+            const raw = [...tree];
 
-      let tree = options.skipParse
-        ? input || []
-        : parseFn(input, options);
+            let extendedTree = tree as BbobCoreTagNodeTree
 
-      // raw tree before modification with plugins
-      const raw = tree;
+            extendedTree.messages = []
+            extendedTree.options = options
+            extendedTree.walk = function walk<TagName = string, AttrValue = unknown>(cb: IterateCallback<TagName, AttrValue>) {
+                return iterate(this, cb);
+            }
+            extendedTree.match = function match<TagName = string, AttrValue = unknown>(
+                expression: TagNode<TagName, AttrValue>[] | TagNode<TagName, AttrValue>,
+                cb: IterateCallback<TagName, AttrValue>
+            ) {
+                return iterate<TagName, AttrValue>(this, (node) => {
+                    if (Array.isArray(expression)) {
+                        for (let idx = 0; idx < expression.length; idx++) {
+                            if (same(expression[idx], node)) {
+                                return cb(node);
+                            }
+                        }
+                    }
 
-      tree.messages = [];
-      tree.options = options;
-      tree.walk = walk;
-      tree.match = match;
+                    return same(expression, node) ? cb(node) : node;
+                }) as TagNode<TagName, AttrValue>[]
+            }
 
-      plugins.forEach((plugin) => {
-        tree = plugin(tree, {
-          parse: parseFn,
-          render: renderFn,
-          iterate,
-          match,
-          data,
-        }) || tree;
-      });
+            for (let idx = 0; idx < plugins.length; idx++) {
+                const plugin = plugins[idx]
 
-      return {
-        get html() {
-          if (typeof renderFn !== 'function') {
-            throw new Error('"render" function not defined, please pass to "process(input, { render })"');
-          }
-          return renderFn(tree, tree.options);
+                if (typeof plugin === 'function') {
+                    const newTree = plugin(extendedTree, {
+                        parse: parseFn,
+                        render: renderFn,
+                        iterate,
+                        data,
+                    })
+
+                    extendedTree = newTree || tree
+                }
+            }
+
+            return {
+                get html() {
+                    if (typeof renderFn !== 'function') {
+                        throw new Error('"render" function not defined, please pass to "process(input, { render })"');
+                    }
+                    return renderFn(extendedTree, extendedTree.options);
+                },
+                tree,
+                raw,
+                messages: extendedTree.messages,
+            };
         },
-        tree,
-        raw,
-        messages: tree.messages,
-      };
-    },
-  };
+    };
 }

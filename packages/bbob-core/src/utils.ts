@@ -1,40 +1,28 @@
 /* eslint-disable no-plusplus */
-/**
- * @param {Boolean} value
- * @returns {boolean}
- */
-const isObj = (value) => (typeof value === 'object');
-/**
- * @param {Boolean} value
- * @returns {boolean}
- */
-const isBool = (value) => (typeof value === 'boolean');
+import type { NodeContent, TagNode, TagNodeTree } from '@bbob/plugin-helper'
 
-/**
- * @param t
- * @param cb
- * @returns {*}
- */
-export function iterate(t, cb) {
+const isObj = (value: unknown): value is Record<string, unknown> => (typeof value === 'object');
+const isBool = (value: unknown): value is boolean => (typeof value === 'boolean');
+const isNodeTree = <TagName, AttrValue>(value: unknown): value is TagNode<TagName, AttrValue> => Boolean(value && isObj(value) && 'content' in value)
+
+export type IterateCallback<TagName = string, AttrValue = unknown> = (node: NodeContent<TagName, AttrValue>) => NodeContent<TagName, AttrValue>
+
+export function iterate<TagName = string, AttrValue = unknown>(t: TagNodeTree<TagName, AttrValue>, cb: IterateCallback<TagName, AttrValue>): TagNodeTree<TagName, AttrValue> {
   const tree = t;
 
   if (Array.isArray(tree)) {
-    for (let idx = 0; idx < tree.length; idx++) {
-      tree[idx] = iterate(cb(tree[idx]), cb);
-    }
-  } else if (tree && isObj(tree) && tree.content) {
-    iterate(tree.content, cb);
+      for (let idx = 0; idx < tree.length; idx++) {
+          const oldNode = tree[idx] as NodeContent<TagName, AttrValue>
+          tree[idx] = iterate<TagName, AttrValue>(cb(oldNode), cb) as NodeContent<TagName, AttrValue>;
+      }
+  } else if (isNodeTree(tree)) {
+      iterate(tree.content, cb);
   }
 
   return tree;
 }
 
-/**
- * @param expected
- * @param actual
- * @returns {Boolean}
- */
-export function same(expected, actual) {
+export function same(expected: unknown, actual: unknown): boolean {
   if (typeof expected !== typeof actual) {
     return false;
   }
@@ -47,32 +35,22 @@ export function same(expected, actual) {
     return expected.every((exp) => [].some.call(actual, (act) => same(exp, act)));
   }
 
-  return Object.keys(expected).every((key) => {
-    const ao = actual[key];
-    const eo = expected[key];
+  if (isObj(expected) && isObj(actual)) {
+      return Object.keys(expected).every((key) => {
+          const ao = actual[key];
+          const eo = expected[key];
 
-    if (isObj(eo) && eo !== null && ao !== null) {
-      return same(eo, ao);
-    }
+          if (isObj(eo) && eo !== null && ao !== null) {
+              return same(eo, ao);
+          }
 
-    if (isBool(eo)) {
-      return eo !== (ao === null);
-    }
+          if (isBool(eo)) {
+              return eo !== (ao === null);
+          }
 
-    return ao === eo;
-  });
-}
+          return ao === eo;
+      });
+  }
 
-export function match(expression, cb) {
-  return Array.isArray(expression)
-    ? iterate(this, (node) => {
-      for (let idx = 0; idx < expression.length; idx++) {
-        if (same(expression[idx], node)) {
-          return cb(node);
-        }
-      }
-
-      return node;
-    })
-    : iterate(this, (node) => (same(expression, node) ? cb(node) : node));
+  return false
 }

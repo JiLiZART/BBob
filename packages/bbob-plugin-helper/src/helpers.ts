@@ -1,19 +1,26 @@
-import {N} from './char';
-import type {TagNode} from "./TagNode";
+import { N } from './char';
+import type { NodeContent, StringNode, TagNode } from "./TagNode";
 
-const isTagNode = (el: TagNode | string): el is TagNode => typeof el === 'object' && !!el.tag;
+function isTagNode<TagName = string, AttrValue = unknown>(el: NodeContent<TagName, AttrValue>): el is TagNode<TagName, AttrValue> {
+    return  typeof el === 'object' && !!el.tag;
+}
 
-const isStringNode = (el: unknown) => typeof el === 'string';
+function isStringNode(el: unknown): el is StringNode {
+    return typeof el === 'string';
+}
 
-const isEOL = (el: string) => el === N;
+// check string is end of line
+function isEOL(el: string) {
+    return el === N
+}
 
-const keysReduce = <Res, Def extends Res, T extends Record<string, unknown>>(obj: T, reduce: (acc: Def, key: keyof T) => Res, def: Def): Res => {
+function keysReduce<Res, Def extends Res, T extends Record<string, unknown>>(obj: T, reduce: (acc: Def, key: keyof T) => Res, def: Def): Res {
     const keys = Object.keys(obj)
 
     return keys.reduce((acc, key) => reduce(acc, key), def)
-};
+}
 
-const getNodeLength = (node: TagNode | string): number => {
+function getNodeLength<TagName = string, AttrValue = unknown>(node: NodeContent<TagName, AttrValue>): number {
     if (isTagNode(node)) {
         return node.content.reduce((count, contentNode) => count + getNodeLength(contentNode), 0);
     }
@@ -22,46 +29,57 @@ const getNodeLength = (node: TagNode | string): number => {
     }
 
     return 0;
-};
+}
 
-const appendToNode = (node: TagNode, value: string) => {
+function appendToNode<TagName = string, AttrValue = unknown>(node: TagNode<TagName, AttrValue>, value: NodeContent<TagName, AttrValue>) {
     node.content.push(value);
-};
+}
 
 /**
  * Replaces " to &qquot;
  * @param {string} value
  */
-const escapeHTML = (value: string) => value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-    // eslint-disable-next-line no-script-url
-    .replace(/(javascript|data|vbscript):/gi, '$1%3A');
+function escapeAttrValue(value: string) {
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        // eslint-disable-next-line no-script-url
+        .replace(/(javascript|data|vbscript):/gi, '$1%3A');
+}
+
+/**
+ * @deprecated use escapeAttrValue
+ */
+const escapeHTML = escapeAttrValue
 
 /**
  * Accept name and value and return valid html5 attribute string
  */
-const attrValue = (name: string, value: boolean | number | string | object) => {
-    const type = typeof value;
-
-    const types = {
-        boolean: () => (value ? `${name}` : ''),
-        number: () => `${name}="${value}"`,
-        string: () => `${name}="${escapeHTML(value as string)}"`,
-        object: () => `${name}="${escapeHTML(JSON.stringify(value))}"`,
-    } as Record<string, () => string>;
-
-    return types[type] ? types[type]() : '';
-};
+function attrValue<AttrValue = unknown>(name: string, value: AttrValue) {
+    // in case of performance
+    switch (typeof value) {
+        case 'boolean':
+            return value ? `${name}` : ''
+        case 'number':
+            return `${name}="${value}"`
+        case 'string':
+            return `${name}="${escapeAttrValue(value as string)}"`
+        case 'object':
+            return `${name}="${escapeAttrValue(JSON.stringify(value))}"`
+        default:
+            return ''
+    }
+}
 
 /**
  * Transforms attrs to html params string
- * @param {Record<string, string>|null} values
+ * @example
+ * attrsToString({ 'foo': true, 'bar': bar' }) => 'foo="true" bar="bar"'
  */
-const attrsToString = (values: Record<string, string | boolean | number> | null) => {
+function attrsToString<AttrValue = unknown>(values: Record<string, AttrValue> | null) {
     // To avoid some malformed attributes
     if (values == null) {
         return '';
@@ -72,24 +90,27 @@ const attrsToString = (values: Record<string, string | boolean | number> | null)
         (arr, key) => [...arr, attrValue(key, values[key])],
         [''],
     ).join(' ');
-};
+}
 
 /**
  * Gets value from
  * @example
  * getUniqAttr({ 'foo': true, 'bar': bar' }) => 'bar'
  */
-const getUniqAttr = (attrs: Record<string, string | number | boolean>) => keysReduce(
-    attrs,
-    (res, key) => (attrs[key] === key ? attrs[key] : null),
-    null,
-);
+function getUniqAttr <Value>(attrs: Record<string, Value>) {
+    return keysReduce(
+        attrs,
+        (res, key) => (attrs[key] === key ? attrs[key] : null),
+        null,
+    )
+}
 
 export {
     attrsToString,
     attrValue,
     appendToNode,
     escapeHTML,
+    escapeAttrValue,
     getNodeLength,
     getUniqAttr,
     isTagNode,

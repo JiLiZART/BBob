@@ -18,11 +18,7 @@ const TOKEN_TYPE_ATTR_VALUE = 4; // 'attr-value';
 const TOKEN_TYPE_SPACE = 5; // 'space';
 const TOKEN_TYPE_NEW_LINE = 6; // 'new-line';
 
-/**
- * @param {Token} token
- * @returns {string}
- */
-const getTokenValue = (token) => {
+const getTokenValue = (token: Token) => {
   if (token && typeof token[TOKEN_VALUE_ID] !== 'undefined') {
     return token[TOKEN_VALUE_ID];
   }
@@ -30,23 +26,11 @@ const getTokenValue = (token) => {
   return '';
 };
 
-/**
- * @param {Token} token
- * @returns {number}
- */
-const getTokenLine = (token) => (token && token[TOKEN_LINE_ID]) || 0;
+const getTokenLine = (token: Token) => (token && token[TOKEN_LINE_ID]) || 0;
 
-/**
- * @param {Token} token
- * @returns {number}
- */
-const getTokenColumn = (token) => (token && token[TOKEN_COLUMN_ID]) || 0;
+const getTokenColumn = (token: Token) => (token && token[TOKEN_COLUMN_ID]) || 0;
 
-/**
- * @param {Token} token
- * @returns {boolean}
- */
-const isTextToken = (token) => {
+const isTextToken = (token: Token) => {
   if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
     return token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE
         || token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE
@@ -56,11 +40,7 @@ const isTextToken = (token) => {
   return false;
 };
 
-/**
- * @param {Token} token
- * @returns {boolean}
- */
-const isTagToken = (token) => {
+const isTagToken = (token: Token) => {
   if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
     return token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
   }
@@ -68,23 +48,11 @@ const isTagToken = (token) => {
   return false;
 };
 
-/**
- * @param {Token} token
- * @returns {boolean}
- */
-const isTagEnd = (token) => getTokenValue(token).charCodeAt(0) === SLASH.charCodeAt(0);
+const isTagEnd = (token: Token) => getTokenValue(token).charCodeAt(0) === SLASH.charCodeAt(0);
 
-/**
- * @param {Token} token
- * @returns {boolean}
- */
-const isTagStart = (token) => !isTagEnd(token);
+const isTagStart = (token: Token) => !isTagEnd(token);
 
-/**
- * @param {Token} token
- * @returns {boolean}
- */
-const isAttrNameToken = (token) => {
+const isAttrNameToken = (token: Token) => {
   if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
     return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
   }
@@ -92,11 +60,8 @@ const isAttrNameToken = (token) => {
   return false;
 };
 
-/**
- * @param {Token} token
- * @returns {boolean}
- */
-const isAttrValueToken = (token) => {
+
+const isAttrValueToken = (token: Token) => {
   if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
     return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
   }
@@ -104,17 +69,13 @@ const isAttrValueToken = (token) => {
   return false;
 };
 
-/**
- * @param {Token} token
- * @returns {string}
- */
-const getTagName = (token) => {
+const getTagName = (token: Token) => {
   const value = getTokenValue(token);
 
   return isTagEnd(token) ? value.slice(1) : value;
 };
 
-const convertTagToText = (token) => {
+const convertTagToText = (token: Token) => {
   let text = OPEN_BRAKET;
 
   text += getTokenValue(token);
@@ -126,19 +87,14 @@ const convertTagToText = (token) => {
 /**
  * @export
  * @class Token
- * @param {String} type
- * @param {String} value
- * @param {Number} row
- * @param {Number} line
  */
-class Token {
-  /**
-   * @param {String} type
-   * @param {String} value
-   * @param {Number} line
-   * @param {Number} row
-   */
-  constructor(type, value, line, row) {
+class Token<TokenValue = string> {
+  private type: number
+  private value: string
+  private line: number
+  private row: number
+
+  constructor(type?: number, value?: TokenValue, line: number = 0, row: number = 0) {
     this[TOKEN_TYPE_ID] = Number(type);
     this[TOKEN_VALUE_ID] = String(value);
     this[TOKEN_LINE_ID] = Number(line);

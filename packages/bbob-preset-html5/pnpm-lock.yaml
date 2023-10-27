@@ -13,6 +13,9 @@ dependencies:
     version: link:../bbob-preset
 
 devDependencies:
+  '@bbob/core':
+    specifier: workspace:*
+    version: link:../bbob-core
   '@bbob/html':
     specifier: workspace:*
     version: link:../bbob-html

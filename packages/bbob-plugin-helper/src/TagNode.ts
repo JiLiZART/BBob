@@ -1,13 +1,19 @@
 import { OPEN_BRAKET, CLOSE_BRAKET, SLASH } from './char';
 import {
-  getNodeLength, appendToNode, attrsToString, attrValue, getUniqAttr,
+    getUniqAttr,
+    getNodeLength,
+    appendToNode,
+    attrsToString,
+    attrValue,
 } from './helpers';
 
-export type TagAttrs = Record<string, string | boolean | number>
+export type StringNode = string
 
-export type TagContent = TagNode | string | Array<TagNode | string>
+export type NodeContent<TagName = string, AttrValue = unknown> = TagNode<TagName, AttrValue> | StringNode
 
-const getTagAttrs = (tag: string, params: TagAttrs) => {
+export type TagNodeTree<TagName = string, AttrValue = unknown> = NodeContent<TagName, AttrValue> | Array<NodeContent<TagName, AttrValue>>
+
+const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) => {
   const uniqAattr = getUniqAttr(params);
 
   if (uniqAattr) {
@@ -24,22 +30,18 @@ const getTagAttrs = (tag: string, params: TagAttrs) => {
   return `${tag}${attrsToString(params)}`;
 };
 
-/**
- * @export
- * @class TagNode
- */
-class TagNode {
+class TagNode<TagName = string, AttrValue = unknown> {
   public readonly tag: string
-  private readonly attrs: TagAttrs
-  public content: Array<TagNode | string>
+  public readonly attrs: Record<string, AttrValue>
+  public content: NodeContent<TagName, AttrValue>[]
 
-  constructor(tag: string, attrs: TagAttrs, content: TagContent = []) {
+  constructor(tag: string, attrs: Record<string, AttrValue>, content: TagNodeTree<TagName, AttrValue> = []) {
     this.tag = tag;
     this.attrs = attrs;
     this.content = Array.isArray(content) ? content : [content];
   }
 
-  attr(name: string, value?: string) {
+  attr(name: string, value?: AttrValue) {
     if (typeof value !== 'undefined') {
       this.attrs[name] = value;
     }
@@ -81,11 +83,11 @@ class TagNode {
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create(tag: string, attrs: TagAttrs = {}, content: TagContent = []) {
-    return  new TagNode(tag, attrs, content)
+  static create<TagName = string, AttrValue = unknown>(tag: string, attrs: Record<string, AttrValue> = {}, content: TagNodeTree<TagName, AttrValue> = []) {
+    return new TagNode(tag, attrs, content)
   }
 
-  static isOf(node: TagNode, type: string) {
+  static isOf<TagName = string, AttrValue = unknown>(node: TagNode<TagName, AttrValue>, type: string) {
     return (node.tag === type)
   }
 }

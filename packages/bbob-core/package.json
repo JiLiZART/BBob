@@ -20,13 +20,24 @@
     "core"
   ],
   "dependencies": {
-    "@bbob/parser": "workspace:*"
+    "@bbob/parser": "workspace:*",
+    "@bbob/plugin-helper": "workspace:*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "browser": "dist/index.js",
   "browserName": "BbobCore",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    }
+  },
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
@@ -41,12 +52,14 @@
     "build:commonjs": "../../scripts/pkg-task build-commonjs",
     "build:es": "../../scripts/pkg-task build-es",
     "build:umd": "../../scripts/pkg-task build-umd",
-    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
+    "build": "npm run gen-types && npm run build:commonjs && npm run build:es && npm run build:umd",
     "test": "../../scripts/pkg-task test",
     "cover": "../../scripts/pkg-task cover",
     "lint": "../../scripts/pkg-task lint",
     "size": "../../scripts/pkg-task size",
-    "bundlesize": "../../scripts/pkg-task bundlesize"
+    "bundlesize": "../../scripts/pkg-task bundlesize",
+    "gen-types": "../../scripts/pkg-task gen-types",
+    "prepublishOnly": "npm run build"
   },
   "size-limit": [
     {

@@ -14,7 +14,21 @@ import {
 import {
   Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD,
 } from './Token';
-import { createCharGrabber, trimChar, unquote } from './utils';
+import {CharGrabber, createCharGrabber, trimChar, unquote} from './utils';
+
+export type LexerTokenizer = {
+  tokenize: () => {}
+  isTokenNested?: (token: Token) => boolean,
+}
+
+export type LexerOptions = {
+  openTag?: string
+  closeTag?: string
+  onlyAllowTags?: string[]
+  enableEscapeTags?: boolean
+  contextFreeTags?: string[]
+  onToken?: (token?: Token) => void
+}
 
 // for cases <!-- -->
 const EM = '!';
@@ -26,7 +40,7 @@ const EM = '!';
  * @param {Number} r line number
  * @param {Number} cl char number in line
  */
-const createToken = (type, value, r = 0, cl = 0) => new Token(type, value, r, cl);
+const createToken = (type: number, value: string, r = 0, cl = 0) => new Token(type, value, r, cl);
 
 /**
  * @typedef {Object} Lexer
@@ -43,7 +57,7 @@ const createToken = (type, value, r = 0, cl = 0) => new Token(type, value, r, cl
  * @param {Boolean} options.enableEscapeTags
  * @return {Lexer}
  */
-function createLexer(buffer, options = {}) {
+function createLexer(buffer: string, options: LexerOptions = {}) {
   const STATE_WORD = 0;
   const STATE_TAG = 1;
   const STATE_TAG_ATTRS = 2;
@@ -74,20 +88,20 @@ function createLexer(buffer, options = {}) {
   const WHITESPACES = [SPACE, TAB];
   const SPECIAL_CHARS = [EQ, SPACE, TAB];
 
-  const isCharReserved = (char) => (RESERVED_CHARS.indexOf(char) >= 0);
-  const isNewLine = (char) => char === N;
-  const isWhiteSpace = (char) => (WHITESPACES.indexOf(char) >= 0);
-  const isCharToken = (char) => (NOT_CHAR_TOKENS.indexOf(char) === -1);
-  const isSpecialChar = (char) => (SPECIAL_CHARS.indexOf(char) >= 0);
-  const isEscapableChar = (char) => (char === openTag || char === closeTag || char === BACKSLASH);
-  const isEscapeChar = (char) => char === BACKSLASH;
+  const isCharReserved = (char: string) => (RESERVED_CHARS.indexOf(char) >= 0);
+  const isNewLine = (char: string) => char === N;
+  const isWhiteSpace = (char: string) => (WHITESPACES.indexOf(char) >= 0);
+  const isCharToken = (char: string) => (NOT_CHAR_TOKENS.indexOf(char) === -1);
+  const isSpecialChar = (char: string) => (SPECIAL_CHARS.indexOf(char) >= 0);
+  const isEscapableChar = (char: string) => (char === openTag || char === closeTag || char === BACKSLASH);
+  const isEscapeChar = (char: string) => char === BACKSLASH;
   const onSkip = () => {
     col++;
   };
 
-  const unq = (val) => unquote(trimChar(val, QUOTEMARK));
+  const unq = (val: string) => unquote(trimChar(val, QUOTEMARK));
 
-  const checkContextFreeMode = (name, isClosingTag) => {
+  const checkContextFreeMode = (name: string, isClosingTag?: boolean) => {
     if (contextFreeTag !== '' && isClosingTag) {
       contextFreeTag = '';
     }
@@ -104,7 +118,7 @@ function createLexer(buffer, options = {}) {
    * @param {Number} type
    * @param {String} value
    */
-  function emitToken(type, value) {
+  function emitToken(type: number, value: string) {
     const token = createToken(type, value, row, col);
 
     onToken(token);
@@ -113,9 +127,9 @@ function createLexer(buffer, options = {}) {
     tokens[tokenIndex] = token;
   }
 
-  function nextTagState(tagChars, isSingleValueTag) {
+  function nextTagState(tagChars: CharGrabber, isSingleValueTag: boolean) {
     if (tagMode === TAG_STATE_ATTR) {
-      const validAttrName = (char) => !(char === EQ || isWhiteSpace(char));
+      const validAttrName = (char: string) => !(char === EQ || isWhiteSpace(char));
       const name = tagChars.grabWhile(validAttrName);
       const isEnd = tagChars.isLast();
       const isValue = tagChars.getCurr() !== EQ;
@@ -141,7 +155,7 @@ function createLexer(buffer, options = {}) {
     if (tagMode === TAG_STATE_VALUE) {
       let stateSpecial = false;
 
-      const validAttrValue = (char) => {
+      const validAttrValue = (char: string) => {
         // const isEQ = char === EQ;
         const isQM = char === QUOTEMARK;
         const prevChar = tagChars.getPrev();
@@ -150,7 +164,7 @@ function createLexer(buffer, options = {}) {
         const isNextEQ = nextChar === EQ;
         const isWS = isWhiteSpace(char);
         // const isPrevWS = isWhiteSpace(prevChar);
-        const isNextWS = isWhiteSpace(nextChar);
+        const isNextWS = nextChar && isWhiteSpace(nextChar);
 
         if (stateSpecial && isSpecialChar(char)) {
           return true;
@@ -165,7 +179,7 @@ function createLexer(buffer, options = {}) {
         }
 
         if (!isSingleValueTag) {
-          return isWS === false;
+          return !isWS;
           // return (isEQ || isWS) === false;
         }
 
@@ -184,7 +198,7 @@ function createLexer(buffer, options = {}) {
       return TAG_STATE_ATTR;
     }
 
-    const validName = (char) => !(char === EQ || isWhiteSpace(char) || tagChars.isLast());
+    const validName = (char: string) => !(char === EQ || isWhiteSpace(char) || tagChars.isLast());
     const name = tagChars.grabWhile(validName);
 
     emitToken(TYPE_TAG, name);
@@ -212,7 +226,7 @@ function createLexer(buffer, options = {}) {
     const substr = chars.substrUntilChar(closeTag);
     const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
 
-    if (isCharReserved(nextChar) || hasInvalidChars || chars.isLast()) {
+    if ((nextChar && isCharReserved(nextChar)) || hasInvalidChars || chars.isLast()) {
       emitToken(TYPE_WORD, currChar);
 
       return STATE_WORD;
@@ -302,7 +316,7 @@ function createLexer(buffer, options = {}) {
 
         chars.skip(); // skip the \ without emitting anything
 
-        if (isEscapableChar(nextChar)) {
+        if (nextChar && isEscapableChar(nextChar)) {
           chars.skip(); // skip past the [, ] or \ as well
 
           emitToken(TYPE_WORD, nextChar);
@@ -315,7 +329,7 @@ function createLexer(buffer, options = {}) {
         return STATE_WORD;
       }
 
-      const isChar = (char) => isCharToken(char) && !isEscapeChar(char);
+      const isChar = (char: string) => isCharToken(char) && !isEscapeChar(char);
 
       const word = chars.grabWhile(isChar);
 
@@ -354,7 +368,7 @@ function createLexer(buffer, options = {}) {
     return tokens;
   }
 
-  function isTokenNested(token) {
+  function isTokenNested(token: Token) {
     const value = openTag + SLASH + token.getValue();
     // potential bottleneck
     return buffer.indexOf(value) > -1;
@@ -363,7 +377,7 @@ function createLexer(buffer, options = {}) {
   return {
     tokenize,
     isTokenNested,
-  };
+  } as LexerTokenizer
 }
 
 export const createTokenOfType = createToken;

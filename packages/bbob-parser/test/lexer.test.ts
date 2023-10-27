@@ -1,6 +1,14 @@
 import { TYPE_ID, VALUE_ID, TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE} from '../src/Token'
 import { createLexer } from '../src/lexer'
 
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeMantchOutput(expected: Array<unknown>): CustomMatcherResult;
+    }
+  }
+}
+
 const TYPE = {
   WORD: TYPE_WORD,
   TAG: TYPE_TAG,
@@ -10,13 +18,15 @@ const TYPE = {
   NEW_LINE: TYPE_NEW_LINE,
 };
 
-const TYPE_NAMES = Object.fromEntries(Object.keys(TYPE).map(key => [TYPE[key], key]));
+const TYPE_NAMES = Object.fromEntries(Object.keys(TYPE).map((key: keyof typeof TYPE) => [TYPE[key], key]));
 
-const tokenize = input => (createLexer(input).tokenize());
-const tokenizeEscape = input => (createLexer(input, { enableEscapeTags: true }).tokenize());
-const tokenizeContextFreeTags = (input, tags = []) => (createLexer(input, { contextFreeTags: tags }).tokenize());
+const tokenize = (input: string) => (createLexer(input).tokenize());
+const tokenizeEscape = (input: string) => (createLexer(input, { enableEscapeTags: true }).tokenize());
+const tokenizeContextFreeTags = (input: string, tags: string[] = []) => (createLexer(input, { contextFreeTags: tags }).tokenize());
 
 describe('lexer', () => {
+
+
   expect.extend({
     toBeMantchOutput(tokens, output) {
       if (tokens.length !== output.length) {
@@ -497,7 +507,7 @@ describe('lexer', () => {
   });
 
   describe('html', () => {
-    const tokenizeHTML = input => createLexer(input, { openTag: '<', closeTag: '>' }).tokenize();
+    const tokenizeHTML = (input: string) => createLexer(input, { openTag: '<', closeTag: '>' }).tokenize();
 
     test('normal attributes', () => {
       const content = `<button id="test0" class="value0" title="value1">class="value0" title="value1"</button>`;
@@ -575,9 +585,7 @@ input.buttonred{cursor:hand;font-family:verdana;background:#d12124;color:#fff;he
 -->
 </style>`
       const tokens = tokenizeHTML(content);
-      const output = [];
-
-      expect(tokens).toBeMantchOutput(output);
+      expect(tokens).toBeMantchOutput([]);
     });
 
     test.skip('script tag', () => {
@@ -588,9 +596,7 @@ input.buttonred{cursor:hand;font-family:verdana;background:#d12124;color:#fff;he
 		//-->
 	</script>`;
       const tokens = tokenizeHTML(content);
-      const output = [];
-
-      expect(tokens).toBeMantchOutput(output);
+      expect(tokens).toBeMantchOutput([]);
     })
   })
 });
