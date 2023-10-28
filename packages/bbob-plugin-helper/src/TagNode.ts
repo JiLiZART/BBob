@@ -9,9 +9,9 @@ import {
 
 export type StringNode = string
 
-export type NodeContent<TagName = string, AttrValue = unknown> = TagNode<TagName, AttrValue> | StringNode
+export type NodeContent = TagNode | StringNode
 
-export type TagNodeTree<TagName = string, AttrValue = unknown> = NodeContent<TagName, AttrValue> | Array<NodeContent<TagName, AttrValue>>
+export type TagNodeTree = NodeContent | Array<NodeContent>
 
 const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) => {
   const uniqAattr = getUniqAttr(params);
@@ -30,18 +30,18 @@ const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) 
   return `${tag}${attrsToString(params)}`;
 };
 
-class TagNode<TagName = string, AttrValue = unknown> {
+class TagNode {
   public readonly tag: string
-  public readonly attrs: Record<string, AttrValue>
-  public content: NodeContent<TagName, AttrValue>[]
+  public readonly attrs: Record<string, unknown>
+  public content: NodeContent[]
 
-  constructor(tag: string, attrs: Record<string, AttrValue>, content: TagNodeTree<TagName, AttrValue> = []) {
+  constructor(tag: string, attrs: Record<string, unknown>, content: TagNodeTree = []) {
     this.tag = tag;
     this.attrs = attrs;
     this.content = Array.isArray(content) ? content : [content];
   }
 
-  attr(name: string, value?: AttrValue) {
+  attr(name: string, value?: unknown) {
     if (typeof value !== 'undefined') {
       this.attrs[name] = value;
     }
@@ -83,11 +83,11 @@ class TagNode<TagName = string, AttrValue = unknown> {
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create<TagName = string, AttrValue = unknown>(tag: string, attrs: Record<string, AttrValue> = {}, content: TagNodeTree<TagName, AttrValue> = []) {
+  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = []) {
     return new TagNode(tag, attrs, content)
   }
 
-  static isOf<TagName = string, AttrValue = unknown>(node: TagNode<TagName, AttrValue>, type: string) {
+  static isOf(node: TagNode, type: string) {
     return (node.tag === type)
   }
 }

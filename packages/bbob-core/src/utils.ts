@@ -3,17 +3,17 @@ import type { NodeContent, TagNode, TagNodeTree } from '@bbob/plugin-helper'
 
 const isObj = (value: unknown): value is Record<string, unknown> => (typeof value === 'object');
 const isBool = (value: unknown): value is boolean => (typeof value === 'boolean');
-const isNodeTree = <TagName, AttrValue>(value: unknown): value is TagNode<TagName, AttrValue> => Boolean(value && isObj(value) && 'content' in value)
+const isNodeTree = (value: unknown): value is TagNode => Boolean(value && isObj(value) && 'content' in value)
 
-export type IterateCallback<TagName = string, AttrValue = unknown> = (node: NodeContent<TagName, AttrValue>) => NodeContent<TagName, AttrValue>
+export type IterateCallback = (node: NodeContent) => NodeContent
 
-export function iterate<TagName = string, AttrValue = unknown>(t: TagNodeTree<TagName, AttrValue>, cb: IterateCallback<TagName, AttrValue>): TagNodeTree<TagName, AttrValue> {
+export function iterate(t: TagNodeTree, cb: IterateCallback): TagNodeTree {
   const tree = t;
 
   if (Array.isArray(tree)) {
       for (let idx = 0; idx < tree.length; idx++) {
-          const oldNode = tree[idx] as NodeContent<TagName, AttrValue>
-          tree[idx] = iterate<TagName, AttrValue>(cb(oldNode), cb) as NodeContent<TagName, AttrValue>;
+          const oldNode = tree[idx] as NodeContent
+          tree[idx] = iterate(cb(oldNode), cb) as NodeContent;
       }
   } else if (isNodeTree(tree)) {
       iterate(tree.content, cb);

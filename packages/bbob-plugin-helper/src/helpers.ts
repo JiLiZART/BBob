@@ -1,8 +1,8 @@
 import { N } from './char';
 import type { NodeContent, StringNode, TagNode } from "./TagNode";
 
-function isTagNode<TagName = string, AttrValue = unknown>(el: NodeContent<TagName, AttrValue>): el is TagNode<TagName, AttrValue> {
-    return  typeof el === 'object' && !!el.tag;
+function isTagNode(el: NodeContent): el is TagNode {
+    return typeof el === 'object' && el !== null && !!el.tag;
 }
 
 function isStringNode(el: unknown): el is StringNode {
@@ -20,7 +20,7 @@ function keysReduce<Res, Def extends Res, T extends Record<string, unknown>>(obj
     return keys.reduce((acc, key) => reduce(acc, key), def)
 }
 
-function getNodeLength<TagName = string, AttrValue = unknown>(node: NodeContent<TagName, AttrValue>): number {
+function getNodeLength(node: NodeContent): number {
     if (isTagNode(node)) {
         return node.content.reduce((count, contentNode) => count + getNodeLength(contentNode), 0);
     }
@@ -31,7 +31,7 @@ function getNodeLength<TagName = string, AttrValue = unknown>(node: NodeContent<
     return 0;
 }
 
-function appendToNode<TagName = string, AttrValue = unknown>(node: TagNode<TagName, AttrValue>, value: NodeContent<TagName, AttrValue>) {
+function appendToNode(node: TagNode, value: NodeContent) {
     node.content.push(value);
 }
 

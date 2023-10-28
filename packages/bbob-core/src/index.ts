@@ -5,10 +5,10 @@ import type { IterateCallback } from './utils';
 import type { TagNodeTree, TagNode } from "@bbob/plugin-helper";
 import type { ParseOptions } from "@bbob/parser";
 
-export interface BBobCoreOptions<TagName = string, AttrValue = unknown> extends ParseOptions {
+export interface BBobCoreOptions extends ParseOptions {
     skipParse?: boolean
-    parser?: (source: string, options: ParseOptions) => TagNode<TagName, AttrValue>[]
-    render: (ast: TagNodeTree<TagName, AttrValue>, options?: ParseOptions) => string
+    parser?: (source: string, options: ParseOptions) => TagNode[]
+    render: (ast: TagNodeTree, options?: ParseOptions) => string
     data?: unknown | null
 }
 
@@ -19,29 +19,29 @@ export interface BbobPluginOptions {
     data: unknown | null,
 }
 
-export interface BBobPluginFunction<TagName = string, AttrValue = unknown> {
-    (tree: TagNodeTree<TagName, AttrValue>, options: BbobPluginOptions): BbobCoreTagNodeTree<TagName, AttrValue>
+export interface BBobPluginFunction {
+    (tree: TagNodeTree, options: BbobPluginOptions): BbobCoreTagNodeTree
 }
 
-export type BBobCore<TagName = string, AttrValue = unknown, InputValue = string | TagNode<TagName, AttrValue>[]> = {
+export interface BBobCore<InputValue = string | TagNode[]>{
     process(input: InputValue, opts?: BBobCoreOptions): {
         readonly html: string,
-        tree: TagNode<TagName, AttrValue>[],
-        raw: TagNode<TagName, AttrValue>[] | string,
+        tree: TagNode[],
+        raw: TagNode[] | string,
         messages: unknown[],
     }
 }
 
-export type BbobCoreTagNodeTree<TagName = string, AttrValue = unknown> = {
+export type BbobCoreTagNodeTree = {
     messages: unknown[],
     options: BBobCoreOptions,
-    walk: (cb: IterateCallback<TagName, AttrValue>) => TagNodeTree<TagName, AttrValue>
-    match: (expression: TagNode<TagName, AttrValue>[] | TagNode<TagName, AttrValue>, cb: IterateCallback<TagName, AttrValue>) => TagNode<TagName, AttrValue>[]
-} & TagNode<TagName, AttrValue>[]
+    walk: (cb: IterateCallback) => TagNodeTree
+    match: (expression: TagNode[] | TagNode, cb: IterateCallback) => TagNode[]
+} & TagNode[]
 
-export default function bbob<TagName = string, AttrValue = unknown>(
-    plugs: BBobPluginFunction<TagName, AttrValue> | BBobPluginFunction<TagName, AttrValue>[]
-): BBobCore<TagName, AttrValue> {
+export default function bbob(
+    plugs: BBobPluginFunction | BBobPluginFunction[]
+): BBobCore {
     const plugins = typeof plugs === 'function' ? [plugs] : plugs || [];
     const mockRender = () => ""
 
@@ -56,7 +56,7 @@ export default function bbob<TagName = string, AttrValue = unknown>(
                 throw new Error('"parser" is not a function, please pass to "process(input, { parser })" right function');
             }
 
-            let tree = (options.skipParse ? (input || []) : parseFn(input as string, options)) as TagNode<TagName, AttrValue>[]
+            let tree = (options.skipParse ? (input || []) : parseFn(input as string, options)) as TagNode[]
 
             // raw tree before modification with plugins
             const raw = [...tree];
@@ -65,14 +65,14 @@ export default function bbob<TagName = string, AttrValue = unknown>(
 
             extendedTree.messages = []
             extendedTree.options = options
-            extendedTree.walk = function walk<TagName = string, AttrValue = unknown>(cb: IterateCallback<TagName, AttrValue>) {
+            extendedTree.walk = function walk(cb: IterateCallback) {
                 return iterate(this, cb);
             }
-            extendedTree.match = function match<TagName = string, AttrValue = unknown>(
-                expression: TagNode<TagName, AttrValue>[] | TagNode<TagName, AttrValue>,
-                cb: IterateCallback<TagName, AttrValue>
+            extendedTree.match = function match(
+                expression: TagNode[] | TagNode,
+                cb: IterateCallback
             ) {
-                return iterate<TagName, AttrValue>(this, (node) => {
+                return iterate(this, (node) => {
                     if (Array.isArray(expression)) {
                         for (let idx = 0; idx < expression.length; idx++) {
                             if (same(expression[idx], node)) {
@@ -82,7 +82,7 @@ export default function bbob<TagName = string, AttrValue = unknown>(
                     }
 
                     return same(expression, node) ? cb(node) : node;
-                }) as TagNode<TagName, AttrValue>[]
+                }) as TagNode[]
             }
 
             for (let idx = 0; idx < plugins.length; idx++) {

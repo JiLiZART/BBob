@@ -6,18 +6,18 @@ import type { TagNode } from '@bbob/plugin-helper'
 
 export type PresetFactoryOptions = Record<string, unknown>
 
-export type PresetTagFunction<TagName = string, AttrValue = unknown> = (
-    node: TagNode<TagName, AttrValue>,
+export type PresetTagFunction = (
+    node: TagNode,
     core: BbobPluginOptions,
     options: PresetFactoryOptions
-) => NodeContent<TagName, AttrValue>
+) => NodeContent
 
-export type PresetTagsDefinition<TagName = string, AttrValue = unknown> =
-    Record<string, PresetTagFunction<TagName, AttrValue>>
+export type PresetTagsDefinition =
+    Record<string, PresetTagFunction>
 
 function process<TagName extends string = string, AttrValue = unknown>(
-    tags: PresetTagsDefinition<TagName, AttrValue>,
-    tree: BbobCoreTagNodeTree<TagName, AttrValue>,
+    tags: PresetTagsDefinition,
+    tree: BbobCoreTagNodeTree,
     core: BbobPluginOptions,
     options: PresetFactoryOptions = {}
 ) {
@@ -36,7 +36,7 @@ function process<TagName extends string = string, AttrValue = unknown>(
 export type ProcessorFunction = typeof process
 
 export type PresetExecutor<TagName extends string = string, AttrValue = unknown> = {
-    (tree: BbobCoreTagNodeTree<TagName, AttrValue>, core: BbobPluginOptions): ReturnType<ProcessorFunction>
+    (tree: BbobCoreTagNodeTree, core: BbobPluginOptions): ReturnType<ProcessorFunction>
     options: PresetOptions,
 }
 
@@ -44,9 +44,9 @@ export type PresetOptions = Record<string, unknown>
 export type PresetExtendCallback = (defTags: PresetTagsDefinition, options: PresetOptions) => PresetTagsDefinition
 
 export type PresetFactory<TagName extends string = string, AttrValue = unknown> = {
-    (opts?: PresetOptions): PresetExecutor<TagName, AttrValue>,
+    (opts?: PresetOptions): PresetExecutor,
     options?: PresetOptions,
-    extend: (cb: PresetExtendCallback) => PresetFactory<TagName, AttrValue>
+    extend: (cb: PresetExtendCallback) => PresetFactory
 }
 
 /**

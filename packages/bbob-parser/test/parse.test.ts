@@ -2,7 +2,7 @@ import { parse } from '../src'
 import type { TagNodeTree } from "@bbob/plugin-helper";
 
 describe('Parser', () => {
-  const expectOutput = <TagName = string, AttrValue = unknown>(ast: TagNodeTree<TagName, AttrValue>, output: Partial<TagNodeTree<TagName, AttrValue>>) => {
+  const expectOutput = (ast: TagNodeTree, output: Partial<TagNodeTree>) => {
     expect(ast).toBeInstanceOf(Array);
     expect(ast).toEqual(output);
   };
