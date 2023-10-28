@@ -41,7 +41,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Bootstrap dependencies
-        run: npm run build && npm run bootstrap
+        run: npm run bootstrap && npm run build
 
       - name: Run benchmark
         run: cd benchmark && npm start
