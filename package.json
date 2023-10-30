@@ -12,7 +12,8 @@
     "bundlesize": "nx run-many --target=bundlesize",
     "test": "npm run build && nx run-many --target=link && nx run-many --target=test",
     "cover": "nx run-many --target=cover",
-    "build": "nx run-many --target=build",
+    "build": "npm run gen-types && nx run-many --target=build",
+    "gen-types": "nx run-many --target=gen-types",
     "release": "npm run build && changeset publish",
     "lint": "nx run-many --target=link && npm run build && nx run-many --target=lint"
   },
