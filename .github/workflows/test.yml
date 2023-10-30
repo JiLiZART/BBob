@@ -25,9 +25,6 @@ jobs:
             args: [--frozen-lockfile, --strict-peer-dependencies]
           - args: [--global, codecov]
 
-    - name: Bootstrap packages
-      run: pnpm bootstrap
-
     - name: Run the lint
       run: pnpm lint
 
