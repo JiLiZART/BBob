@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus,no-param-reassign */
-import {
+const {
   OPEN_BRAKET,
   CLOSE_BRAKET,
   QUOTEMARK,
@@ -9,12 +9,12 @@ import {
   TAB,
   EQ,
   N,
-} from '@bbob/plugin-helper';
+} = require('@bbob/plugin-helper');
 
-import {
+const {
   Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD,
-} from './Token';
-import { createCharGrabber, trimChar, unquote } from './utils';
+} = require('@bbob/parser/Token');
+const { createCharGrabber, trimChar, unquote } = require('@bbob/parser/utils');
 
 // for cases <!-- -->
 const EM = '!';
@@ -238,5 +238,4 @@ function createLexer(buffer, options = {}) {
   };
 }
 
-export const createTokenOfType = createToken;
-export { createLexer };
+module.exports.createLexer = createLexer;

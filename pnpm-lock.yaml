@@ -140,6 +140,9 @@ importers:
       '@bbob/parser':
         specifier: workspace:*
         version: link:../packages/bbob-parser
+      '@bbob/plugin-helper':
+        specifier: workspace:*
+        version: link:../packages/bbob-plugin-helper
       benchmark:
         specifier: 2.1.4
         version: 2.1.4

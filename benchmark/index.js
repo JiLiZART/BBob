@@ -48,7 +48,7 @@ suite
     });
   })
   .add('@bbob/parser lexer old', () => {
-    const lexer1 = require('@bbob/parser/src/lexer_old');
+    const lexer1 = require('./lexer_old');
 
     return require('@bbob/parser').parse(stub, {
       onlyAllowTags: ['ch'],
