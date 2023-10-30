@@ -1,2 +1,3 @@
 export { TagNode } from '@bbob/plugin-helper';
+export { default } from './parse';
 export * from './parse';
