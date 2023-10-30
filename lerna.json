@@ -28,5 +28,6 @@
     }
   },
   "npmClient": "pnpm",
-  "useNx": true
+  "useNx": true,
+  "useWorkspaces": true
 }
