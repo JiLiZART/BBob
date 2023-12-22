@@ -4,6 +4,7 @@ import {
     getUniqAttr,
     isStringNode,
     isTagNode,
+    TagNodeTree,
 } from '@bbob/plugin-helper';
 
 import type { NodeContent } from '@bbob/plugin-helper';
@@ -34,7 +35,7 @@ const getStyleFromAttrs = (attrs: Record<string, unknown>) => {
         .join(' ')
 };
 
-const asListItems = (content: NodeContent[]): NodeContent[] => {
+const asListItems = (content: TagNodeTree): NodeContent[] => {
     let listIdx = 0;
     const listItems = [] as Array<NodeContent>;
 
@@ -45,7 +46,7 @@ const asListItems = (content: NodeContent[]): NodeContent[] => {
     const addItem = (val: NodeContent) => {
         const listItem = listItems[listIdx]
 
-        if (listItem && isTagNode(listItem) && listItem.content) {
+        if (listItem && isTagNode(listItem) && Array.isArray(listItem.content)) {
             listItem.content = listItem.content.concat(val);
         }
         // else if (Array.isArray(listItem) && Array.isArray(listItems[listIdx])) {
@@ -53,39 +54,41 @@ const asListItems = (content: NodeContent[]): NodeContent[] => {
         // }
     };
 
-    content.forEach((el) => {
+    if (Array.isArray(content)) {
+      content.forEach((el) => {
         if (isStringNode(el) && isStartsWith(el, '*')) {
-            if (listItems[listIdx]) {
-                listIdx++;
-            }
-            ensureListItem(createItemNode());
-            addItem(el.substr(1));
-        } else if (isTagNode(el) && TagNode.isOf(el, '*')) {
-            if (listItems[listIdx]) {
-                listIdx++;
-            }
-            ensureListItem(createItemNode());
-        } else if (!isTagNode(listItems[listIdx])) {
+          if (listItems[listIdx]) {
             listIdx++;
-            ensureListItem(el);
+          }
+          ensureListItem(createItemNode());
+          addItem(el.substr(1));
+        } else if (isTagNode(el) && TagNode.isOf(el, '*')) {
+          if (listItems[listIdx]) {
+            listIdx++;
+          }
+          ensureListItem(createItemNode());
+        } else if (!isTagNode(listItems[listIdx])) {
+          listIdx++;
+          ensureListItem(el);
         } else if (listItems[listIdx]) {
-            addItem(el);
+          addItem(el);
         } else {
-            ensureListItem(el);
+          ensureListItem(el);
         }
-    });
+      });
+    }
 
     return listItems;
 };
 
 const renderUrl = (node: TagNode, render: BbobPluginOptions['render']) => (getUniqAttr(node.attrs)
     ? getUniqAttr(node.attrs)
-    : render(node.content));
+    : render(node.content || []));
 
 const toNode = (
     tag: string,
     attrs: Record<string, unknown>,
-    content: NodeContent[] = []
+    content: TagNodeTree
 ) => TagNode.create(tag, attrs, content);
 
 const toStyle = (style: string) => ({ style });
@@ -100,7 +103,7 @@ const defaultTags: PresetTagsDefinition = {
     }, node.content),
     img: (node, { render }) => toNode('img', {
         src: render(node.content),
-    }, undefined),
+    }, null),
     quote: (node) => toNode('blockquote', {}, [toNode('p', {}, node.content)]),
     code: (node) => toNode('pre', {}, node.content),
     style: (node) => toNode('span', toStyle(getStyleFromAttrs(node.attrs)), node.content),

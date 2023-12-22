@@ -15,7 +15,7 @@ export function iterate(t: TagNodeTree, cb: IterateCallback): TagNodeTree {
           const oldNode = tree[idx] as NodeContent
           tree[idx] = iterate(cb(oldNode), cb) as NodeContent;
       }
-  } else if (isNodeTree(tree)) {
+  } else if (isNodeTree(tree) && tree.content) {
       iterate(tree.content, cb);
   }
 

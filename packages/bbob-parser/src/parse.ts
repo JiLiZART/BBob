@@ -1,9 +1,9 @@
 import {
-    CLOSE_BRAKET,
-    OPEN_BRAKET,
-    TagNode,
-    isTagNode,
-    NodeContent,
+  CLOSE_BRAKET,
+  OPEN_BRAKET,
+  TagNode,
+  isTagNode,
+  NodeContent, TagNodeTree,
 } from '@bbob/plugin-helper';
 
 import { createLexer } from './lexer';
@@ -125,13 +125,13 @@ function parse(input: string, opts: ParseOptions = {}) {
     /**
      * @private
      */
-    function appendNodeAsString(nodes: NodeContent[], node: TagNode, isNested = true) {
+    function appendNodeAsString(nodes?: TagNodeTree, node?: TagNode, isNested = true) {
         // const items = getNodes();
 
-        if (Array.isArray(nodes)) {
+        if (Array.isArray(nodes) && node) {
             nodes.push(node.toTagStart({ openTag, closeTag }));
 
-            if (node.content.length) {
+            if (Array.isArray(node.content) && node.content.length) {
                 node.content.forEach((item) => {
                     nodes.push(item);
                 });
@@ -146,10 +146,10 @@ function parse(input: string, opts: ParseOptions = {}) {
     /**
      * @private
      */
-    function appendNodes(nodes: NodeContent[], node: TagNode | string) {
+    function appendNodes(nodes?: TagNodeTree, node?: TagNode | string) {
         // const items = getNodes();
 
-        if (Array.isArray(nodes)) {
+        if (Array.isArray(nodes) && node) {
             if (isTagNode(node)) {
                 if (isAllowedTag(node.tag)) {
                     nodes.push(node.toTagNode());

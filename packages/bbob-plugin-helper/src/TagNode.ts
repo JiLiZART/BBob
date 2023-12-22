@@ -11,7 +11,7 @@ export type StringNode = string
 
 export type NodeContent = TagNode | StringNode
 
-export type TagNodeTree = NodeContent | Array<NodeContent>
+export type TagNodeTree = NodeContent | Array<NodeContent> | null
 
 const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) => {
   const uniqAttr = getUniqAttr(params);
@@ -30,15 +30,29 @@ const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) 
   return `${tag}${attrsToString(params)}`;
 };
 
+const renderContent = (content: TagNodeTree, openTag: string, closeTag: string) => {
+  if (Array.isArray(content)) {
+    if (content.length) {
+      return content.reduce((r, node) => r + node.toString({ openTag, closeTag }), '')
+    }
+  }
+
+  if (content) {
+    return content.toString({ openTag, closeTag })
+  }
+
+  return null
+}
+
 class TagNode {
   public readonly tag: string
   public readonly attrs: Record<string, unknown>
-  public content: NodeContent[]
+  public content: TagNodeTree
 
-  constructor(tag: string, attrs: Record<string, unknown>, content: TagNodeTree = []) {
+  constructor(tag: string, attrs?: Record<string, unknown>, content?: TagNodeTree) {
     this.tag = tag;
-    this.attrs = attrs;
-    this.content = Array.isArray(content) ? content : [content];
+    this.attrs = attrs || {};
+    this.content = content || null;
   }
 
   attr(name: string, value?: unknown) {
@@ -72,18 +86,17 @@ class TagNode {
   }
 
   toString({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}): string {
-    const isEmpty = this.content.length === 0;
-    const content = this.content.reduce((r, node) => r + node.toString({ openTag, closeTag }), '');
+    const content = this.content ? renderContent(this.content, openTag, closeTag) : ''
     const tagStart = this.toTagStart({ openTag, closeTag });
 
-    if (isEmpty) {
+    if (content === null) {
       return tagStart;
     }
 
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = []) {
+  static create(tag: string, attrs?: Record<string, unknown>, content?: TagNodeTree) {
     return new TagNode(tag, attrs, content)
   }
 
