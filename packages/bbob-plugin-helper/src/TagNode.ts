@@ -14,13 +14,13 @@ export type NodeContent = TagNode | StringNode
 export type TagNodeTree = NodeContent | Array<NodeContent>
 
 const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) => {
-  const uniqAattr = getUniqAttr(params);
+  const uniqAttr = getUniqAttr(params);
 
-  if (uniqAattr) {
-    const tagAttr = attrValue(tag, uniqAattr);
+  if (uniqAttr) {
+    const tagAttr = attrValue(tag, uniqAttr);
     const attrs = { ...params };
 
-    delete attrs[String(uniqAattr)];
+    delete attrs[String(uniqAttr)];
 
     const attrsStr = attrsToString(attrs);
 

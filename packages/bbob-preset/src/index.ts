@@ -12,8 +12,8 @@ export type PresetTagFunction = (
     options: PresetFactoryOptions
 ) => NodeContent
 
-export type PresetTagsDefinition =
-    Record<string, PresetTagFunction>
+export type PresetTagsDefinition<Names extends string = string> =
+    Record<Names, PresetTagFunction>
 
 function process<TagName extends string = string, AttrValue = unknown>(
     tags: PresetTagsDefinition,

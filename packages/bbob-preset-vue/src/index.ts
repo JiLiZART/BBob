@@ -1,12 +1,13 @@
 import presetHTML5 from '@bbob/preset-html5';
+import type { PresetTagsDefinition } from '@bbob/preset';
 
-export const tagAttr = (style) => ({
+export const tagAttr = (style: Record<string, string>) => ({
   attrs: {
     style,
   },
 });
 
-export const createTags = (tags) => ({
+export const createTags = (tags: PresetTagsDefinition<'b' | 'i' | 'u' | 's'>) => ({
   b: (...args) => ({
     ...tags.b(...args),
     ...tagAttr({ fontWeight: 'bold' }),
@@ -26,7 +27,7 @@ export const createTags = (tags) => ({
     ...tags.s(...args),
     ...tagAttr({ textDecoration: 'line-through' }),
   }),
-});
+} as PresetTagsDefinition);
 
 export default presetHTML5.extend((tags) => ({
   ...tags,
