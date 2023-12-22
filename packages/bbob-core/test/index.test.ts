@@ -1,9 +1,10 @@
 import { TagNode } from '@bbob/parser'
-import core from '../src'
+import core, { BBobPluginFunction, BBobPlugins } from '../src'
+import { isTagNode } from "@bbob/plugin-helper";
 
-const stringify = val => JSON.stringify(val);
+const stringify = (val: unknown) => JSON.stringify(val);
 
-const process = (plugins, input) => core(plugins).process(input, { render: stringify });
+const process = (plugins: BBobPlugins, input: string) => core(plugins).process(input, { render: stringify });
 
 describe('@bbob/core', () => {
   test('parse bbcode string to ast and html', () => {
@@ -22,17 +23,28 @@ describe('@bbob/core', () => {
   });
 
   test('plugin walk api node', () => {
-    const testPlugin = () => (tree) => tree.walk(node => {
-      if (node.tag === 'mytag') {
-        node.attrs = {
-          pass: 1
-        };
+    const testPlugin = () => {
 
-        node.content.push('Test');
-      }
+      const plugin: BBobPluginFunction = (tree) => tree.walk(node => {
 
-      return node
-    });
+        if (isTagNode(node)) {
+          if (node?.tag === 'mytag') {
+            node.attrs = {
+              pass: 1
+            };
+
+            if (Array.isArray(node.content)) {
+              node.content.push('Test');
+            }
+          }
+
+        }
+
+        return node
+      });
+
+      return plugin
+    }
 
     const res = process([testPlugin()], '[mytag size="15px"]Large Text[/mytag]');
     const ast = res.tree;
@@ -56,13 +68,18 @@ describe('@bbob/core', () => {
   });
 
   test('plugin walk api string', () => {
-    const testPlugin = () => (tree) => tree.walk(node => {
-      if (node === ':)') {
-        return TagNode.create('test-tag')
-      }
+    const testPlugin = () => {
 
-      return node
-    });
+      const plugin: BBobPluginFunction = (tree) => tree.walk(node => {
+        if (node === ':)') {
+          return TagNode.create('test-tag')
+        }
+
+        return node
+      })
+
+      return plugin
+    };
 
     const res = process([testPlugin()], '[mytag]Large Text :)[/mytag]');
     const ast = res.tree;
@@ -89,13 +106,18 @@ describe('@bbob/core', () => {
   });
 
   test('plugin match api', () => {
-    const testPlugin = () => (tree) => tree.match([{ tag: 'mytag1' }, { tag: 'mytag2' }], node => {
-      if (node.attrs) {
-        node.attrs['pass'] = 1
-      }
+    const testPlugin = () => {
 
-      return node
-    });
+      const plugin: BBobPluginFunction = (tree) => tree.match([{ tag: 'mytag1' }, { tag: 'mytag2' }], node => {
+        if (isTagNode(node) && node.attrs) {
+          node.attrs['pass'] = 1
+        }
+
+        return node
+      })
+
+      return plugin
+    };
 
     const res = process([testPlugin()], `[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]`);
     const ast = res.tree;

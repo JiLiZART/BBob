@@ -3,17 +3,16 @@ import {
   OPEN_BRAKET,
   TagNode,
   isTagNode,
-  NodeContent, TagNodeTree,
 } from '@bbob/plugin-helper';
 
 import { createLexer } from './lexer';
 import { createList } from './utils';
 
+import type { NodeContent, TagNodeTree } from '@bbob/plugin-helper'
 import type { LexerTokenizer, LexerOptions } from './lexer';
 import type { Token } from './Token';
 
 type ParseError = {
-    message: string
     tagName: string,
     lineNumber: number,
     columnNumber: number,
@@ -126,9 +125,7 @@ function parse(input: string, opts: ParseOptions = {}) {
      * @private
      */
     function appendNodeAsString(nodes?: TagNodeTree, node?: TagNode, isNested = true) {
-        // const items = getNodes();
-
-        if (Array.isArray(nodes) && node) {
+        if (Array.isArray(nodes) && typeof node !== 'undefined') {
             nodes.push(node.toTagStart({ openTag, closeTag }));
 
             if (Array.isArray(node.content) && node.content.length) {
@@ -146,10 +143,8 @@ function parse(input: string, opts: ParseOptions = {}) {
     /**
      * @private
      */
-    function appendNodes(nodes?: TagNodeTree, node?: TagNode | string) {
-        // const items = getNodes();
-
-        if (Array.isArray(nodes) && node) {
+    function appendNodes(nodes?: TagNodeTree, node?: NodeContent) {
+        if (Array.isArray(nodes) && typeof node !== 'undefined') {
             if (isTagNode(node)) {
                 if (isAllowedTag(node.tag)) {
                     nodes.push(node.toTagNode());
@@ -200,7 +195,6 @@ function parse(input: string, opts: ParseOptions = {}) {
             const column = token.getColumn();
 
             options.onError({
-                message: `Inconsistent tag '${tag}' on line ${line} and column ${column}`,
                 tagName: tag,
                 lineNumber: line,
                 columnNumber: column,
@@ -300,7 +294,7 @@ function parse(input: string, opts: ParseOptions = {}) {
     // for ex [q]test[/q][u]some[/u][q]some [u]some[/u] // forgot to close [/q]
     // so we need to flush nested content to nodes array
     const lastNestedNode = nestedNodes.flushLast();
-    if (lastNestedNode && isTagNode(lastNestedNode) && isTagNested(lastNestedNode.tag)) {
+    if (lastNestedNode !== null && lastNestedNode && isTagNode(lastNestedNode) && isTagNested(lastNestedNode.tag)) {
         appendNodeAsString(getNodes(), lastNestedNode, false);
     }
 

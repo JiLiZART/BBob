@@ -5,15 +5,15 @@ const isObj = (value: unknown): value is Record<string, unknown> => (typeof valu
 const isBool = (value: unknown): value is boolean => (typeof value === 'boolean');
 const isNodeTree = (value: unknown): value is TagNode => Boolean(value && isObj(value) && 'content' in value)
 
-export type IterateCallback = (node: NodeContent) => NodeContent
+export type IterateCallback<Content> = (node: Content) => Content
 
-export function iterate(t: TagNodeTree, cb: IterateCallback): TagNodeTree {
+export function iterate<Content = NodeContent, Iterable = ArrayLike<Content>>(t: Iterable, cb: IterateCallback<Content>): Iterable {
   const tree = t;
 
   if (Array.isArray(tree)) {
       for (let idx = 0; idx < tree.length; idx++) {
-          const oldNode = tree[idx] as NodeContent
-          tree[idx] = iterate(cb(oldNode), cb) as NodeContent;
+          const oldNode = tree[idx] as Content
+          tree[idx] = iterate(cb(oldNode), cb) as Content;
       }
   } else if (isNodeTree(tree) && tree.content) {
       iterate(tree.content, cb);
@@ -53,4 +53,22 @@ export function same(expected: unknown, actual: unknown): boolean {
   }
 
   return false
+}
+
+export function match<Content = NodeContent, Iterable = ArrayLike<Content>>(
+    t: Iterable,
+    expression: Partial<TagNode>[] | Partial<TagNode>,
+    cb: IterateCallback<Content>
+) {
+  return iterate<Content, Iterable>(t, (node) => {
+    if (Array.isArray(expression)) {
+      for (let idx = 0; idx < expression.length; idx++) {
+        if (same(expression[idx], node)) {
+          return cb(node);
+        }
+      }
+    }
+
+    return same(expression, node) ? cb(node) : node;
+  })
 }

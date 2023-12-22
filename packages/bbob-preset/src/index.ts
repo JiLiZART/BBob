@@ -1,8 +1,9 @@
 /* eslint-disable indent */
-import { isTagNode, NodeContent } from '@bbob/plugin-helper'
+import { isTagNode } from '@bbob/plugin-helper'
 
-import type { BbobCoreTagNodeTree, BbobPluginOptions } from '@bbob/core'
-import type { TagNode } from '@bbob/plugin-helper'
+import type { BBobCoreTagNodeTree, BbobPluginOptions } from '@bbob/core'
+import type { TagNode, NodeContent } from '@bbob/plugin-helper'
+import type { BBobPluginFunction } from "@bbob/core";
 
 export type PresetFactoryOptions = Record<string, unknown>
 
@@ -17,7 +18,7 @@ export type PresetTagsDefinition<Names extends string = string> =
 
 function process<TagName extends string = string, AttrValue = unknown>(
     tags: PresetTagsDefinition,
-    tree: BbobCoreTagNodeTree,
+    tree: BBobCoreTagNodeTree,
     core: BbobPluginOptions,
     options: PresetFactoryOptions = {}
 ) {
@@ -35,8 +36,10 @@ function process<TagName extends string = string, AttrValue = unknown>(
 
 export type ProcessorFunction = typeof process
 
-export type PresetExecutor<TagName extends string = string, AttrValue = unknown> = {
-    (tree: BbobCoreTagNodeTree, core: BbobPluginOptions): ReturnType<ProcessorFunction>
+type ProcessorReturnType = ReturnType<ProcessorFunction>
+
+export interface PresetExecutor<TagName extends string = string, AttrValue = unknown> extends BBobPluginFunction {
+    (tree: BBobCoreTagNodeTree, core: BbobPluginOptions): ProcessorReturnType
     options: PresetOptions,
 }
 
@@ -56,18 +59,21 @@ function createPreset(defTags: PresetTagsDefinition, processor: ProcessorFunctio
   const presetFactory: PresetFactory = (opts: PresetOptions = {}) => {
     presetFactory.options = Object.assign(presetFactory.options || {}, opts);
 
-    const presetExecutor: PresetExecutor = (tree, core) =>
-        processor(defTags, tree, core, presetFactory.options);
+    function presetExecutor(tree: BBobCoreTagNodeTree, core: BbobPluginOptions) {
+      return processor(defTags, tree, core, presetFactory.options)
+    }
 
     presetExecutor.options = presetFactory.options;
 
     return presetExecutor;
   };
 
-  presetFactory.extend = (callback: PresetExtendCallback) => createPreset(
-      callback(defTags, presetFactory.options || {}),
-      processor,
-  );
+  presetFactory.extend = function presetExtend(callback: PresetExtendCallback){
+    return createPreset(
+        callback(defTags, presetFactory.options || {}),
+        processor,
+    )
+  }
 
   return presetFactory;
 }

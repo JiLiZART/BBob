@@ -1,38 +1,30 @@
 /* eslint-disable no-plusplus,no-lonely-if */
-import {
-    TagNode,
-    getUniqAttr,
-    isStringNode,
-    isTagNode,
-    TagNodeTree,
-} from '@bbob/plugin-helper';
-
 import type { NodeContent } from '@bbob/plugin-helper';
+import { getUniqAttr, isStringNode, isTagNode, TagNode, TagNodeTree, } from '@bbob/plugin-helper';
 import type { PresetTagsDefinition } from "@bbob/preset";
 import type { BbobPluginOptions } from '@bbob/core'
 
 const isStartsWith = (node: string, type: string) => (node[0] === type);
 
 const getStyleFromAttrs = (attrs: Record<string, unknown>) => {
-    const styleMap = {
-        color: (val: string) => `color:${val};`,
-        size: (val: string) => `font-size:${val};`,
-    };
+  return Object
+      .keys(attrs)
+      .reduce<string[]>((acc, key: 'color' | 'size') => {
+        const value = attrs[key]
 
-    return Object
-        .keys(attrs)
-        .reduce((acc, key: 'color' | 'size') => {
-            const value = attrs[key]
+        if (typeof value === 'string') {
+          if (key === 'color') {
+            return acc.concat(`color:${value};`)
+          }
 
-            if (styleMap[key] && value === 'string') {
-                const styleFunc = styleMap[key]
+          if (key === 'size') {
+            return acc.concat(`font-size:${value};`)
+          }
+        }
 
-                return acc.concat(styleFunc(value))
-            }
-
-            return acc
-        }, [] as string[])
-        .join(' ')
+        return acc
+      }, [])
+      .join(' ')
 };
 
 const asListItems = (content: TagNodeTree): NodeContent[] => {
@@ -56,12 +48,12 @@ const asListItems = (content: TagNodeTree): NodeContent[] => {
 
     if (Array.isArray(content)) {
       content.forEach((el) => {
-        if (isStringNode(el) && isStartsWith(el, '*')) {
+        if (isStringNode(el) && isStartsWith(String(el), '*')) {
           if (listItems[listIdx]) {
             listIdx++;
           }
           ensureListItem(createItemNode());
-          addItem(el.substr(1));
+          addItem(String(el).substr(1));
         } else if (isTagNode(el) && TagNode.isOf(el, '*')) {
           if (listItems[listIdx]) {
             listIdx++;

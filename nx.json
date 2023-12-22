@@ -11,12 +11,6 @@
         "target": "build",
         "projects": "dependencies"
       }
-    ],
-    "gen-types": [
-      {
-        "target": "gen-types",
-        "projects": "dependencies"
-      }
     ]
   },
   "defaultBase": "master"

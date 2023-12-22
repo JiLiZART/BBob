@@ -1,7 +1,15 @@
-import html from '@bbob/html'
+import html, { render } from '@bbob/html'
+import core from '@bbob/core'
+
 import preset from '../src'
 
-const parse = (input: string) => html(input, preset());
+const parse = (input: string) => {
+  const tree = core(preset()).process(input, { render })
+
+  console.log('@bbob/preset-html5.parse', tree.raw);
+
+  return html(input, preset())
+};
 
 describe('@bbob/preset-html5', () => {
   test('[b]bolded text[/b]', () => {

@@ -1,6 +1,6 @@
-import toHTML, {render} from '../src';
+import toHTML, { BBobHTMLOptions, render } from '../src';
 
-const process = (input, params) => toHTML(input, [], params);
+const process = (input: string, params?: BBobHTMLOptions) => toHTML(input, [], params);
 
 describe('@bbob/html', () => {
   test('render bbcode tag with single param as html tag', () => {

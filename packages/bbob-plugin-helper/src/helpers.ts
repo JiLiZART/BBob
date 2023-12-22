@@ -22,10 +22,13 @@ function keysReduce<Res, Def extends Res, T extends Record<string, unknown>>(obj
 
 function getNodeLength(node: NodeContent): number {
   if (isTagNode(node) && Array.isArray(node.content)) {
-    return node.content.reduce((count, contentNode) => count + getNodeLength(contentNode), 0);
+    return node.content.reduce<number>((count, contentNode) => {
+      return count + getNodeLength(contentNode)
+    }, 0);
   }
+
   if (isStringNode(node)) {
-    return node.length;
+    return String(node).length;
   }
 
   return 0;

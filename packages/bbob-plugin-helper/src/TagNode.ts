@@ -1,15 +1,16 @@
 import { OPEN_BRAKET, CLOSE_BRAKET, SLASH } from './char';
 import {
-    getUniqAttr,
-    getNodeLength,
-    appendToNode,
-    attrsToString,
-    attrValue,
+  getUniqAttr,
+  getNodeLength,
+  appendToNode,
+  attrsToString,
+  attrValue,
+  isTagNode,
 } from './helpers';
 
-export type StringNode = string
+export type StringNode = string | number
 
-export type NodeContent = TagNode | StringNode
+export type NodeContent = TagNode | StringNode | null
 
 export type TagNodeTree = NodeContent | Array<NodeContent> | null
 
@@ -31,28 +32,40 @@ const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) 
 };
 
 const renderContent = (content: TagNodeTree, openTag: string, closeTag: string) => {
-  if (Array.isArray(content)) {
-    if (content.length) {
-      return content.reduce((r, node) => r + node.toString({ openTag, closeTag }), '')
+  const toString = (node: NodeContent) => {
+    if (isTagNode(node)) {
+      return node.toString({ openTag, closeTag })
     }
+
+    return String(node)
+  }
+
+  if (Array.isArray(content)) {
+    return content.reduce<string>((r, node) => {
+      if (node !== null) {
+        return r + toString(node)
+      }
+
+      return r
+    }, '')
   }
 
   if (content) {
-    return content.toString({ openTag, closeTag })
+    return toString(content)
   }
 
   return null
 }
 
-class TagNode {
+export class TagNode {
   public readonly tag: string
-  public readonly attrs: Record<string, unknown>
+  public attrs: Record<string, unknown>
   public content: TagNodeTree
 
-  constructor(tag: string, attrs?: Record<string, unknown>, content?: TagNodeTree) {
+  constructor(tag: string, attrs: Record<string, unknown>, content: TagNodeTree) {
     this.tag = tag;
-    this.attrs = attrs || {};
-    this.content = content || null;
+    this.attrs = attrs;
+    this.content = content
   }
 
   attr(name: string, value?: unknown) {
@@ -67,7 +80,7 @@ class TagNode {
     return appendToNode(this, value);
   }
 
-  get length() {
+  get length(): number {
     return getNodeLength(this);
   }
 
@@ -89,14 +102,14 @@ class TagNode {
     const content = this.content ? renderContent(this.content, openTag, closeTag) : ''
     const tagStart = this.toTagStart({ openTag, closeTag });
 
-    if (content === null) {
+    if (this.content === null || Array.isArray(this.content) &&  this.content.length === 0) {
       return tagStart;
     }
 
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create(tag: string, attrs?: Record<string, unknown>, content?: TagNodeTree) {
+  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = []) {
     return new TagNode(tag, attrs, content)
   }
 
@@ -104,5 +117,3 @@ class TagNode {
     return (node.tag === type)
   }
 }
-
-export { TagNode };

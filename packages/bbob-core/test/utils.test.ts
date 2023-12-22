@@ -1,6 +1,7 @@
 import { iterate, match, same } from '../src/utils';
+import { isTagNode } from "@bbob/plugin-helper";
 
-const stringify = (val: string) => JSON.stringify(val);
+const stringify = (val: unknown) => JSON.stringify(val);
 
 describe('@bbob/core utils', () => {
   test('iterate', () => {
@@ -13,7 +14,9 @@ describe('@bbob/core utils', () => {
     }];
 
     const resultArr = iterate(testArr, node => {
-      node.pass = 1;
+      if (isTagNode(node)) {
+        node.attrs.pass = 1;
+      }
 
       return node;
     });
@@ -21,11 +24,11 @@ describe('@bbob/core utils', () => {
     const expected = [
       {
         one: true,
-        content: [{ oneInside: true, pass: 1, }],
+        content: [{ oneInside: true, attrs: { pass: 1 }, }],
         pass: 1,
       }, {
         two: true,
-        content: [{ twoInside: true, pass: 1, }],
+        content: [{ twoInside: true, attrs: { pass: 1 }, }],
         pass: 1,
       }
     ];
@@ -42,17 +45,17 @@ describe('@bbob/core utils', () => {
       { tag: 'mytag6', six: 1 },
     ];
 
-    testArr.match = match;
-
-    const resultArr = testArr.match([{ tag: 'mytag1' }, { tag: 'mytag2' }], node => {
-      node.pass = 1;
+    const resultArr = match(testArr, [{ tag: 'mytag1' }, { tag: 'mytag2' }], node => {
+      if (isTagNode(node)) {
+        node.attrs.pass = 1;
+      }
 
       return node;
     });
 
     const expected = [
-      { tag: 'mytag1', one: 1, pass: 1 },
-      { tag: 'mytag2', two: 1, pass: 1 },
+      { tag: 'mytag1', one: 1, attrs: { pass: 1 } },
+      { tag: 'mytag2', two: 1, attrs: { pass: 1 } },
       { tag: 'mytag3', three: 1 },
       { tag: 'mytag4', four: 1 },
       { tag: 'mytag5', five: 1 },
