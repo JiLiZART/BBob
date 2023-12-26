@@ -1,19 +1,29 @@
 /* eslint-disable no-use-before-define */
-import React from 'react';
-import core from '@bbob/core';
-import * as html from '@bbob/html';
+import React, { ReactNode } from 'react';
+import { render as htmlrender } from '@bbob/html';
+import core, { BBobCoreOptions, BBobCoreTagNodeTree, BBobPlugins } from '@bbob/core';
 
-import { isTagNode, isStringNode } from '@bbob/plugin-helper';
+import { isTagNode, TagNode, TagNodeTree } from '@bbob/plugin-helper';
 
-const toAST = (source, plugins, options) => core(plugins)
+const toAST = (source: string, plugins?: BBobPlugins, options?: BBobCoreOptions) => core(plugins)
   .process(source, {
     ...options,
-    render: (input) => html.render(input, { stripTags: true }),
+    render: (input) => htmlrender(input, { stripTags: true }),
   }).tree;
 
-const isContentEmpty = (content) => (!content || content.length === 0);
+const isContentEmpty = (content: TagNodeTree) => {
+  if (!content) {
+    return true
+  }
 
-function tagToReactElement(node, index) {
+  if (typeof content === 'number') {
+    return String(content).length === 0
+  }
+
+  return content.length === 0;
+};
+
+function tagToReactElement(node: TagNode, index: number) {
   return React.createElement(
     node.tag,
     { ...node.attrs, key: index },
@@ -21,21 +31,23 @@ function tagToReactElement(node, index) {
   );
 }
 
-function renderToReactNodes(nodes) {
-  const els = [].concat(nodes).reduce((arr, node, index) => {
-    if (isTagNode(node)) {
-      arr.push(tagToReactElement(node, index));
-    } else if (isStringNode(node)) {
-      arr.push(node);
-    }
+function renderToReactNodes(nodes: BBobCoreTagNodeTree | TagNodeTree) {
+  if (Array.isArray(nodes) && nodes.length) {
+    return nodes.reduce<ReactNode[]>((arr, node, index) => {
+      if (isTagNode(node)) {
+        arr.push(tagToReactElement(node, index));
+      } else {
+        arr.push(node);
+      }
 
-    return arr;
-  }, []);
+      return arr;
+    }, []);
+  }
 
-  return els;
+  return []
 }
 
-function render(source, plugins, options) {
+function render(source: string, plugins?: BBobPlugins, options?: BBobCoreOptions) {
   return renderToReactNodes(toAST(source, plugins, options));
 }
 

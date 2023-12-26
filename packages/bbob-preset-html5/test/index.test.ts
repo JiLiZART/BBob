@@ -6,8 +6,6 @@ import preset from '../src'
 const parse = (input: string) => {
   const tree = core(preset()).process(input, { render })
 
-  console.log('@bbob/preset-html5.parse', tree.raw);
-
   return html(input, preset())
 };
 

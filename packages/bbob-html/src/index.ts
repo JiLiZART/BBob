@@ -70,4 +70,5 @@ function toHTML<InputValue = string | TagNode[]>(source: InputValue, plugins: BB
 }
 
 export const render = renderNodes;
+
 export default toHTML;

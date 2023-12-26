@@ -33,7 +33,7 @@ export interface BBobCore<InputValue = string | TagNode[], Options extends BBobC
   }
 }
 
-export interface BBobCoreTagNodeTree extends Array<TagNode> {
+export interface BBobCoreTagNodeTree extends Array<NodeContent> {
   messages: unknown[],
   options: BBobCoreOptions,
   walk: (cb: IterateCallback<NodeContent>) => BBobCoreTagNodeTree
@@ -42,7 +42,7 @@ export interface BBobCoreTagNodeTree extends Array<TagNode> {
 
 export type BBobPlugins = BBobPluginFunction | BBobPluginFunction[]
 
-export function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tree: TagNode[], options: Options) {
+export function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tree: NodeContent[], options: Options) {
   const extendedTree = tree as BBobCoreTagNodeTree
 
   extendedTree.messages = [...(extendedTree.messages || [])]
@@ -57,7 +57,7 @@ export function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tr
   return extendedTree
 }
 
-export default function bbob<InputValue = string | TagNode[], Options extends BBobCoreOptions = BBobCoreOptions>(
+export default function bbob<InputValue = string | NodeContent[], Options extends BBobCoreOptions = BBobCoreOptions>(
     plugs?: BBobPlugins
 ): BBobCore<InputValue, Options> {
   const plugins = typeof plugs === 'function' ? [plugs] : plugs || [];
@@ -76,7 +76,7 @@ export default function bbob<InputValue = string | TagNode[], Options extends BB
 
       // raw tree before modification with plugins
       const raw = options.skipParse && Array.isArray(input) ? input : parseFn(input as string, options);
-      let tree = options.skipParse && Array.isArray(input) ? createTree((input || []) as TagNode[], options) : createTree(raw, options)
+      let tree = options.skipParse && Array.isArray(input) ? createTree((input || []) as NodeContent[], options) : createTree(raw, options)
 
       for (let idx = 0; idx < plugins.length; idx++) {
         const plugin = plugins[idx]

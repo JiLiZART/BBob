@@ -43,12 +43,14 @@
     "build:commonjs": "../../scripts/pkg-task build-commonjs",
     "build:es": "../../scripts/pkg-task build-es",
     "build:umd": "../../scripts/pkg-task build-umd",
-    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
+    "build": "npm run gen-types && npm run build:commonjs && npm run build:es && npm run build:umd",
     "test": "../../scripts/pkg-task test",
     "cover": "../../scripts/pkg-task cover",
     "lint": "../../scripts/pkg-task lint",
     "size": "../../scripts/pkg-task size",
-    "bundlesize": "../../scripts/pkg-task bundlesize"
+    "bundlesize": "../../scripts/pkg-task bundlesize",
+    "gen-types": "../../scripts/pkg-task gen-types",
+    "prepublishOnly": "npm run build"
   },
   "size-limit": [
     {
