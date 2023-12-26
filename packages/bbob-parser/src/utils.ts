@@ -8,86 +8,86 @@ export type CharGrabberOptions = {
 }
 
 export class CharGrabber {
-  private source: string;
-  private cursor: { len: number; pos: number };
-  private options: CharGrabberOptions;
+  private s: string;
+  private c: { len: number; pos: number };
+  private o: CharGrabberOptions;
 
   constructor(source: string, options: CharGrabberOptions = {}) {
-    this.source = source
-    this.cursor = {
+    this.s = source
+    this.c = {
       pos: 0,
       len: source.length,
     };
 
-    this.options = options
+    this.o = options
   }
 
   skip(num = 1, silent?: boolean) {
-    this.cursor.pos += num;
+    this.c.pos += num;
 
-    if (this.options && this.options.onSkip && !silent) {
-      this.options.onSkip();
+    if (this.o && this.o.onSkip && !silent) {
+      this.o.onSkip();
     }
   }
 
   hasNext() {
-    return this.cursor.len > this.cursor.pos
+    return this.c.len > this.c.pos
   }
 
   getCurr() {
-    return this.source[this.cursor.pos]
+    return this.s[this.c.pos]
   }
 
   getRest() {
-    return this.source.substring(this.cursor.pos)
+    return this.s.substring(this.c.pos)
   }
 
   getNext() {
-    const nextPos = this.cursor.pos + 1;
+    const nextPos = this.c.pos + 1;
 
-    return nextPos <= (this.source.length - 1) ? this.source[nextPos] : null;
+    return nextPos <= (this.s.length - 1) ? this.s[nextPos] : null;
   }
 
   getPrev() {
-    const prevPos = this.cursor.pos - 1;
+    const prevPos = this.c.pos - 1;
 
-    return typeof this.source[prevPos] !== 'undefined' ? this.source[prevPos] : null;
+    return typeof this.s[prevPos] !== 'undefined' ? this.s[prevPos] : null;
   }
 
   isLast() {
-    return this.cursor.pos === this.cursor.len
+    return this.c.pos === this.c.len
   }
 
   includes(val: string) {
-    return this.source.indexOf(val, this.cursor.pos) >= 0
+    return this.s.indexOf(val, this.c.pos) >= 0
   }
 
-  grabWhile(cond: (curr: string) => boolean, silent?: boolean) {
+  grabWhile(condition: (curr: string) => boolean, silent?: boolean) {
     let start = 0;
 
     if (this.hasNext()) {
-      start = this.cursor.pos;
+      start = this.c.pos;
 
-      while (this.hasNext() && cond(this.getCurr())) {
+      while (this.hasNext() && condition(this.getCurr())) {
         this.skip(1, silent);
       }
     }
 
-    return this.source.substring(start, this.cursor.pos);
+    return this.s.substring(start, this.c.pos);
   }
 
   grabN(num: number = 0) {
-    return this.source.substring(this.cursor.pos, this.cursor.pos + num)
+    return this.s.substring(this.c.pos, this.c.pos + num)
   }
 
   /**
    * Grabs rest of string until it find a char
    */
   substrUntilChar(char: string) {
-    const { pos } = this.cursor;
-    const idx = this.source.indexOf(char, pos);
+    const { pos } = this.c;
+    const idx = this.s.indexOf(char, pos);
 
-    return idx >= 0 ? this.source.substring(pos, idx) : '';
+    return idx >= 0 ? this.s.substring(pos, idx) : '';
   }
 }
 
@@ -119,29 +119,3 @@ export const trimChar = (str: string, charToRemove: string) => {
  * Unquotes \" to "
  */
 export const unquote = (str: string) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
-
-export class NodeList<Value> {
-  constructor(private nodes: Value[] = []) {
-  }
-
-  getLast() {
-    return (
-        Array.isArray(this.nodes) && this.nodes.length > 0 && typeof this.nodes[this.nodes.length - 1] !== 'undefined'
-            ? this.nodes[this.nodes.length - 1]
-            : null)
-  }
-
-  flushLast() {
-    return (this.nodes.length ? this.nodes.pop() : false)
-  }
-
-  push(value: Value) {
-    return this.nodes.push(value)
-  }
-
-  toArray() {
-    return this.nodes
-  }
-}
-
-export const createList = <Type>(values: Type[] = []) => new NodeList(values);

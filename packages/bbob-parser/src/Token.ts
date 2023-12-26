@@ -6,10 +6,10 @@ import {
 
 // type, value, line, row,
 
-const TOKEN_TYPE_ID = 'type'; // 0;
-const TOKEN_VALUE_ID = 'value'; // 1;
-const TOKEN_COLUMN_ID = 'row'; // 2;
-const TOKEN_LINE_ID = 'line'; // 3;
+const TOKEN_TYPE_ID = 't'; // 0;
+const TOKEN_VALUE_ID = 'v'; // 1;
+const TOKEN_COLUMN_ID = 'r'; // 2;
+const TOKEN_LINE_ID = 'l'; // 3;
 
 const TOKEN_TYPE_WORD = 1; // 'word';
 const TOKEN_TYPE_TAG = 2; // 'tag';
@@ -60,7 +60,6 @@ const isAttrNameToken = (token: Token) => {
   return false;
 };
 
-
 const isAttrValueToken = (token: Token) => {
   if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
     return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
@@ -75,7 +74,7 @@ const getTagName = (token: Token) => {
   return isTagEnd(token) ? value.slice(1) : value;
 };
 
-const convertTagToText = (token: Token) => {
+const tokenToText = (token: Token) => {
   let text = OPEN_BRAKET;
 
   text += getTokenValue(token);
@@ -89,16 +88,20 @@ const convertTagToText = (token: Token) => {
  * @class Token
  */
 class Token<TokenValue = string> {
-  private type: number
-  private value: string
-  private line: number
-  private row: number
+  private t: number // type
+  private v: string // value
+  private l: number // line
+  private r: number // row
 
   constructor(type?: number, value?: TokenValue, row: number = 0, col: number = 0) {
     this[TOKEN_LINE_ID] = row;
     this[TOKEN_COLUMN_ID] = col;
     this[TOKEN_TYPE_ID] = type || 0;
     this[TOKEN_VALUE_ID] = String(value);
+  }
+
+  get type() {
+    return this[TOKEN_TYPE_ID]
   }
 
   isEmpty() {
@@ -147,7 +150,7 @@ class Token<TokenValue = string> {
   }
 
   toString() {
-    return convertTagToText(this);
+    return tokenToText(this);
   }
 }
 

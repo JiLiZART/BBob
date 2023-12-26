@@ -6,7 +6,6 @@ import {
 } from '@bbob/plugin-helper';
 
 import { createLexer } from './lexer';
-import { createList } from './utils';
 
 import type { NodeContent, TagNodeTree } from '@bbob/plugin-helper'
 import type { LexerTokenizer, LexerOptions } from './lexer';
@@ -27,6 +26,48 @@ export interface ParseOptions {
     enableEscapeTags?: boolean
     onError?: (error: ParseError) => void
 }
+
+class NodeList<Value> {
+  private m: Map<number, Value>
+  private c: number
+
+  constructor() {
+    this.m = new Map<number, Value>()
+    this.c = 0
+  }
+
+  last() {
+    const node = this.m.get(this.c)
+
+    if (node) {
+      return node
+    }
+
+    return null
+  }
+
+  flush() {
+    if (this.c > 0) {
+      const item = this.m.get(this.c)
+      this.m.delete(this.c)
+      this.c = this.c - 1
+      return item
+    }
+
+    return false
+  }
+
+  push(value: Value) {
+    this.c = this.c + 1;
+    this.m.set(this.c, value)
+  }
+
+  toArray() {
+    return [...this.m.values()]
+  }
+}
+
+const createList = <Type>() => new NodeList<Type>();
 
 function parse(input: string, opts: ParseOptions = {}) {
     const options = opts;
@@ -103,8 +144,8 @@ function parse(input: string, opts: ParseOptions = {}) {
      * @private
      */
     function flushTagNodes() {
-        if (tagNodes.flushLast()) {
-            tagNodesAttrName.flushLast();
+        if (tagNodes.flush()) {
+            tagNodesAttrName.flush();
         }
     }
 
@@ -112,7 +153,7 @@ function parse(input: string, opts: ParseOptions = {}) {
      * @private
      */
     function getNodes() {
-        const lastNestedNode = nestedNodes.getLast();
+        const lastNestedNode = nestedNodes.last();
 
         if (lastNestedNode && isTagNode(lastNestedNode)) {
             return lastNestedNode.content;
@@ -184,7 +225,7 @@ function parse(input: string, opts: ParseOptions = {}) {
     function handleTagEnd(token: Token) {
         flushTagNodes();
 
-        const lastNestedNode = nestedNodes.flushLast();
+        const lastNestedNode = nestedNodes.flush();
 
         if (lastNestedNode) {
             const nodes = getNodes()
@@ -226,42 +267,42 @@ function parse(input: string, opts: ParseOptions = {}) {
         /**
          * @type {TagNode}
          */
-        const lastTagNode = tagNodes.getLast();
+        const activeTagNode = tagNodes.last();
         const tokenValue = token.getValue();
         const isNested = isTagNested(token.toString());
         const nodes = getNodes()
 
-        if (lastTagNode !== null) {
+        if (activeTagNode !== null) {
             if (token.isAttrName()) {
                 tagNodesAttrName.push(tokenValue);
-                const last = tagNodesAttrName.getLast()
-
-                if (last) {
-                    lastTagNode.attr(last, '');
-                }
-            } else if (token.isAttrValue()) {
-                const attrName = tagNodesAttrName.getLast();
+                const attrName = tagNodesAttrName.last()
 
                 if (attrName) {
-                    lastTagNode.attr(attrName, tokenValue);
-                    tagNodesAttrName.flushLast();
+                    activeTagNode.attr(attrName, '');
+                }
+            } else if (token.isAttrValue()) {
+                const attrName = tagNodesAttrName.last();
+
+                if (attrName) {
+                    activeTagNode.attr(attrName, tokenValue);
+                    tagNodesAttrName.flush();
                 } else {
-                    lastTagNode.attr(tokenValue, tokenValue);
+                    activeTagNode.attr(tokenValue, tokenValue);
                 }
             } else if (token.isText()) {
                 if (isNested) {
-                    lastTagNode.append(tokenValue);
+                    activeTagNode.append(tokenValue);
                 } else {
                     appendNodes(nodes, tokenValue);
                 }
             } else if (token.isTag()) {
-                // if tag is not allowed, just past it as is
+                // if tag is not allowed, just pass it as is
                 appendNodes(nodes, token.toString());
             }
         } else if (token.isText()) {
             appendNodes(nodes, tokenValue);
         } else if (token.isTag()) {
-            // if tag is not allowed, just past it as is
+            // if tag is not allowed, just pass it as is
             appendNodes(nodes, token.toString());
         }
     }
@@ -278,7 +319,9 @@ function parse(input: string, opts: ParseOptions = {}) {
         }
     }
 
-    tokenizer = (opts.createTokenizer ? opts.createTokenizer : createLexer)(input, {
+    const lexer = opts.createTokenizer ? opts.createTokenizer : createLexer
+
+    tokenizer = lexer(input, {
         onToken,
         openTag,
         closeTag,
@@ -293,7 +336,7 @@ function parse(input: string, opts: ParseOptions = {}) {
     // handles situations where we open tag, but forgot close them
     // for ex [q]test[/q][u]some[/u][q]some [u]some[/u] // forgot to close [/q]
     // so we need to flush nested content to nodes array
-    const lastNestedNode = nestedNodes.flushLast();
+    const lastNestedNode = nestedNodes.flush();
     if (lastNestedNode !== null && lastNestedNode && isTagNode(lastNestedNode) && isTagNested(lastNestedNode.tag)) {
         appendNodeAsString(getNodes(), lastNestedNode, false);
     }
