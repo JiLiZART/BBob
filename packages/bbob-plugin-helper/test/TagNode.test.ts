@@ -13,6 +13,37 @@ describe('@bbob/plugin-helper/TagNode', () => {
     expect(TagNode.isOf(tagNode, 'test')).toBe(true);
   });
 
+  test('attr', () => {
+    const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
+
+    tagNode.attr('foo', 'bar')
+
+    expect(tagNode.attrs.foo).toBe('bar');
+  });
+
+  test('append', () => {
+    const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
+
+    tagNode.append('World')
+
+    expect(tagNode.content).toEqual(['Hello', 'World']);
+  });
+
+  test('length', () => {
+    const tagNode = TagNode.create('test', {test: 1}, ['Hello', 'World']);
+
+    expect(tagNode.length).toEqual('HelloWorld'.length);
+  });
+
+  test('toTagNode', () => {
+    const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
+    const newTagNode = tagNode.toTagNode()
+
+    expect(newTagNode !== tagNode).toBe(true);
+    expect(newTagNode.tag).toEqual(tagNode.tag);
+    expect(newTagNode.content).toEqual(tagNode.content);
+  });
+
   describe('toString', () => {
     test('tag with content and params', () => {
       const tagNode = TagNode.create('test', {test: 1}, ['Hello']);

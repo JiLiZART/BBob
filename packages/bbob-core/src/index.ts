@@ -42,7 +42,7 @@ export interface BBobCoreTagNodeTree extends Array<TagNode> {
 
 export type BBobPlugins = BBobPluginFunction | BBobPluginFunction[]
 
-function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tree: TagNode[], options: Options) {
+export function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tree: TagNode[], options: Options) {
   const extendedTree = tree as BBobCoreTagNodeTree
 
   extendedTree.messages = [...(extendedTree.messages || [])]
@@ -58,7 +58,7 @@ function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tree: Tag
 }
 
 export default function bbob<InputValue = string | TagNode[], Options extends BBobCoreOptions = BBobCoreOptions>(
-    plugs: BBobPlugins
+    plugs?: BBobPlugins
 ): BBobCore<InputValue, Options> {
   const plugins = typeof plugs === 'function' ? [plugs] : plugs || [];
   const mockRender = () => ""

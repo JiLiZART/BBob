@@ -39,7 +39,7 @@ export type ProcessorFunction = typeof process
 type ProcessorReturnType = ReturnType<ProcessorFunction>
 
 export interface PresetExecutor<TagName extends string = string, AttrValue = unknown> extends BBobPluginFunction {
-    (tree: BBobCoreTagNodeTree, core: BbobPluginOptions): ProcessorReturnType
+    (tree: BBobCoreTagNodeTree, core?: BbobPluginOptions): ProcessorReturnType
     options: PresetOptions,
 }
 
