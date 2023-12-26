@@ -22,7 +22,8 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "13.x",
     "react": "18.x",
-    "react-dom": "18.x"
+    "react-dom": "18.x",
+    "@types/react": "18.x"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
