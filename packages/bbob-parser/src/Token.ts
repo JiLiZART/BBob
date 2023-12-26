@@ -94,11 +94,11 @@ class Token<TokenValue = string> {
   private line: number
   private row: number
 
-  constructor(type?: number, value?: TokenValue, line: number = 0, row: number = 0) {
-    this[TOKEN_TYPE_ID] = Number(type);
+  constructor(type?: number, value?: TokenValue, row: number = 0, col: number = 0) {
+    this[TOKEN_LINE_ID] = row;
+    this[TOKEN_COLUMN_ID] = col;
+    this[TOKEN_TYPE_ID] = type || 0;
     this[TOKEN_VALUE_ID] = String(value);
-    this[TOKEN_LINE_ID] = Number(line);
-    this[TOKEN_COLUMN_ID] = Number(row);
   }
 
   isEmpty() {

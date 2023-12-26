@@ -14,11 +14,11 @@ import {
 import {
   Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD,
 } from './Token';
-import {CharGrabber, createCharGrabber, trimChar, unquote} from './utils';
+import { CharGrabber, createCharGrabber, trimChar, unquote } from './utils';
 
 export type LexerTokenizer = {
-  tokenize: () => {}
-  isTokenNested?: (token: Token) => boolean,
+  tokenize: () => Token<string>[]
+  isTokenNested?: (token: Token<string>) => boolean,
 }
 
 export type LexerOptions = {
@@ -27,37 +27,17 @@ export type LexerOptions = {
   onlyAllowTags?: string[]
   enableEscapeTags?: boolean
   contextFreeTags?: string[]
-  onToken?: (token?: Token) => void
+  onToken?: (token?: Token<string>) => void
 }
 
 // for cases <!-- -->
 const EM = '!';
 
-/**
- * Creates a Token entity class
- * @param {Number} type
- * @param {String} value
- * @param {Number} r line number
- * @param {Number} cl char number in line
- */
-const createToken = (type: number, value: string, r = 0, cl = 0) => new Token(type, value, r, cl);
+export function createTokenOfType(type: number, value: string, r = 0, cl = 0) {
+  return new Token(type, value, r, cl)
+}
 
-/**
- * @typedef {Object} Lexer
- * @property {Function} tokenize
- * @property {Function} isTokenNested
- */
-
-/**
- * @param {String} buffer
- * @param {Object} options
- * @param {Function} options.onToken
- * @param {String} options.openTag
- * @param {String} options.closeTag
- * @param {Boolean} options.enableEscapeTags
- * @return {Lexer}
- */
-function createLexer(buffer: string, options: LexerOptions = {}) {
+export function createLexer(buffer: string, options: LexerOptions = {}): LexerTokenizer {
   const STATE_WORD = 0;
   const STATE_TAG = 1;
   const STATE_TAG_ATTRS = 2;
@@ -73,7 +53,7 @@ function createLexer(buffer: string, options: LexerOptions = {}) {
   let stateMode = STATE_WORD;
   let tagMode = TAG_STATE_NAME;
   let contextFreeTag = '';
-  const tokens = new Array(Math.floor(buffer.length));
+  const tokens = new Array<Token<string>>(Math.floor(buffer.length));
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
   const escapeTags = !!options.enableEscapeTags;
@@ -119,7 +99,7 @@ function createLexer(buffer: string, options: LexerOptions = {}) {
    * @param {String} value
    */
   function emitToken(type: number, value: string) {
-    const token = createToken(type, value, row, col);
+    const token = createTokenOfType(type, value, row, col);
 
     onToken(token);
 
@@ -377,8 +357,5 @@ function createLexer(buffer: string, options: LexerOptions = {}) {
   return {
     tokenize,
     isTokenNested,
-  } as LexerTokenizer
+  }
 }
-
-export const createTokenOfType = createToken;
-export { createLexer };

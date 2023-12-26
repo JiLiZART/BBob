@@ -1,21 +1,17 @@
 /* eslint-disable no-plusplus */
-import type { NodeContent, TagNode, TagNodeTree } from '@bbob/plugin-helper'
-
-const isObj = (value: unknown): value is Record<string, unknown> => (typeof value === 'object');
+const isObj = (value: unknown): value is Record<string, unknown> => (typeof value === 'object' && value !== null);
 const isBool = (value: unknown): value is boolean => (typeof value === 'boolean');
-const isNodeTree = (value: unknown): value is TagNode => Boolean(value && isObj(value) && 'content' in value)
 
 export type IterateCallback<Content> = (node: Content) => Content
 
-export function iterate<Content = NodeContent, Iterable = ArrayLike<Content>>(t: Iterable, cb: IterateCallback<Content>): Iterable {
+export function iterate<Content, Iterable = ArrayLike<Content> | Content>(t: Iterable, cb: IterateCallback<Content>): Iterable {
   const tree = t;
 
   if (Array.isArray(tree)) {
-      for (let idx = 0; idx < tree.length; idx++) {
-          const oldNode = tree[idx] as Content
-          tree[idx] = iterate(cb(oldNode), cb) as Content;
-      }
-  } else if (isNodeTree(tree) && tree.content) {
+    for (let idx = 0; idx < tree.length; idx++) {
+      tree[idx] = iterate(cb(tree[idx]), cb);
+    }
+  } else if (tree && isObj(tree) && 'content' in tree) {
       iterate(tree.content, cb);
   }
 
@@ -40,7 +36,7 @@ export function same(expected: unknown, actual: unknown): boolean {
           const ao = actual[key];
           const eo = expected[key];
 
-          if (isObj(eo) && eo !== null && ao !== null) {
+          if (isObj(eo) && isObj(ao)) {
               return same(eo, ao);
           }
 
@@ -55,20 +51,22 @@ export function same(expected: unknown, actual: unknown): boolean {
   return false
 }
 
-export function match<Content = NodeContent, Iterable = ArrayLike<Content>>(
+export function match<Content, Iterable = ArrayLike<Content>>(
     t: Iterable,
-    expression: Partial<TagNode>[] | Partial<TagNode>,
+    expression: Content | ArrayLike<Content>,
     cb: IterateCallback<Content>
 ) {
-  return iterate<Content, Iterable>(t, (node) => {
-    if (Array.isArray(expression)) {
+  if (Array.isArray(expression)) {
+    return iterate<Content, Iterable>(t, (node) => {
       for (let idx = 0; idx < expression.length; idx++) {
         if (same(expression[idx], node)) {
           return cb(node);
         }
       }
-    }
 
-    return same(expression, node) ? cb(node) : node;
-  })
+      return node;
+    })
+  }
+
+  return iterate<Content, Iterable>(t, (node) => (same(expression, node) ? cb(node) : node));
 }

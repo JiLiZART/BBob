@@ -1,8 +1,8 @@
 import { N } from './char';
 import type { NodeContent, StringNode, TagNode } from "./TagNode";
 
-function isTagNode(el: NodeContent): el is TagNode {
-  return typeof el === 'object' && el !== null && !!el.tag;
+function isTagNode(el: unknown): el is TagNode {
+  return typeof el === 'object' && el !== null && 'tag' in el;
 }
 
 function isStringNode(el: unknown): el is StringNode {

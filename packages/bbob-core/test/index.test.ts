@@ -26,7 +26,6 @@ describe('@bbob/core', () => {
     const testPlugin = () => {
 
       const plugin: BBobPluginFunction = (tree) => tree.walk(node => {
-
         if (isTagNode(node)) {
           if (node?.tag === 'mytag') {
             node.attrs = {

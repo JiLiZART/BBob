@@ -11,6 +11,7 @@ import {
 export type StringNode = string | number
 
 export type NodeContent = TagNode | StringNode | null
+export type PartialNodeContent = Partial<TagNode> | StringNode | null
 
 export type TagNodeTree = NodeContent | Array<NodeContent> | null
 

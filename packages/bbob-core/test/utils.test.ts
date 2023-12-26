@@ -1,8 +1,6 @@
 import { iterate, match, same } from '../src/utils';
 import { isTagNode } from "@bbob/plugin-helper";
 
-const stringify = (val: unknown) => JSON.stringify(val);
-
 describe('@bbob/core utils', () => {
   test('iterate', () => {
     const testArr = [{
@@ -14,8 +12,12 @@ describe('@bbob/core utils', () => {
     }];
 
     const resultArr = iterate(testArr, node => {
-      if (isTagNode(node)) {
-        node.attrs.pass = 1;
+      console.log('iterate', node);
+      if (typeof node === 'object' && node !== null) {
+        return {
+          ...node,
+          pass: 1
+        }
       }
 
       return node;
@@ -24,16 +26,18 @@ describe('@bbob/core utils', () => {
     const expected = [
       {
         one: true,
-        content: [{ oneInside: true, attrs: { pass: 1 }, }],
+        content: [{ oneInside: true, pass: 1, }],
         pass: 1,
       }, {
         two: true,
-        content: [{ twoInside: true, attrs: { pass: 1 }, }],
+        content: [{ twoInside: true, pass: 1, }],
         pass: 1,
       }
     ];
 
-    expect(stringify(resultArr)).toEqual(stringify(expected));
+    console.log('resultArr', resultArr, expected);
+
+    expect(resultArr).toEqual(expected);
   });
   test('match', () => {
     const testArr = [
@@ -47,7 +51,8 @@ describe('@bbob/core utils', () => {
 
     const resultArr = match(testArr, [{ tag: 'mytag1' }, { tag: 'mytag2' }], node => {
       if (isTagNode(node)) {
-        node.attrs.pass = 1;
+        node.attrs = node.attrs || {}
+        node.attrs.pass = 1
       }
 
       return node;
@@ -62,7 +67,7 @@ describe('@bbob/core utils', () => {
       { tag: 'mytag6', six: 1 },
     ];
 
-    expect(stringify(resultArr)).toEqual(stringify(expected))
+    expect(resultArr).toEqual(expected)
   })
 
   describe('same', () => {
@@ -80,6 +85,9 @@ describe('@bbob/core utils', () => {
     })
     test('same object', () => {
       expect(same({ foo: true, bar: 'test' }, { foo: true, bar: 'test', ext: true })).toBe(true)
+    })
+    test('same string', () => {
+      expect(same('bar', 'bar')).toBe(true)
     })
   })
 });

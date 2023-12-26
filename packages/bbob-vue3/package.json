@@ -49,7 +49,8 @@
   },
   "size-limit": [
     {
-      "path": "lib/index.js"
+      "path": "./dist/index.min.js",
+      "size": "8 KB"
     }
   ],
   "bundlesize": [

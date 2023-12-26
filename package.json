@@ -31,7 +31,7 @@
     "@rollup/plugin-commonjs": "25.0.7",
     "@rollup/plugin-node-resolve": "15.2.3",
     "@rollup/plugin-replace": "5.0.5",
-    "@size-limit/preset-small-lib": "6.0.1",
+    "@size-limit/preset-small-lib": "11.0.1",
     "@swc/cli": "0.1.57",
     "@swc/core": "1.3.16",
     "@swc/jest": "0.2.23",
@@ -58,7 +58,7 @@
     "rollup": "4.1.5",
     "rollup-plugin-gzip": "3.1.0",
     "rollup-plugin-swc3": "0.7.0",
-    "size-limit": "6.0.1",
+    "size-limit": "11.0.1",
     "typescript": "5.1.6",
     "@types/node": "20.4.5",
     "@types/jest": "29.5.3",
@@ -82,7 +82,8 @@
     "cover": "@/jest --config ../../jest.config.js --coverage .",
     "lint": "@/eslint .",
     "gen-types": "@/tsc",
-    "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize ."
+    "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize .",
+    "size": "npm run build && @/cross-env NODE_ENV=production @/size-limit ."
   },
   "packageManager": "pnpm@8.7.6",
   "pnpm": {
