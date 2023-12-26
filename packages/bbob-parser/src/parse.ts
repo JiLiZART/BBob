@@ -28,42 +28,31 @@ export interface ParseOptions {
 }
 
 class NodeList<Value> {
-  private m: Map<number, Value>
-  private c: number
+  private n: Value[]
 
   constructor() {
-    this.m = new Map<number, Value>()
-    this.c = 0
+    this.n = []
   }
 
   last() {
-    const node = this.m.get(this.c)
-
-    if (node) {
-      return node
+    if (Array.isArray(this.n) && this.n.length > 0 && typeof this.n[this.n.length - 1] !== 'undefined') {
+      return this.n[this.n.length - 1]
     }
 
     return null
   }
 
   flush() {
-    if (this.c > 0) {
-      const item = this.m.get(this.c)
-      this.m.delete(this.c)
-      this.c = this.c - 1
-      return item
-    }
-
-    return false
+    return this.n.length ? this.n.pop() : false
   }
 
   push(value: Value) {
-    this.c = this.c + 1;
-    this.m.set(this.c, value)
+    this.n.push(value)
   }
 
   toArray() {
-    return [...this.m.values()]
+    console.log('toArray', this.n);
+    return this.n
   }
 }
 

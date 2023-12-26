@@ -105,8 +105,7 @@ class Token<TokenValue = string> {
   }
 
   isEmpty() {
-    // eslint-disable-next-line no-restricted-globals
-    return isNaN(this[TOKEN_TYPE_ID]);
+    return this[TOKEN_TYPE_ID] === 0 || isNaN(this[TOKEN_TYPE_ID]);
   }
 
   isText() {

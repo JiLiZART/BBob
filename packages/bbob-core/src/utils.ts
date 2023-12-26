@@ -11,8 +11,8 @@ export function iterate<Content, Iterable = ArrayLike<Content> | Content>(t: Ite
     for (let idx = 0; idx < tree.length; idx++) {
       tree[idx] = iterate(cb(tree[idx]), cb);
     }
-  } else if (tree && isObj(tree) && 'content' in tree) {
-      iterate(tree.content, cb);
+  } else if (isObj(tree) && 'content' in tree) {
+    iterate(tree.content, cb);
   }
 
   return tree;
