@@ -14,7 +14,6 @@
     "@bbob/plugin-helper": "workspace:*"
   },
   "peerDependencies": {
-    "prop-types": "> 15.0",
     "react": "> 15.0"
   },
   "devDependencies": {

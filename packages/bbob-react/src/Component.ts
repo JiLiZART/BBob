@@ -1,42 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode } from 'react';
+import type { BBobPlugins, BBobCoreOptions } from '@bbob/core';
 import { render } from './render';
 
-const content = (children, plugins, options) => React.Children.map(children, (child) => (typeof child === 'string' ? render(child, plugins, options) : child));
+const content = (children: ReactNode, plugins?: BBobPlugins, options?: BBobCoreOptions) => React.Children.map(children, (child) => (typeof child === 'string' ? render(child, plugins, options) : child));
+
+export type BBobReactComponentProps = {
+  children: ReactNode
+  container: string
+  componentProps: Record<string, unknown>
+  plugins?: BBobPlugins
+  options?: BBobCoreOptions
+}
 
 const Component = ({
-  container,
-  componentProps,
+  container = 'span',
+  componentProps = {},
   children,
-  plugins,
-  options,
-}) => React.createElement(
+  plugins = [],
+  options = {},
+}: BBobReactComponentProps) => React.createElement(
   container,
   componentProps,
   content(children, plugins, options),
 );
-
-if (process.env.NODE_ENV !== 'production') {
-  Component.propTypes = {
-    container: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.element,
-      PropTypes.elementType,
-    ]),
-    children: PropTypes.node.isRequired,
-    plugins: PropTypes.arrayOf(PropTypes.func),
-    componentProps: PropTypes.shape({
-      className: PropTypes.string,
-    }),
-    options: PropTypes.shape({
-      parser: PropTypes.func,
-      skipParse: PropTypes.bool,
-      onlyAllowTags: PropTypes.arrayOf(PropTypes.string),
-      openTag: PropTypes.string,
-      closeTag: PropTypes.string,
-    }),
-  };
-}
 
 Component.defaultProps = {
   container: 'span',
