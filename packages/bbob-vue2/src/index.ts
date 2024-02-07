@@ -1,10 +1,11 @@
+import type{ VueConstructor } from 'vue';
 import Component from './Component';
 
 export { render } from './render';
 export { Component };
 
-function install(Vue) {
-  Vue.component('bbob-bbcode', Component);
+function install(vue: VueConstructor) {
+  vue.component('bbob-bbcode', Component);
 }
 
 export default install;

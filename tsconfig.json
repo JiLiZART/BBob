@@ -23,6 +23,7 @@
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
+    "preserveSymlinks": true,
     "paths": {}
   },
   "exclude": [
