@@ -85,7 +85,7 @@
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize .",
     "size": "npm run build && @/cross-env NODE_ENV=production @/size-limit ."
   },
-  "packageManager": "pnpm@8.7.6",
+  "packageManager": "pnpm@8.15.1",
   "pnpm": {
     "overrides": {
       "semver@>=7.0.0 <7.5.2": ">=7.5.2"
