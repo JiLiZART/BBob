@@ -7,10 +7,10 @@ settings:
 dependencies:
   '@bbob/preset-vue':
     specifier: '*'
-    version: link:../../packages/bbob-preset-vue
+    version: 3.0.2
   '@bbob/vue2':
     specifier: '*'
-    version: link:../../packages/bbob-vue2
+    version: 3.0.2(vue@2.7.14)
   core-js:
     specifier: 3.26.1
     version: 3.26.1
@@ -1260,6 +1260,57 @@ packages:
       '@babel/helper-string-parser': 7.22.5
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@bbob/core@3.0.2:
+    resolution: {integrity: sha512-ru0Jd+jPGxiwyMR3hNgYqbVx9sJ4L8Hv3VoqW0svzC+rZpgKnorkCkwxIj2nlq5+z+0C1hS4lho5pn4Vandlag==}
+    dependencies:
+      '@bbob/parser': 3.0.2
+    dev: false
+
+  /@bbob/html@3.0.2:
+    resolution: {integrity: sha512-ILvlTUlmaM89bW7agZOmyiE9O+qY212YeFNWH7s9MzLmwykUMEtq4O5DTzawbLlyOhf2fbP8OHV4ljgGf8Cq0A==}
+    dependencies:
+      '@bbob/core': 3.0.2
+      '@bbob/plugin-helper': 3.0.2
+    dev: false
+
+  /@bbob/parser@3.0.2:
+    resolution: {integrity: sha512-3emLznDJWFJky+06AaTMpJ0IjY/mVpPN5+cnzwDKQgZ3wSFPbeEmdJhfh+gbiR30/UCWgwI1Ts+WUNJtUx1eaw==}
+    dependencies:
+      '@bbob/plugin-helper': 3.0.2
+    dev: false
+
+  /@bbob/plugin-helper@3.0.2:
+    resolution: {integrity: sha512-t1wFB3hbUg3pKq7TXk+mnnMcKjX6D29HxTAxU/+2mIbsWXaqgHLfH9FFxhZ8s/sGaLH4qgOSH+lgynpF3zy62Q==}
+    dev: false
+
+  /@bbob/preset-html5@3.0.2:
+    resolution: {integrity: sha512-J+c3aOQKD6n1HXGxB+o3tQuRTeqHLXBifBMFY4rT/y19tU3dZySI8TT/07pDqJVeh1PAa1KPaCww7m3O4QS0oQ==}
+    dependencies:
+      '@bbob/plugin-helper': 3.0.2
+      '@bbob/preset': 3.0.2
+    dev: false
+
+  /@bbob/preset-vue@3.0.2:
+    resolution: {integrity: sha512-KJmn6TNrDpI5zssARBAg0C2pPg7s8VxkirC1joWrZ+4Sh+EG1ZIDz84dfB82MN3Zs4npuYoOnJuVkY4Hib/FLA==}
+    dependencies:
+      '@bbob/preset-html5': 3.0.2
+    dev: false
+
+  /@bbob/preset@3.0.2:
+    resolution: {integrity: sha512-ZsHowFvvOx1tpem76SjYirsnO3bhaWnuh44Huj82YZBSftCgTaaH5WBleWk0TfNAu1gv44L1mHZyUBDLz3wgEg==}
+    dev: false
+
+  /@bbob/vue2@3.0.2(vue@2.7.14):
+    resolution: {integrity: sha512-j93mAGYv41J0TWA7CkYaxwl5otxlxSZmQ/2q/Ge+M1EZo8b0kWqv2Kna79d89gaOc/aCiOl3NYfgmY6q1xulFQ==}
+    peerDependencies:
+      vue: 2.x
+    dependencies:
+      '@bbob/core': 3.0.2
+      '@bbob/html': 3.0.2
+      '@bbob/plugin-helper': 3.0.2
+      vue: 2.7.14
+    dev: false
 
   /@discoveryjs/json-ext@0.5.7:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -3541,8 +3592,8 @@ packages:
     hasBin: true
     dev: true
 
-  /follow-redirects@1.15.3(debug@4.3.4):
-    resolution: {integrity: sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==}
+  /follow-redirects@1.15.6(debug@4.3.4):
+    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -3862,7 +3913,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.3(debug@4.3.4)
+      follow-redirects: 1.15.6(debug@4.3.4)
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
