@@ -22,16 +22,26 @@ function tagToReactElement(node, index) {
 }
 
 function renderToReactNodes(nodes) {
-  const els = [].concat(nodes).reduce((arr, node, index) => {
-    if (isTagNode(node)) {
-      arr.push(tagToReactElement(node, index));
-    } else if (isStringNode(node)) {
-      arr.push(node);
-    }
-
-    return arr;
+  var content = '';
+  var els = [].concat(nodes).reduce(function(arr, node, index) {
+      if ((0, _pluginHelper.isTagNode)(node)) {
+          if (content !== '') {
+              arr.push(content);
+              content = '';
+          }
+          arr.push(tagToReactElement(node, index));
+      } else if ((0, _pluginHelper.isStringNode)(node)) {
+          if (content === '') {
+              content = node;
+          } else {
+              content += node;
+          }
+      }
+      if (index === nodes.length - 1 && content !== '') {
+          arr.push(content);
+      }
+      return arr;
   }, []);
-
   return els;
 }
 
