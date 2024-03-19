@@ -22,8 +22,8 @@ function tagToReactElement(node, index) {
 }
 
 function renderToReactNodes(nodes) {
-  var content = '';
-  var els = [].concat(nodes).reduce(function(arr, node, index) {
+  let content = '';
+  const els = [].concat(nodes).reduce(function(arr, node, index) {
       if ((0, _pluginHelper.isTagNode)(node)) {
           if (content !== '') {
               arr.push(content);
