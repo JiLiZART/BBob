@@ -44,7 +44,6 @@ function renderToReactNodes(nodes) {
 
     return arr;
   }, []);
-
   return els;
 }
 
