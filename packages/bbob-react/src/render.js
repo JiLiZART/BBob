@@ -23,25 +23,28 @@ function tagToReactElement(node, index) {
 
 function renderToReactNodes(nodes) {
   let content = '';
-  const els = [].concat(nodes).reduce(function(arr, node, index) {
-      if ((0, _pluginHelper.isTagNode)(node)) {
-          if (content !== '') {
-              arr.push(content);
-              content = '';
-          }
-          arr.push(tagToReactElement(node, index));
-      } else if ((0, _pluginHelper.isStringNode)(node)) {
-          if (content === '') {
-              content = node;
-          } else {
-              content += node;
-          }
+  const els = [].concat(nodes).reduce((arr, node, index) => {
+    if (isTagNode(node)) {
+      if (content !== '') {
+        arr.push(content);
+        content = '';
       }
-      if (index === nodes.length - 1 && content !== '') {
-          arr.push(content);
+      arr.push(tagToReactElement(node, index));
+    } else if (isStringNode(node)) {
+      if (content === '') {
+        content = node;
+      } else {
+        content += node;
       }
-      return arr;
+    }
+
+    if (index === nodes.length - 1 && content !== '') {
+      arr.push(content);
+    }
+
+    return arr;
   }, []);
+
   return els;
 }
 
