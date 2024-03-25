@@ -63,3 +63,4 @@ typings/
 
 # benchmark test files
 benchmark/html5
+.nx
