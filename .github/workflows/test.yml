@@ -24,9 +24,6 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 8
-          run_install: |
-              args: [--frozen-lockfile, --strict-peer-dependencies]
-            - args: [--global, codecov]
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -34,8 +31,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
+      - name: Install
+        run: pnpm install --frozen-lockfile --strict-peer-dependencies
+
       - name: Run the lint
         run: pnpm lint
+
+      - name: Install coverage
+        run: pnpm install --global codecov
 
       - name: Run the coverage
         run: pnpm cover
