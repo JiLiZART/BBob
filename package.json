@@ -81,6 +81,18 @@
   "pnpm": {
     "overrides": {
       "semver@>=7.0.0 <7.5.2": ">=7.5.2"
+    },
+    "packageExtensions": {
+      "@testing-library/vue@7": {
+        "dependencies": {
+          "vue": "3.x"
+        }
+      },
+      "@vue/test-utils@2": {
+        "dependencies": {
+          "vue": "3.x"
+        }
+      }
     }
   }
 }
