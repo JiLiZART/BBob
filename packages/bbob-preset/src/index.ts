@@ -1,9 +1,8 @@
 /* eslint-disable indent */
 import { isTagNode } from '@bbob/plugin-helper'
 
-import type { BBobCoreTagNodeTree, BbobPluginOptions } from '@bbob/core'
+import type { BBobCoreTagNodeTree, BbobPluginOptions, BBobPluginFunction } from '@bbob/core'
 import type { TagNodeObject } from '@bbob/plugin-helper'
-import type { BBobPluginFunction } from "@bbob/core";
 
 export type PresetFactoryOptions = Record<string, unknown>
 
@@ -13,11 +12,9 @@ export type PresetTagFunction<Node extends object = TagNodeObject> = (
     options: PresetFactoryOptions
 ) => Node
 
-export interface PresetTagsDefinition<Name extends string = string> {
-  [propName: Name]: PresetTagFunction
-}
+export type PresetTagsDefinition<Name extends string = string> = Record<Name | string, PresetTagFunction>
 
-function process<Name extends string = string, TagName extends string = string, AttrValue = unknown>(
+function process<Name extends string = string>(
     tags: PresetTagsDefinition<Name>,
     tree: BBobCoreTagNodeTree,
     core: BbobPluginOptions,
@@ -37,7 +34,7 @@ function process<Name extends string = string, TagName extends string = string, 
 
 export type ProcessorFunction = typeof process
 
-type ProcessorReturnType = ReturnType<ProcessorFunction>
+export type ProcessorReturnType = ReturnType<ProcessorFunction>
 
 export interface PresetExecutor<TagName extends string = string, AttrValue = unknown> extends BBobPluginFunction {
     (tree: BBobCoreTagNodeTree, core?: BbobPluginOptions): ProcessorReturnType

@@ -20,7 +20,7 @@ const isContentEmpty = (content: TagNodeTree) => {
     return String(content).length === 0
   }
 
-  return content.length === 0;
+  return Array.isArray(content) ? content.length === 0 : !content;
 };
 
 function tagToReactElement(node: TagNode, index: number) {
