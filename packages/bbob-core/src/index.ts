@@ -3,7 +3,7 @@ import { iterate, match } from './utils';
 import { C1, C2 } from './errors'
 
 import type { IterateCallback } from './utils';
-import type { TagNodeTree, TagNode, NodeContent, PartialNodeContent } from "@bbob/plugin-helper";
+import { TagNodeTree, TagNode, NodeContent, PartialNodeContent } from "@bbob/plugin-helper";
 import type { ParseOptions } from "@bbob/parser";
 
 export interface BBobCoreOptions<Data = unknown | null, Options extends ParseOptions = ParseOptions> extends ParseOptions {

@@ -51,7 +51,6 @@ class NodeList<Value> {
   }
 
   toArray() {
-    console.log('toArray', this.n);
     return this.n
   }
 }

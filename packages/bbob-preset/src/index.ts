@@ -2,22 +2,23 @@
 import { isTagNode } from '@bbob/plugin-helper'
 
 import type { BBobCoreTagNodeTree, BbobPluginOptions } from '@bbob/core'
-import type { TagNode, NodeContent } from '@bbob/plugin-helper'
+import type { TagNodeObject } from '@bbob/plugin-helper'
 import type { BBobPluginFunction } from "@bbob/core";
 
 export type PresetFactoryOptions = Record<string, unknown>
 
-export type PresetTagFunction = (
-    node: TagNode,
+export type PresetTagFunction<Node extends object = TagNodeObject> = (
+    node: Node,
     core: BbobPluginOptions,
     options: PresetFactoryOptions
-) => NodeContent
+) => Node
 
-export type PresetTagsDefinition<Names extends string = string> =
-    Record<Names, PresetTagFunction>
+export interface PresetTagsDefinition<Name extends string = string> {
+  [propName: Name]: PresetTagFunction
+}
 
-function process<TagName extends string = string, AttrValue = unknown>(
-    tags: PresetTagsDefinition,
+function process<Name extends string = string, TagName extends string = string, AttrValue = unknown>(
+    tags: PresetTagsDefinition<Name>,
     tree: BBobCoreTagNodeTree,
     core: BbobPluginOptions,
     options: PresetFactoryOptions = {}
@@ -44,18 +45,18 @@ export interface PresetExecutor<TagName extends string = string, AttrValue = unk
 }
 
 export type PresetOptions = Record<string, unknown>
-export type PresetExtendCallback = (defTags: PresetTagsDefinition, options: PresetOptions) => PresetTagsDefinition
+export type PresetExtendCallback<Names extends string> = (defTags: PresetTagsDefinition<Names>, options: PresetOptions) => PresetTagsDefinition<Names>
 
-export type PresetFactory<TagName extends string = string, AttrValue = unknown> = {
+export interface PresetFactory<TagName extends string = string, AttrValue = unknown, Names extends string = string> {
     (opts?: PresetOptions): PresetExecutor,
     options?: PresetOptions,
-    extend: (cb: PresetExtendCallback) => PresetFactory
+    extend: (cb: PresetExtendCallback<Names>) => PresetFactory<TagName, AttrValue, Names>
 }
 
 /**
  * Create a preset plugin for @bbob/core
  */
-function createPreset(defTags: PresetTagsDefinition, processor: ProcessorFunction = process) {
+function createPreset<Names extends string = string>(defTags: PresetTagsDefinition<Names>, processor: ProcessorFunction = process) {
   const presetFactory: PresetFactory = (opts: PresetOptions = {}) => {
     presetFactory.options = Object.assign(presetFactory.options || {}, opts);
 
@@ -68,7 +69,7 @@ function createPreset(defTags: PresetTagsDefinition, processor: ProcessorFunctio
     return presetExecutor;
   };
 
-  presetFactory.extend = function presetExtend(callback: PresetExtendCallback){
+  presetFactory.extend = function presetExtend<ExtendNames extends string>(callback: PresetExtendCallback<Names & ExtendNames>){
     return createPreset(
         callback(defTags, presetFactory.options || {}),
         processor,

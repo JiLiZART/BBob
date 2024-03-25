@@ -1,17 +1,19 @@
 {
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default"
+  "targetDefaults": {
+    "link": {},
+    "build": {
+      "dependsOn": ["link"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "dependsOn": ["build"]
     }
   },
-  "targetDefaults": {},
-  "targetDependencies": {
-    "build": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
-  },
-  "defaultBase": "master"
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "master",
+  "plugins": [
+
+  ]
 }

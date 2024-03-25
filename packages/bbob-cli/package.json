@@ -2,17 +2,16 @@
   "name": "@bbob/cli",
   "version": "3.0.2",
   "description": "Comand line bbcode parser",
-  "main": "lib/cli.js",
+  "main": "bin/bbob",
   "bin": {
     "bbob": "bin/bbob"
   },
-  "directories": {
-    "lib": "lib"
-  },
   "dependencies": {
     "@bbob/html": "workspace:*",
-    "@bbob/preset-html5": "workspace:*",
-    "commander": "^2.15.1"
+    "@bbob/preset-html5": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.30"
   },
   "repository": {
     "type": "git",
@@ -29,6 +28,7 @@
   },
   "homepage": "https://github.com/JiLiZART/bbob#readme",
   "scripts": {
+    "build": "echo 'build @bbob/cli'",
     "test": "../../scripts/pkg-task test",
     "cover": "../../scripts/pkg-task cover",
     "lint": "../../scripts/pkg-task lint"

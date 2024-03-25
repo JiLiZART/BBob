@@ -65,3 +65,6 @@ typings/
 benchmark/html5
 
 .nx
+
+
+.nx/cache

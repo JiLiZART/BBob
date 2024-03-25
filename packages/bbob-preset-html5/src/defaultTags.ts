@@ -85,7 +85,7 @@ const toNode = (
 
 const toStyle = (style: string) => ({ style });
 
-const defaultTags: PresetTagsDefinition = {
+const defaultTags: PresetTagsDefinition<'b' | 'i' | 'u' | 's' | 'url' | 'img' | 'quote' | 'code' | 'style' | 'list' | 'color'> = {
     b: (node) => toNode('span', toStyle('font-weight: bold;'), node.content),
     i: (node) => toNode('span', toStyle('font-style: italic;'), node.content),
     u: (node) => toNode('span', toStyle('text-decoration: underline;'), node.content),

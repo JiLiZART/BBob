@@ -1,12 +1,13 @@
 import presetHTML5 from '@bbob/preset-html5';
+import type { PresetTagsDefinition } from '@bbob/preset';
 
-const tagAttr = (style) => ({
+const tagAttr = (style: Record<string, string>) => ({
   attrs: {
     style,
   },
 });
 
-export default presetHTML5.extend((tags) => ({
+export default presetHTML5.extend((tags: PresetTagsDefinition<'b' | 'i' | 'u' | 's'>) => ({
   ...tags,
 
   b: (...args) => ({

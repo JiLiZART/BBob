@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+'use strict';
+const fs = require('fs');
+const path = require('path');
+
+// Define the base directory where packages are located
+const packagesDir = 'packages';
+const dirs = ['dist', 'es', 'lib', 'coverage', 'types', 'node_modules']
+
+// Function to recursively delete directories
+function deleteFolderRecursive(folderPath) {
+    if (fs.existsSync(folderPath)) {
+        fs.readdirSync(folderPath).forEach((file) => {
+            const curPath = path.join(folderPath, file);
+            if (fs.lstatSync(curPath).isDirectory()) { // Recursively delete subdirectories
+                deleteFolderRecursive(curPath);
+            } else { // Delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(folderPath); // Delete empty directory
+    }
+}
+
+// Loop through each subfolder inside the packages directory
+fs.readdirSync(packagesDir).forEach((packageFolder) => {
+    const packageFolderPath = path.join(packagesDir, packageFolder);
+
+    if (fs.lstatSync(packageFolderPath).isDirectory()) {
+        dirs.forEach(dirname => {
+          // Delete the dist folder if it exists
+          const distFolderPath = path.join(packageFolderPath, dirname);
+
+          if (fs.existsSync(distFolderPath)) {
+            deleteFolderRecursive(distFolderPath);
+            console.log(`Deleted ${dirname} folder in ${packageFolderPath}`);
+          }
+        })
+    }
+});

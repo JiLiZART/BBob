@@ -10,8 +10,14 @@ import {
 
 export type StringNode = string | number
 
-export type NodeContent = TagNode | StringNode | null
-export type PartialNodeContent = Partial<TagNode> | StringNode | null
+export interface TagNodeObject {
+  readonly tag: string
+  attrs: Record<string, unknown>
+  content: TagNodeTree
+}
+
+export type NodeContent = TagNodeObject | StringNode | null
+export type PartialNodeContent = Partial<TagNodeObject> | StringNode | null
 
 export type TagNodeTree = NodeContent | NodeContent[] | null
 
@@ -58,7 +64,7 @@ const renderContent = (content: TagNodeTree, openTag: string, closeTag: string) 
   return null
 }
 
-export class TagNode {
+export class TagNode implements TagNodeObject {
   public readonly tag: string
   public attrs: Record<string, unknown>
   public content: TagNodeTree

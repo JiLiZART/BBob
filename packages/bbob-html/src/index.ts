@@ -32,20 +32,13 @@ function renderNode(node?: TagNodeTree, options?: BBobHTMLOptions): string {
 
     const attrs = attrsToString(node.attrs)
 
-    console.log('renderNode', node, attrs);
-
     if (node.content === null) {
-      debugger
       const tag = START_TAG + node.tag + attrs + SELFCLOSE_END_TAG
-
-      console.log('renderNode NULL', tag)
 
       return tag
     }
 
     const tag = START_TAG + node.tag + attrs + END_TAG + renderNodes(node.content, options) + CLOSE_START_TAG + node.tag + END_TAG
-
-    console.log('renderNode CLOSE', tag)
 
     return tag;
   }
