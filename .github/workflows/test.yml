@@ -20,12 +20,6 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
       - name: Install PNPM
         uses: pnpm/action-setup@v3
         with:
@@ -34,6 +28,12 @@ jobs:
             - recursive: true
               args: [--frozen-lockfile, --strict-peer-dependencies]
             - args: [--global, codecov]
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
       - name: Run the lint
         run: pnpm lint
