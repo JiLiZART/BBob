@@ -1,6 +1,10 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   test:
@@ -11,50 +15,33 @@ jobs:
         node-version: [16.x, 18.x, 19.x]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: Install PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
 
-    - name: Install PNPM ${{ matrix.node-version }}
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-        run_install: false
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-    - name: Get pnpm store directory ${{ matrix.node-version }}
-      shell: bash
-      run: |
-        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Install
+        run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
-    - uses: actions/cache@v3
-      name: Setup pnpm cache
-      with:
-        path: ${{ env.STORE_PATH }}
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ matrix.node-version }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-${{ matrix.node-version }}
+      - name: Run the lint
+        run: pnpm lint
 
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
+      - name: Install coverage
+        run: pnpm install --global codecov
 
-    - name: Install Codecov
-      run: pnpm install --global codecov
+      - name: Run the coverage
+        run: pnpm cover
 
-    - name: Bootstrap packages
-      run: npm run bootstrap
-
-    - name: Run the lint
-      run: npm run lint
-
-    - name: Run the coverage
-      run: npm run cover
-
-    - name: Run the coverage
-      run: codecov
+      - name: Run the coverage
+        run: codecov
