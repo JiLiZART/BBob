@@ -1,12 +1,13 @@
 {
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build"]
-      }
+  "targetDefaults": {
+    "build": {},
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "dependsOn": ["build"]
     }
   },
-  "targetDefaults": {},
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "master"
 }

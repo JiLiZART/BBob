@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/swcrc",
   "module": {
     "type": "es6",
     "strict": false,
@@ -9,15 +10,13 @@
   "minify": false,
   "jsc": {
     "transform": {
-      "optimizer": {
-        "simplify": false
-      }
+      "optimizer": {}
     },
     "target": "es2018",
     "loose": true,
     "parser": {
-      "syntax": "ecmascript",
-      "jsx": true
+      "syntax": "typescript",
+      "tsx": true
     },
     "externalHelpers": false
   }

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/swcrc",
   "module": {
     "type": "commonjs",
 
@@ -9,14 +10,12 @@
   },
   "jsc": {
     "transform": {
-      "optimizer": {
-        "simplify": false
-      }
+      "optimizer": {}
     },
     "loose": true,
     "parser": {
-      "syntax": "ecmascript",
-      "jsx": true
+      "syntax": "typescript",
+      "tsx": true
     }
   }
 }

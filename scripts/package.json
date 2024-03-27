@@ -1,12 +1,11 @@
 {
-  "name": "scripts",
-  "main": "index.js",
+  "name": "@bbob/scripts",
   "private": true,
+  "bin": {
+    "pkg-task": "pkg-task"
+  },
   "author": {
     "name": "Nikolay Kostyurin <jilizart@gmail.com>",
     "url": "https://artkost.ru/"
-  },
-  "dependencies": {
-    "commander": "8.2.0"
   }
 }
