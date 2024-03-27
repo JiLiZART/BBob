@@ -4,6 +4,13 @@
 
 ### Patch Changes
 
+- Updated dependencies [[`3575982`](https://github.com/JiLiZART/BBob/commit/3575982b280cc45c9cedaf7a059491a324c1b514)]:
+  - @bbob/parser@3.1.0
+
+## null
+
+### Patch Changes
+
 - Updated dependencies [[`0c78831`](https://github.com/JiLiZART/BBob/commit/0c78831372b02216c9be5d95cd8b857c18f81540)]:
   - @bbob/parser@3.0.2
 
