@@ -22,16 +22,28 @@ function tagToReactElement(node, index) {
 }
 
 function renderToReactNodes(nodes) {
+  let content = '';
   const els = [].concat(nodes).reduce((arr, node, index) => {
     if (isTagNode(node)) {
+      if (content !== '') {
+        arr.push(content);
+        content = '';
+      }
       arr.push(tagToReactElement(node, index));
     } else if (isStringNode(node)) {
-      arr.push(node);
+      if (content === '') {
+        content = node;
+      } else {
+        content += node;
+      }
+    }
+
+    if (index === nodes.length - 1 && content !== '') {
+      arr.push(content);
     }
 
     return arr;
   }, []);
-
   return els;
 }
 
