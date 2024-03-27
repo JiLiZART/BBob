@@ -3,7 +3,7 @@ import React from 'react';
 import core from '@bbob/core';
 import * as html from '@bbob/html';
 
-import { isTagNode, isStringNode } from '@bbob/plugin-helper';
+import { isTagNode, isEOL } from '@bbob/plugin-helper';
 
 const toAST = (source, plugins, options) => core(plugins)
   .process(source, {
@@ -22,25 +22,27 @@ function tagToReactElement(node, index) {
 }
 
 function renderToReactNodes(nodes) {
-  let content = '';
   const els = [].concat(nodes).reduce((arr, node, index) => {
     if (isTagNode(node)) {
-      if (content !== '') {
-        arr.push(content);
-        content = '';
-      }
       arr.push(tagToReactElement(node, index));
-    } else if (isStringNode(node)) {
-      if (content === '') {
-        content = node;
-      } else {
-        content += node;
-      }
+      return arr;
     }
 
-    if (index === nodes.length - 1 && content !== '') {
-      arr.push(content);
+    if (isEOL(node)) {
+      arr.push(node);
+      return arr;
     }
+
+    const lastIdx = arr.length - 1;
+    const prevNode = lastIdx >= 0 ? arr[lastIdx] : null;
+
+    if (prevNode !== null && !isTagNode(prevNode) && !isEOL(prevNode)) {
+      const prevArr = arr; // stupid eslint
+      prevArr[lastIdx] += node;
+      return prevArr;
+    }
+
+    arr.push(node);
 
     return arr;
   }, []);

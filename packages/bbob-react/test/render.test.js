@@ -15,6 +15,13 @@ describe('@bbob/react render', () => {
   test('render simple text nodes', () => {
     const html = render('some example words');
 
+    expect(html[0]).toStrictEqual("some example words")
+  })
+  test('render simple text nodes with line break', () => {
+    const html = render(`some
+      example 
+      words`);
+
     expect(html[0]).toStrictEqual("some")
   })
 })
