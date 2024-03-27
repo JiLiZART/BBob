@@ -2,17 +2,9 @@
 import { isTagNode } from '@bbob/plugin-helper'
 
 import type { BBobCoreTagNodeTree, BbobPluginOptions, BBobPluginFunction } from '@bbob/core'
-import type { TagNodeObject } from '@bbob/plugin-helper'
+import type { PresetOptions, PresetExtendCallback, PresetFactoryOptions, PresetTagsDefinition } from "./types";
 
-export type PresetFactoryOptions = Record<string, unknown>
-
-export type PresetTagFunction<Node extends object = TagNodeObject> = (
-    node: Node,
-    core: BbobPluginOptions,
-    options: PresetFactoryOptions
-) => Node
-
-export type PresetTagsDefinition<Name extends string = string> = Record<Name | string, PresetTagFunction>
+export * from './types'
 
 function process<Name extends string = string>(
     tags: PresetTagsDefinition<Name>,
@@ -41,8 +33,6 @@ export interface PresetExecutor<TagName extends string = string, AttrValue = unk
     options: PresetOptions,
 }
 
-export type PresetOptions = Record<string, unknown>
-export type PresetExtendCallback<Names extends string> = (defTags: PresetTagsDefinition<Names>, options: PresetOptions) => PresetTagsDefinition<Names>
 
 export interface PresetFactory<TagName extends string = string, AttrValue = unknown, Names extends string = string> {
     (opts?: PresetOptions): PresetExecutor,

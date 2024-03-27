@@ -33,7 +33,7 @@ fs.readdirSync(packagesDir).forEach((packageFolder) => {
 
           if (fs.existsSync(distFolderPath)) {
             deleteFolderRecursive(distFolderPath);
-            console.log(`Deleted ${dirname} folder in ${packageFolderPath}`);
+            console.log(`${dirname} (${packageFolderPath}) deleted`);
           }
         })
     }

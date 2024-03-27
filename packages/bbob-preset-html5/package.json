@@ -44,7 +44,7 @@
     "build:commonjs": "pkg-task",
     "build:es": "pkg-task",
     "build:umd": "pkg-task",
-    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
+    "build": "pkg-task",
     "test": "pkg-task",
     "cover": "pkg-task",
     "lint": "pkg-task",

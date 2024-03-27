@@ -3,44 +3,10 @@ import { iterate, match } from './utils';
 import { C1, C2 } from './errors'
 
 import type { IterateCallback } from './utils';
-import { TagNodeTree, TagNode, NodeContent, PartialNodeContent } from "@bbob/plugin-helper";
-import type { ParseOptions } from "@bbob/parser";
+import type { NodeContent, PartialNodeContent } from "@bbob/plugin-helper";
+import type { BBobCore, BBobCoreOptions, BBobCoreTagNodeTree, BBobPlugins } from "./types";
 
-export interface BBobCoreOptions<Data = unknown | null, Options extends ParseOptions = ParseOptions> extends ParseOptions {
-  skipParse?: boolean
-  parser?: (source: string, options?: Options) => TagNode[]
-  render?: (ast: TagNodeTree, options?: Options) => string
-  data?: Data
-}
-
-export interface BbobPluginOptions<Options extends ParseOptions = ParseOptions> {
-  parse: BBobCoreOptions['parser'],
-  render: (ast: TagNodeTree, options?: Options) => string,
-  iterate: typeof iterate,
-  data: unknown | null,
-}
-
-export interface BBobPluginFunction {
-  (tree: BBobCoreTagNodeTree, options: BbobPluginOptions): BBobCoreTagNodeTree
-}
-
-export interface BBobCore<InputValue = string | TagNode[], Options extends BBobCoreOptions = BBobCoreOptions> {
-  process(input: InputValue, opts?: Options): {
-    readonly html: string,
-    tree: BBobCoreTagNodeTree,
-    raw: TagNode[] | string,
-    messages: unknown[],
-  }
-}
-
-export interface BBobCoreTagNodeTree extends Array<NodeContent> {
-  messages: unknown[],
-  options: BBobCoreOptions,
-  walk: (cb: IterateCallback<NodeContent>) => BBobCoreTagNodeTree
-  match: (expression: PartialNodeContent | PartialNodeContent[], cb: IterateCallback<NodeContent>) => BBobCoreTagNodeTree
-}
-
-export type BBobPlugins = BBobPluginFunction | BBobPluginFunction[]
+export * from './types'
 
 export function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tree: NodeContent[], options: Options) {
   const extendedTree = tree as BBobCoreTagNodeTree

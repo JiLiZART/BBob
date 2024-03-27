@@ -15,20 +15,7 @@ import {
   Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD,
 } from './Token';
 import { CharGrabber, createCharGrabber, trimChar, unquote } from './utils';
-
-export type LexerTokenizer = {
-  tokenize: () => Token<string>[]
-  isTokenNested?: (token: Token<string>) => boolean,
-}
-
-export type LexerOptions = {
-  openTag?: string
-  closeTag?: string
-  onlyAllowTags?: string[]
-  enableEscapeTags?: boolean
-  contextFreeTags?: string[]
-  onToken?: (token?: Token<string>) => void
-}
+import type { LexerOptions, LexerTokenizer } from "./types";
 
 // for cases <!-- -->
 const EM = '!';

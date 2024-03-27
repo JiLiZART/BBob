@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import { render as htmlrender } from '@bbob/html';
 import core, { BBobCoreOptions, BBobCoreTagNodeTree, BBobPlugins } from '@bbob/core';
 
-import { isTagNode, isEOL, TagNode, TagNodeTree } from '@bbob/plugin-helper';
+import { isTagNode, isStringNode, isEOL, TagNode, TagNodeTree } from '@bbob/plugin-helper';
 
 const toAST = (source: string, plugins?: BBobPlugins, options?: BBobCoreOptions) => core(plugins)
   .process(source, {
@@ -39,21 +39,24 @@ function renderToReactNodes(nodes: BBobCoreTagNodeTree | TagNodeTree) {
         return arr;
       }
 
-      if (isEOL(node)) {
-        arr.push(node);
-        return arr;
-      }
+      if (isStringNode(node)) {
+        if (isEOL(node)) {
+          arr.push(node);
+          return arr;
+        }
 
-      const lastIdx = arr.length - 1;
-      const prevNode = lastIdx >= 0 ? arr[lastIdx] : null;
-
-      if (prevNode !== null && !isTagNode(prevNode) && !isEOL(prevNode)) {
+        const lastIdx = arr.length - 1;
         const prevArr = arr; // stupid eslint
-        prevArr[lastIdx] += node;
-        return prevArr;
-      }
+        const prevNode = lastIdx >= 0 ? prevArr[lastIdx] : null;
 
-      arr.push(node);
+        if (prevNode !== null && typeof prevArr[lastIdx] === 'string' && !isEOL(prevNode)) {
+          prevArr[lastIdx] += node;
+
+          return prevArr;
+        }
+
+        arr.push(node);
+      }
 
       return arr;
     }, []);
