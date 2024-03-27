@@ -15,25 +15,33 @@ jobs:
         node-version: [16.x, 18.x, 19.x]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
-    - name: Install PNPM
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-        run_install: |
-          - recursive: true
-            args: [--frozen-lockfile, --strict-peer-dependencies]
-          - args: [--global, codecov]
+      - name: Install PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
 
-    - name: Run the lint
-      run: pnpm lint
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-    - name: Run the coverage
-      run: pnpm cover
+      - name: Install
+        run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
-    - name: Run the coverage
-      run: codecov
+      - name: Run the lint
+        run: pnpm lint
+
+      - name: Install coverage
+        run: pnpm install --global codecov
+
+      - name: Run the coverage
+        run: pnpm cover
+
+      - name: Run the coverage
+        run: codecov

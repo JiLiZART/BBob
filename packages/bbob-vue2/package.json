@@ -19,8 +19,8 @@
   "devDependencies": {
     "@bbob/preset-vue": "workspace:*",
     "@testing-library/vue": "5.9.0",
-    "vue": "2.7.14",
-    "vue-template-compiler": "2.7.14"
+    "vue": "2.7.16",
+    "vue-template-compiler": "2.7.16"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

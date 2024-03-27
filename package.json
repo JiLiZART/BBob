@@ -92,7 +92,25 @@
   "packageManager": "pnpm@8.15.1",
   "pnpm": {
     "overrides": {
-      "semver@>=7.0.0 <7.5.2": ">=7.5.2"
+      "semver@>=7.0.0 <7.5.2": ">=7.5.2",
+      "postcss@<8.4.31": ">=8.4.31",
+      "follow-redirects@<1.15.4": ">=1.15.4",
+      "axios@>=1.0.0 <1.6.0": ">=1.6.0",
+      "ip@=2.0.0": ">=2.0.1",
+      "follow-redirects@<=1.15.5": ">=1.15.6",
+      "express@<4.19.2": ">=4.19.2"
+    },
+    "packageExtensions": {
+      "@testing-library/vue@7": {
+        "dependencies": {
+          "vue": "3.x"
+        }
+      },
+      "@vue/test-utils@2": {
+        "dependencies": {
+          "vue": "3.x"
+        }
+      }
     }
   },
   "nx": {
