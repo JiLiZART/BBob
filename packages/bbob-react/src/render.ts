@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import { render as htmlrender } from '@bbob/html';
 import core, { BBobCoreOptions, BBobCoreTagNodeTree, BBobPlugins } from '@bbob/core';
 
-import { isTagNode, TagNode, TagNodeTree } from '@bbob/plugin-helper';
+import { isTagNode, isEOL, TagNode, TagNodeTree } from '@bbob/plugin-helper';
 
 const toAST = (source: string, plugins?: BBobPlugins, options?: BBobCoreOptions) => core(plugins)
   .process(source, {
@@ -36,14 +36,28 @@ function renderToReactNodes(nodes: BBobCoreTagNodeTree | TagNodeTree) {
     return nodes.reduce<ReactNode[]>((arr, node, index) => {
       if (isTagNode(node)) {
         arr.push(tagToReactElement(node, index));
-      } else {
-        arr.push(node);
+        return arr;
       }
+
+      if (isEOL(node)) {
+        arr.push(node);
+        return arr;
+      }
+
+      const lastIdx = arr.length - 1;
+      const prevNode = lastIdx >= 0 ? arr[lastIdx] : null;
+
+      if (prevNode !== null && !isTagNode(prevNode) && !isEOL(prevNode)) {
+        const prevArr = arr; // stupid eslint
+        prevArr[lastIdx] += node;
+        return prevArr;
+      }
+
+      arr.push(node);
 
       return arr;
     }, []);
   }
-
   return []
 }
 

@@ -30,16 +30,16 @@
     "url": "git://github.com/JiLiZART/bbob.git"
   },
   "scripts": {
-    "build:commonjs": "../../scripts/pkg-task build-commonjs",
-    "build:es": "../../scripts/pkg-task build-es",
-    "build:umd": "../../scripts/pkg-task build-umd",
-    "build": "npm run gen-types && npm run build:commonjs && npm run build:es && npm run build:umd",
-    "test": "../../scripts/pkg-task test",
-    "cover": "../../scripts/pkg-task cover",
-    "lint": "../../scripts/pkg-task lint",
-    "size": "../../scripts/pkg-task size",
-    "bundlesize": "../../scripts/pkg-task bundlesize",
-    "gen-types": "../../scripts/pkg-task gen-types",
+    "build:commonjs": "pkg-task",
+    "build:es": "pkg-task",
+    "build:umd": "pkg-task",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
+    "test": "pkg-task",
+    "cover": "pkg-task",
+    "lint": "pkg-task",
+    "size": "pkg-task",
+    "bundlesize": "pkg-task",
+    "gen-types": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [

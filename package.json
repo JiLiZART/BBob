@@ -67,7 +67,8 @@
     "@types/react": "18.2.18",
     "@nx/eslint": "18.1.2",
     "@nx/rollup": "18.1.2",
-    "@nx/jest": "18.1.2"
+    "@nx/jest": "18.1.2",
+    "@bbob/scripts": "workspace:*"
   },
   "publishConfig": {
     "access": "public",

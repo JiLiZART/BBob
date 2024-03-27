@@ -29,9 +29,10 @@
   "homepage": "https://github.com/JiLiZART/bbob#readme",
   "scripts": {
     "build": "echo 'build @bbob/cli'",
-    "test": "../../scripts/pkg-task test",
-    "cover": "../../scripts/pkg-task cover",
-    "lint": "../../scripts/pkg-task lint"
+    "test": "pkg-task",
+    "cover": "pkg-task",
+    "lint": "pkg-task",
+    "prepublishOnly": "npm run build"
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",

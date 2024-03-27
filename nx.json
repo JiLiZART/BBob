@@ -1,8 +1,8 @@
 {
   "targetDefaults": {
-    "link": {},
+    "gen-types": {},
     "build": {
-      "dependsOn": ["link"]
+      "dependsOn": ["^gen-types"]
     },
     "test": {
       "dependsOn": ["^build"]
@@ -12,8 +12,5 @@
     }
   },
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "defaultBase": "master",
-  "plugins": [
-
-  ]
+  "defaultBase": "master"
 }
