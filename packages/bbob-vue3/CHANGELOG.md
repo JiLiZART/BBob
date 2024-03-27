@@ -1,5 +1,18 @@
 # @bbob/vue3
 
+## 3.1.0
+
+### Minor Changes
+
+- [#199](https://github.com/JiLiZART/BBob/pull/199) [`3575982`](https://github.com/JiLiZART/BBob/commit/3575982b280cc45c9cedaf7a059491a324c1b514) Thanks [@JiLiZART](https://github.com/JiLiZART)! - All build processes and CI actions now using PNPM as default Package Manager
+
+### Patch Changes
+
+- Updated dependencies [[`3575982`](https://github.com/JiLiZART/BBob/commit/3575982b280cc45c9cedaf7a059491a324c1b514)]:
+  - @bbob/plugin-helper@3.1.0
+  - @bbob/core@3.1.0
+  - @bbob/html@3.1.0
+
 ## 3.0.2
 
 ### Patch Changes
