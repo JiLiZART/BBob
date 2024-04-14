@@ -63,7 +63,9 @@ function createLexer(buffer, options = {}) {
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
   const escapeTags = !!options.enableEscapeTags;
-  const contextFreeTags = options.contextFreeTags || [];
+  const contextFreeTags = (options.contextFreeTags || [])
+    .filter(Boolean)
+    .map((tag) => tag.toLowerCase());
   const onToken = options.onToken || (() => {
   });
 
@@ -92,7 +94,7 @@ function createLexer(buffer, options = {}) {
       contextFreeTag = '';
     }
 
-    if (contextFreeTag === '' && contextFreeTags.includes(name)) {
+    if (contextFreeTag === '' && contextFreeTags.includes(name.toLowerCase())) {
       contextFreeTag = name;
     }
   };
