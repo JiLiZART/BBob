@@ -12,5 +12,6 @@
     }
   },
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "defaultBase": "master"
+  "defaultBase": "master",
+  "extends": "nx/presets/npm.json"
 }

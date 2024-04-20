@@ -68,7 +68,7 @@
     "@nx/eslint": "18.1.2",
     "@nx/rollup": "18.1.2",
     "@nx/jest": "18.1.2",
-    "@bbob/scripts": "workspace:*"
+    "@bbob/scripts": "*"
   },
   "publishConfig": {
     "access": "public",

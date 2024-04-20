@@ -9,15 +9,15 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "workspace:*",
-    "@bbob/html": "workspace:*",
-    "@bbob/plugin-helper": "workspace:*"
+    "@bbob/core": "*",
+    "@bbob/html": "*",
+    "@bbob/plugin-helper": "*"
   },
   "peerDependencies": {
     "vue": "2.x"
   },
   "devDependencies": {
-    "@bbob/preset-vue": "workspace:*",
+    "@bbob/preset-vue": "*",
     "@testing-library/vue": "5.9.0",
     "vue": "2.7.16",
     "vue-template-compiler": "2.7.16"

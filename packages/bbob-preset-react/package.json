@@ -8,11 +8,11 @@
     "react"
   ],
   "dependencies": {
-    "@bbob/preset-html5": "workspace:*",
-    "@bbob/preset": "workspace:*"
+    "@bbob/preset-html5": "*",
+    "@bbob/preset": "*"
   },
   "devDependencies": {
-    "@bbob/core": "workspace:*"
+    "@bbob/core": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

@@ -20,7 +20,7 @@
     "types"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "workspace:*"
+    "@bbob/plugin-helper": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

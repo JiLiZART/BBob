@@ -15,8 +15,8 @@
     "types"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "workspace:*",
-    "@bbob/core": "workspace:*"
+    "@bbob/plugin-helper": "*",
+    "@bbob/core": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

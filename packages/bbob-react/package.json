@@ -9,9 +9,9 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "workspace:*",
-    "@bbob/html": "workspace:*",
-    "@bbob/plugin-helper": "workspace:*"
+    "@bbob/core": "*",
+    "@bbob/html": "*",
+    "@bbob/plugin-helper": "*"
   },
   "peerDependencies": {
     "react": "> 15.0"

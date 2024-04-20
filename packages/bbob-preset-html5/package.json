@@ -8,12 +8,12 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "workspace:*",
-    "@bbob/preset": "workspace:*"
+    "@bbob/plugin-helper": "*",
+    "@bbob/preset": "*"
   },
   "devDependencies": {
-    "@bbob/core": "workspace:*",
-    "@bbob/html": "workspace:*"
+    "@bbob/core": "*",
+    "@bbob/html": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

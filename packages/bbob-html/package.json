@@ -9,8 +9,8 @@
     "bbob"
   ],
   "dependencies": {
-    "@bbob/core": "workspace:*",
-    "@bbob/plugin-helper": "workspace:*"
+    "@bbob/core": "*",
+    "@bbob/plugin-helper": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

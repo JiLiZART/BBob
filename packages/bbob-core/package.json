@@ -20,8 +20,8 @@
     "core"
   ],
   "dependencies": {
-    "@bbob/parser": "workspace:*",
-    "@bbob/plugin-helper": "workspace:*"
+    "@bbob/parser": "*",
+    "@bbob/plugin-helper": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

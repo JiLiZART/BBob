@@ -20,7 +20,7 @@ importers:
   .:
     devDependencies:
       '@bbob/scripts':
-        specifier: workspace:*
+        specifier: '*'
         version: link:scripts
       '@changesets/changelog-github':
         specifier: 0.4.8
@@ -155,10 +155,10 @@ importers:
   benchmark:
     dependencies:
       '@bbob/parser':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../packages/bbob-parser
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../packages/bbob-plugin-helper
       benchmark:
         specifier: 2.1.4
@@ -201,10 +201,10 @@ importers:
   packages/bbob-cli:
     dependencies:
       '@bbob/html':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-html
       '@bbob/preset-html5':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-preset-html5
     devDependencies:
       '@types/node':
@@ -214,25 +214,25 @@ importers:
   packages/bbob-core:
     dependencies:
       '@bbob/parser':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-parser
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-plugin-helper
 
   packages/bbob-html:
     dependencies:
       '@bbob/core':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-core
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-plugin-helper
 
   packages/bbob-parser:
     dependencies:
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-plugin-helper
 
   packages/bbob-plugin-helper: {}
@@ -240,64 +240,64 @@ importers:
   packages/bbob-preset:
     dependencies:
       '@bbob/core':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-core
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-plugin-helper
 
   packages/bbob-preset-html5:
     dependencies:
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-plugin-helper
       '@bbob/preset':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-preset
     devDependencies:
       '@bbob/core':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-core
       '@bbob/html':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-html
 
   packages/bbob-preset-react:
     dependencies:
       '@bbob/preset':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-preset
       '@bbob/preset-html5':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-preset-html5
     devDependencies:
       '@bbob/core':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-core
 
   packages/bbob-preset-vue:
     dependencies:
       '@bbob/preset':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-preset
       '@bbob/preset-html5':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-preset-html5
     devDependencies:
       '@bbob/core':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-core
 
   packages/bbob-react:
     dependencies:
       '@bbob/core':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-core
       '@bbob/html':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-html
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-plugin-helper
     devDependencies:
       '@bbob/preset-react':
@@ -322,17 +322,17 @@ importers:
   packages/bbob-vue2:
     dependencies:
       '@bbob/core':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-core
       '@bbob/html':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-html
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-plugin-helper
     devDependencies:
       '@bbob/preset-vue':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-preset-vue
       '@testing-library/vue':
         specifier: 5.9.0
@@ -347,17 +347,17 @@ importers:
   packages/bbob-vue3:
     dependencies:
       '@bbob/core':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-core
       '@bbob/html':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-html
       '@bbob/plugin-helper':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-plugin-helper
     devDependencies:
       '@bbob/preset-vue':
-        specifier: workspace:*
+        specifier: '*'
         version: link:../bbob-preset-vue
       '@testing-library/vue':
         specifier: 7.0.0

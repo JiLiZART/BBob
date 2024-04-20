@@ -7,8 +7,8 @@
     "bbob": "bin/bbob"
   },
   "dependencies": {
-    "@bbob/html": "workspace:*",
-    "@bbob/preset-html5": "workspace:*"
+    "@bbob/html": "*",
+    "@bbob/preset-html5": "*"
   },
   "devDependencies": {
     "@types/node": "20.11.30"
