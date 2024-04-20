@@ -8,7 +8,8 @@
     "react"
   ],
   "dependencies": {
-    "@bbob/preset-html5": "workspace:*"
+    "@bbob/preset-html5": "workspace:*",
+    "@bbob/preset": "workspace:*"
   },
   "devDependencies": {
     "@bbob/core": "workspace:*"

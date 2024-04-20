@@ -1,6 +1,9 @@
 {
   "targetDefaults": {
-    "build": {},
+    "gen-types": {},
+    "build": {
+      "dependsOn": ["^gen-types"]
+    },
     "test": {
       "dependsOn": ["^build"]
     },

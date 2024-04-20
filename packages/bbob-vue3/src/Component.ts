@@ -1,12 +1,20 @@
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, VNode } from "vue";
+import { render } from "./render";
 
-import { render } from './render';
+import type { BBobPlugins, BBobCoreOptions } from "@bbob/core";
+
+type VueComponentProps = {
+  container: string;
+  componentProps: Record<string, unknown>;
+  plugins?: BBobPlugins;
+  options?: BBobCoreOptions;
+};
 
 const Component = defineComponent({
   props: {
     container: {
       type: String,
-      default: 'span',
+      default: "span",
     },
     plugins: {
       type: Array,
@@ -16,13 +24,19 @@ const Component = defineComponent({
     },
   },
 
-  render(props) {
+  render(props: VueComponentProps) {
     if (this.$slots.default) {
-      const source = this.$slots.default().reduce((acc, vnode) => acc + vnode.children, '');
+      const source = this.$slots
+        .default()
+        .reduce((acc: VNode, vnode: VNode) => {
+          if (typeof acc === "string") {
+            return acc + vnode.children;
+          }
+        }, "");
 
       return h(
         props.container,
-        render(h, source, props.plugins, props.options),
+        render(h, source, props.plugins, props.options)
       );
     }
 

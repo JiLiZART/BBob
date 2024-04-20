@@ -1,19 +1,49 @@
 /* eslint-disable no-use-before-define,import/prefer-default-export */
-import core from '@bbob/core';
-import * as html from '@bbob/html';
+import core, { BBobCoreOptions, BBobPlugins } from "@bbob/core";
+import * as html from "@bbob/html";
+import { h, VNodeArrayChildren } from "vue";
 
-import { isStringNode, isTagNode } from '@bbob/plugin-helper';
+import {
+  TagNode,
+  TagNodeTree,
+  isStringNode,
+  isTagNode,
+} from "@bbob/plugin-helper";
 
-const toAST = (source, plugins = [], options = {}) => core(plugins)
-  .process(source, {
+type CreateElement = typeof h;
+
+const toAST = (
+  source: string,
+  plugins?: BBobPlugins,
+  options?: BBobCoreOptions
+) =>
+  core(plugins).process(source, {
     ...options,
     render: (input) => html.render(input, { stripTags: true }),
   }).tree;
 
-const isContentEmpty = (content) => (!content || content.length === 0);
+const isContentEmpty = (content: TagNodeTree) => {
+  if (!content) {
+    return true;
+  }
 
-function tagToVueNode(createElement, node, index) {
+  if (typeof content === "number") {
+    return String(content).length === 0;
+  }
+
+  return Array.isArray(content) ? content.length === 0 : !content;
+};
+
+function tagToVueNode(
+  createElement: CreateElement,
+  node: TagNode,
+  index: number
+) {
   const { class: className, style, ...domProps } = node.attrs || {};
+
+  const content = isContentEmpty(node.content)
+    ? undefined
+    : renderToVueNodes(createElement, node.content);
 
   return createElement(
     node.tag,
@@ -23,20 +53,27 @@ function tagToVueNode(createElement, node, index) {
       style,
       ...domProps,
     },
-    isContentEmpty(node.content) ? null : renderToVueNodes(createElement, node.content),
+    content
   );
 }
 
-function renderToVueNodes(createElement, nodes) {
-  return [].concat(nodes).reduce((arr, node, index) => {
-    if (isTagNode(node)) {
-      arr.push(tagToVueNode(createElement, node, index));
-    } else if (isStringNode(node)) {
-      arr.push(node);
-    }
+function renderToVueNodes(
+  createElement: CreateElement,
+  nodes: TagNodeTree
+): VNodeArrayChildren {
+  if (Array.isArray(nodes) && nodes.length) {
+    return nodes.reduce((arr, node, index) => {
+      if (isTagNode(node)) {
+        arr.push(tagToVueNode(createElement, node, index));
+      } else if (isStringNode(node)) {
+        arr.push(String(node));
+      }
 
-    return arr;
-  }, []);
+      return arr;
+    }, [] as VNodeArrayChildren);
+  }
+
+  return [];
 }
 
 /**
@@ -47,6 +84,11 @@ function renderToVueNodes(createElement, nodes) {
  * @param options {Object}
  * @returns {Array<VNode>}
  */
-export function render(createElement, source, plugins, options) {
+export function render(
+  createElement: CreateElement,
+  source: string,
+  plugins?: BBobPlugins,
+  options?: BBobCoreOptions
+) {
   return renderToVueNodes(createElement, toAST(source, plugins, options));
 }

@@ -264,6 +264,9 @@ importers:
 
   packages/bbob-preset-react:
     dependencies:
+      '@bbob/preset':
+        specifier: workspace:*
+        version: link:../bbob-preset
       '@bbob/preset-html5':
         specifier: workspace:*
         version: link:../bbob-preset-html5
@@ -359,7 +362,16 @@ importers:
       '@testing-library/vue':
         specifier: 7.0.0
         version: 7.0.0(@vue/compiler-sfc@3.4.21)(typescript@5.1.6)(vue@3.4.21)
+      '@vue/compiler-dom':
+        specifier: 3.4.21
+        version: 3.4.21
       '@vue/compiler-sfc':
+        specifier: 3.4.21
+        version: 3.4.21
+      '@vue/runtime-core':
+        specifier: 3.4.21
+        version: 3.4.21
+      '@vue/runtime-dom':
         specifier: 3.4.21
         version: 3.4.21
       '@vue/test-utils':
