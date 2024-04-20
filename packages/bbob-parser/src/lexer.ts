@@ -44,7 +44,9 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
   const escapeTags = !!options.enableEscapeTags;
-  const contextFreeTags = options.contextFreeTags || [];
+  const contextFreeTags = (options.contextFreeTags || [])
+    .filter(Boolean)
+    .map((tag) => tag.toLowerCase());
   const onToken = options.onToken || (() => {
   });
 
@@ -73,7 +75,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       contextFreeTag = '';
     }
 
-    if (contextFreeTag === '' && contextFreeTags.includes(name)) {
+    if (contextFreeTag === '' && contextFreeTags.includes(name.toLowerCase())) {
       contextFreeTag = name;
     }
   };

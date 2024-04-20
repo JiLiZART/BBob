@@ -492,6 +492,24 @@ describe('lexer', () => {
     expect(tokens).toBeMantchOutput(output);
   })
 
+  test('context free tag case insensitive [CODE]', () => {
+    const input = '[CODE] [b]some string[/b][/CODE]'
+    const tokens = tokenizeContextFreeTags(input, ['code']);
+    const output = [
+      [TYPE.TAG, 'CODE', 0, 0],
+      [TYPE.SPACE, ' ', 0, 0],
+      [TYPE.WORD, '[', 0, 0],
+      [TYPE.WORD, 'b]some', 0, 0],
+      [TYPE.SPACE, ' ', 0, 0],
+      [TYPE.WORD, 'string', 0, 0],
+      [TYPE.WORD, '[', 0, 0],
+      [TYPE.WORD, '/b]', 0, 0],
+      [TYPE.TAG, '/CODE', 0, 0],
+    ]
+
+    expect(tokens).toBeMantchOutput(output);
+  })
+
   test('bad closed tag with escaped backslash', () => {
     const input = `[b]test[\\b]`;
     const tokens = tokenizeEscape(input);
