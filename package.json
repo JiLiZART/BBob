@@ -13,7 +13,7 @@
     "bundlesize": "nx run-many --target=bundlesize",
     "test": "nx run-many --target=test",
     "cover": "nx run-many --target=cover",
-    "build": "nx reset && nx run-many --target=build",
+    "build": "nx run-many --target=build --projects @bbob/plugin-helper,@bbob/parser,@bbob/core,@bbob/html,@bbob/preset,@bbob/preset-html5,@bbob/preset-react,@bbob/preset-vue,@bbob/react,@bbob/vue2,@bbob/vue3,@bbob/cli",
     "types": "nx run-many --parallel=false --target=types",
     "release": "npm run build && changeset publish",
     "lint": "nx run-many --target=lint",
