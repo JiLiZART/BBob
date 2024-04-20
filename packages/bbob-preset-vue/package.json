@@ -39,7 +39,7 @@
     "lint": "pkg-task",
     "size": "pkg-task",
     "bundlesize": "pkg-task",
-    "gen-types": "pkg-task",
+    "types": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [
