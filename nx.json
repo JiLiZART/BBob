@@ -27,7 +27,8 @@
       "dependsOn": [
         "^build",
         "^cover"
-      ]
+      ],
+      "outputs": ["{projectRoot}/coverage"]
     },
     "lint": {
       "dependsOn": [

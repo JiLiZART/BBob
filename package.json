@@ -84,7 +84,7 @@
     "build:umd": "@/cross-env BABEL_ENV=rollup NODE_ENV=production @/rollup --config ../../rollup.config.mjs",
     "build": "npm run build:es && npm run build:commonjs && npm run build:umd",
     "test": "@/jest",
-    "cover": "@/jest --config ../../jest.config.js --coverage .",
+    "cover": "@/jest --coverage .",
     "lint": "@/eslint .",
     "types": "@/tsc",
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize .",
