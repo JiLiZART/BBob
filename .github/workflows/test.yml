@@ -32,16 +32,16 @@ jobs:
           cache: 'pnpm'
 
       - name: Install
-        run: pnpm install --frozen-lockfile --strict-peer-dependencies
+        run: pnpm i --frozen-lockfile --strict-peer-dependencies
 
       - name: Run the lint
-        run: pnpm lint
+        run: pnpm run lint
 
       - name: Install coverage
         run: pnpm install --global codecov
 
       - name: Run the coverage
-        run: pnpm cover
+        run: pnpm run cover
 
       - name: Run the coverage
         run: codecov
