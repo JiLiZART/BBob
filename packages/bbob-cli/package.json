@@ -2,9 +2,9 @@
   "name": "@bbob/cli",
   "version": "3.0.2",
   "description": "Comand line bbcode parser",
-  "main": "bin/bbob",
+  "main": "bin/bbob.js",
   "bin": {
-    "bbob": "bin/bbob"
+    "bbob": "bin/bbob.js"
   },
   "dependencies": {
     "@bbob/html": "*",
@@ -28,11 +28,9 @@
   },
   "homepage": "https://github.com/JiLiZART/bbob#readme",
   "scripts": {
-    "build": "echo 'build @bbob/cli'",
     "test": "pkg-task",
     "cover": "pkg-task",
-    "lint": "pkg-task",
-    "prepublishOnly": "npm run build"
+    "lint": "pkg-task"
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-
-const bbobHTML = require('@bbob/html').default
-const presetHTML5 = require('@bbob/preset-html5').default
+const html = require('@bbob/html').default;
+const presetHTML5 = require('@bbob/preset-html5').default;
 
 process.stdin.setEncoding('utf8');
 
@@ -17,11 +16,6 @@ process.stdin.on('readable', () => {
 
 // Once there's no more data to read, reverse the input and write it to stdout
 process.stdin.on('end', () => {
-  const reversedData = transform(inputData);
+  const reversedData = html(inputData, presetHTML5()).toString();
   process.stdout.write(reversedData);
 });
-
-// Function to convert bbcode text to html
-function transform(str) {
-  return bbobHTML(str, presetHTML5()).toString();
-}

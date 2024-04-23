@@ -1,51 +1,30 @@
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 const path = require('path');
 
-const pathToBin = path.resolve(__dirname, '../bin/bbob')
+const pathToBin = path.resolve(__dirname, '../bin/bbob.js')
 
 describe('@bbob/cli', () => {
-  console.log('pathToBin', pathToBin)
-  test('simple string', (done) => {
-    exec(`echo "hello" | ${pathToBin}`, (error, stdout, stderr) => {
-      if (error) {
-        done(error);
-        return;
-      }
-      expect(stdout.trim()).toBe('olleh');
-      done();
-    });
+  test('simple string', () => {
+    const stdout = execSync(`echo "hello" | ${pathToBin}`);
+
+    expect(String(stdout).trim()).toBe('hello');
   });
 
-  test('string with bbcodes', (done) => {
-    exec(`echo "[i]Text[/i]" | ${pathToBin}`, (error, stdout, stderr) => {
-      if (error) {
-        done(error);
-        return;
-      }
-      expect(stdout.trim()).toBe('<span style="font-style: italic;">Text</span>');
-      done();
-    });
+  test('string with bbcodes', () => {
+    const stdout = execSync(`echo "[i]Text[/i]" | ${pathToBin}`);
+
+    expect(String(stdout).trim()).toBe('<span style="font-style: italic;">Text</span>');
   });
 
-  test('empty string', (done) => {
-    exec(`echo "" | ${pathToBin}`, (error, stdout, stderr) => {
-      if (error) {
-        done(error);
-        return;
-      }
-      expect(stdout.trim()).toBe('');
-      done();
-    });
+  test('empty string', () => {
+    const stdout = execSync(`echo "" | ${pathToBin}`);
+
+    expect(String(stdout).trim()).toBe('');
   });
 
-  test('multiline string', (done) => {
-    exec(`echo -e "[i]Text[/i]\n[i]Text[/i]" | ${pathToBin}`, (error, stdout, stderr) => {
-      if (error) {
-        done(error);
-        return;
-      }
-      expect(stdout.trim()).toBe('<span style="font-style: italic;">Text</span>\n<span style="font-style: italic;">Text</span>');
-      done();
-    });
+  test('multiline string', () => {
+    const stdout = execSync(`echo "[i]Text[/i]\n[i]Text[/i]" | ${pathToBin}`);
+
+    expect(String(stdout).trim()).toBe('<span style="font-style: italic;">Text</span>\n<span style="font-style: italic;">Text</span>');
   });
 });

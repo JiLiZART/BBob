@@ -36,6 +36,20 @@
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     },
+    "./lexer": {
+      "types": "./types/lexer.d.ts",
+      "import": "./es/lexer.js",
+      "require": "./lib/lexer.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    },
+    "./parse": {
+      "types": "./types/parse.d.ts",
+      "import": "./es/parse.js",
+      "require": "./lib/parse.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    },
     "./Token": {
       "types": "./types/Token.d.ts",
       "import": "./es/Token.js",

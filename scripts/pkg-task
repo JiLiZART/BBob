@@ -39,10 +39,8 @@ function runCommandByKey(key, command) {
     }
   }
 
-  if (args.length === 0 && event_name) {
-    if (event_name === key) {
-      return runCommand(command)
-    }
+  if (args.length === 0 && event_name && event_name === key) {
+    return runCommand(command)
   }
 }
 

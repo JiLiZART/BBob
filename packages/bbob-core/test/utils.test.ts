@@ -12,7 +12,6 @@ describe('@bbob/core utils', () => {
     }];
 
     const resultArr = iterate(testArr, node => {
-      console.log('iterate', node);
       if (typeof node === 'object' && node !== null) {
         return {
           ...node,
@@ -34,8 +33,6 @@ describe('@bbob/core utils', () => {
         pass: 1,
       }
     ];
-
-    console.log('resultArr', resultArr, expected);
 
     expect(resultArr).toEqual(expected);
   });

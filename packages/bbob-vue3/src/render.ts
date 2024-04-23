@@ -39,11 +39,7 @@ function tagToVueNode(
   node: TagNode,
   index: number
 ) {
-  const { class: className, style, ...domProps } = node.attrs || {};
-
-  const content = isContentEmpty(node.content)
-    ? undefined
-    : renderToVueNodes(createElement, node.content);
+  const { class: className, style, ...domProps } = node.attrs;
 
   return createElement(
     node.tag,
@@ -53,7 +49,7 @@ function tagToVueNode(
       style,
       ...domProps,
     },
-    content
+      isContentEmpty(node.content) ? undefined : renderToVueNodes(createElement, node.content),
   );
 }
 

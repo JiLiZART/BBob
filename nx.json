@@ -19,7 +19,14 @@
     },
     "test": {
       "dependsOn": [
+        "^build",
         "^test"
+      ]
+    },
+    "cover": {
+      "dependsOn": [
+        "^build",
+        "^cover"
       ]
     },
     "lint": {

@@ -22,7 +22,7 @@ describe('@bbob/vue3 render', () => {
 
     expect(html).toStrictEqual([
       {
-        "children": null,
+        "children": undefined,
         "props": { "class": undefined, "key": 0, "style": undefined },
         "tagName": "b"
       }

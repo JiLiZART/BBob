@@ -22,31 +22,27 @@ function renderNode(node?: TagNodeTree, options?: BBobHTMLOptions): string {
   }
 
   if (Array.isArray(node)) {
-    return renderNodes(node, options);
+    return render(node, options);
   }
 
   if (isTagNode(node)) {
     if (stripTags) {
-      return renderNodes(node.content, options);
+      return render(node.content, options);
     }
 
     const attrs = attrsToString(node.attrs)
 
     if (node.content === null) {
-      const tag = START_TAG + node.tag + attrs + SELFCLOSE_END_TAG
-
-      return tag
+      return START_TAG + node.tag + attrs + SELFCLOSE_END_TAG
     }
 
-    const tag = START_TAG + node.tag + attrs + END_TAG + renderNodes(node.content, options) + CLOSE_START_TAG + node.tag + END_TAG
-
-    return tag;
+    return START_TAG + node.tag + attrs + END_TAG + render(node.content, options) + CLOSE_START_TAG + node.tag + END_TAG;
   }
 
   return '';
 }
 
-function renderNodes(nodes: TagNodeTree, options?: BBobHTMLOptions): string {
+export function render(nodes: TagNodeTree, options?: BBobHTMLOptions): string {
   if (Array.isArray(nodes)) {
     return nodes.reduce<string>((r, node) => r + renderNode(node, options), '')
   }
@@ -58,10 +54,8 @@ function renderNodes(nodes: TagNodeTree, options?: BBobHTMLOptions): string {
   return ''
 }
 
-function toHTML<InputValue = string | TagNode[]>(source: InputValue, plugins: BBobPlugins, options?: BBobHTMLOptions) {
-  return core<InputValue, BBobHTMLOptions>(plugins).process(source, { ...options, render: renderNodes }).html
+export function html<InputValue = string | TagNode[]>(source: InputValue, plugins: BBobPlugins, options?: BBobHTMLOptions) {
+  return core<InputValue, BBobHTMLOptions>(plugins).process(source, { ...options, render: render }).html
 }
 
-export const render = renderNodes;
-
-export default toHTML;
+export default html;
