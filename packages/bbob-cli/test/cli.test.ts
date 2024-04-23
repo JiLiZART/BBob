@@ -1,7 +1,7 @@
 const { execSync } = require('child_process');
 const path = require('path');
 
-const pathToBin = path.resolve(__dirname, '../bin/bbob.js')
+const pathToBin = path.resolve(__dirname, '../lib/cli.js')
 
 describe('@bbob/cli', () => {
   test('simple string', () => {

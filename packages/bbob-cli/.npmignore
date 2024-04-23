@@ -1,5 +1,7 @@
-package-lock.json
+pnpm-lock.yaml
 coverage
 src
-dist
+!dist
 !lib
+!es
+*.test.js

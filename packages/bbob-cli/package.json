@@ -2,9 +2,23 @@
   "name": "@bbob/cli",
   "version": "3.0.2",
   "description": "Comand line bbcode parser",
-  "main": "bin/bbob.js",
   "bin": {
-    "bbob": "bin/bbob.js"
+    "bbob": "lib/cli.js"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "browser": "dist/index.js",
+  "browserName": "BbobCli",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    }
   },
   "dependencies": {
     "@bbob/html": "*",
@@ -28,9 +42,17 @@
   },
   "homepage": "https://github.com/JiLiZART/bbob#readme",
   "scripts": {
+    "build:commonjs": "pkg-task",
+    "build:es": "pkg-task",
+    "build:umd": "pkg-task",
+    "build": "pkg-task",
     "test": "pkg-task",
     "cover": "pkg-task",
-    "lint": "pkg-task"
+    "lint": "pkg-task",
+    "size": "pkg-task",
+    "bundlesize": "pkg-task",
+    "types": "pkg-task",
+    "prepublishOnly": "npm run build"
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",

@@ -14,7 +14,7 @@
     "test": "nx run-many --target=test",
     "cover": "nx run-many --target=cover",
     "build": "nx run-many --target=build",
-    "types": "nx run-many --parallel=false --target=types",
+    "types": "nx run-many --target=types",
     "release": "npm run build && changeset publish",
     "lint": "nx run-many --target=lint",
     "cleanup": "node scripts/cleanup"
@@ -82,6 +82,7 @@
     "build:commonjs": "@/cross-env BABEL_ENV=commonjs NODE_ENV=production @/swc ./src/ --config-file ../../.swcrc-commonjs.json --out-dir lib --strip-leading-paths",
     "build:es": "@/cross-env BABEL_ENV=es NODE_ENV=production @/swc ./src/ --config-file ../../.swcrc.json --out-dir es --strip-leading-paths",
     "build:umd": "@/cross-env BABEL_ENV=rollup NODE_ENV=production @/rollup --config ../../rollup.config.mjs",
+    "build": "npm run build:es && npm run build:commonjs && npm run build:umd",
     "test": "@/jest",
     "cover": "@/jest --config ../../jest.config.js --coverage .",
     "lint": "@/eslint .",
