@@ -47,7 +47,6 @@
     "build:umd": "pkg-task",
     "build": "pkg-task",
     "test": "pkg-task",
-    "cover": "pkg-task",
     "lint": "pkg-task",
     "size": "pkg-task",
     "bundlesize": "pkg-task",
