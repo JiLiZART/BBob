@@ -28,6 +28,7 @@ function runCommand(command, args = '') {
 }
 
 function runCommandByKey(key, command) {
+  const event_name = process.env.npm_lifecycle_event
   const args = process.argv.slice(2);
 
   if (args.length >= 1) {
@@ -36,6 +37,10 @@ function runCommandByKey(key, command) {
     if (name === key) {
       return runCommand(command, argarr.join(' '))
     }
+  }
+
+  if (args.length === 0 && event_name && event_name === key) {
+    return runCommand(command)
   }
 }
 

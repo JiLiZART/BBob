@@ -1,12 +1,81 @@
 {
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build"]
-      }
+  "targetDefaults": {
+    "types": {
+      "dependsOn": [
+        "^types"
+      ],
+      "outputs": ["{projectRoot}/types"],
+      "cache": true
+    },
+    "build": {
+      "dependsOn": [
+        "^types",
+        "^build:commonjs",
+        "^build:es",
+        "^build:umd"
+      ],
+      "outputs": ["{projectRoot}/lib", "{projectRoot}/es", "{projectRoot}/dist"],
+      "cache": true
+    },
+    "test": {
+      "dependsOn": [
+        "^build",
+        "^test"
+      ]
+    },
+    "cover": {
+      "dependsOn": [
+        "^build",
+        "^cover"
+      ],
+      "outputs": ["{projectRoot}/coverage"]
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ]
+    },
+    "build:commonjs": {
+      "dependsOn": [
+        "^build:es",
+        "^build:commonjs"
+      ],
+      "outputs": ["{projectRoot}/lib"],
+      "cache": true
+    },
+    "build:es": {
+      "dependsOn": [
+        "^build:es"
+      ],
+      "outputs": ["{projectRoot}/es"],
+      "cache": true
+    },
+    "build:umd": {
+      "dependsOn": [
+        "^build:es",
+        "^build:umd"
+      ],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
     }
   },
-  "targetDefaults": {},
-  "defaultBase": "master"
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "master",
+  "extends": "nx/presets/npm.json",
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "eslint:lint",
+        "extensions": [
+          "ts",
+          "tsx",
+          "js",
+          "jsx",
+          "html",
+          "vue"
+        ]
+      }
+    }
+  ]
 }

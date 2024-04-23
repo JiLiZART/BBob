@@ -7,11 +7,49 @@
     "plugin",
     "helper"
   ],
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es",
+    "types"
+  ],
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "browser": "dist/index.js",
   "browserName": "BbobPluginHelper",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    },
+    "./char": {
+      "types": "./types/char.d.ts",
+      "import": "./es/char.js",
+      "require": "./lib/char.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    },
+    "./helpers": {
+      "types": "./types/helpers.d.ts",
+      "import": "./es/helpers.js",
+      "require": "./lib/helpers.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    },
+    "./TagNode": {
+      "types": "./types/TagNode.d.ts",
+      "import": "./es/TagNode.js",
+      "require": "./lib/TagNode.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    }
+  },
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
@@ -23,35 +61,31 @@
     "url": "git://github.com/JiLiZART/bbob.git"
   },
   "scripts": {
-    "build:commonjs": "../../scripts/pkg-task build-commonjs",
-    "build:es": "../../scripts/pkg-task build-es",
-    "build:umd": "../../scripts/pkg-task build-umd",
-    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
-    "test": "../../scripts/pkg-task test",
-    "cover": "../../scripts/pkg-task cover",
-    "lint": "../../scripts/pkg-task lint",
-    "size": "../../scripts/pkg-task size",
-    "bundlesize": "../../scripts/pkg-task bundlesize",
+    "build:commonjs": "pkg-task",
+    "build:es": "pkg-task",
+    "build:umd": "pkg-task",
+    "build": "pkg-task",
+    "test": "pkg-task",
+    "cover": "pkg-task",
+    "lint": "pkg-task",
+    "size": "pkg-task",
+    "bundlesize": "pkg-task",
+    "types": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [
     {
-      "path": "lib/index.js"
+      "path": "./dist/index.min.js",
+      "size": "1 KB"
     }
   ],
   "bundlesize": [
     {
       "path": "./dist/index.min.js",
-      "maxSize": "1024 B"
+      "maxSize": "1 KB"
     }
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
-  },
-  "files": [
-    "dist",
-    "lib",
-    "src",
-    "es"
-  ]
+  }
 }

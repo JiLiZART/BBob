@@ -13,7 +13,8 @@
     "url": "https://artkost.ru/"
   },
   "dependencies": {
-    "@bbob/parser": "workspace:*",
+    "@bbob/parser": "*",
+    "@bbob/plugin-helper": "*",
     "benchmark": "2.1.4",
     "picocolors": "1.0.0",
     "xbbcode-parser": "0.1.2",

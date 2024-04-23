@@ -3,3 +3,11 @@ lockfileVersion: '6.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+
+dependencies:
+  '@bbob/core':
+    specifier: workspace:*
+    version: link:../bbob-core
+  '@bbob/plugin-helper':
+    specifier: workspace:*
+    version: link:../bbob-plugin-helper
