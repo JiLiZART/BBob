@@ -9,11 +9,12 @@
     },
     "build": {
       "dependsOn": [
-        "types",
+        "^types",
         "^build:commonjs",
         "^build:es",
         "^build:umd"
       ],
+      "outputs": ["{projectRoot}/lib", "{projectRoot}/es", "{projectRoot}/dist"],
       "cache": true
     },
     "test": {
@@ -28,6 +29,7 @@
     },
     "build:commonjs": {
       "dependsOn": [
+        "^build:es",
         "^build:commonjs"
       ],
       "outputs": ["{projectRoot}/lib"],
@@ -42,6 +44,7 @@
     },
     "build:umd": {
       "dependsOn": [
+        "^build:es",
         "^build:umd"
       ],
       "outputs": ["{projectRoot}/dist"],
