@@ -201,7 +201,7 @@ function parse(input: string, opts: ParseOptions = {}) {
   function handleTagStart(token: Token) {
     flushTagNodes();
 
-    const tagNode = TagNode.create(token.getValue());
+    const tagNode = TagNode.create(token.getValue(), {}, []);
     const isNested = isTokenNested(token);
 
     tagNodes.push(tagNode);

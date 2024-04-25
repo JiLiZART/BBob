@@ -13,3 +13,5 @@
   // old behavior
   TagNode.create('img', {}, []).toString() // -> [img][/img]
 ```
+
+Migrate all calls of `TagNode.create('test-tag')` to `TagNode.create('test-tag', {}, [])
