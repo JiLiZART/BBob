@@ -105,7 +105,7 @@ export class TagNode implements TagNodeObject {
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = []) {
+  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = null) {
     return new TagNode(tag, attrs, content)
   }
 

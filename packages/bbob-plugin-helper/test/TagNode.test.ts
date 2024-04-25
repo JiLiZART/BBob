@@ -44,6 +44,18 @@ describe('@bbob/plugin-helper/TagNode', () => {
     expect(newTagNode.content).toEqual(tagNode.content);
   });
 
+  test('null content', () => {
+    const tagNode = TagNode.create('img');
+
+    expect(String(tagNode)).toBe('[img]');
+  });
+
+  test('array content', () => {
+    const tagNode = TagNode.create('img', {}, []);
+
+    expect(String(tagNode)).toBe('[img]');
+  });
+
   describe('toString', () => {
     test('tag with content and params', () => {
       const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
