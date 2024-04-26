@@ -6,9 +6,9 @@ const CLOSE_START_TAG = '</';
 const START_TAG = '<';
 const END_TAG = '>';
 
-export type BBobHTMLOptions = {
+interface BBobHTMLOptions extends BBobCoreOptions {
   stripTags?: boolean
-} & BBobCoreOptions
+}
 
 function renderNode(node?: TagNodeTree, options?: BBobHTMLOptions): string {
   const { stripTags = false } = options || {}
@@ -42,8 +42,8 @@ function renderNode(node?: TagNodeTree, options?: BBobHTMLOptions): string {
   return '';
 }
 
-export function render(nodes: TagNodeTree, options?: BBobHTMLOptions): string {
-  if (Array.isArray(nodes)) {
+export function render(nodes?: TagNodeTree, options?: BBobHTMLOptions): string {
+  if (nodes && Array.isArray(nodes)) {
     return nodes.reduce<string>((r, node) => r + renderNode(node, options), '')
   }
 

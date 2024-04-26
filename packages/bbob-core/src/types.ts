@@ -12,21 +12,21 @@ export interface BBobCoreOptions<
 > extends ParseOptions {
   skipParse?: boolean;
   parser?: (source: string, options?: Options) => TagNode[];
-  render?: (ast: TagNodeTree, options?: Options) => string;
+  render?: (ast?: TagNodeTree, options?: Options) => string;
   data?: Data;
 }
 
-export interface BbobPluginOptions<
+export interface BBobPluginOptions<
   Options extends ParseOptions = ParseOptions
 > {
   parse: BBobCoreOptions["parser"];
-  render: (ast: TagNodeTree, options?: Options) => string;
+  render: (ast?: TagNodeTree, options?: Options) => string;
   iterate: typeof iterate;
   data: unknown | null;
 }
 
 export interface BBobPluginFunction {
-  (tree: BBobCoreTagNodeTree, options: BbobPluginOptions): BBobCoreTagNodeTree;
+  (tree: BBobCoreTagNodeTree, options: BBobPluginOptions): BBobCoreTagNodeTree;
 }
 
 export interface BBobCore<

@@ -7,27 +7,27 @@ export const tagAttr = (style: Record<string, string>) => ({
   },
 });
 
-export const createTags = (tags: PresetTagsDefinition<'b' | 'i' | 'u' | 's'>) => ({
+export const createTags = <Tags extends PresetTagsDefinition = PresetTagsDefinition>(tags: Tags) => ({
   b: (...args) => ({
-    ...tags.b(...args),
+    ...tags.b?.(...args),
     ...tagAttr({ fontWeight: 'bold' }),
   }),
 
   i: (...args) => ({
-    ...tags.i(...args),
+    ...tags.i?.(...args),
     ...tagAttr({ fontStyle: 'italic' }),
   }),
 
   u: (...args) => ({
-    ...tags.u(...args),
+    ...tags.u?.(...args),
     ...tagAttr({ textDecoration: 'underline' }),
   }),
 
   s: (...args) => ({
-    ...tags.s(...args),
+    ...tags.s?.(...args),
     ...tagAttr({ textDecoration: 'line-through' }),
   }),
-} as PresetTagsDefinition);
+});
 
 export default presetHTML5.extend((tags) => ({
   ...tags,

@@ -45,8 +45,8 @@ function tagToReactElement(node: TagNode, index: number) {
   );
 }
 
-function renderToReactNodes(nodes: BBobCoreTagNodeTree | TagNodeTree) {
-  if (Array.isArray(nodes) && nodes.length) {
+function renderToReactNodes(nodes?: BBobCoreTagNodeTree | TagNodeTree) {
+  if (nodes && Array.isArray(nodes) && nodes.length) {
     return nodes.reduce<ReactNode[]>((arr, node, index) => {
       if (isTagNode(node)) {
         arr.push(tagToReactElement(node, index));

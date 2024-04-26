@@ -38,7 +38,7 @@ function createPreset<Tags extends PresetTagsDefinition = PresetTagsDefinition, 
   defTags: Tags,
   processor: ProcessorFunction<Tags> = process
 ) {
-  const presetFactory: PresetFactory<typeof defTags, RootOptions> = <Options extends RootOptions>(opts: Options) => {
+  const presetFactory: PresetFactory<typeof defTags, RootOptions> = <Options extends RootOptions>(opts?: Options) => {
     presetFactory.options = Object.assign(presetFactory.options || {}, opts);
 
     function presetExecutor(

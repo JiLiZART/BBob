@@ -33,7 +33,7 @@ export interface PresetFactory<
     Tags extends PresetTagsDefinition = PresetTagsDefinition,
     RootOptions extends PresetOptions = PresetOptions,
 > {
-  <Options extends RootOptions>(opts: Options): PresetExecutor<Tags, Options>;
+  <Options extends RootOptions>(opts?: Options): PresetExecutor<Tags, Options>;
   options?: RootOptions;
   extend: <NewTags extends PresetTagsDefinition = PresetTagsDefinition>(
       cb: PresetExtendCallback<Tags, NewTags, RootOptions>
