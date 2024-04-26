@@ -2,21 +2,22 @@ import { createPreset, PresetTagsDefinition } from '../src';
 import { BBobCoreOptions, createTree } from '@bbob/core'
 
 describe('@bbob/preset', () => {
-  const presetFactory = (defTags: PresetTagsDefinition) => {
+  const presetFactory = <Tags extends PresetTagsDefinition = PresetTagsDefinition>(defTags: Tags) => {
     const processor = jest.fn((tags, tree, core, options) => tags)
+    const preset = createPreset<Tags>(defTags, processor)
 
     return {
-      preset: createPreset(defTags, processor),
+      preset,
       processor,
       core: {} as BBobCoreOptions
     }
   }
 
   test('create', () => {
-    const defTags = { test: () => 'test' }
+    const defTags = { test: () => ({ tag: 'test' }) }
     const options = { foo: 'bar' }
     const tree = createTree([], {})
-    const { preset, processor, core } = presetFactory(defTags);
+    const { preset, processor } = presetFactory(defTags);
 
     expect(preset.extend)
       .toBeDefined();
