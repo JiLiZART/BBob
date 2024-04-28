@@ -1,5 +1,5 @@
 import presetHTML5 from '@bbob/preset-html5';
-import type { PresetTagsDefinition } from '@bbob/preset';
+import type { PresetTagsDefinition } from '@bbob/preset-html5';
 
 export const tagAttr = (style: Record<string, string>) => ({
   attrs: {
@@ -7,29 +7,39 @@ export const tagAttr = (style: Record<string, string>) => ({
   },
 });
 
-export const createTags = <Tags extends PresetTagsDefinition = PresetTagsDefinition>(tags: Tags) => ({
-  b: (...args) => ({
-    ...tags.b?.(...args),
-    ...tagAttr({ fontWeight: 'bold' }),
-  }),
+export const createTags = (tags: PresetTagsDefinition<string>) => {
+  const newTags: PresetTagsDefinition<string> = {
+    b: (...args) => ({
+      ...tags.b?.(...args),
+      ...tagAttr({ fontWeight: 'bold' }),
+      tag: 'b',
+    }),
 
-  i: (...args) => ({
-    ...tags.i?.(...args),
-    ...tagAttr({ fontStyle: 'italic' }),
-  }),
+    i: (...args) => ({
+      ...tags.i?.(...args),
+      ...tagAttr({ fontStyle: 'italic' }),
+      tag: 'i',
+    }),
 
-  u: (...args) => ({
-    ...tags.u?.(...args),
-    ...tagAttr({ textDecoration: 'underline' }),
-  }),
+    u: (...args) => ({
+      ...tags.u?.(...args),
+      ...tagAttr({ textDecoration: 'underline' }),
+      tag: 'u',
+    }),
 
-  s: (...args) => ({
-    ...tags.s?.(...args),
-    ...tagAttr({ textDecoration: 'line-through' }),
-  }),
-});
+    s: (...args) => ({
+      ...tags.s?.(...args),
+      ...tagAttr({ textDecoration: 'line-through' }),
+      tag: 's',
+    }),
+  }
 
-export default presetHTML5.extend((tags) => ({
+  return newTags
+};
+
+const presetVue = presetHTML5.extend((tags: PresetTagsDefinition<string>) => ({
   ...tags,
   ...createTags(tags),
 }));
+
+export default presetVue;

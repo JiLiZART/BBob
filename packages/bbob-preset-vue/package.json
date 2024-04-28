@@ -8,8 +8,7 @@
     "vue"
   ],
   "dependencies": {
-    "@bbob/preset-html5": "*",
-    "@bbob/preset": "*"
+    "@bbob/preset-html5": "*"
   },
   "devDependencies": {
     "@bbob/core": "*"

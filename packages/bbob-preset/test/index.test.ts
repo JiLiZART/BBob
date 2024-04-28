@@ -29,8 +29,8 @@ describe('@bbob/preset', () => {
     expect(processor.mock.calls.length).toBe(1);
   });
   test('extend', () => {
-    const defTags = { foo: () => 'foo' }
-    const extendedTags = { bar: () => 'bar' }
+    const defTags = { foo: () => ({ tag: 'foo'}) }
+    const extendedTags = { bar: () =>({tag:  'bar'}) }
     const options = { foo: 'bar' }
     const tree = createTree([], {})
     const { preset, processor, core } = presetFactory(defTags);
@@ -48,8 +48,8 @@ describe('@bbob/preset', () => {
     expect(processor.mock.calls.length).toBe(1);
   });
   test('pass options', () => {
-    const { preset, processor } = presetFactory({ test: () => 'test' });
-    const newPreset = preset.extend((tags, options) => ({ bar: () => 'bar' }));
+    const { preset } = presetFactory({ test: () => ({tag: 'test'}) });
+    const newPreset = preset.extend((tags, options) => ({ bar: () => ({tag: 'bar'}) }));
 
     const instance = preset({ foo: 'bar' });
     const instance2 = newPreset({ some: 'some' });

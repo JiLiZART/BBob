@@ -4,6 +4,9 @@ import type { process } from "./preset";
 
 type PartialRecord<K extends keyof any, T> =  Partial<Record<K, T>>
 
+export type { TagNodeObject } from "@bbob/plugin-helper";
+export type { BBobCoreTagNodeTree, BBobPluginFunction, BBobPluginOptions } from "@bbob/core";
+
 export type PresetTagsDefinition<Key extends string = string> = PartialRecord<Key, PresetTagFunction>
 
 export type PresetOptions = Record<string, unknown>

@@ -14,10 +14,11 @@ describe('@bbob/preset-vue', () => {
       s: defFn,
     }
     const tags = createTags(defTags)
+    const args = [{tag: 'test'}]
 
-    expect(tags.b()).toEqual(tagAttr({ fontWeight: 'bold' }))
-    expect(tags.i()).toEqual(tagAttr({ fontStyle: 'italic' }))
-    expect(tags.u()).toEqual(tagAttr({ textDecoration: 'underline' }))
-    expect(tags.s()).toEqual(tagAttr({ textDecoration: 'line-through' }))
+    expect(tags.b?.({tag: 'b'}, ...args)).toEqual(tagAttr({ fontWeight: 'bold' }))
+    expect(tags.i?.({tag: 'i'}, ...args)).toEqual(tagAttr({ fontStyle: 'italic' }))
+    expect(tags.u?.({tag: 'u'}, ...args)).toEqual(tagAttr({ textDecoration: 'underline' }))
+    expect(tags.s?.({tag: 's'}, ...args)).toEqual(tagAttr({ textDecoration: 'line-through' }))
   })
 });
