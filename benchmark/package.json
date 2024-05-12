@@ -6,7 +6,8 @@
     "test": "test"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "cpupro": "node --require cpupro benchmark.js"
   },
   "author": {
     "name": "Nikolay Kostyurin <jilizart@gmail.com>",
@@ -18,6 +19,7 @@
     "benchmark": "2.1.4",
     "picocolors": "1.0.0",
     "xbbcode-parser": "0.1.2",
+    "cpupro": "*",
     "ya-bbcode": "1.0.12"
   }
 }
