@@ -18,6 +18,9 @@
     "@bbob/plugin-helper": "*",
     "@bbob/types": "*"
   },
+  "devDependencies": {
+    "@bbob/core": "*"
+  },
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
