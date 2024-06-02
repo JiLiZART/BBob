@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "@bbob/plugin-helper": "*",
-    "@bbob/core": "*"
+    "@bbob/types": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

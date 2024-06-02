@@ -1,5 +1,6 @@
 import presetHTML5 from '@bbob/preset-html5';
-import type { PresetTagsDefinition } from '@bbob/preset-html5';
+
+import type { PresetTagsDefinition } from '@bbob/types';
 
 export const tagAttr = (style: Record<string, string>) => ({
   attrs: {

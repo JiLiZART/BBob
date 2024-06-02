@@ -8,10 +8,8 @@
     "vue"
   ],
   "dependencies": {
-    "@bbob/preset-html5": "*"
-  },
-  "devDependencies": {
-    "@bbob/core": "*"
+    "@bbob/preset-html5": "*",
+    "@bbob/types": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

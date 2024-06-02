@@ -5,9 +5,8 @@ import {
   isTagNode,
   TagNode,
 } from "@bbob/plugin-helper";
-import type { NodeContent, TagNodeTree, TagNodeObject } from "@bbob/plugin-helper";
-import type { PresetTagsDefinition } from "@bbob/preset";
-import type { BBobPluginOptions } from "@bbob/core";
+
+import type { BBobPluginOptions, PresetTagsDefinition, NodeContent, TagNodeTree, TagNodeObject } from "@bbob/types";
 
 const isStartsWith = (node: string, type: string) => node[0] === type;
 

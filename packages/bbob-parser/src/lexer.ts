@@ -10,12 +10,12 @@ import {
   EQ,
   N,
 } from '@bbob/plugin-helper';
+import type { LexerOptions, LexerTokenizer } from "@bbob/types";
 
 import {
   Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD,
 } from './Token';
 import { CharGrabber, createCharGrabber, trimChar, unquote } from './utils';
-import type { LexerOptions, LexerTokenizer } from "./types";
 
 // for cases <!-- -->
 const EM = '!';

@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
+import type { BBobCoreOptions, BBobPlugins } from '@bbob/types';
 
 import { render } from './render';
-import type { BBobCoreOptions, BBobPlugins } from '@bbob/core';
 
 export type BBobVueComponentProps = {
   container: string

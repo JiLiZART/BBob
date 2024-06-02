@@ -11,7 +11,8 @@
   "dependencies": {
     "@bbob/core": "*",
     "@bbob/html": "*",
-    "@bbob/plugin-helper": "*"
+    "@bbob/plugin-helper": "*",
+    "@bbob/types": "*"
   },
   "peerDependencies": {
     "vue": "2.x"

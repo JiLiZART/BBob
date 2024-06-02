@@ -9,8 +9,8 @@
     "build": {
       "dependsOn": [
         "^types",
-        "^build:commonjs",
         "^build:es",
+        "^build:commonjs",
         "^build:umd"
       ],
       "outputs": ["{projectRoot}/lib", "{projectRoot}/es", "{projectRoot}/dist"],
@@ -48,7 +48,7 @@
     },
     "build:umd": {
       "dependsOn": [
-        "^build:es",
+        "build:es",
         "^build:umd"
       ],
       "outputs": ["{projectRoot}/dist"],

@@ -1,12 +1,16 @@
+import type {
+  BBobCore,
+  BBobCoreOptions,
+  BBobCoreTagNodeTree,
+  BBobPlugins,
+  IterateCallback,
+  NodeContent,
+  PartialNodeContent
+} from "@bbob/types";
+
 import { parse } from '@bbob/parser';
 import { iterate, match } from './utils';
 import { C1, C2 } from './errors'
-
-import type { IterateCallback } from './utils';
-import type { NodeContent, PartialNodeContent } from "@bbob/plugin-helper";
-import type { BBobCore, BBobCoreOptions, BBobCoreTagNodeTree, BBobPlugins } from "./types";
-
-export * from './types'
 
 export function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tree: NodeContent[], options: Options) {
   const extendedTree = tree as BBobCoreTagNodeTree

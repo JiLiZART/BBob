@@ -1,15 +1,14 @@
+import { isTagNode } from "@bbob/plugin-helper";
+
 import type {
   BBobCoreTagNodeTree,
   BBobPluginOptions,
-} from "@bbob/core";
-import { isTagNode } from "@bbob/plugin-helper";
-import type {
-  PresetFactory,
   PresetExtendCallback,
+  PresetFactory,
   PresetOptions,
   PresetTagsDefinition,
-  ProcessorFunction,
-} from "./types";
+  ProcessorFunction
+} from "@bbob/types";
 
 export function process<Tags extends PresetTagsDefinition = PresetTagsDefinition, Options extends PresetOptions = PresetOptions>(
   tags: Tags,

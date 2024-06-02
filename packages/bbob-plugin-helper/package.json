@@ -20,6 +20,9 @@
   "browser": "dist/index.js",
   "browserName": "BbobPluginHelper",
   "types": "types/index.d.ts",
+  "dependencies": {
+    "@bbob/types": "*"
+  },
   "exports": {
     ".": {
       "types": "./types/index.d.ts",

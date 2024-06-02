@@ -219,6 +219,9 @@ importers:
       '@bbob/plugin-helper':
         specifier: '*'
         version: link:../bbob-plugin-helper
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
 
   packages/bbob-html:
     dependencies:
@@ -228,23 +231,33 @@ importers:
       '@bbob/plugin-helper':
         specifier: '*'
         version: link:../bbob-plugin-helper
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
 
   packages/bbob-parser:
     dependencies:
       '@bbob/plugin-helper':
         specifier: '*'
         version: link:../bbob-plugin-helper
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
 
-  packages/bbob-plugin-helper: {}
+  packages/bbob-plugin-helper:
+    dependencies:
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
 
   packages/bbob-preset:
     dependencies:
-      '@bbob/core':
-        specifier: '*'
-        version: link:../bbob-core
       '@bbob/plugin-helper':
         specifier: '*'
         version: link:../bbob-plugin-helper
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
 
   packages/bbob-preset-html5:
     dependencies:
@@ -254,6 +267,9 @@ importers:
       '@bbob/preset':
         specifier: '*'
         version: link:../bbob-preset
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
     devDependencies:
       '@bbob/core':
         specifier: '*'
@@ -264,26 +280,21 @@ importers:
 
   packages/bbob-preset-react:
     dependencies:
-      '@bbob/preset':
-        specifier: '*'
-        version: link:../bbob-preset
       '@bbob/preset-html5':
         specifier: '*'
         version: link:../bbob-preset-html5
-    devDependencies:
-      '@bbob/core':
+      '@bbob/types':
         specifier: '*'
-        version: link:../bbob-core
+        version: link:../bbob-types
 
   packages/bbob-preset-vue:
     dependencies:
       '@bbob/preset-html5':
         specifier: '*'
         version: link:../bbob-preset-html5
-    devDependencies:
-      '@bbob/core':
+      '@bbob/types':
         specifier: '*'
-        version: link:../bbob-core
+        version: link:../bbob-types
 
   packages/bbob-react:
     dependencies:
@@ -296,6 +307,9 @@ importers:
       '@bbob/plugin-helper':
         specifier: '*'
         version: link:../bbob-plugin-helper
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
     devDependencies:
       '@bbob/preset-react':
         specifier: ^3.0.2
@@ -316,6 +330,8 @@ importers:
         specifier: 18.x
         version: 18.2.0(react@18.2.0)
 
+  packages/bbob-types: {}
+
   packages/bbob-vue2:
     dependencies:
       '@bbob/core':
@@ -327,6 +343,9 @@ importers:
       '@bbob/plugin-helper':
         specifier: '*'
         version: link:../bbob-plugin-helper
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
     devDependencies:
       '@bbob/preset-vue':
         specifier: '*'
@@ -352,6 +371,9 @@ importers:
       '@bbob/plugin-helper':
         specifier: '*'
         version: link:../bbob-plugin-helper
+      '@bbob/types':
+        specifier: '*'
+        version: link:../bbob-types
     devDependencies:
       '@bbob/preset-vue':
         specifier: '*'

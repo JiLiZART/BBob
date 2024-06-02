@@ -1,0 +1,34 @@
+{
+  "name": "@bbob/types",
+  "version": "3.0.2",
+  "description": "Shared Typescript types of @bbob",
+  "keywords": [
+    "bbcode",
+    "types"
+  ],
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es",
+    "types"
+  ],
+  "types": "types/index.d.ts",
+  "module": "types/index.d.ts",
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JiLiZART/bbob/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
+  "scripts": {
+    "types": "pkg-task"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}
