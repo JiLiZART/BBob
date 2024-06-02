@@ -258,6 +258,10 @@ importers:
       '@bbob/types':
         specifier: '*'
         version: link:../bbob-types
+    devDependencies:
+      '@bbob/core':
+        specifier: '*'
+        version: link:../bbob-core
 
   packages/bbob-preset-html5:
     dependencies:
