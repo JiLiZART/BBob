@@ -23,7 +23,7 @@
     },
     "cover": {
       "dependsOn": [
-        "^build",
+        "build",
         "^cover"
       ],
       "outputs": ["{projectRoot}/coverage"]
