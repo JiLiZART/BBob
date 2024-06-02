@@ -13,25 +13,21 @@ export const createTags = (tags: PresetTagsDefinition<string>) => {
     b: (...args) => ({
       ...tags.b?.(...args),
       ...tagAttr({ fontWeight: 'bold' }),
-      tag: 'b',
     }),
 
     i: (...args) => ({
       ...tags.i?.(...args),
       ...tagAttr({ fontStyle: 'italic' }),
-      tag: 'i',
     }),
 
     u: (...args) => ({
       ...tags.u?.(...args),
       ...tagAttr({ textDecoration: 'underline' }),
-      tag: 'u',
     }),
 
     s: (...args) => ({
       ...tags.s?.(...args),
       ...tagAttr({ textDecoration: 'line-through' }),
-      tag: 's',
     }),
   }
 
