@@ -2,8 +2,8 @@ export type StringNode = string | number
 
 export interface TagNodeObject {
   readonly tag: string
-  attrs: Record<string, unknown>
-  content: TagNodeTree
+  attrs?: Record<string, unknown>
+  content?: TagNodeTree
 }
 
 export type NodeContent = TagNodeObject | StringNode | null

@@ -1,11 +1,12 @@
 /* eslint-disable no-use-before-define,import/prefer-default-export */
-import core, { BBobCoreOptions, BBobPlugins } from "@bbob/core";
+import core from "@bbob/core";
 import * as html from "@bbob/html";
 import { h, VNodeArrayChildren } from "vue";
 
+import type { BBobCoreOptions, BBobPlugins, TagNodeTree } from "@bbob/types";
+
 import {
   TagNode,
-  TagNodeTree,
   isStringNode,
   isTagNode,
 } from "@bbob/plugin-helper";

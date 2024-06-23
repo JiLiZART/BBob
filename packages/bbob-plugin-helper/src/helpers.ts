@@ -1,6 +1,7 @@
+import type { NodeContent, StringNode } from "@bbob/types";
+
 import { N } from './char';
 import type { TagNode } from "./TagNode";
-import type { NodeContent, StringNode } from "./types";
 
 function isTagNode(el: unknown): el is TagNode {
   return typeof el === 'object' && el !== null && 'tag' in el;
@@ -15,10 +16,10 @@ function isEOL(el: string) {
   return el === N
 }
 
-function keysReduce<Res, Def extends Res, T extends Record<string, unknown>>(obj: T, reduce: (acc: Def, key: keyof T) => Res, def: Def): Res {
+function keysReduce<Res, Def extends Res, T extends Record<string, unknown>>(obj: T, reduce: (acc: Def, key: keyof T, obj: T) => Res, def: Def): Res {
   const keys = Object.keys(obj)
 
-  return keys.reduce((acc, key) => reduce(acc, key), def)
+  return keys.reduce((acc, key) => reduce(acc, key, obj), def)
 }
 
 function getNodeLength(node: NodeContent): number {
@@ -85,7 +86,7 @@ function attrValue<AttrValue = unknown>(name: string, value: AttrValue) {
  * @example
  * attrsToString({ 'foo': true, 'bar': bar' }) => 'foo="true" bar="bar"'
  */
-function attrsToString<AttrValue = unknown>(values: Record<string, AttrValue> | null) {
+function attrsToString<AttrValue = unknown>(values?: Record<string, AttrValue> | null) {
   // To avoid some malformed attributes
   if (values == null) {
     return '';
@@ -93,7 +94,7 @@ function attrsToString<AttrValue = unknown>(values: Record<string, AttrValue> | 
 
   return keysReduce(
       values,
-      (arr, key) => [...arr, attrValue(key, values[key])],
+      (arr, key, obj) => [...arr, attrValue(key, obj[key])],
       [''],
   ).join(' ');
 }
@@ -103,10 +104,10 @@ function attrsToString<AttrValue = unknown>(values: Record<string, AttrValue> | 
  * @example
  * getUniqAttr({ 'foo': true, 'bar': bar' }) => 'bar'
  */
-function getUniqAttr<Value>(attrs: Record<string, Value>) {
+function getUniqAttr<Value>(attrs?: Record<string, Value>) {
   return keysReduce(
-      attrs,
-      (res, key) => (attrs[key] === key ? attrs[key] : null),
+      attrs || {},
+      (res, key, obj) => (obj[key] === key ? obj[key] : null),
       null,
   )
 }

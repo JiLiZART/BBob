@@ -9,7 +9,8 @@
   ],
   "dependencies": {
     "@bbob/plugin-helper": "*",
-    "@bbob/preset": "*"
+    "@bbob/preset": "*",
+    "@bbob/types": "*"
   },
   "devDependencies": {
     "@bbob/core": "*",

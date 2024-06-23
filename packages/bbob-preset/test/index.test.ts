@@ -2,21 +2,22 @@ import { createPreset, PresetTagsDefinition } from '../src';
 import { BBobCoreOptions, createTree } from '@bbob/core'
 
 describe('@bbob/preset', () => {
-  const presetFactory = (defTags: PresetTagsDefinition) => {
+  const presetFactory = <Tags extends PresetTagsDefinition = PresetTagsDefinition>(defTags: Tags) => {
     const processor = jest.fn((tags, tree, core, options) => tags)
+    const preset = createPreset<Tags>(defTags, processor)
 
     return {
-      preset: createPreset(defTags, processor),
+      preset,
       processor,
       core: {} as BBobCoreOptions
     }
   }
 
   test('create', () => {
-    const defTags = { test: () => 'test' }
+    const defTags = { test: () => ({ tag: 'test' }) }
     const options = { foo: 'bar' }
     const tree = createTree([], {})
-    const { preset, processor, core } = presetFactory(defTags);
+    const { preset, processor } = presetFactory(defTags);
 
     expect(preset.extend)
       .toBeDefined();
@@ -28,8 +29,8 @@ describe('@bbob/preset', () => {
     expect(processor.mock.calls.length).toBe(1);
   });
   test('extend', () => {
-    const defTags = { foo: () => 'foo' }
-    const extendedTags = { bar: () => 'bar' }
+    const defTags = { foo: () => ({ tag: 'foo'}) }
+    const extendedTags = { bar: () =>({tag:  'bar'}) }
     const options = { foo: 'bar' }
     const tree = createTree([], {})
     const { preset, processor, core } = presetFactory(defTags);
@@ -47,8 +48,8 @@ describe('@bbob/preset', () => {
     expect(processor.mock.calls.length).toBe(1);
   });
   test('pass options', () => {
-    const { preset, processor } = presetFactory({ test: () => 'test' });
-    const newPreset = preset.extend((tags, options) => ({ bar: () => 'bar' }));
+    const { preset } = presetFactory({ test: () => ({tag: 'test'}) });
+    const newPreset = preset.extend((tags, options) => ({ bar: () => ({tag: 'bar'}) }));
 
     const instance = preset({ foo: 'bar' });
     const instance2 = newPreset({ some: 'some' });

@@ -1,5 +1,5 @@
 import presetHTML5 from '@bbob/preset-html5';
-import type { PresetTagsDefinition } from '@bbob/preset';
+import type { PresetTagsDefinition } from '@bbob/types';
 
 const tagAttr = (style: Record<string, string>) => ({
   attrs: {
@@ -7,7 +7,7 @@ const tagAttr = (style: Record<string, string>) => ({
   },
 });
 
-export default presetHTML5.extend((tags: PresetTagsDefinition<'b' | 'i' | 'u' | 's'>) => ({
+const presetReact = presetHTML5.extend((tags: PresetTagsDefinition<'b' | 'i' | 'u' | 's'>) => ({
   ...tags,
 
   b: (...args) => ({
@@ -30,3 +30,5 @@ export default presetHTML5.extend((tags: PresetTagsDefinition<'b' | 'i' | 'u' | 
     ...tagAttr({ textDecoration: 'line-through' }),
   }),
 }));
+
+export default presetReact;

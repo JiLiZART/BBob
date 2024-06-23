@@ -1,8 +1,13 @@
 import React, { ReactNode } from 'react';
-import type { BBobPlugins, BBobCoreOptions } from '@bbob/core';
+import type { BBobPlugins, BBobCoreOptions } from '@bbob/types';
+
 import { render } from './render';
 
-const content = (children: ReactNode, plugins?: BBobPlugins, options?: BBobCoreOptions) => React.Children.map(children, (child) => (typeof child === 'string' ? render(child, plugins, options) : child));
+const content = (children: ReactNode, plugins?: BBobPlugins, options?: BBobCoreOptions) =>
+    React.Children.map(children,
+        (child) =>
+            (typeof child === 'string' ? render(child, plugins, options) : child)
+    );
 
 export type BBobReactComponentProps = {
   children: ReactNode

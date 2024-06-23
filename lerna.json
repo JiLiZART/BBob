@@ -16,7 +16,8 @@
     "packages/bbob-preset-vue",
     "packages/bbob-react",
     "packages/bbob-vue2",
-    "packages/bbob-vue3"
+    "packages/bbob-vue3",
+    "packages/bbob-types"
   ],
   "publishConfig": {
     "access": "public",

@@ -1,3 +1,5 @@
+import type { NodeContent, TagNodeObject, TagNodeTree } from "@bbob/types";
+
 import { OPEN_BRAKET, CLOSE_BRAKET, SLASH } from './char';
 import {
   getUniqAttr,
@@ -7,8 +9,6 @@ import {
   attrValue,
   isTagNode,
 } from './helpers';
-
-import type { NodeContent, TagNodeObject, TagNodeTree } from "./types";
 
 const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) => {
   const uniqAttr = getUniqAttr(params);
@@ -105,7 +105,7 @@ export class TagNode implements TagNodeObject {
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = []) {
+  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = null) {
     return new TagNode(tag, attrs, content)
   }
 

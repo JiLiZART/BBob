@@ -3,6 +3,7 @@ import {
   CLOSE_BRAKET,
   SLASH,
 } from '@bbob/plugin-helper';
+import type { Token as TokenInterface } from "@bbob/types";
 
 // type, value, line, row,
 
@@ -87,11 +88,11 @@ const tokenToText = (token: Token) => {
  * @export
  * @class Token
  */
-class Token<TokenValue = string> {
-  private t: number // type
-  private v: string // value
-  private l: number // line
-  private r: number // row
+class Token<TokenValue = string>  implements TokenInterface {
+  readonly t: number // type
+  readonly v: string // value
+  readonly l: number // line
+  readonly r: number // row
 
   constructor(type?: number, value?: TokenValue, row: number = 0, col: number = 0) {
     this[TOKEN_LINE_ID] = row;

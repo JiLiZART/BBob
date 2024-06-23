@@ -10,12 +10,12 @@ import {
   EQ,
   N,
 } from '@bbob/plugin-helper';
+import type { LexerOptions, LexerTokenizer } from "@bbob/types";
 
 import {
   Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD,
 } from './Token';
 import { CharGrabber, createCharGrabber, trimChar, unquote } from './utils';
-import type { LexerOptions, LexerTokenizer } from "./types";
 
 // for cases <!-- -->
 const EM = '!';
@@ -24,15 +24,24 @@ export function createTokenOfType(type: number, value: string, r = 0, cl = 0) {
   return new Token(type, value, r, cl)
 }
 
+const STATE_WORD = 0;
+const STATE_TAG = 1;
+const STATE_TAG_ATTRS = 2;
+
+const TAG_STATE_NAME = 0;
+const TAG_STATE_ATTR = 1;
+const TAG_STATE_VALUE = 2;
+
+const WHITESPACES = [SPACE, TAB];
+const SPECIAL_CHARS = [EQ, SPACE, TAB];
+
+const isWhiteSpace = (char: string) => (WHITESPACES.indexOf(char) >= 0);
+const isEscapeChar = (char: string) => char === BACKSLASH;
+const isSpecialChar = (char: string) => (SPECIAL_CHARS.indexOf(char) >= 0);
+const isNewLine = (char: string) => char === N;
+const unq = (val: string) => unquote(trimChar(val, QUOTEMARK));
+
 export function createLexer(buffer: string, options: LexerOptions = {}): LexerTokenizer {
-  const STATE_WORD = 0;
-  const STATE_TAG = 1;
-  const STATE_TAG_ATTRS = 2;
-
-  const TAG_STATE_NAME = 0;
-  const TAG_STATE_ATTR = 1;
-  const TAG_STATE_VALUE = 2;
-
   let row = 0;
   let col = 0;
 
@@ -47,6 +56,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   const contextFreeTags = (options.contextFreeTags || [])
     .filter(Boolean)
     .map((tag) => tag.toLowerCase());
+  const nestedMap = new Map<string, boolean>();
   const onToken = options.onToken || (() => {
   });
 
@@ -54,21 +64,13 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   const NOT_CHAR_TOKENS = [
     openTag, SPACE, TAB, N,
   ];
-  const WHITESPACES = [SPACE, TAB];
-  const SPECIAL_CHARS = [EQ, SPACE, TAB];
 
   const isCharReserved = (char: string) => (RESERVED_CHARS.indexOf(char) >= 0);
-  const isNewLine = (char: string) => char === N;
-  const isWhiteSpace = (char: string) => (WHITESPACES.indexOf(char) >= 0);
   const isCharToken = (char: string) => (NOT_CHAR_TOKENS.indexOf(char) === -1);
-  const isSpecialChar = (char: string) => (SPECIAL_CHARS.indexOf(char) >= 0);
   const isEscapableChar = (char: string) => (char === openTag || char === closeTag || char === BACKSLASH);
-  const isEscapeChar = (char: string) => char === BACKSLASH;
   const onSkip = () => {
     col++;
   };
-
-  const unq = (val: string) => unquote(trimChar(val, QUOTEMARK));
 
   const checkContextFreeMode = (name: string, isClosingTag?: boolean) => {
     if (contextFreeTag !== '' && isClosingTag) {
@@ -339,8 +341,16 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
   function isTokenNested(token: Token) {
     const value = openTag + SLASH + token.getValue();
-    // potential bottleneck
-    return buffer.indexOf(value) > -1;
+
+    if (nestedMap.has(value)) {
+      return !!nestedMap.get(value);
+    } else {
+      const status = (buffer.indexOf(value) > -1)
+
+      nestedMap.set(value, status);
+
+      return status;
+    }
   }
 
   return {

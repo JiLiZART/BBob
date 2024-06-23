@@ -20,7 +20,8 @@
     "types"
   ],
   "dependencies": {
-    "@bbob/plugin-helper": "*"
+    "@bbob/plugin-helper": "*",
+    "@bbob/types": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

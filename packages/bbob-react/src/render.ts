@@ -1,19 +1,21 @@
 /* eslint-disable no-use-before-define */
 import React, { ReactNode } from "react";
 import { render as htmlrender } from "@bbob/html";
-import core, {
-  BBobCoreOptions,
-  BBobCoreTagNodeTree,
-  BBobPlugins,
-} from "@bbob/core";
+import core from "@bbob/core";
 
 import {
   isTagNode,
   isStringNode,
   isEOL,
   TagNode,
-  TagNodeTree,
 } from "@bbob/plugin-helper";
+
+import type {
+  BBobCoreOptions,
+  BBobCoreTagNodeTree,
+  BBobPlugins,
+  TagNodeTree,
+} from "@bbob/types";
 
 const toAST = (
   source: string,
@@ -45,8 +47,8 @@ function tagToReactElement(node: TagNode, index: number) {
   );
 }
 
-function renderToReactNodes(nodes: BBobCoreTagNodeTree | TagNodeTree) {
-  if (Array.isArray(nodes) && nodes.length) {
+function renderToReactNodes(nodes?: BBobCoreTagNodeTree | TagNodeTree) {
+  if (nodes && Array.isArray(nodes) && nodes.length) {
     return nodes.reduce<ReactNode[]>((arr, node, index) => {
       if (isTagNode(node)) {
         arr.push(tagToReactElement(node, index));

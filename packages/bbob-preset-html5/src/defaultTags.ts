@@ -4,18 +4,18 @@ import {
   isStringNode,
   isTagNode,
   TagNode,
-  TagNodeTree,
 } from "@bbob/plugin-helper";
-import type { NodeContent, TagNodeObject } from "@bbob/plugin-helper";
-import type { PresetTagsDefinition } from "@bbob/preset";
-import type { BbobPluginOptions } from "@bbob/core";
+
+import type { BBobPluginOptions, PresetTagsDefinition, NodeContent, TagNodeTree, TagNodeObject } from "@bbob/types";
 
 const isStartsWith = (node: string, type: string) => node[0] === type;
 
-const getStyleFromAttrs = (attrs: Record<string, unknown>) => {
-  return Object.keys(attrs)
+const styleAttrs = (attrs?: Record<string, unknown>) => {
+  const values = attrs || {}
+
+  return Object.keys(values)
     .reduce<string[]>((acc, key: "color" | "size") => {
-      const value = attrs[key];
+      const value = values[key];
 
       if (typeof value === "string") {
         if (key === "color") {
@@ -32,53 +32,49 @@ const getStyleFromAttrs = (attrs: Record<string, unknown>) => {
     .join(" ");
 };
 
-const asListItems = (content: TagNodeTree): NodeContent[] => {
-  let listIdx = 0;
-  const listItems = [] as Array<NodeContent>;
+export const toListNodes = (content?: TagNodeTree) => {
+  if (content && Array.isArray(content)) {
+    return content.reduce<NodeContent[]>((acc, node) => {
+      const listItem = acc[acc.length - 1];
 
-  const createItemNode = () => TagNode.create("li");
-  const ensureListItem = (val: NodeContent) => {
-    listItems[listIdx] = listItems[listIdx] || val;
-  };
-  const addItem = (val: NodeContent) => {
-    const listItem = listItems[listIdx];
+      // *Entry
+      if (isStringNode(node) && isStartsWith(String(node), "*")) {
+        // from '*Entry' to 'Entry'
+        const content = String(node).slice(1)
 
-    if (listItem && isTagNode(listItem) && Array.isArray(listItem.content)) {
-      listItem.content = listItem.content.concat(val);
-    }
-    // else if (Array.isArray(listItem) && Array.isArray(listItems[listIdx])) {
-    //     listItems[listIdx] = listItems[listIdx].concat(val);
-    // }
-  };
+        acc.push(TagNode.create("li", {}, [content]));
 
-  if (Array.isArray(content)) {
-    content.forEach((el) => {
-      if (isStringNode(el) && isStartsWith(String(el), "*")) {
-        if (listItems[listIdx]) {
-          listIdx++;
-        }
-        ensureListItem(createItemNode());
-        addItem(String(el).substr(1));
-      } else if (isTagNode(el) && TagNode.isOf(el, "*")) {
-        if (listItems[listIdx]) {
-          listIdx++;
-        }
-        ensureListItem(createItemNode());
-      } else if (!isTagNode(listItems[listIdx])) {
-        listIdx++;
-        ensureListItem(el);
-      } else if (listItems[listIdx]) {
-        addItem(el);
-      } else {
-        ensureListItem(el);
+        return acc
       }
-    });
+
+      // { tag: '*', attrs: {}, content: [] }
+      if (isTagNode(node) && TagNode.isOf(node, "*")) {
+        acc.push(TagNode.create("li", {}, []));
+
+        return acc
+      }
+
+      if (!isTagNode(listItem)) {
+        acc.push(node);
+        return acc
+      }
+
+      if (listItem && isTagNode(listItem) && Array.isArray(listItem.content)) {
+        listItem.content = listItem.content.concat(node);
+
+        return acc
+      }
+
+      acc.push(node);
+
+      return acc
+    }, []);
   }
 
-  return listItems;
+  return content
 };
 
-const renderUrl = (node: TagNodeObject, render: BbobPluginOptions["render"]) =>
+const renderUrl = (node: TagNodeObject, render: BBobPluginOptions["render"]) =>
   getUniqAttr(node.attrs)
     ? getUniqAttr(node.attrs)
     : render(node.content || []);
@@ -86,61 +82,53 @@ const renderUrl = (node: TagNodeObject, render: BbobPluginOptions["render"]) =>
 const toNode = (
   tag: string,
   attrs: Record<string, unknown>,
-  content: TagNodeTree
+  content?: TagNodeTree
 ) => TagNode.create(tag, attrs, content);
 
 const toStyle = (style: string) => ({ style });
 
-const defaultTags: PresetTagsDefinition<
-  | "b"
-  | "i"
-  | "u"
-  | "s"
-  | "url"
-  | "img"
-  | "quote"
-  | "code"
-  | "style"
-  | "list"
-  | "color"
-> = {
-  b: (node) => toNode("span", toStyle("font-weight: bold;"), node.content),
-  i: (node) => toNode("span", toStyle("font-style: italic;"), node.content),
-  u: (node) =>
-    toNode("span", toStyle("text-decoration: underline;"), node.content),
-  s: (node) =>
-    toNode("span", toStyle("text-decoration: line-through;"), node.content),
-  url: (node, { render }) =>
-    toNode(
-      "a",
-      {
-        href: renderUrl(node, render),
-      },
-      node.content
-    ),
-  img: (node, { render }) =>
-    toNode(
-      "img",
-      {
-        src: render(node.content),
-      },
-      null
-    ),
-  quote: (node) => toNode("blockquote", {}, [toNode("p", {}, node.content)]),
-  code: (node) => toNode("pre", {}, node.content),
-  style: (node) =>
-    toNode("span", toStyle(getStyleFromAttrs(node.attrs)), node.content),
-  list: (node) => {
-    const type = getUniqAttr(node.attrs);
+export const defineStyleNode = (tag: string, style: string) => (node: TagNodeObject) => toNode(tag, toStyle(style), node.content)
 
-    return toNode(
-      type ? "ol" : "ul",
-      type ? { type } : {},
-      asListItems(node.content)
-    );
-  },
-  color: (node) =>
-    toNode("span", toStyle(`color: ${getUniqAttr(node.attrs)};`), node.content),
-};
+export const defaultTags = (function createTags() {
+  const tags: PresetTagsDefinition<string> = {
+    b: defineStyleNode("span", "font-weight: bold;"),
+    i: defineStyleNode("span", "font-style: italic;"),
+    u: defineStyleNode("span", "text-decoration: underline;"),
+    s: defineStyleNode("span", "text-decoration: line-through;"),
+    url: (node, { render }) =>
+        toNode(
+            "a",
+            {
+              href: renderUrl(node, render),
+            },
+            node.content
+        ),
+    img: (node, { render }) =>
+        toNode(
+            "img",
+            {
+              src: render(node.content),
+            },
+            null
+        ),
+    quote: (node) => toNode("blockquote", {}, [toNode("p", {}, node.content)]),
+    code: (node) => toNode("pre", {}, node.content),
+    style: (node) =>
+        toNode("span", toStyle(styleAttrs(node.attrs)), node.content),
+    list: (node) => {
+      const type = getUniqAttr(node.attrs);
+
+      return toNode(
+          type ? "ol" : "ul",
+          type ? { type } : {},
+          toListNodes(node.content)
+      );
+    },
+    color: (node) =>
+        toNode("span", toStyle(`color: ${getUniqAttr(node.attrs)};`), node.content),
+  }
+
+  return tags
+})();
 
 export default defaultTags;

@@ -9,10 +9,7 @@
   ],
   "dependencies": {
     "@bbob/preset-html5": "*",
-    "@bbob/preset": "*"
-  },
-  "devDependencies": {
-    "@bbob/core": "*"
+    "@bbob/types": "*"
   },
   "main": "lib/index.js",
   "module": "es/index.js",

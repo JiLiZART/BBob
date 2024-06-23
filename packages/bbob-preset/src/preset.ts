@@ -1,87 +1,63 @@
+import { isTagNode } from "@bbob/plugin-helper";
+
 import type {
   BBobCoreTagNodeTree,
-  BbobPluginOptions,
-  BBobPluginFunction,
-} from "@bbob/core";
-import { isTagNode } from "@bbob/plugin-helper";
-import type {
+  BBobPluginOptions,
   PresetExtendCallback,
-  PresetFactoryOptions,
+  PresetFactory,
   PresetOptions,
   PresetTagsDefinition,
-} from "./types";
+  ProcessorFunction
+} from "@bbob/types";
 
-function process<Name extends string = string>(
-  tags: PresetTagsDefinition<Name>,
+export function process<Tags extends PresetTagsDefinition = PresetTagsDefinition, Options extends PresetOptions = PresetOptions>(
+  tags: Tags,
   tree: BBobCoreTagNodeTree,
-  core: BbobPluginOptions,
-  options: PresetFactoryOptions = {}
+  core: BBobPluginOptions,
+  options: Options
 ) {
   return tree.walk((node) => {
-    if (isTagNode(node) && typeof tags[node.tag] === "function") {
+    if (isTagNode(node)) {
       const tag = node.tag;
       const tagCallback = tags[tag];
 
-      return tagCallback(node, core, options);
+      if (typeof tagCallback === "function") {
+        return tagCallback(node, core, options);
+      }
     }
 
     return node;
   });
 }
 
-export type ProcessorFunction = typeof process;
-
-export type ProcessorReturnType = ReturnType<ProcessorFunction>;
-
-export interface PresetExecutor<
-  TagName extends string = string,
-  AttrValue = unknown
-> extends BBobPluginFunction {
-  (tree: BBobCoreTagNodeTree, core?: BbobPluginOptions): ProcessorReturnType;
-  options: PresetOptions;
-}
-
-export interface PresetFactory<
-  TagName extends string = string,
-  AttrValue = unknown,
-  Names extends string = string
-> {
-  (opts?: PresetOptions): PresetExecutor;
-  options?: PresetOptions;
-  extend: (
-    cb: PresetExtendCallback<Names>
-  ) => PresetFactory<TagName, AttrValue, Names>;
-}
-
 /**
  * Create a preset plugin for @bbob/core
  */
-function createPreset<Names extends string = string>(
-  defTags: PresetTagsDefinition<Names>,
-  processor: ProcessorFunction = process
+function createPreset<Tags extends PresetTagsDefinition = PresetTagsDefinition, RootOptions extends PresetOptions = PresetOptions,>(
+  defTags: Tags,
+  processor: ProcessorFunction<Tags> = process
 ) {
-  const presetFactory: PresetFactory = (opts: PresetOptions = {}) => {
+  const presetFactory: PresetFactory<typeof defTags, RootOptions> = <Options extends RootOptions>(opts?: Options) => {
     presetFactory.options = Object.assign(presetFactory.options || {}, opts);
 
     function presetExecutor(
       tree: BBobCoreTagNodeTree,
-      core: BbobPluginOptions
+      core: BBobPluginOptions
     ) {
-      return processor(defTags, tree, core, presetFactory.options);
+      return processor(defTags, tree, core, presetFactory.options || {});
     }
 
-    presetExecutor.options = presetFactory.options;
+    presetExecutor.options = presetFactory.options as Options;
 
     return presetExecutor;
   };
 
-  presetFactory.extend = function presetExtend<ExtendNames extends string>(
-    callback: PresetExtendCallback<Names & ExtendNames>
+  presetFactory.extend = function presetExtend<NewTags extends PresetTagsDefinition = PresetTagsDefinition>(
+    callback: PresetExtendCallback<Tags, NewTags, RootOptions>
   ) {
-    return createPreset(
-      callback(defTags, presetFactory.options || {}),
-      processor
-    );
+    const newTags = callback(defTags, presetFactory.options)
+
+    return createPreset<typeof newTags, RootOptions>(newTags, processor as unknown as ProcessorFunction<NewTags>);
   };
 
   return presetFactory;

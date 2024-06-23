@@ -1,3 +1,5 @@
+import type { NodeContent, TagNodeTree, LexerTokenizer, ParseOptions } from "@bbob/types";
+
 import {
   CLOSE_BRAKET,
   OPEN_BRAKET,
@@ -7,25 +9,7 @@ import {
 
 import { createLexer } from "./lexer";
 
-import type { NodeContent, TagNodeTree } from "@bbob/plugin-helper";
-import type { LexerTokenizer, LexerOptions } from "./types";
 import type { Token } from "./Token";
-
-type ParseError = {
-  tagName: string;
-  lineNumber: number;
-  columnNumber: number;
-};
-
-export interface ParseOptions {
-  createTokenizer?: (input: string, options?: LexerOptions) => LexerTokenizer;
-  openTag?: string;
-  closeTag?: string;
-  onlyAllowTags?: string[];
-  contextFreeTags?: string[];
-  enableEscapeTags?: boolean;
-  onError?: (error: ParseError) => void;
-}
 
 class NodeList<Value> {
   private n: Value[];
@@ -201,7 +185,7 @@ function parse(input: string, opts: ParseOptions = {}) {
   function handleTagStart(token: Token) {
     flushTagNodes();
 
-    const tagNode = TagNode.create(token.getValue());
+    const tagNode = TagNode.create(token.getValue(), {}, []);
     const isNested = isTokenNested(token);
 
     tagNodes.push(tagNode);

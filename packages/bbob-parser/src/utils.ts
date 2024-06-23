@@ -35,6 +35,10 @@ export class CharGrabber {
   }
 
   getCurr() {
+    if (typeof this.s[this.c.pos] === 'undefined') {
+      return ''
+    }
+
     return this.s[this.c.pos]
   }
 
@@ -51,7 +55,11 @@ export class CharGrabber {
   getPrev() {
     const prevPos = this.c.pos - 1;
 
-    return typeof this.s[prevPos] !== 'undefined' ? this.s[prevPos] : null;
+    if (typeof this.s[prevPos] === 'undefined') {
+      return null
+    }
+
+    return this.s[prevPos];
   }
 
   isLast() {

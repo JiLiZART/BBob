@@ -71,7 +71,7 @@ describe('@bbob/core', () => {
 
       const plugin: BBobPluginFunction = (tree) => tree.walk(node => {
         if (node === ':)') {
-          return TagNode.create('test-tag')
+          return TagNode.create('test-tag', {}, [])
         }
 
         return node
