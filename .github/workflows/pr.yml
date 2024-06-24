@@ -65,7 +65,7 @@ jobs:
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
       - name: Increment alpha
-        run: pnpm version 0.0.0-alpha.$SHORT_SHA --no-git-tag-version --workspace bbob-${{ matrix.pkg }}
+        run: pnpm version 0.0.0-alpha.$SHORT_SHA --no-git-tag-version --workspace @bbob/${{ matrix.pkg }}
 
       - name: Build project
         run: pnpm build
