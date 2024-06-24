@@ -89,7 +89,7 @@ jobs:
 
             await setMessage({
               header: "## :package: NPM canary release",
-              body: 'Deployed canary version [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@cube-dev/ui-kit/v/${{ steps.publish.outputs.version }}).',
+              body: 'Deployed canary version [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}).',
               github,
               repo: context.repo,
               prNumber: context.payload.pull_request.number
