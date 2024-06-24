@@ -43,7 +43,7 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     environment:
-      name: Canary package in NPM
+      name: Alpha package in NPM
       url: https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}
     steps:
       - uses: actions/checkout@v3
@@ -64,13 +64,13 @@ jobs:
       - name: Set env
         run: echo "SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
 
-      - name: Increment canary
-        run: pnpm version 0.0.0-canary-$SHORT_SHA --no-git-tag-version --workspace bbob-${{ matrix.pkg }}
+      - name: Increment alpha
+        run: pnpm version 0.0.0-alpha.$SHORT_SHA --no-git-tag-version --workspace bbob-${{ matrix.pkg }}
 
       - name: Build project
         run: pnpm build
 
-      - name: Publish canary
+      - name: Publish alpha
         id: publish
         uses: JS-DevTools/npm-publish@v1
         with:
@@ -88,8 +88,8 @@ jobs:
             const setMessage = require('${{ github.workspace }}/scripts/ci/set-message')
 
             await setMessage({
-              header: "## :package: NPM canary release",
-              body: 'Deployed canary version [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}).',
+              header: `## @bbob/${{ matrix.pkg }} NPM alpha release`,
+              body: 'Deployed @bbob/${{ matrix.pkg }} [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}).',
               github,
               repo: context.repo,
               prNumber: context.payload.pull_request.number
