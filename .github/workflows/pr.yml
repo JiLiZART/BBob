@@ -1,0 +1,258 @@
+name: Pull Request
+on:
+  pull_request:
+    paths-ignore:
+      - '.changeset/**'
+      - '.husky/**'
+      - '.github/**'
+
+concurrency:
+  group: ci-pull-request=${{github.ref}}-1
+  cancel-in-progress: true
+
+permissions:
+  contents: read  # Read-only access to repository contents
+  issues: write   # Write access to issues
+  pull-requests: write  # Write access to pull requests
+  statuses: write  # Write access to commit statuses
+
+jobs:
+  build:
+    name: 'Build & canary release'
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        pkg:
+          - cli
+          - core
+          - html
+          - parser
+          - plugin-helper
+          - preset
+          - preset-html5
+          - preset-react
+          - preset-vue
+          - react
+          - types
+          - vue2
+          - vue3
+
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    environment:
+      name: Canary package in NPM
+      url: https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile --strict-peer-dependencies
+
+      - name: Set env
+        run: echo "SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
+
+      - name: Increment canary
+        run: pnpm version 0.0.0-canary-$SHORT_SHA --no-git-tag-version --workspace bbob-${{ matrix.pkg }}
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Publish canary
+        id: publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          tag: pr_${{ github.event.number }}
+          access: public
+          check-version: true
+          package: ./packages/bbob-${{ matrix.pkg }}/package.json
+
+      - name: Comment PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const setMessage = require('${{ github.workspace }}/scripts/ci/set-message')
+
+            await setMessage({
+              header: "## :package: NPM canary release",
+              body: 'Deployed canary version [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@cube-dev/ui-kit/v/${{ steps.publish.outputs.version }}).',
+              github,
+              repo: context.repo,
+              prNumber: context.payload.pull_request.number
+            })
+
+
+  tests:
+    name: 'Tests & lint'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - uses: actions/cache@v2
+        name: Download eslint cache
+        with:
+          path: |
+            **/.eslintcache
+          key: ${{ runner.os }}-eslint
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run the lint
+        run: pnpm lint
+
+      - name: Run the tests
+        run: pnpm test -- --no-cache
+
+  deploy-chromatic:
+    name: 'Prepare Storybook for review & tests'
+    runs-on: ubuntu-latest
+    environment:
+      name: Chromatic staging
+      url: ${{ steps.publish_chromatic.outputs.url }}
+    env:
+      CHROMATIC_RETRIES: 5
+      LOG_LEVEL: 'error'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - uses: actions/cache@v2
+        name: Download storybook cache
+        with:
+          path: |
+            **/node_modules/.cache
+          key: ${{ runner.os }}-storybook-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-storybook
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Publish to Chromatic
+        id: publish_chromatic
+        uses: chromaui/action@v1
+        with:
+          exitZeroOnChanges: true
+          exitOnceUploaded: true
+          debug: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+
+      - name: Comment PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const setMessage = require('${{ github.workspace }}/scripts/ci/set-message')
+
+            await setMessage({
+              header: "## 🧪 Storybook is successfully deployed!",
+              body: `
+                - 👀 Review changes: ${{ steps.publish_chromatic.outputs.url }}
+                - 👨‍🎨 Preview storybook: ${{ steps.publish_chromatic.outputs.storybookUrl }}
+              `,
+              github,
+              repo: context.repo,
+              prNumber: context.payload.pull_request.number
+            })
+
+  deploy-docs:
+    name: 'Prepare Docs for the Review'
+    runs-on: ubuntu-latest
+    environment:
+      name: Docs staging
+      url: ${{ steps.publish_docs.outputs.preview-url }}
+    env:
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - uses: actions/cache@v2
+        name: Download storybook cache
+        with:
+          path: |
+            **/node_modules/.cache
+          key: ${{ runner.os }}-storybook-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-storybook
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Docs
+        run: pnpm build-docs --quiet
+
+      - name: Deploy docs to Netlify
+        id: publish_docs
+        uses: South-Paw/action-netlify-deploy@v1.2.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
+          draft: true
+          build-dir: ./storybook-docs
+          comment-on-commit: true
+
+      - name: Comment PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const setMessage = require('${{ github.workspace }}/scripts/ci/set-message')
+
+            await setMessage({
+              header: "## 🏗 Docs are successfully deployed!",
+              body: `
+                👀 Preview: ${{ steps.publish_docs.outputs.preview-url }}
+              `,
+              github,
+              repo: context.repo,
+              prNumber: context.payload.pull_request.number
+            })
