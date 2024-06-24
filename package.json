@@ -114,6 +114,12 @@
       }
     }
   },
+  "workspaces": [
+    "packages/*",
+    "examples/*",
+    "scripts",
+    "benchmark"
+  ],
   "nx": {
     "includedScripts": []
   },
