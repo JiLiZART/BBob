@@ -82,6 +82,7 @@ written in pure javascript, no dependencies
 * [PostHTML usage](#posthtml)
 * [Create Plugin](#plugin)
 * [Benchmarks](#benchmarks)
+* [Donations](#donations)
 
 ### Basic usage <a name="basic-usage"></a>
 
@@ -401,6 +402,14 @@ Tested on Node v12.18.3
 | xbbcode/parser       | 107 ops/sec ±2.29%   | (69 runs sampled) |
 | @bbob/parser         | 140 ops/sec ±1.11%   | (78 runs sampled) |
 
+### Donations <a name="donations"></a>
+
+You can support this projecti with donation in:
+
+Bitcon: bc1qx34sx3zmfd5e2km607p8s8t30d4rt33d2l9pwt
+USDT(TRC20): TT94uVjJho8n47xbdfNYz6vdebgmKFpxAT
+
+Also thanks to support 
 
 ![Jetbrains IDEA](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.svg)
 
