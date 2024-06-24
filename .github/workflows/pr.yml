@@ -42,7 +42,7 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     environment:
-      name: ''@bbob/${{ matrix.pkg }} in NPM'
+      name: '@bbob/${{ matrix.pkg }} in NPM'
       url: https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}
 
     steps:
