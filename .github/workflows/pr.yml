@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   build:
-    name: 'Build & alpha release'
+    name: 'Build & pre-alpha release'
 
     runs-on: ubuntu-latest
 
@@ -52,9 +52,9 @@ jobs:
         run: echo "SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9.4.0
 
       - uses: actions/setup-node@v3
         with:
