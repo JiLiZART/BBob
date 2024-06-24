@@ -4,7 +4,6 @@ on:
     paths-ignore:
       - '.changeset/**'
       - '.husky/**'
-      - '.github/**'
 
 concurrency:
   group: ci-pull-request=${{github.ref}}-1
@@ -18,7 +17,7 @@ permissions:
 
 jobs:
   build:
-    name: 'Build & canary release'
+    name: 'Build & alpha release'
 
     runs-on: ubuntu-latest
 
