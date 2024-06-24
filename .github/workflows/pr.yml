@@ -43,10 +43,14 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     environment:
-      name: Alpha package in NPM
+      name: @bbob/${{ matrix.pkg }}@${{ steps.publish.outputs.version }} in NPM
       url: https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}
+
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set env
+        run: echo "SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -60,9 +64,6 @@ jobs:
 
       - name: Install
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
-
-      - name: Set env
-        run: echo "SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
 
       - name: Increment alpha
         run: pnpm version 0.0.0-alpha.$SHORT_SHA --no-git-tag-version --workspace bbob-${{ matrix.pkg }}
