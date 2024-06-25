@@ -320,7 +320,7 @@ importers:
         version: link:../bbob-types
     devDependencies:
       '@bbob/preset-react':
-        specifier: ^4.0.0
+        specifier: ^4.0.1
         version: link:../bbob-preset-react
       '@testing-library/jest-dom':
         specifier: ^5.16.4
