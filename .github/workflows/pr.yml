@@ -21,29 +21,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        pkg:
-          - cli
-          - core
-          - html
-          - parser
-          - plugin-helper
-          - preset
-          - preset-html5
-          - preset-react
-          - preset-vue
-          - react
-          - types
-          - vue2
-          - vue3
-
     env:
       NODE_OPTIONS: --max-old-space-size=4096
-
-    environment:
-      name: '@bbob/${{ matrix.pkg }} in NPM'
-      url: https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}
 
     steps:
       - uses: actions/checkout@v3
@@ -64,21 +43,14 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
-      - name: Increment alpha
-        run: pnpm --workspace=@bbob/${{ matrix.pkg }} version 0.0.0-alpha.$SHORT_SHA --no-git-tag-version
-
       - name: Build project
         run: pnpm build
 
+      - name: Increment alpha
+        run: npm version 0.0.0-alpha.$$SHORT_SHA --no-git-tag-version --workspaces --if-present
+
       - name: Publish alpha
-        id: publish
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          tag: pr_${{ github.event.number }}
-          access: public
-          check-version: true
-          package: ./packages/bbob-${{ matrix.pkg }}/package.json
+        run: pnpm release
 
       - name: Comment PR
         uses: actions/github-script@v6
@@ -88,8 +60,30 @@ jobs:
             const setMessage = require('${{ github.workspace }}/scripts/ci/set-message')
 
             await setMessage({
-              header: `## @bbob/${{ matrix.pkg }} NPM alpha release`,
-              body: 'Deployed @bbob/${{ matrix.pkg }} [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/${{ matrix.pkg }}/v/${{ steps.publish.outputs.version }}).',
+              header: `## @bbob NPM alpha release`,
+              body: `
+                @bbob/cli [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/cli/v/${{ steps.publish.outputs.version }}).
+               
+               
+                @bbob/core [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/core/v/${{ steps.publish.outputs.version }}).
+                @bbob/parser [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/parser/v/${{ steps.publish.outputs.version }}).
+                @bbob/plugin-helper [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/plugin-helper/v/${{ steps.publish.outputs.version }}).
+                @bbob/preset [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/preset/v/${{ steps.publish.outputs.version }}).
+                @bbob/types [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/types/v/${{ steps.publish.outputs.version }}).
+
+
+                @bbob/preset-html5 [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/preset-html5/v/${{ steps.publish.outputs.version }}).
+                @bbob/html [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/html/v/${{ steps.publish.outputs.version }}).
+
+
+                @bbob/preset-react [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/preset-react/v/${{ steps.publish.outputs.version }}).
+                @bbob/react [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/react/v/${{ steps.publish.outputs.version }}).
+                
+
+                @bbob/preset-vue [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/preset-vue/v/${{ steps.publish.outputs.version }}).
+                @bbob/vue2 [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/vue2/v/${{ steps.publish.outputs.version }}).
+                @bbob/vue3 [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/vue3/v/${{ steps.publish.outputs.version }}).
+              `,
               github,
               repo: context.repo,
               prNumber: context.payload.pull_request.number
