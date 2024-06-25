@@ -1,0 +1,335 @@
+{
+  "changesets": [
+    {
+      "releases": [
+        {
+          "name": "@bbob/parser",
+          "type": "minor"
+        }
+      ],
+      "summary": "fix: treat contextFreeTags case insensitively",
+      "id": "dry-peas-develop"
+    },
+    {
+      "releases": [
+        {
+          "name": "@bbob/plugin-helper",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/preset-html5",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/preset-react",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/preset-vue",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/parser",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/preset",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/react",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/core",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/html",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/vue2",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/vue3",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/cli",
+          "type": "minor"
+        }
+      ],
+      "summary": "** BREAKING CHANGE **\n\n`TagNode.create` method now by default pass `null` to content instead of empty array `[]`\n\n```js\n  // new behavior\n  TagNode.create('img').toString() // -> [img]\n  // old behavior\n  TagNode.create('img', {}, []).toString() // -> [img][/img]\n```\n\nMigrate all calls of `TagNode.create('test-tag')` to `TagNode.create('test-tag', {}, [])",
+      "id": "five-meals-sing"
+    },
+    {
+      "releases": [
+        {
+          "name": "@bbob/plugin-helper",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/preset-html5",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/preset-react",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/preset-vue",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/parser",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/preset",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/react",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/core",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/html",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/vue2",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/vue3",
+          "type": "major"
+        },
+        {
+          "name": "@bbob/cli",
+          "type": "major"
+        }
+      ],
+      "summary": "Now BBob supports Typescript with typings",
+      "id": "khaki-cobras-hide"
+    },
+    {
+      "releases": [
+        {
+          "name": "@bbob/react",
+          "type": "patch"
+        }
+      ],
+      "summary": "fix(react): render words and spaces as single node in react\n\nNow React properly renders string nodes with spaces as single text node for react. Thanks @WLYau",
+      "id": "metal-toys-heal"
+    },
+    {
+      "releases": [
+        {
+          "name": "@bbob/plugin-helper",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/preset-html5",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/preset-react",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/preset-vue",
+          "type": "minor"
+        },
+        {
+          "name": "vue2-example",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/parser",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/preset",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/react",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/core",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/html",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/vue2",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/vue3",
+          "type": "minor"
+        },
+        {
+          "name": "@bbob/cli",
+          "type": "minor"
+        }
+      ],
+      "summary": "All build processes and CI actions now using PNPM as default Package Manager",
+      "id": "unlucky-wombats-jump"
+    }
+  ],
+  "releases": [
+    {
+      "name": "@bbob/parser",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "dry-peas-develop",
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/plugin-helper",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/preset-html5",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/preset-react",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/preset-vue",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/preset",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/react",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "metal-toys-heal",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/core",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/html",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/vue2",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/vue3",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "@bbob/cli",
+      "type": "major",
+      "oldVersion": "3.0.2",
+      "changesets": [
+        "five-meals-sing",
+        "khaki-cobras-hide",
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "4.0.0"
+    },
+    {
+      "name": "vue2-example",
+      "type": "minor",
+      "oldVersion": "2.8.0",
+      "changesets": [
+        "unlucky-wombats-jump"
+      ],
+      "newVersion": "2.9.0"
+    }
+  ]
+}
