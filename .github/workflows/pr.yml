@@ -52,6 +52,9 @@ jobs:
       - name: Build project
         run: pnpm build
 
+      - name: Setup npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
       - name: Publish alpha
         run: pnpm release
 
