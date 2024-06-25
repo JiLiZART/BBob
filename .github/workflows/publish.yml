@@ -31,10 +31,17 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
+      - name: Prepare release version
+        id: pre_release
+        run: |
+          RELEASE_VER=$(pnpm changeset status --output=./release.json && node scripts/ci/release-version.js | tail -n 1)
+          echo "version=${RELEASE_VER}" >> $GITHUB_OUTPUT
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
+          title: 'chore(release): publish ${{ steps.pre_release.outputs.version }}'
           publish: pnpm release
           commit: 'chore(release): release'
         env:
