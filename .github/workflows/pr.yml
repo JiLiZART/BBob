@@ -27,8 +27,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set env
-        run: echo "SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
+      - name: Set SHA
+        id: sha
+        run: |
+          SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")
+          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
 
       - name: Install pnpm
         uses: pnpm/action-setup@v3
@@ -47,7 +50,7 @@ jobs:
         run: pnpm build
 
       - name: Increment alpha
-        run: npm version 0.0.0-alpha.$$SHORT_SHA --no-git-tag-version --workspaces --if-present
+        run: npm version 0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --no-git-tag-version --workspaces --if-present
 
       - name: Publish alpha
         run: pnpm release
