@@ -2,11 +2,29 @@
   "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
   "changelog": [
     "@changesets/changelog-github",
-    { "repo": "JiLiZART/BBob" }
+    {
+      "repo": "JiLiZART/BBob"
+    }
   ],
   "commit": false,
   "fixed": [],
-  "linked": [["@bbob/cli", "@bbob/core", "@bbob/html", "@bbob/parser", "@bbob/plugin-helper", "@bbob/preset", "@bbob/preset-html5", "@bbob/preset-react", "@bbob/preset-vue", "@bbob/react", "@bbob/vue2", "@bbob/vue3"]],
+  "linked": [
+    [
+      "@bbob/cli",
+      "@bbob/core",
+      "@bbob/html",
+      "@bbob/parser",
+      "@bbob/plugin-helper",
+      "@bbob/preset",
+      "@bbob/preset-html5",
+      "@bbob/preset-react",
+      "@bbob/preset-vue",
+      "@bbob/react",
+      "@bbob/types",
+      "@bbob/vue2",
+      "@bbob/vue3"
+    ]
+  ],
   "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
