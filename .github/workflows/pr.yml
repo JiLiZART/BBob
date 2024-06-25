@@ -44,7 +44,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Increment alpha
-        run: npm version 0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --workspace="packages/**" --no-git-tag-version --if-present
+        run: npm version 0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --preid alpha --workspace="packages/**" --no-git-tag-version --if-present
 
       - name: Install
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
