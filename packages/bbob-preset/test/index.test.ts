@@ -1,5 +1,6 @@
-import { createPreset, PresetTagsDefinition } from '../src';
-import { BBobCoreOptions, createTree } from '@bbob/core'
+import { createPreset } from '../src';
+import { createTree } from '@bbob/core'
+import type { PresetTagsDefinition, BBobCoreOptions } from '@bbob/types';
 
 describe('@bbob/preset', () => {
   const presetFactory = <Tags extends PresetTagsDefinition = PresetTagsDefinition>(defTags: Tags) => {

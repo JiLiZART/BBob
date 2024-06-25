@@ -20,7 +20,7 @@ jobs:
       - name: Install PNPM
         uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9.4.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -31,11 +31,18 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
+      - name: Prepare release version
+        id: pre_release
+        run: |
+          RELEASE_VER=$(pnpm changeset status --output=./release.json && node scripts/ci/release-version.js | tail -n 1)
+          echo "version=${RELEASE_VER}" >> $GITHUB_OUTPUT
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm run release
+          title: 'chore(release): publish ${{ steps.pre_release.outputs.version }}'
+          publish: pnpm release
           commit: 'chore(release): release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

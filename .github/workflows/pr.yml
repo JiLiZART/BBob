@@ -1,0 +1,96 @@
+name: Pull Request
+on:
+  pull_request:
+    paths-ignore:
+      - '.changeset/**'
+      - '.husky/**'
+
+concurrency:
+  group: ci-pull-request=${{github.ref}}-1
+  cancel-in-progress: true
+
+permissions:
+  contents: read  # Read-only access to repository contents
+  issues: write   # Write access to issues
+  pull-requests: write  # Write access to pull requests
+  statuses: write  # Write access to commit statuses
+
+jobs:
+  build:
+    name: 'Build & pre-alpha release'
+
+    runs-on: ubuntu-latest
+
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set SHA
+        id: sha
+        run: |
+          SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")
+          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.4.0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Increment alpha
+        run: npm version  0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --preid pr_${{ github.event.number }} --allow-same-version --workspace="packages/**" --if-present --no-git-tag-version
+
+      - name: Install
+        run: pnpm install --frozen-lockfile --strict-peer-dependencies
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Setup npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
+      - name: Publish alpha
+        run: npm publish --workspace="packages/**" --tag=pr_${{ github.event.number }} --access=public
+
+      - name: Comment PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const setMessage = require('${{ github.workspace }}/scripts/ci/set-message')
+
+            await setMessage({
+              header: `## @bbob NPM alpha release`,
+              body: `
+                @bbob/cli [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/cli/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+               
+               
+                @bbob/core [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/core/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                @bbob/parser [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/parser/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                @bbob/plugin-helper [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/plugin-helper/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                @bbob/preset [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/preset/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                @bbob/types [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/types/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+
+
+                @bbob/preset-html5 [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/preset-html5/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                @bbob/html [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/html/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+
+
+                @bbob/preset-react [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/preset-react/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                @bbob/react [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/react/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                
+
+                @bbob/preset-vue [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/preset-vue/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                @bbob/vue2 [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/vue2/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+                @bbob/vue3 [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/vue3/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }})
+              `,
+              github,
+              repo: context.repo,
+              prNumber: context.payload.pull_request.number
+            })
