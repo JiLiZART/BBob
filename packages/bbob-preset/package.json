@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "description": "Base preset for creating extensible presets for @bbob/core",
   "keywords": [
     "preset",

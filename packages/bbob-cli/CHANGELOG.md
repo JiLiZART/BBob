@@ -1,5 +1,34 @@
 # Change Log
 
+## 4.0.0
+
+### Major Changes
+
+- [#185](https://github.com/JiLiZART/BBob/pull/185) [`8797f7f`](https://github.com/JiLiZART/BBob/commit/8797f7f363a34b6a53578e0b2f50033cbb6a7eeb) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Now BBob supports Typescript with typings
+
+### Minor Changes
+
+- [#233](https://github.com/JiLiZART/BBob/pull/233) [`270f564`](https://github.com/JiLiZART/BBob/commit/270f5645f8c5b536d61883998a8dc4854f296f37) Thanks [@JiLiZART](https://github.com/JiLiZART)! - ** BREAKING CHANGE **
+
+  `TagNode.create` method now by default pass `null` to content instead of empty array `[]`
+
+  ```js
+  // new behavior
+  TagNode.create("img").toString(); // -> [img]
+  // old behavior
+  TagNode.create("img", {}, []).toString(); // -> [img][/img]
+  ```
+
+  Migrate all calls of `TagNode.create('test-tag')` to `TagNode.create('test-tag', {}, [])
+
+- [#199](https://github.com/JiLiZART/BBob/pull/199) [`3575982`](https://github.com/JiLiZART/BBob/commit/3575982b280cc45c9cedaf7a059491a324c1b514) Thanks [@JiLiZART](https://github.com/JiLiZART)! - All build processes and CI actions now using PNPM as default Package Manager
+
+### Patch Changes
+
+- Updated dependencies [[`270f564`](https://github.com/JiLiZART/BBob/commit/270f5645f8c5b536d61883998a8dc4854f296f37), [`8797f7f`](https://github.com/JiLiZART/BBob/commit/8797f7f363a34b6a53578e0b2f50033cbb6a7eeb), [`3575982`](https://github.com/JiLiZART/BBob/commit/3575982b280cc45c9cedaf7a059491a324c1b514)]:
+  - @bbob/preset-html5@4.0.0
+  - @bbob/html@4.0.0
+
 ## 3.0.2
 
 ### Patch Changes
