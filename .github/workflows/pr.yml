@@ -44,7 +44,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Increment alpha
-        run: npm version  0.0.0-alpha.pr_${{ github.event.number }} --preid alpha --allow-same-version --workspace="packages/**" --if-present
+        run: npm version  0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --preid alpha --allow-same-version --workspace="packages/**" --if-present
 
       - name: Install
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
@@ -68,27 +68,27 @@ jobs:
             await setMessage({
               header: `## @bbob NPM alpha release`,
               body: `
-                @bbob/cli [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/cli/v/${{ steps.publish.outputs.version }}).
+                @bbob/cli [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/cli/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
                
                
-                @bbob/core [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/core/v/${{ steps.publish.outputs.version }}).
-                @bbob/parser [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/parser/v/${{ steps.publish.outputs.version }}).
-                @bbob/plugin-helper [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/plugin-helper/v/${{ steps.publish.outputs.version }}).
-                @bbob/preset [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/preset/v/${{ steps.publish.outputs.version }}).
-                @bbob/types [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/types/v/${{ steps.publish.outputs.version }}).
+                @bbob/core [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/core/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
+                @bbob/parser [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/parser/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
+                @bbob/plugin-helper [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/plugin-helper/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
+                @bbob/preset [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/preset/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
+                @bbob/types [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/types/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
 
 
-                @bbob/preset-html5 [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/preset-html5/v/${{ steps.publish.outputs.version }}).
-                @bbob/html [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/html/v/${{ steps.publish.outputs.version }}).
+                @bbob/preset-html5 [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/preset-html5/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
+                @bbob/html [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/html/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
 
 
-                @bbob/preset-react [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/preset-react/v/${{ steps.publish.outputs.version }}).
-                @bbob/react [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/react/v/${{ steps.publish.outputs.version }}).
+                @bbob/preset-react [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/preset-react/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
+                @bbob/react [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/react/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
                 
 
-                @bbob/preset-vue [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/preset-vue/v/${{ steps.publish.outputs.version }}).
-                @bbob/vue2 [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/vue2/v/${{ steps.publish.outputs.version }}).
-                @bbob/vue3 [${{ steps.publish.outputs.version }}](https://www.npmjs.com/package/@bbob/vue3/v/${{ steps.publish.outputs.version }}).
+                @bbob/preset-vue [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/preset-vue/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
+                @bbob/vue2 [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/vue2/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
+                @bbob/vue3 [0.0.0-alpha.${{ steps.sha.outputs.short_sha }}](https://www.npmjs.com/package/@bbob/vue3/v/0.0.0-alpha.${{ steps.sha.outputs.short_sha }}).
               `,
               github,
               repo: context.repo,
