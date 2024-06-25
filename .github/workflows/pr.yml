@@ -50,7 +50,7 @@ jobs:
         run: pnpm build
 
       - name: Increment alpha
-        run: npm version 0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --workspace packages/** --no-git-tag-version --if-present
+        run: npm version 0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --workspace="packages/**" --no-git-tag-version --if-present
 
       - name: Publish alpha
         run: pnpm release
