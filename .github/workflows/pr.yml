@@ -43,14 +43,14 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
 
+      - name: Increment alpha
+        run: npm version 0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --workspace="packages/**" --no-git-tag-version --if-present
+
       - name: Install
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
       - name: Build project
         run: pnpm build
-
-      - name: Increment alpha
-        run: npm version 0.0.0-alpha.${{ steps.sha.outputs.short_sha }} --workspace="packages/**" --no-git-tag-version --if-present
 
       - name: Publish alpha
         run: pnpm release
