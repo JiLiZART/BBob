@@ -1,6 +1,6 @@
 {
   "name": "@bbob/core",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "⚡️Blazing-fast js-bbcode-parser, bbcode js, that transforms and parses to AST with plugin support in pure javascript, no dependencies",
   "keywords": [
     "bbcode",
