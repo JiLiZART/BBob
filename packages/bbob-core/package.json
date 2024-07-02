@@ -81,6 +81,7 @@
     "dist",
     "lib",
     "src",
-    "es"
+    "es",
+    "types"
   ]
 }
