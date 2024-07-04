@@ -18,7 +18,7 @@
     "react": "> 15.0"
   },
   "devDependencies": {
-    "@bbob/preset-react": "^4.0.2",
+    "@bbob/preset-react": "*",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "13.x",
     "react": "18.x",
