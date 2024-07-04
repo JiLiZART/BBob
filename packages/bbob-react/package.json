@@ -1,6 +1,6 @@
 {
   "name": "@bbob/react",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "A BBCode to React Renderer part of @bbob",
   "keywords": [
     "react",
@@ -18,7 +18,7 @@
     "react": "> 15.0"
   },
   "devDependencies": {
-    "@bbob/preset-react": "^4.0.1",
+    "@bbob/preset-react": "^4.0.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "13.x",
     "react": "18.x",
