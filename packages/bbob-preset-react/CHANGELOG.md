@@ -1,5 +1,14 @@
 # Change Log
 
+## 4.0.2
+
+### Patch Changes
+
+- [#238](https://github.com/JiLiZART/BBob/pull/238) [`7f931ee`](https://github.com/JiLiZART/BBob/commit/7f931eee9a6cf9022e14459f265e8c49ffefdb2a) Thanks [@rda-wimi](https://github.com/rda-wimi)! - fix(#237): Ensure types definitions presence in published packages
+
+- Updated dependencies [[`7f931ee`](https://github.com/JiLiZART/BBob/commit/7f931eee9a6cf9022e14459f265e8c49ffefdb2a)]:
+  - @bbob/preset-html5@4.0.2
+
 ## 4.0.1
 
 ### Patch Changes
