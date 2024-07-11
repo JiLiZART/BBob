@@ -1,11 +1,14 @@
-import type { App } from "vue";
+import type { Plugin } from "@vue/runtime-core";
 import Component from "./Component";
+
+const plugin = {
+  install(app) {
+    app.component("bbob-bbcode", Component);
+    app.component("BBobBBCode", Component);
+    app.component("BBCode", Component);
+  }
+} as Plugin<any[]>;
 
 export { render } from "./render";
 export { Component };
-
-export default function VueBbob(app: App): any {
-  app.component("bbob-bbcode", Component);
-
-  return app
-}
+export default plugin;
