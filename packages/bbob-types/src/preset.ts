@@ -1,10 +1,13 @@
 
 import { BBobCoreTagNodeTree, BBobPluginFunction, BBobPluginOptions } from "./core";
-import { TagNodeObject } from "./types";
+import { TagNodeObject } from "./common";
 
 export type PartialRecord<K extends keyof any, T> =  Partial<Record<K, T>>
 
-export type PresetTagsDefinition<Key extends string = string> = Record<Key, PresetTagFunction>
+export type PresetTagsDefinition<
+    Key extends string = string,
+    TagValue extends any = any
+> = Record<Key, PresetTagFunction<TagNodeObject<TagValue>>>
 
 export type PresetOptions = Record<string, unknown>
 
@@ -15,7 +18,7 @@ export type ProcessorFunction<Tags extends PresetTagsDefinition = PresetTagsDefi
     options: Options
 ) => BBobCoreTagNodeTree
 
-// export type ProcessorReturnType = ReturnType<ProcessorFunction>;
+export type ProcessorReturnType = ReturnType<ProcessorFunction>;
 
 export interface PresetTagFunction<Node extends TagNodeObject = TagNodeObject, Options extends PresetOptions = PresetOptions> {
   (

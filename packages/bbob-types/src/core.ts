@@ -1,5 +1,5 @@
 import { ParseOptions } from "./parser";
-import { NodeContent, PartialNodeContent, TagNodeObject, TagNodeTree } from "./types";
+import { NodeContent, PartialNodeContent, TagNodeObject, TagNodeTree } from "./common";
 
 export interface BBobCoreOptions<
     Data = unknown | null,

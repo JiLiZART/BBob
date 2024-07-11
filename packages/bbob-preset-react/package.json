@@ -11,6 +11,14 @@
     "@bbob/preset-html5": "*",
     "@bbob/types": "*"
   },
+  "peerDependencies": {
+    "react": "> 15.0"
+  },
+  "devDependencies": {
+    "react": "18.x",
+    "react-dom": "18.x",
+    "@types/react": "18.x"
+  },
   "main": "lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
