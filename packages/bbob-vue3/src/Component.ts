@@ -36,10 +36,12 @@ const Component = defineComponent({
           return acc
         }, "");
 
-      return h(
-        props.container,
-        render(h, source, props.plugins, props.options)
-      );
+      if (source) {
+        return h(
+            props.container,
+            render(h, source, props.plugins, props.options)
+        );
+      }
     }
 
     return null;
