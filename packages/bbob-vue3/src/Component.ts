@@ -3,7 +3,7 @@ import { render } from "./render";
 
 import type { BBobPlugins, BBobCoreOptions } from "@bbob/types";
 
-type VueComponentProps = {
+export type VueComponentProps = {
   container: string;
   componentProps: Record<string, unknown>;
   plugins?: BBobPlugins;
@@ -28,8 +28,8 @@ const Component = defineComponent({
     if (this.$slots.default) {
       const source = this.$slots
         .default()
-        .reduce((acc: VNode, vnode: VNode) => {
-          if (typeof acc === "string") {
+        .reduce((acc: VNode | string, vnode: VNode) => {
+          if (typeof acc === "string" && vnode) {
             return acc + vnode.children;
           }
         }, "");
