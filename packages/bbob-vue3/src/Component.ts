@@ -32,6 +32,8 @@ const Component = defineComponent({
           if (typeof acc === "string" && vnode) {
             return acc + vnode.children;
           }
+
+          return acc
         }, "");
 
       return h(
