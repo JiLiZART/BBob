@@ -1,6 +1,6 @@
 {
   "name": "@bbob/types",
-  "version": "4.0.1",
+  "version": "4.0.3",
   "description": "Shared Typescript types of @bbob",
   "keywords": [
     "bbcode",

@@ -1,6 +1,6 @@
 {
   "name": "@bbob/cli",
-  "version": "4.0.1",
+  "version": "4.0.3",
   "description": "Comand line bbcode parser",
   "bin": {
     "bbob": "lib/cli.js"
