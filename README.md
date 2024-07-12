@@ -24,6 +24,7 @@ written in pure javascript, no dependencies
 |----------------------|------------------------------------------------------------|-----------------------------|---------------------------|
 | @bbob/react          | [![@bbob/react-status]][@bbob/react-package]               | ![@bbob/react-size]         | React renderer            |
 | @bbob/preset-react   | [![@bbob/preset-react-status]][@bbob/preset-react-package] | ![@bbob/preset-react-size]  | React default tags preset |
+| @bbob/vue3           | [![@bbob/vue3-status]][@bbob/vue3-package]                 | ![@bbob/vue3-size]          | Vue 3 renderer            |
 | @bbob/vue2           | [![@bbob/vue2-status]][@bbob/vue2-package]                 | ![@bbob/vue2-size]          | Vue 2 renderer            |
 | @bbob/preset-vue     | [![@bbob/preset-vue-status]][@bbob/preset-vue-package]     | ![@bbob/preset-vue-size]    | Vue default tags preset   |
 | @bbob/html           | [![@bbob/html-status]][@bbob/html-package]                 | ![@bbob/html-size]          | HTML renderer             |
@@ -35,6 +36,7 @@ written in pure javascript, no dependencies
 [@bbob/react-status]: https://img.shields.io/npm/v/@bbob/react.svg
 [@bbob/preset-react-status]: https://img.shields.io/npm/v/@bbob/preset-react.svg
 
+[@bbob/vue3-status]: https://img.shields.io/npm/v/@bbob/vue3.svg
 [@bbob/vue2-status]: https://img.shields.io/npm/v/@bbob/vue2.svg
 [@bbob/preset-vue-status]: https://img.shields.io/npm/v/@bbob/preset-vue.svg
 
@@ -47,6 +49,7 @@ written in pure javascript, no dependencies
 [@bbob/react-size]: https://badgen.net/bundlephobia/minzip/@bbob/react
 [@bbob/preset-react-size]: https://badgen.net/bundlephobia/minzip/@bbob/preset-react
 
+[@bbob/vue3-size]: https://badgen.net/bundlephobia/minzip/@bbob/vue3
 [@bbob/vue2-size]: https://badgen.net/bundlephobia/minzip/@bbob/vue2
 [@bbob/preset-vue-size]: https://badgen.net/bundlephobia/minzip/@bbob/preset-vue
 
@@ -58,6 +61,7 @@ written in pure javascript, no dependencies
 [@bbob/react-package]: https://npmjs.com/package/@bbob/react
 [@bbob/preset-react-package]: https://npmjs.com/package/@bbob/preset-react
 
+[@bbob/vue3-package]: https://npmjs.com/package/@bbob/vue3
 [@bbob/vue2-package]: https://npmjs.com/package/@bbob/vue2
 [@bbob/preset-vue-package]: https://npmjs.com/package/@bbob/preset-vue
 
@@ -82,7 +86,7 @@ written in pure javascript, no dependencies
 * [PostHTML usage](#posthtml)
 * [Create Plugin](#plugin)
 * [Benchmarks](#benchmarks)
-* [Donations](#donations)
+* [Donate](#donations)
 
 ### Basic usage <a name="basic-usage"></a>
 
