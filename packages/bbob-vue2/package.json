@@ -4,6 +4,7 @@
   "description": "A BBCode to Vue2 Renderer part of @bbob",
   "keywords": [
     "vue",
+    "vue2",
     "bbcode",
     "parser",
     "bbob"

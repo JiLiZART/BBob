@@ -24,7 +24,9 @@ const toAST = (
 ) =>
   core(plugins).process(source, {
     ...options,
-    render: (input) => htmlrender(input, { stripTags: true }),
+    render: (input) => {
+      return htmlrender(input, { stripTags: true })
+    },
   }).tree;
 
 const isContentEmpty = (content: TagNodeTree) => {
@@ -65,7 +67,7 @@ function renderToReactNodes(nodes?: BBobCoreTagNodeTree | TagNodeTree) {
         const prevArr = arr; // stupid eslint
         const prevNode = lastIdx >= 0 ? prevArr[lastIdx] : null;
 
-        if (prevArr[lastIdx] && prevNode !== null && !isEOL(String(prevNode))) {
+        if (prevArr[lastIdx] && isStringNode(prevArr[lastIdx]) && prevNode !== null && !isEOL(String(prevNode))) {
           prevArr[lastIdx] += String(node);
 
           return prevArr;

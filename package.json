@@ -15,7 +15,7 @@
     "cover": "nx run-many --target=cover",
     "build": "nx run-many --target=build",
     "types": "nx run-many --target=types",
-    "release": "npm run build && changeset publish",
+    "release": "npm run build && npm run types && changeset publish",
     "lint": "nx run-many --target=lint",
     "cleanup": "node scripts/cleanup"
   },

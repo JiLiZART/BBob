@@ -5,14 +5,19 @@ import { render } from './render';
 
 const content = (children: ReactNode, plugins?: BBobPlugins, options?: BBobCoreOptions) =>
     React.Children.map(children,
-        (child) =>
-            (typeof child === 'string' ? render(child, plugins, options) : child)
+        (child) => {
+          if (typeof child === 'string') {
+            return render(child, plugins, options)
+          }
+
+          return child
+        }
     );
 
 export type BBobReactComponentProps = {
   children: ReactNode
-  container: string
-  componentProps: Record<string, unknown>
+  container?: string
+  componentProps?: Record<string, unknown>
   plugins?: BBobPlugins
   options?: BBobCoreOptions
 }
@@ -23,7 +28,7 @@ const Component = ({
   children,
   plugins = [],
   options = {},
-}: BBobReactComponentProps) => React.createElement(
+}: BBobReactComponentProps): React.JSX.Element => React.createElement(
   container,
   componentProps,
   content(children, plugins, options),

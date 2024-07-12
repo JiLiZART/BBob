@@ -1,4 +1,4 @@
-import { TagNodeTree } from "./types";
+import { TagNodeTree } from "./common";
 
 export interface ParseError {
   tagName: string;

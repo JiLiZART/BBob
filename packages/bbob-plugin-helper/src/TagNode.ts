@@ -53,12 +53,12 @@ const renderContent = (content: TagNodeTree, openTag: string, closeTag: string) 
   return null
 }
 
-export class TagNode implements TagNodeObject {
-  public readonly tag: string
+export class TagNode<TagValue extends any = any> implements TagNodeObject {
+  public readonly tag: string | TagValue
   public attrs: Record<string, unknown>
   public content: TagNodeTree
 
-  constructor(tag: string, attrs: Record<string, unknown>, content: TagNodeTree) {
+  constructor(tag: string | TagValue, attrs: Record<string, unknown>, content: TagNodeTree) {
     this.tag = tag;
     this.attrs = attrs;
     this.content = content
@@ -81,7 +81,7 @@ export class TagNode implements TagNodeObject {
   }
 
   toTagStart({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}) {
-    const tagAttrs = getTagAttrs(this.tag, this.attrs);
+    const tagAttrs = getTagAttrs(String(this.tag), this.attrs);
 
     return `${openTag}${tagAttrs}${closeTag}`;
   }
@@ -91,7 +91,7 @@ export class TagNode implements TagNodeObject {
   }
 
   toTagNode() {
-    return new TagNode(this.tag.toLowerCase(), this.attrs, this.content);
+    return new TagNode(String(this.tag).toLowerCase(), this.attrs, this.content);
   }
 
   toString({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}): string {

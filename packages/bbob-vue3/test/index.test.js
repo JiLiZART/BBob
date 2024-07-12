@@ -7,8 +7,6 @@ import { render } from '@testing-library/vue';
 
 import Component from '../src/Component';
 
-console.log('Vue.v', Vue.version, Vue.createApp);
-
 const renderBBCode = (input, options) => {
   const { html } = render(Component, {
     props: {
