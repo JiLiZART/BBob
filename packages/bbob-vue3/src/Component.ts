@@ -26,10 +26,9 @@ const Component = defineComponent({
 
   render(props: VueComponentProps) {
     if (this.$slots.default) {
-      const source = this.$slots
-        .default()
-        .reduce((acc: VNode | string, vnode: VNode) => {
-          if (typeof acc === "string" && vnode) {
+      const content = this.$slots.default()
+      const source = content.reduce((acc: string, vnode: VNode) => {
+          if (vnode && typeof vnode.children === "string") {
             return acc + vnode.children;
           }
 
@@ -39,7 +38,7 @@ const Component = defineComponent({
       if (source) {
         return h(
             props.container,
-            render(h, source, props.plugins, props.options)
+            render(h, String(source), props.plugins, props.options)
         );
       }
     }
