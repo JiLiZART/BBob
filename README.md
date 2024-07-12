@@ -393,22 +393,24 @@ npm run build
 node benchmark
 ```
 
-Tested on Node v12.18.3
+Tested on Node v20.11.1
 
-| Package              | Ops/sec              | Runs sampled      |
-|----------------------|----------------------|-------------------|
-| regex/parser         | 6.02 ops/sec ±2.77%  | (20 runs sampled) |
-| ya-bbcode            | 10.70 ops/sec ±1.94% | (31 runs sampled) |
-| xbbcode/parser       | 107 ops/sec ±2.29%   | (69 runs sampled) |
-| @bbob/parser         | 140 ops/sec ±1.11%   | (78 runs sampled) |
+| Package              | Ops/sec              |
+|----------------------|----------------------|
+| regex/parser         | `6 ops/sec`          |
+| ya-bbcode            | `11 ops/sec`         |
+| xbbcode/parser       | `102 ops/sec`        |
+| @bbob/parser         | `174 ops/sec`        |
+
+[Checkout Benckmark job results](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml)
 
 ### Donations <a name="donations"></a>
 
 You can support this projecti with donation in:
 
-Bitcon: bc1qx34sx3zmfd5e2km607p8s8t30d4rt33d2l9pwt
+*Bitcoin:* `bc1qx34sx3zmfd5e2km607p8s8t30d4rt33d2l9pwt`
 
-USDT(TRC20): TT94uVjJho8n47xbdfNYz6vdebgmKFpxAT
+*USDT(TRC20):* `TT94uVjJho8n47xbdfNYz6vdebgmKFpxAT`
 
 
 Also thanks to support 
