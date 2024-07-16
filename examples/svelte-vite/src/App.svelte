@@ -19,7 +19,7 @@
   });
 
   let input = 'Text [b]bolded[/b] and [avatar]Some Name[/avatar]'
-  let bbcode = html(input, myPreset())
+  $: bbcode = html(input, myPreset())
 </script>
 
 <main>
