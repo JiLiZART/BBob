@@ -186,6 +186,7 @@ function parse(input: string, opts: ParseOptions = {}) {
     flushTagNodes();
 
     const tagNode = TagNode.create(token.getValue(), {}, []);
+    tagNode.setStartTagPos(token.getStartPos(), token.getEndPos());
     const isNested = isTokenNested(token);
 
     tagNodes.push(tagNode);
@@ -203,6 +204,10 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @param {Token} token
    */
   function handleTagEnd(token: Token) {
+    const lastTagNode = nestedNodes.last();
+    if (isTagNode(lastTagNode)) {
+      lastTagNode.setEndTagPos(token.getStartPos(), token.getEndPos());
+    }
     flushTagNodes();
 
     const lastNestedNode = nestedNodes.flush();

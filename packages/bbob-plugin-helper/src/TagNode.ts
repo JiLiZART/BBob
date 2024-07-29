@@ -30,38 +30,40 @@ const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) 
 const renderContent = (content: TagNodeTree, openTag: string, closeTag: string) => {
   const toString = (node: NodeContent) => {
     if (isTagNode(node)) {
-      return node.toString({ openTag, closeTag })
+      return node.toString({ openTag, closeTag });
     }
 
-    return String(node)
-  }
+    return String(node);
+  };
 
   if (Array.isArray(content)) {
     return content.reduce<string>((r, node) => {
       if (node !== null) {
-        return r + toString(node)
+        return r + toString(node);
       }
 
-      return r
-    }, '')
+      return r;
+    }, '');
   }
 
   if (content) {
-    return toString(content)
+    return toString(content);
   }
 
-  return null
-}
+  return null;
+};
 
 export class TagNode<TagValue extends any = any> implements TagNodeObject {
-  public readonly tag: string | TagValue
-  public attrs: Record<string, unknown>
-  public content: TagNodeTree
+  public readonly tag: string | TagValue;
+  public attrs: Record<string, unknown>;
+  public content: TagNodeTree;
+  public startTagPos?: { start: number; end: number; };
+  public endTagPos?: { start: number; end: number; };
 
   constructor(tag: string | TagValue, attrs: Record<string, unknown>, content: TagNodeTree) {
     this.tag = tag;
     this.attrs = attrs;
-    this.content = content
+    this.content = content;
   }
 
   attr(name: string, value?: unknown) {
@@ -74,6 +76,14 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
 
   append(value: string) {
     return appendToNode(this, value);
+  }
+
+  setStartTagPos(start: number, end: number) {
+    this.startTagPos = { start, end };
+  }
+
+  setEndTagPos(start: number, end: number) {
+    this.endTagPos = { start, end };
   }
 
   get length(): number {
@@ -91,14 +101,21 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
   }
 
   toTagNode() {
-    return new TagNode(String(this.tag).toLowerCase(), this.attrs, this.content);
+    const newNode = new TagNode(String(this.tag).toLowerCase(), this.attrs, this.content);
+    if (this.startTagPos) {
+      newNode.setStartTagPos(this.startTagPos.start, this.startTagPos.end);
+    }
+    if (this.endTagPos) {
+      newNode.setEndTagPos(this.endTagPos.start, this.endTagPos.end);
+    }
+    return newNode;
   }
 
   toString({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}): string {
-    const content = this.content ? renderContent(this.content, openTag, closeTag) : ''
+    const content = this.content ? renderContent(this.content, openTag, closeTag) : '';
     const tagStart = this.toTagStart({ openTag, closeTag });
 
-    if (this.content === null || Array.isArray(this.content) &&  this.content.length === 0) {
+    if (this.content === null || Array.isArray(this.content) && this.content.length === 0) {
       return tagStart;
     }
 
@@ -106,10 +123,10 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
   }
 
   static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = null) {
-    return new TagNode(tag, attrs, content)
+    return new TagNode(tag, attrs, content);
   }
 
   static isOf(node: TagNode, type: string) {
-    return (node.tag === type)
+    return (node.tag === type);
   }
 }

@@ -1,13 +1,15 @@
-export type StringNode = string | number
+export type StringNode = string | number;
 
 export interface TagNodeObject<TagValue extends any = any> {
-  readonly tag: TagValue
-  attrs?: Record<string, unknown>
-  content?: TagNodeTree<TagValue>
+  readonly tag: TagValue;
+  attrs?: Record<string, unknown>;
+  content?: TagNodeTree<TagValue>;
+  startTagPos?: { start: number; end: number; };
+  endTagPos?: { start: number; end: number; };
 }
 
-export type NodeContent<TagValue extends any = any> = TagNodeObject<TagValue> | StringNode | null
+export type NodeContent<TagValue extends any = any> = TagNodeObject<TagValue> | StringNode | null;
 
-export type PartialNodeContent<TagValue extends any = any> = Partial<TagNodeObject<TagValue>> | StringNode | null
+export type PartialNodeContent<TagValue extends any = any> = Partial<TagNodeObject<TagValue>> | StringNode | null;
 
-export type TagNodeTree<TagValue extends any = any> = NodeContent<TagValue> | NodeContent<TagValue>[] | null
+export type TagNodeTree<TagValue extends any = any> = NodeContent<TagValue> | NodeContent<TagValue>[] | null;

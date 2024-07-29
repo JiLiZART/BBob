@@ -1,5 +1,5 @@
-import { TagNode } from '@bbob/parser'
-import core, { BBobPluginFunction, BBobPlugins } from '../src'
+import { TagNode } from '@bbob/parser';
+import core, { BBobPluginFunction, BBobPlugins } from '../src';
 import { isTagNode } from "@bbob/plugin-helper";
 
 const stringify = (val: unknown) => JSON.stringify(val);
@@ -11,15 +11,17 @@ describe('@bbob/core', () => {
     const res = process([], '[style size="15px"]Large Text[/style]');
     const ast = res.tree;
 
-    expect(res.html).toBe('[{"tag":"style","attrs":{"size":"15px"},"content":["Large"," ","Text"]}]');
+    expect(res.html).toBe('[{"tag":"style","attrs":{"size":"15px"},"content":["Large"," ","Text"],"startTagPos":{"start":0,"end":19},"endTagPos":{"start":29,"end":37}}]');
     expect(ast).toBeInstanceOf(Array);
     expect(stringify(ast)).toEqual(stringify([
       {
         tag: 'style',
         attrs: { size: '15px' },
-        content: ["Large", " ", "Text"]
+        content: ["Large", " ", "Text"],
+        startTagPos: { start: 0, end: 19 },
+        endTagPos: { start: 29, end: 37 },
       }
-    ]))
+    ]));
   });
 
   test('plugin walk api node', () => {
@@ -39,11 +41,11 @@ describe('@bbob/core', () => {
 
         }
 
-        return node
+        return node;
       });
 
-      return plugin
-    }
+      return plugin;
+    };
 
     const res = process([testPlugin()], '[mytag size="15px"]Large Text[/mytag]');
     const ast = res.tree;
@@ -61,7 +63,15 @@ describe('@bbob/core', () => {
           ' ',
           'Text',
           'Test'
-        ]
+        ],
+        startTagPos: {
+          start: 0,
+          end: 19
+        },
+        endTagPos: {
+          start: 29,
+          end: 37
+        }
       }
     ]));
   });
@@ -71,13 +81,13 @@ describe('@bbob/core', () => {
 
       const plugin: BBobPluginFunction = (tree) => tree.walk(node => {
         if (node === ':)') {
-          return TagNode.create('test-tag', {}, [])
+          return TagNode.create('test-tag', {}, []);
         }
 
-        return node
-      })
+        return node;
+      });
 
-      return plugin
+      return plugin;
     };
 
     const res = process([testPlugin()], '[mytag]Large Text :)[/mytag]');
@@ -99,7 +109,15 @@ describe('@bbob/core', () => {
             attrs: {},
             content: [],
           }
-        ]
+        ],
+        startTagPos: {
+          start: 0,
+          end: 7
+        },
+        endTagPos: {
+          start: 20,
+          end: 28
+        }
       }
     ]));
   });
@@ -109,13 +127,13 @@ describe('@bbob/core', () => {
 
       const plugin: BBobPluginFunction = (tree) => tree.match([{ tag: 'mytag1' }, { tag: 'mytag2' }], node => {
         if (isTagNode(node) && node.attrs) {
-          node.attrs['pass'] = 1
+          node.attrs['pass'] = 1;
         }
 
-        return node
-      })
+        return node;
+      });
 
-      return plugin
+      return plugin;
     };
 
     const res = process([testPlugin()], `[mytag1 size="15"]Tag1[/mytag1][mytag2 size="16"]Tag2[/mytag2][mytag3]Tag3[/mytag3]`);
@@ -132,7 +150,9 @@ describe('@bbob/core', () => {
         },
         content: [
           'Tag1'
-        ]
+        ],
+        startTagPos: { start: 0, end: 18 },
+        endTagPos: { start: 22, end: 31 }
       },
       {
         tag: 'mytag2',
@@ -142,15 +162,19 @@ describe('@bbob/core', () => {
         },
         content: [
           'Tag2'
-        ]
+        ],
+        startTagPos: { start: 31, end: 49 },
+        endTagPos: { start: 53, end: 62 }
       },
       {
         tag: 'mytag3',
         attrs: {},
         content: [
           'Tag3'
-        ]
+        ],
+        startTagPos: { start: 62, end: 70 },
+        endTagPos: { start: 74, end: 83 }
       }
     ]));
-  })
+  });
 });

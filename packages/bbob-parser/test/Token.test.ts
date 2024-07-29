@@ -1,10 +1,10 @@
-import Token, { TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE } from '../src/Token'
+import Token, { TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE } from '../src/Token';
 
 describe('Token', () => {
   test('isEmpty', () => {
     const token = new Token();
 
-    expect(token.isEmpty()).toBeTruthy()
+    expect(token.isEmpty()).toBeTruthy();
   });
   test('isText', () => {
     const token = new Token(TYPE_WORD);
@@ -55,6 +55,16 @@ describe('Token', () => {
     const token = new Token(TYPE_TAG, '/my-tag', 12, 14);
 
     expect(token.getColumn()).toBe(14);
+  });
+  test('getStartPos', () => {
+    const token = new Token(TYPE_TAG, 'my-tag', 12, 14, 50);
+
+    expect(token.getStartPos()).toBe(50);
+  });
+  test('getEndPos', () => {
+    const token = new Token(TYPE_TAG, 'my-tag', 12, 14, 50, 60);
+
+    expect(token.getEndPos()).toBe(60);
   });
   test('toString', () => {
     const tokenEnd = new Token(TYPE_TAG, '/my-tag', 12, 14);

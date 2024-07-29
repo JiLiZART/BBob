@@ -9,7 +9,15 @@ export interface ParseError {
 export interface TagNode {
   readonly tag: string
   attrs?: Record<string, unknown>
-  content?: TagNodeTree
+  content?: TagNodeTree,
+  startTagPos?: {
+    start: number;
+    end: number;
+  };
+  endTagPos?: {
+    start: number;
+    end: number;
+  };
 }
 
 export interface Token<TokenValue = string> {
