@@ -10,13 +10,13 @@ export interface TagNode {
   readonly tag: string
   attrs?: Record<string, unknown>
   content?: TagNodeTree,
-  startTagPos?: {
-    start: number;
-    end: number;
+  start?: {
+    from: number;
+    to: number;
   };
-  endTagPos?: {
-    start: number;
-    end: number;
+  end?: {
+    from: number;
+    to: number;
   };
 }
 

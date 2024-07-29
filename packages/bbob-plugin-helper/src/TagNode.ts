@@ -57,8 +57,8 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
   public readonly tag: string | TagValue;
   public attrs: Record<string, unknown>;
   public content: TagNodeTree;
-  public startTagPos?: { start: number; end: number; };
-  public endTagPos?: { start: number; end: number; };
+  public start?: { from: number; to: number; };
+  public end?: { from: number; to: number; };
 
   constructor(tag: string | TagValue, attrs: Record<string, unknown>, content: TagNodeTree) {
     this.tag = tag;
@@ -78,12 +78,12 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
     return appendToNode(this, value);
   }
 
-  setStartTagPos(start: number, end: number) {
-    this.startTagPos = { start, end };
+  setStart(from: number, to: number) {
+    this.start = { from, to };
   }
 
-  setEndTagPos(start: number, end: number) {
-    this.endTagPos = { start, end };
+  setEnd(from: number, to: number) {
+    this.end = { from, to };
   }
 
   get length(): number {
@@ -102,11 +102,11 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
 
   toTagNode() {
     const newNode = new TagNode(String(this.tag).toLowerCase(), this.attrs, this.content);
-    if (this.startTagPos) {
-      newNode.setStartTagPos(this.startTagPos.start, this.startTagPos.end);
+    if (this.start) {
+      newNode.setStart(this.start.from, this.start.to);
     }
-    if (this.endTagPos) {
-      newNode.setEndTagPos(this.endTagPos.start, this.endTagPos.end);
+    if (this.end) {
+      newNode.setEnd(this.end.from, this.end.to);
     }
     return newNode;
   }

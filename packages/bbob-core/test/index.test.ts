@@ -11,15 +11,15 @@ describe('@bbob/core', () => {
     const res = process([], '[style size="15px"]Large Text[/style]');
     const ast = res.tree;
 
-    expect(res.html).toBe('[{"tag":"style","attrs":{"size":"15px"},"content":["Large"," ","Text"],"startTagPos":{"start":0,"end":19},"endTagPos":{"start":29,"end":37}}]');
+    expect(res.html).toBe('[{"tag":"style","attrs":{"size":"15px"},"content":["Large"," ","Text"],"start":{"from":0,"to":19},"end":{"from":29,"to":37}}]');
     expect(ast).toBeInstanceOf(Array);
     expect(stringify(ast)).toEqual(stringify([
       {
         tag: 'style',
         attrs: { size: '15px' },
         content: ["Large", " ", "Text"],
-        startTagPos: { start: 0, end: 19 },
-        endTagPos: { start: 29, end: 37 },
+        start: { from: 0, to: 19 },
+        end: { from: 29, to: 37 },
       }
     ]));
   });
@@ -64,13 +64,13 @@ describe('@bbob/core', () => {
           'Text',
           'Test'
         ],
-        startTagPos: {
-          start: 0,
-          end: 19
+        start: {
+          from: 0,
+          to: 19
         },
-        endTagPos: {
-          start: 29,
-          end: 37
+        end: {
+          from: 29,
+          to: 37
         }
       }
     ]));
@@ -110,13 +110,13 @@ describe('@bbob/core', () => {
             content: [],
           }
         ],
-        startTagPos: {
-          start: 0,
-          end: 7
+        start: {
+          from: 0,
+          to: 7
         },
-        endTagPos: {
-          start: 20,
-          end: 28
+        end: {
+          from: 20,
+          to: 28
         }
       }
     ]));
@@ -151,8 +151,8 @@ describe('@bbob/core', () => {
         content: [
           'Tag1'
         ],
-        startTagPos: { start: 0, end: 18 },
-        endTagPos: { start: 22, end: 31 }
+        start: { from: 0, to: 18 },
+        end: { from: 22, to: 31 }
       },
       {
         tag: 'mytag2',
@@ -163,8 +163,8 @@ describe('@bbob/core', () => {
         content: [
           'Tag2'
         ],
-        startTagPos: { start: 31, end: 49 },
-        endTagPos: { start: 53, end: 62 }
+        start: { from: 31, to: 49 },
+        end: { from: 53, to: 62 }
       },
       {
         tag: 'mytag3',
@@ -172,8 +172,8 @@ describe('@bbob/core', () => {
         content: [
           'Tag3'
         ],
-        startTagPos: { start: 62, end: 70 },
-        endTagPos: { start: 74, end: 83 }
+        start: { from: 62, to: 70 },
+        end: { from: 74, to: 83 }
       }
     ]));
   });

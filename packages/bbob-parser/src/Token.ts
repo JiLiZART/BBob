@@ -159,11 +159,11 @@ class Token<TokenValue = string> implements TokenInterface {
     return getTokenColumn(this);
   }
 
-  getStartPos() {
+  getStart() {
     return getStartPosition(this);
   }
 
-  getEndPos() {
+  getEnd() {
     return getEndPosition(this);
   }
 

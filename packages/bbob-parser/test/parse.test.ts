@@ -20,13 +20,13 @@ describe('Parser', () => {
           ' ',
           'Bar',
         ],
-        startTagPos: {
-          start: 0,
-          end: 17,
+        start: {
+          from: 0,
+          to: 17,
         },
-        endTagPos: {
-          start: 24,
-          end: 31,
+        end: {
+          from: 24,
+          to: 31,
         },
       },
     ];
@@ -45,13 +45,13 @@ describe('Parser', () => {
           ' ',
           'Bar',
         ],
-        startTagPos: {
-          start: 0,
-          end: 5,
+        start: {
+          from: 0,
+          to: 5,
         },
-        endTagPos: {
-          start: 12,
-          end: 18,
+        end: {
+          from: 12,
+          to: 18,
         },
       },
     ];
@@ -76,13 +76,13 @@ describe('Parser', () => {
             '[Bar]',
             ' '
           ],
-          startTagPos: {
-            start: 0,
-            end: 15,
+          start: {
+            from: 0,
+            to: 15,
           },
-          endTagPos: {
-            start: 25,
-            end: 30,
+          end: {
+            from: 25,
+            to: 30,
           },
         },
       ];
@@ -131,13 +131,13 @@ describe('Parser', () => {
           tag: 'ch',
           attrs: {},
           content: ['E'],
-          startTagPos: {
-            start: 7,
-            end: 11,
+          start: {
+            from: 7,
+            to: 11,
           },
-          endTagPos: {
-            start: 12,
-            end: 17,
+          end: {
+            from: 12,
+            to: 17,
           },
         },
         '\n',
@@ -158,13 +158,13 @@ describe('Parser', () => {
           tag: 'ch',
           attrs: {},
           content: ['A'],
-          startTagPos: {
-            start: 81,
-            end: 85,
+          start: {
+            from: 81,
+            to: 85,
           },
-          endTagPos: {
-            start: 86,
-            end: 91,
+          end: {
+            from: 86,
+            to: 91,
           },
         },
         '\n',
@@ -199,13 +199,13 @@ describe('Parser', () => {
             '[Bar]',
             ' '
           ],
-          startTagPos: {
-            start: 0,
-            end: 15,
+          start: {
+            from: 0,
+            to: 15,
           },
-          endTagPos: {
-            start: 25,
-            end: 30,
+          end: {
+            from: 25,
+            to: 30,
           },
         },
       ];
@@ -232,13 +232,13 @@ describe('Parser', () => {
             '[',
             '/b]'
           ],
-          startTagPos: {
-            start: 0,
-            end: 6,
+          start: {
+            from: 0,
+            to: 6,
           },
-          endTagPos: {
-            start: 25,
-            end: 32,
+          end: {
+            from: 25,
+            to: 32,
           },
         }
       ];
@@ -256,9 +256,9 @@ describe('Parser', () => {
         },
         tag: 'h1',
         content: [],
-        startTagPos: {
-          start: 0,
-          end: 15,
+        start: {
+          from: 0,
+          to: 15,
         },
       },
       'Foo',
@@ -267,9 +267,9 @@ describe('Parser', () => {
         tag: 'bar',
         attrs: {},
         content: [],
-        startTagPos: {
-          start: 19,
-          end: 24,
+        start: {
+          from: 19,
+          to: 24,
         },
       },
       ' ',
@@ -288,13 +288,13 @@ describe('Parser', () => {
           'https://github.com/jilizart/bbob': 'https://github.com/jilizart/bbob',
         },
         content: ['BBob'],
-        startTagPos: {
-          start: 0,
-          end: 38,
+        start: {
+          from: 0,
+          to: 38,
         },
-        endTagPos: {
-          start: 42,
-          end: 48,
+        end: {
+          from: 42,
+          to: 48,
         },
       },
     ];
@@ -313,13 +313,13 @@ describe('Parser', () => {
           text: 'Foo Bar',
         },
         content: ['Text'],
-        startTagPos: {
-          start: 0,
-          end: 64,
+        start: {
+          from: 0,
+          to: 64,
         },
-        endTagPos: {
-          start: 68,
-          end: 74,
+        end: {
+          from: 68,
+          to: 74,
         },
       },
     ];
@@ -336,9 +336,9 @@ describe('Parser', () => {
           'https://github.com/jilizart/bbob': 'https://github.com/jilizart/bbob',
         },
         content: [],
-        startTagPos: {
-          start: 0,
-          end: 38,
+        start: {
+          from: 0,
+          to: 38,
         },
       },
     ];
@@ -363,13 +363,13 @@ describe('Parser', () => {
           size: '15',
         },
         content: ['Tag1'],
-        startTagPos: {
-          start: 0,
-          end: 18,
+        start: {
+          from: 0,
+          to: 18,
         },
-        endTagPos: {
-          start: 22,
-          end: 31,
+        end: {
+          from: 22,
+          to: 31,
         },
       },
       {
@@ -378,26 +378,26 @@ describe('Parser', () => {
           size: '16',
         },
         content: ['Tag2'],
-        startTagPos: {
-          start: 31,
-          end: 49,
+        start: {
+          from: 31,
+          to: 49,
         },
-        endTagPos: {
-          start: 53,
-          end: 62,
+        end: {
+          from: 53,
+          to: 62,
         },
       },
       {
         tag: 'mytag3',
         attrs: {},
         content: ['Tag3'],
-        startTagPos: {
-          start: 62,
-          end: 70,
+        start: {
+          from: 62,
+          to: 70,
         },
-        endTagPos: {
-          start: 74,
-          end: 83,
+        end: {
+          from: 74,
+          to: 83,
         },
       },
     ];
@@ -414,13 +414,13 @@ describe('Parser', () => {
         tag: 'b',
         attrs: {},
         content: ['hello'],
-        startTagPos: {
-          start: 0,
-          end: 17,
+        start: {
+          from: 0,
+          to: 17,
         },
-        endTagPos: {
-          start: 24,
-          end: 31,
+        end: {
+          from: 24,
+          to: 31,
         },
       },
       ' ',
@@ -430,13 +430,13 @@ describe('Parser', () => {
           disabled: 'disabled',
         },
         content: ['world'],
-        startTagPos: {
-          start: 0,
-          end: 17,
+        start: {
+          from: 0,
+          to: 17,
         },
-        endTagPos: {
-          start: 24,
-          end: 31,
+        end: {
+          from: 24,
+          to: 31,
         },
       },
     ]);
@@ -452,13 +452,13 @@ describe('Parser', () => {
           'https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any': 'https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any',
         },
         content: ['GET'],
-        startTagPos: {
-          start: 0,
-          end: 66,
+        start: {
+          from: 0,
+          to: 66,
         },
-        endTagPos: {
-          start: 69,
-          end: 75,
+        end: {
+          from: 69,
+          to: 75,
         },
       },
     ]);
@@ -514,13 +514,13 @@ describe('Parser', () => {
                   " ",
                   "italic",
                 ],
-                endTagPos: {
-                  "end": 147,
-                  "start": 143,
+                end: {
+                  to: 147,
+                  from: 143,
                 },
-                startTagPos: {
-                  "end": 120,
-                  "start": 117,
+                start: {
+                  "to": 120,
+                  "from": 117,
                 },
                 "tag": "i",
               },
@@ -533,26 +533,26 @@ describe('Parser', () => {
               " ",
               "again",
             ],
-            endTagPos: {
-              "end": 170,
-              "start": 166,
+            end: {
+              "to": 170,
+              "from": 166,
             },
-            startTagPos: {
-              "end": 104,
-              "start": 101,
+            start: {
+              "to": 104,
+              "from": 101,
             },
             tag: "b",
           },
           "\n",
           "      ",
         ],
-        endTagPos: {
-          "end": 187,
-          "start": 177,
+        end: {
+          "to": 187,
+          "from": 177,
         },
-        startTagPos: {
-          "end": 76,
-          "start": 16,
+        start: {
+          "to": 76,
+          "from": 16,
         },
         tag: "spoiler",
       },
@@ -590,13 +590,13 @@ describe('Parser', () => {
               size: 'xs'
             },
             content: [],
-            startTagPos: {
-              start: 82,
-              end: 164,
+            start: {
+              from: 82,
+              to: 164,
             },
-            endTagPos: {
-              start: 164,
-              end: 173,
+            end: {
+              from: 164,
+              to: 173,
             },
           },
           '\n',
@@ -607,13 +607,13 @@ describe('Parser', () => {
           ' ',
           'Go',
         ],
-        startTagPos: {
-          start: 0,
-          end: 73,
+        start: {
+          from: 0,
+          to: 73,
         },
-        endTagPos: {
-          start: 196,
-          end: 202,
+        end: {
+          from: 196,
+          to: 202,
         },
       },
       '    ',
@@ -630,13 +630,13 @@ describe('Parser', () => {
           href: 'https://docs.google.com/spreadsheets/d/1W9VPUESF_NkbSa_HtRFrQNl0nYo8vPCxJFy7jD3Tpio/edit#gid=0',
         },
         content: ['Docs'],
-        startTagPos: {
-          start: 0,
-          end: 105,
+        start: {
+          from: 0,
+          to: 105,
         },
-        endTagPos: {
-          start: 109,
-          end: 115,
+        end: {
+          from: 109,
+          to: 115,
         },
       },
     ]);
@@ -654,24 +654,24 @@ sdfasdfasdf
       [
         {
           tag: 'quote', attrs: {}, content: ['some'],
-          startTagPos: {
-            start: 0,
-            end: 7,
+          start: {
+            from: 0,
+            to: 7,
           },
-          endTagPos: {
-            start: 11,
-            end: 19,
+          end: {
+            from: 11,
+            to: 19,
           },
         },
         {
           tag: 'color', attrs: { red: 'red' }, content: ['test'],
-          startTagPos: {
-            start: 19,
-            end: 30,
+          start: {
+            from: 19,
+            to: 30,
           },
-          endTagPos: {
-            start: 34,
-            end: 42,
+          end: {
+            from: 34,
+            to: 42,
           },
         },
         '\n',
@@ -683,20 +683,20 @@ sdfasdfasdf
         '\n',
         {
           tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
-          startTagPos: {
-            start: 74,
-            end: 83,
+          start: {
+            from: 74,
+            to: 83,
           },
-          endTagPos: {
-            start: 86,
-            end: 92,
+          end: {
+            from: 86,
+            to: 92,
           },
         }
       ]
     );
   });
 
-  test('parse with lost closing tag on start', () => {
+  test('parse with lost closing tag on from', () => {
     const str = `[quote]xxxsdfasdf[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url]`;
 
     expectOutput(
@@ -706,43 +706,43 @@ sdfasdfasdf
         'xxxsdfasdf',
         {
           tag: 'quote', attrs: {}, content: ['some'],
-          startTagPos: {
-            start: 17,
-            end: 24,
+          start: {
+            from: 17,
+            to: 24,
           },
-          endTagPos: {
-            start: 28,
-            end: 36,
+          end: {
+            from: 28,
+            to: 36,
           },
         },
         {
           tag: 'color', attrs: { red: 'red' }, content: ['test'],
-          startTagPos: {
-            start: 36,
-            end: 47,
+          start: {
+            from: 36,
+            to: 47,
           },
-          endTagPos: {
-            start: 51,
-            end: 59,
+          end: {
+            from: 51,
+            to: 59,
           },
         },
         'sdfasdfasdf',
         {
           tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
-          startTagPos: {
-            start: 70,
-            end: 79,
+          start: {
+            from: 70,
+            to: 79,
           },
-          endTagPos: {
-            start: 82,
-            end: 88,
+          end: {
+            from: 82,
+            to: 88,
           },
         }
       ]
     );
   });
 
-  test('parse with lost closing tag on end', () => {
+  test('parse with lost closing tag on to', () => {
     const str = `[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url][quote]xxxsdfasdf`;
 
     expectOutput(
@@ -750,36 +750,36 @@ sdfasdfasdf
       [
         {
           tag: 'quote', attrs: {}, content: ['some'],
-          startTagPos: {
-            start: 0,
-            end: 7,
+          start: {
+            from: 0,
+            to: 7,
           },
-          endTagPos: {
-            start: 11,
-            end: 19,
+          end: {
+            from: 11,
+            to: 19,
           },
         },
         {
           tag: 'color', attrs: { red: 'red' }, content: ['test'],
-          startTagPos: {
-            start: 19,
-            end: 30,
+          start: {
+            from: 19,
+            to: 30,
           },
-          endTagPos: {
-            start: 34,
-            end: 42,
+          end: {
+            from: 34,
+            to: 42,
           },
         },
         'sdfasdfasdf',
         {
           tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
-          startTagPos: {
-            start: 53,
-            end: 62,
+          start: {
+            from: 53,
+            to: 62,
           },
-          endTagPos: {
-            start: 65,
-            end: 71,
+          end: {
+            from: 65,
+            to: 71,
           },
         },
         '[quote]',
@@ -808,13 +808,13 @@ sdfasdfasdf
             " ",
             "title=\"value1\""
           ],
-          startTagPos: {
-            start: 0,
-            end: 49,
+          start: {
+            from: 0,
+            to: 49,
           },
-          endTagPos: {
-            start: 78,
-            end: 87,
+          end: {
+            from: 78,
+            to: 87,
           },
         }
       ]);
@@ -838,13 +838,13 @@ sdfasdfasdf
             " ",
             "disabled"
           ],
-          startTagPos: {
-            start: 0,
-            end: 50,
+          start: {
+            from: 0,
+            to: 50,
           },
-          endTagPos: {
-            start: 71,
-            end: 80,
+          end: {
+            from: 71,
+            to: 80,
           },
         }
       ]);
@@ -865,13 +865,13 @@ sdfasdfasdf
           "content": [
             "class=\"value4\"title=\"value5\""
           ],
-          startTagPos: {
-            start: 0,
-            end: 48,
+          start: {
+            from: 0,
+            to: 48,
           },
-          endTagPos: {
-            start: 76,
-            end: 85,
+          end: {
+            from: 76,
+            to: 85,
           },
         }
       ]);

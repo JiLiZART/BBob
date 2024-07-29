@@ -59,12 +59,12 @@ describe('Token', () => {
   test('getStartPos', () => {
     const token = new Token(TYPE_TAG, 'my-tag', 12, 14, 50);
 
-    expect(token.getStartPos()).toBe(50);
+    expect(token.getStart()).toBe(50);
   });
   test('getEndPos', () => {
     const token = new Token(TYPE_TAG, 'my-tag', 12, 14, 50, 60);
 
-    expect(token.getEndPos()).toBe(60);
+    expect(token.getEnd()).toBe(60);
   });
   test('toString', () => {
     const tokenEnd = new Token(TYPE_TAG, '/my-tag', 12, 14);
