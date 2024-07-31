@@ -4,8 +4,8 @@ export interface TagNodeObject<TagValue extends any = any> {
   readonly tag: TagValue;
   attrs?: Record<string, unknown>;
   content?: TagNodeTree<TagValue>;
-  start?: { from: number; to: number; };
-  end?: { from: number; to: number; };
+  start?: TagPosition;
+  end?: TagPosition;
 }
 
 export type NodeContent<TagValue extends any = any> = TagNodeObject<TagValue> | StringNode | null;
@@ -13,3 +13,5 @@ export type NodeContent<TagValue extends any = any> = TagNodeObject<TagValue> | 
 export type PartialNodeContent<TagValue extends any = any> = Partial<TagNodeObject<TagValue>> | StringNode | null;
 
 export type TagNodeTree<TagValue extends any = any> = NodeContent<TagValue> | NodeContent<TagValue>[] | null;
+
+export type TagPosition = { from: number; to: number; };

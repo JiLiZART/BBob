@@ -34,6 +34,7 @@ const TAG_STATE_VALUE = 2;
 
 const WHITESPACES = [SPACE, TAB];
 const SPECIAL_CHARS = [EQ, SPACE, TAB];
+const END_POS_OFFSET = 2;  // length + start position offset
 
 const isWhiteSpace = (char: string) => (WHITESPACES.indexOf(char) >= 0);
 const isEscapeChar = (char: string) => char === BACKSLASH;
@@ -218,10 +219,11 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     if (isNoAttrsInTag || isClosingTag) {
       const startPos = chars.getPos() - 1;
       const name = chars.grabWhile((char) => char !== closeTag);
+      const endPos = startPos + name.length + END_POS_OFFSET;
 
       chars.skip(); // skip closeTag
 
-      emitToken(TYPE_TAG, name, startPos, startPos + name.length + 2);
+      emitToken(TYPE_TAG, name, startPos, endPos);
       checkContextFreeMode(name, isClosingTag);
 
       return STATE_WORD;

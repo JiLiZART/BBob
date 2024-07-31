@@ -1,4 +1,4 @@
-import type { NodeContent, TagNodeObject, TagNodeTree } from "@bbob/types";
+import type { NodeContent, TagNodeObject, TagNodeTree, TagPosition } from "@bbob/types";
 
 import { OPEN_BRAKET, CLOSE_BRAKET, SLASH } from './char';
 import {
@@ -57,8 +57,8 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
   public readonly tag: string | TagValue;
   public attrs: Record<string, unknown>;
   public content: TagNodeTree;
-  public start?: { from: number; to: number; };
-  public end?: { from: number; to: number; };
+  public start?: TagPosition;
+  public end?: TagPosition;
 
   constructor(tag: string | TagValue, attrs: Record<string, unknown>, content: TagNodeTree) {
     this.tag = tag;
@@ -78,12 +78,12 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
     return appendToNode(this, value);
   }
 
-  setStart(from: number, to: number) {
-    this.start = { from, to };
+  setStart(value: TagPosition) {
+    this.start = value;
   }
 
-  setEnd(from: number, to: number) {
-    this.end = { from, to };
+  setEnd(value: TagPosition) {
+    this.end = value;
   }
 
   get length(): number {
@@ -103,10 +103,10 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
   toTagNode() {
     const newNode = new TagNode(String(this.tag).toLowerCase(), this.attrs, this.content);
     if (this.start) {
-      newNode.setStart(this.start.from, this.start.to);
+      newNode.setStart(this.start);
     }
     if (this.end) {
-      newNode.setEnd(this.end.from, this.end.to);
+      newNode.setEnd(this.end);
     }
     return newNode;
   }
@@ -122,8 +122,12 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = null) {
-    return new TagNode(tag, attrs, content);
+  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = null, start?: TagPosition) {
+    const node = new TagNode(tag, attrs, content);
+    if (start) {
+      node.setStart(start);
+    }
+    return node;
   }
 
   static isOf(node: TagNode, type: string) {

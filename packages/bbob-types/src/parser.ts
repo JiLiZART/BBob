@@ -1,4 +1,4 @@
-import { TagNodeTree } from "./common";
+import { TagNodeTree, TagPosition } from "./common";
 
 export interface ParseError {
   tagName: string;
@@ -10,14 +10,8 @@ export interface TagNode {
   readonly tag: string
   attrs?: Record<string, unknown>
   content?: TagNodeTree,
-  start?: {
-    from: number;
-    to: number;
-  };
-  end?: {
-    from: number;
-    to: number;
-  };
+  start?: TagPosition;
+  end?: TagPosition;
 }
 
 export interface Token<TokenValue = string> {
