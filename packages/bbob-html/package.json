@@ -1,6 +1,6 @@
 {
   "name": "@bbob/html",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "description": "A BBCode to HTML Renderer part of @bbob",
   "keywords": [
     "html",
