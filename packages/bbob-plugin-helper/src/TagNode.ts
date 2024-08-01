@@ -1,4 +1,4 @@
-import type { NodeContent, TagNodeObject, TagNodeTree } from "@bbob/types";
+import type { NodeContent, TagNodeObject, TagNodeTree, TagPosition } from "@bbob/types";
 
 import { OPEN_BRAKET, CLOSE_BRAKET, SLASH } from './char';
 import {
@@ -30,38 +30,40 @@ const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) 
 const renderContent = (content: TagNodeTree, openTag: string, closeTag: string) => {
   const toString = (node: NodeContent) => {
     if (isTagNode(node)) {
-      return node.toString({ openTag, closeTag })
+      return node.toString({ openTag, closeTag });
     }
 
-    return String(node)
-  }
+    return String(node);
+  };
 
   if (Array.isArray(content)) {
     return content.reduce<string>((r, node) => {
       if (node !== null) {
-        return r + toString(node)
+        return r + toString(node);
       }
 
-      return r
-    }, '')
+      return r;
+    }, '');
   }
 
   if (content) {
-    return toString(content)
+    return toString(content);
   }
 
-  return null
-}
+  return null;
+};
 
 export class TagNode<TagValue extends any = any> implements TagNodeObject {
-  public readonly tag: string | TagValue
-  public attrs: Record<string, unknown>
-  public content: TagNodeTree
+  public readonly tag: string | TagValue;
+  public attrs: Record<string, unknown>;
+  public content: TagNodeTree;
+  public start?: TagPosition;
+  public end?: TagPosition;
 
   constructor(tag: string | TagValue, attrs: Record<string, unknown>, content: TagNodeTree) {
     this.tag = tag;
     this.attrs = attrs;
-    this.content = content
+    this.content = content;
   }
 
   attr(name: string, value?: unknown) {
@@ -74,6 +76,14 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
 
   append(value: string) {
     return appendToNode(this, value);
+  }
+
+  setStart(value: TagPosition) {
+    this.start = value;
+  }
+
+  setEnd(value: TagPosition) {
+    this.end = value;
   }
 
   get length(): number {
@@ -91,25 +101,36 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
   }
 
   toTagNode() {
-    return new TagNode(String(this.tag).toLowerCase(), this.attrs, this.content);
+    const newNode = new TagNode(String(this.tag).toLowerCase(), this.attrs, this.content);
+    if (this.start) {
+      newNode.setStart(this.start);
+    }
+    if (this.end) {
+      newNode.setEnd(this.end);
+    }
+    return newNode;
   }
 
   toString({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}): string {
-    const content = this.content ? renderContent(this.content, openTag, closeTag) : ''
+    const content = this.content ? renderContent(this.content, openTag, closeTag) : '';
     const tagStart = this.toTagStart({ openTag, closeTag });
 
-    if (this.content === null || Array.isArray(this.content) &&  this.content.length === 0) {
+    if (this.content === null || Array.isArray(this.content) && this.content.length === 0) {
       return tagStart;
     }
 
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
-  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = null) {
-    return new TagNode(tag, attrs, content)
+  static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = null, start?: TagPosition) {
+    const node = new TagNode(tag, attrs, content);
+    if (start) {
+      node.setStart(start);
+    }
+    return node;
   }
 
   static isOf(node: TagNode, type: string) {
-    return (node.tag === type)
+    return (node.tag === type);
   }
 }

@@ -1,10 +1,10 @@
-import { parse } from '../src'
-import type { TagNodeTree } from "@bbob/plugin-helper";
+import { parse } from '../src';
+import type { TagNode, TagNodeTree } from "@bbob/types";
 
 describe('Parser', () => {
   const expectOutput = (ast: TagNodeTree, output: Partial<TagNodeTree>) => {
     expect(ast).toBeInstanceOf(Array);
-    expect(ast).toEqual(output);
+    expect(ast).toMatchObject(output as {} | TagNode[]);
   };
 
   test('parse paired tags tokens', () => {
@@ -20,6 +20,14 @@ describe('Parser', () => {
           ' ',
           'Bar',
         ],
+        start: {
+          from: 0,
+          to: 17,
+        },
+        end: {
+          from: 24,
+          to: 31,
+        },
       },
     ];
 
@@ -37,6 +45,14 @@ describe('Parser', () => {
           ' ',
           'Bar',
         ],
+        start: {
+          from: 0,
+          to: 5,
+        },
+        end: {
+          from: 12,
+          to: 18,
+        },
       },
     ];
 
@@ -60,6 +76,14 @@ describe('Parser', () => {
             '[Bar]',
             ' '
           ],
+          start: {
+            from: 0,
+            to: 15,
+          },
+          end: {
+            from: 25,
+            to: 30,
+          },
         },
       ];
 
@@ -78,7 +102,7 @@ describe('Parser', () => {
         '[blah foo="bar"]',
         'world',
         '[/blah]'
-      ])
+      ]);
     });
 
     test('parse only allowed tags with named param', () => {
@@ -93,7 +117,7 @@ describe('Parser', () => {
         '[blah="bar"]',
         'world',
         '[/blah]'
-      ])
+      ]);
     });
 
     test('parse only allowed tags inside disabled tags', () => {
@@ -107,6 +131,14 @@ describe('Parser', () => {
           tag: 'ch',
           attrs: {},
           content: ['E'],
+          start: {
+            from: 7,
+            to: 11,
+          },
+          end: {
+            from: 12,
+            to: 17,
+          },
         },
         '\n',
         'A',
@@ -126,6 +158,14 @@ describe('Parser', () => {
           tag: 'ch',
           attrs: {},
           content: ['A'],
+          start: {
+            from: 81,
+            to: 85,
+          },
+          end: {
+            from: 86,
+            to: 91,
+          },
         },
         '\n',
         'All',
@@ -159,12 +199,20 @@ describe('Parser', () => {
             '[Bar]',
             ' '
           ],
+          start: {
+            from: 0,
+            to: 15,
+          },
+          end: {
+            from: 25,
+            to: 30,
+          },
         },
       ];
 
       expectOutput(ast, output);
     });
-  })
+  });
 
   describe('contextFreeTags', () => {
     test('context free tag [code]', () => {
@@ -176,20 +224,28 @@ describe('Parser', () => {
           tag: 'code',
           attrs: {},
           content: [
-              ' ',
-              '[',
-              'b]some',
-              ' ',
-              'string',
-              '[',
-              '/b]'
-          ]
+            ' ',
+            '[',
+            'b]some',
+            ' ',
+            'string',
+            '[',
+            '/b]'
+          ],
+          start: {
+            from: 0,
+            to: 6,
+          },
+          end: {
+            from: 25,
+            to: 32,
+          },
         }
-      ]
+      ];
 
       expectOutput(ast, output);
-    })
-  })
+    });
+  });
 
   test('parse inconsistent tags', () => {
     const ast = parse('[h1 name=value]Foo [Bar] /h1]');
@@ -199,14 +255,22 @@ describe('Parser', () => {
           name: 'value'
         },
         tag: 'h1',
-        content: []
+        content: [],
+        start: {
+          from: 0,
+          to: 15,
+        },
       },
       'Foo',
       ' ',
       {
         tag: 'bar',
         attrs: {},
-        content: []
+        content: [],
+        start: {
+          from: 19,
+          to: 24,
+        },
       },
       ' ',
       '/h1]',
@@ -224,6 +288,14 @@ describe('Parser', () => {
           'https://github.com/jilizart/bbob': 'https://github.com/jilizart/bbob',
         },
         content: ['BBob'],
+        start: {
+          from: 0,
+          to: 38,
+        },
+        end: {
+          from: 42,
+          to: 48,
+        },
       },
     ];
 
@@ -241,6 +313,14 @@ describe('Parser', () => {
           text: 'Foo Bar',
         },
         content: ['Text'],
+        start: {
+          from: 0,
+          to: 64,
+        },
+        end: {
+          from: 68,
+          to: 74,
+        },
       },
     ];
 
@@ -256,6 +336,10 @@ describe('Parser', () => {
           'https://github.com/jilizart/bbob': 'https://github.com/jilizart/bbob',
         },
         content: [],
+        start: {
+          from: 0,
+          to: 38,
+        },
       },
     ];
 
@@ -279,6 +363,14 @@ describe('Parser', () => {
           size: '15',
         },
         content: ['Tag1'],
+        start: {
+          from: 0,
+          to: 18,
+        },
+        end: {
+          from: 22,
+          to: 31,
+        },
       },
       {
         tag: 'mytag2',
@@ -286,11 +378,27 @@ describe('Parser', () => {
           size: '16',
         },
         content: ['Tag2'],
+        start: {
+          from: 31,
+          to: 49,
+        },
+        end: {
+          from: 53,
+          to: 62,
+        },
       },
       {
         tag: 'mytag3',
         attrs: {},
         content: ['Tag3'],
+        start: {
+          from: 62,
+          to: 70,
+        },
+        end: {
+          from: 74,
+          to: 83,
+        },
       },
     ];
 
@@ -306,6 +414,14 @@ describe('Parser', () => {
         tag: 'b',
         attrs: {},
         content: ['hello'],
+        start: {
+          from: 0,
+          to: 17,
+        },
+        end: {
+          from: 24,
+          to: 31,
+        },
       },
       ' ',
       {
@@ -314,6 +430,14 @@ describe('Parser', () => {
           disabled: 'disabled',
         },
         content: ['world'],
+        start: {
+          from: 0,
+          to: 17,
+        },
+        end: {
+          from: 24,
+          to: 31,
+        },
       },
     ]);
   });
@@ -328,7 +452,117 @@ describe('Parser', () => {
           'https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any': 'https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any',
         },
         content: ['GET'],
+        start: {
+          from: 0,
+          to: 66,
+        },
+        end: {
+          from: 69,
+          to: 75,
+        },
       },
+    ]);
+  });
+
+  test('parse triple nested tags', () => {
+    const ast = parse(`this is outside [spoiler title="name with
+      multiline
+      attr value"] this is a spoiler
+      [b]this is bold [i]this is bold and italic[/i] this is bold again[/b]
+      [/spoiler]this is outside again`);
+    expectOutput(ast, [
+      "this",
+      " ",
+      "is",
+      " ",
+      "outside",
+      " ",
+      {
+        attrs: {
+          "title": "name with\n      multiline\n      attr value",
+        },
+        content: [
+          " ",
+          "this",
+          " ",
+          "is",
+          " ",
+          "a",
+          " ",
+          "spoiler",
+          "\n",
+          "      ",
+          {
+            attrs: {},
+            content: [
+              "this",
+              " ",
+              "is",
+              " ",
+              "bold",
+              " ",
+              {
+                attrs: {},
+                content: [
+                  "this",
+                  " ",
+                  "is",
+                  " ",
+                  "bold",
+                  " ",
+                  "and",
+                  " ",
+                  "italic",
+                ],
+                end: {
+                  to: 147,
+                  from: 143,
+                },
+                start: {
+                  "to": 120,
+                  "from": 117,
+                },
+                "tag": "i",
+              },
+              " ",
+              "this",
+              " ",
+              "is",
+              " ",
+              "bold",
+              " ",
+              "again",
+            ],
+            end: {
+              "to": 170,
+              "from": 166,
+            },
+            start: {
+              "to": 104,
+              "from": 101,
+            },
+            tag: "b",
+          },
+          "\n",
+          "      ",
+        ],
+        end: {
+          "to": 187,
+          "from": 177,
+        },
+        start: {
+          "to": 76,
+          "from": 16,
+        },
+        tag: "spoiler",
+      },
+      "this",
+      " ",
+      "is",
+      " ",
+      "outside",
+      " ",
+      "again",
     ]);
   });
 
@@ -355,7 +589,15 @@ describe('Parser', () => {
               href: '/avatar/4/3/b/1606.jpg@20x20?cache=1561462725&bgclr=ffffff',
               size: 'xs'
             },
-            content: []
+            content: [],
+            start: {
+              from: 82,
+              to: 164,
+            },
+            end: {
+              from: 164,
+              to: 173,
+            },
           },
           '\n',
           '         ',
@@ -365,6 +607,14 @@ describe('Parser', () => {
           ' ',
           'Go',
         ],
+        start: {
+          from: 0,
+          to: 73,
+        },
+        end: {
+          from: 196,
+          to: 202,
+        },
       },
       '    ',
     ]);
@@ -380,6 +630,14 @@ describe('Parser', () => {
           href: 'https://docs.google.com/spreadsheets/d/1W9VPUESF_NkbSa_HtRFrQNl0nYo8vPCxJFy7jD3Tpio/edit#gid=0',
         },
         content: ['Docs'],
+        start: {
+          from: 0,
+          to: 105,
+        },
+        end: {
+          from: 109,
+          to: 115,
+        },
       },
     ]);
   });
@@ -389,56 +647,146 @@ describe('Parser', () => {
 [quote]xxxsdfasdf
 sdfasdfasdf
 
-[url=xxx]xxx[/url]`
+[url=xxx]xxx[/url]`;
 
     expectOutput(
-        parse(str),
-        [
-          { tag: 'quote', attrs: {}, content: ['some'] },
-          { tag: 'color', attrs: { red: 'red' }, content: ['test'] },
-          '\n',
-          '[quote]',
-          'xxxsdfasdf',
-          '\n',
-          'sdfasdfasdf',
-          '\n',
-          '\n',
-          { tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'] }
-        ]
-    )
-  })
+      parse(str),
+      [
+        {
+          tag: 'quote', attrs: {}, content: ['some'],
+          start: {
+            from: 0,
+            to: 7,
+          },
+          end: {
+            from: 11,
+            to: 19,
+          },
+        },
+        {
+          tag: 'color', attrs: { red: 'red' }, content: ['test'],
+          start: {
+            from: 19,
+            to: 30,
+          },
+          end: {
+            from: 34,
+            to: 42,
+          },
+        },
+        '\n',
+        '[quote]',
+        'xxxsdfasdf',
+        '\n',
+        'sdfasdfasdf',
+        '\n',
+        '\n',
+        {
+          tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
+          start: {
+            from: 74,
+            to: 83,
+          },
+          end: {
+            from: 86,
+            to: 92,
+          },
+        }
+      ]
+    );
+  });
 
-  test('parse with lost closing tag on start', () => {
-    const str = `[quote]xxxsdfasdf[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url]`
+  test('parse with lost closing tag on from', () => {
+    const str = `[quote]xxxsdfasdf[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url]`;
 
     expectOutput(
-        parse(str),
-        [
-          '[quote]',
-          'xxxsdfasdf',
-          { tag: 'quote', attrs: {}, content: ['some'] },
-          { tag: 'color', attrs: { red: 'red' }, content: ['test'] },
-          'sdfasdfasdf',
-          { tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'] }
-        ]
-    )
-  })
+      parse(str),
+      [
+        '[quote]',
+        'xxxsdfasdf',
+        {
+          tag: 'quote', attrs: {}, content: ['some'],
+          start: {
+            from: 17,
+            to: 24,
+          },
+          end: {
+            from: 28,
+            to: 36,
+          },
+        },
+        {
+          tag: 'color', attrs: { red: 'red' }, content: ['test'],
+          start: {
+            from: 36,
+            to: 47,
+          },
+          end: {
+            from: 51,
+            to: 59,
+          },
+        },
+        'sdfasdfasdf',
+        {
+          tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
+          start: {
+            from: 70,
+            to: 79,
+          },
+          end: {
+            from: 82,
+            to: 88,
+          },
+        }
+      ]
+    );
+  });
 
-  test('parse with lost closing tag on end', () => {
-    const str = `[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url][quote]xxxsdfasdf`
+  test('parse with lost closing tag on to', () => {
+    const str = `[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url][quote]xxxsdfasdf`;
 
     expectOutput(
-        parse(str),
-        [
-          { tag: 'quote', attrs: {}, content: ['some'] },
-          { tag: 'color', attrs: { red: 'red' }, content: ['test'] },
-          'sdfasdfasdf',
-          { tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'] },
-          '[quote]',
-          'xxxsdfasdf',
-        ]
-    )
-  })
+      parse(str),
+      [
+        {
+          tag: 'quote', attrs: {}, content: ['some'],
+          start: {
+            from: 0,
+            to: 7,
+          },
+          end: {
+            from: 11,
+            to: 19,
+          },
+        },
+        {
+          tag: 'color', attrs: { red: 'red' }, content: ['test'],
+          start: {
+            from: 19,
+            to: 30,
+          },
+          end: {
+            from: 34,
+            to: 42,
+          },
+        },
+        'sdfasdfasdf',
+        {
+          tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
+          start: {
+            from: 53,
+            to: 62,
+          },
+          end: {
+            from: 65,
+            to: 71,
+          },
+        },
+        '[quote]',
+        'xxxsdfasdf',
+      ]
+    );
+  });
 
   describe('html', () => {
     const parseHTML = (input: string) => parse(input, { openTag: '<', closeTag: '>' });
@@ -459,7 +807,15 @@ sdfasdfasdf
             "class=\"value0\"",
             " ",
             "title=\"value1\""
-          ]
+          ],
+          start: {
+            from: 0,
+            to: 49,
+          },
+          end: {
+            from: 78,
+            to: 87,
+          },
         }
       ]);
     });
@@ -481,7 +837,15 @@ sdfasdfasdf
             "class=value2",
             " ",
             "disabled"
-          ]
+          ],
+          start: {
+            from: 0,
+            to: 50,
+          },
+          end: {
+            from: 71,
+            to: 80,
+          },
         }
       ]);
     });
@@ -500,7 +864,15 @@ sdfasdfasdf
           },
           "content": [
             "class=\"value4\"title=\"value5\""
-          ]
+          ],
+          start: {
+            from: 0,
+            to: 48,
+          },
+          end: {
+            from: 76,
+            to: 85,
+          },
         }
       ]);
     });

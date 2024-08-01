@@ -2,7 +2,7 @@ import { TagNode } from '../src'
 
 describe('@bbob/plugin-helper/TagNode', () => {
   test('create', () => {
-    const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
+    const tagNode = TagNode.create('test', {test: 1}, ['Hello'], {from: 0, to: 10});
 
     expect(tagNode).toBeInstanceOf(TagNode)
   });
@@ -36,12 +36,15 @@ describe('@bbob/plugin-helper/TagNode', () => {
   });
 
   test('toTagNode', () => {
-    const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
+    const tagNode = TagNode.create('test', {test: 1}, ['Hello'], {from: 0, to: 10});
+    tagNode.setEnd({from: 20, to: 27});
     const newTagNode = tagNode.toTagNode()
 
     expect(newTagNode !== tagNode).toBe(true);
     expect(newTagNode.tag).toEqual(tagNode.tag);
     expect(newTagNode.content).toEqual(tagNode.content);
+    expect(newTagNode.start).toEqual(tagNode.start);
+    expect(newTagNode.end).toEqual(tagNode.end);
   });
 
   test('null content', () => {
@@ -54,6 +57,20 @@ describe('@bbob/plugin-helper/TagNode', () => {
     const tagNode = TagNode.create('img', {}, []);
 
     expect(String(tagNode)).toBe('[img]');
+  });
+
+  test('setStart', () => {
+    const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
+    tagNode.setStart({from: 0, to: 10});
+
+    expect(tagNode.start).toEqual({from: 0, to: 10});
+  });
+
+  test('setEnd', () => {
+    const tagNode = TagNode.create('test', {test: 1}, ['Hello']);
+    tagNode.setEnd({from: 20, to: 27});
+
+    expect(tagNode.end).toEqual({from: 20, to: 27});
   });
 
   describe('toString', () => {

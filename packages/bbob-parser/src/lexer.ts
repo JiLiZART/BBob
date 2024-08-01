@@ -20,8 +20,8 @@ import { CharGrabber, createCharGrabber, trimChar, unquote } from './utils';
 // for cases <!-- -->
 const EM = '!';
 
-export function createTokenOfType(type: number, value: string, r = 0, cl = 0) {
-  return new Token(type, value, r, cl)
+export function createTokenOfType(type: number, value: string, r = 0, cl = 0, p = 0, e = 0) {
+  return new Token(type, value, r, cl, p, e);
 }
 
 const STATE_WORD = 0;
@@ -34,6 +34,7 @@ const TAG_STATE_VALUE = 2;
 
 const WHITESPACES = [SPACE, TAB];
 const SPECIAL_CHARS = [EQ, SPACE, TAB];
+const END_POS_OFFSET = 2;  // length + start position offset
 
 const isWhiteSpace = (char: string) => (WHITESPACES.indexOf(char) >= 0);
 const isEscapeChar = (char: string) => char === BACKSLASH;
@@ -43,6 +44,7 @@ const unq = (val: string) => unquote(trimChar(val, QUOTEMARK));
 
 export function createLexer(buffer: string, options: LexerOptions = {}): LexerTokenizer {
   let row = 0;
+  let prevCol = 0;
   let col = 0;
 
   let tokenIndex = -1;
@@ -89,16 +91,17 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
    * @param {Number} type
    * @param {String} value
    */
-  function emitToken(type: number, value: string) {
-    const token = createTokenOfType(type, value, row, col);
+  function emitToken(type: number, value: string, startPos?: number, endPos?: number) {
+    const token = createTokenOfType(type, value, row, prevCol, startPos, endPos);
 
     onToken(token);
 
+    prevCol = col;
     tokenIndex += 1;
     tokens[tokenIndex] = token;
   }
 
-  function nextTagState(tagChars: CharGrabber, isSingleValueTag: boolean) {
+  function nextTagState(tagChars: CharGrabber, isSingleValueTag: boolean, masterStartPos: number) {
     if (tagMode === TAG_STATE_ATTR) {
       const validAttrName = (char: string) => !(char === EQ || isWhiteSpace(char));
       const name = tagChars.grabWhile(validAttrName);
@@ -161,6 +164,9 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       tagChars.skip();
 
       emitToken(TYPE_ATTR_VALUE, unq(name));
+      if (tagChars.getPrev() === QUOTEMARK) {
+        prevCol++;
+      }
 
       if (tagChars.isLast()) {
         return TAG_STATE_NAME;
@@ -169,13 +175,15 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       return TAG_STATE_ATTR;
     }
 
+    const start = masterStartPos + tagChars.getPos() - 1;
     const validName = (char: string) => !(char === EQ || isWhiteSpace(char) || tagChars.isLast());
     const name = tagChars.grabWhile(validName);
 
-    emitToken(TYPE_TAG, name);
+    emitToken(TYPE_TAG, name, start, masterStartPos + tagChars.getLength() + 1);
     checkContextFreeMode(name);
 
     tagChars.skip();
+    prevCol++;
 
     // in cases when we has [url=someval]GET[/url] and we dont need to parse all
     if (isSingleValueTag) {
@@ -209,11 +217,13 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     const isClosingTag = substr[0] === SLASH;
 
     if (isNoAttrsInTag || isClosingTag) {
+      const startPos = chars.getPos() - 1;
       const name = chars.grabWhile((char) => char !== closeTag);
+      const endPos = startPos + name.length + END_POS_OFFSET;
 
       chars.skip(); // skip closeTag
 
-      emitToken(TYPE_TAG, name);
+      emitToken(TYPE_TAG, name, startPos, endPos);
       checkContextFreeMode(name, isClosingTag);
 
       return STATE_WORD;
@@ -223,6 +233,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   }
 
   function stateAttrs() {
+    const startPos = chars.getPos();
     const silent = true;
     const tagStr = chars.grabWhile((char) => char !== closeTag, silent);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
@@ -231,7 +242,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     tagMode = TAG_STATE_NAME;
 
     while (tagGrabber.hasNext()) {
-      tagMode = nextTagState(tagGrabber, !hasSpace);
+      tagMode = nextTagState(tagGrabber, !hasSpace, startPos);
     }
 
     chars.skip(); // skip closeTag
@@ -246,6 +257,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       chars.skip();
 
       col = 0;
+      prevCol = 0;
       row++;
 
       return STATE_WORD;
@@ -276,6 +288,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       emitToken(TYPE_WORD, chars.getCurr());
 
       chars.skip();
+      prevCol++;
 
       return STATE_WORD;
     }
@@ -345,7 +358,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     if (nestedMap.has(value)) {
       return !!nestedMap.get(value);
     } else {
-      const status = (buffer.indexOf(value) > -1)
+      const status = (buffer.indexOf(value) > -1);
 
       nestedMap.set(value, status);
 
@@ -356,5 +369,5 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   return {
     tokenize,
     isTokenNested,
-  }
+  };
 }

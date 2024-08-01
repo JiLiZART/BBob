@@ -42,6 +42,14 @@ export class CharGrabber {
     return this.s[this.c.pos]
   }
 
+  getPos() {
+    return this.c.pos;
+  }
+
+  getLength() {
+    return this.c.len;
+  }
+
   getRest() {
     return this.s.substring(this.c.pos)
   }
