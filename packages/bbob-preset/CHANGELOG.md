@@ -1,5 +1,17 @@
 # Change Log
 
+## 4.1.0
+
+### Minor Changes
+
+- [#246](https://github.com/JiLiZART/BBob/pull/246) [`4084874`](https://github.com/JiLiZART/BBob/commit/40848747d4c52a3752ff3803f7643072e916631e) Thanks [@Alteras1](https://github.com/Alteras1)! - feat: Add start and end positions of tag nodes
+
+### Patch Changes
+
+- Updated dependencies [[`4084874`](https://github.com/JiLiZART/BBob/commit/40848747d4c52a3752ff3803f7643072e916631e)]:
+  - @bbob/plugin-helper@4.1.0
+  - @bbob/types@4.1.0
+
 ## 4.0.3
 
 ### Patch Changes
