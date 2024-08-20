@@ -34,11 +34,4 @@ const Component = ({
   content(children, plugins, options),
 );
 
-Component.defaultProps = {
-  container: 'span',
-  plugins: [],
-  options: {},
-  componentProps: {},
-};
-
 export default Component;
