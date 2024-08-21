@@ -1,5 +1,17 @@
 # Change Log
 
+## 4.1.1
+
+### Patch Changes
+
+- [#248](https://github.com/JiLiZART/BBob/pull/248) [`27c8c4b`](https://github.com/JiLiZART/BBob/commit/27c8c4b869bc0e26905e1b4555036ac65baaa1c6) Thanks [@GetPastTheMonkey](https://github.com/GetPastTheMonkey)! - Removed `defaultProps` and
+  Warning for deprecated defaultProps
+- Updated dependencies [[`27c8c4b`](https://github.com/JiLiZART/BBob/commit/27c8c4b869bc0e26905e1b4555036ac65baaa1c6)]:
+  - @bbob/core@4.1.1
+  - @bbob/html@4.1.1
+  - @bbob/plugin-helper@4.1.1
+  - @bbob/types@4.1.1
+
 ## 4.1.0
 
 ### Minor Changes
