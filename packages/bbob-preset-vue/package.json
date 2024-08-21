@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset-vue",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "Vue preset to transform BBCode to Vue for @bbob/vue*",
   "keywords": [
     "bbob",

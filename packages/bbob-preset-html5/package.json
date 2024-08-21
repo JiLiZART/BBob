@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset-html5",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "HTML5 preset to transform BBCode to HTML for @bbob/parser",
   "keywords": [
     "preset",
