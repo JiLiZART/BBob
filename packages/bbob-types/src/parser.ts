@@ -31,6 +31,7 @@ export interface LexerOptions {
   closeTag?: string;
   onlyAllowTags?: string[];
   enableEscapeTags?: boolean;
+  caseSensitiveTags?: boolean;
   contextFreeTags?: string[];
   onToken?: (token?: Token<string>) => void;
 }
