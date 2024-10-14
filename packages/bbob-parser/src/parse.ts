@@ -52,7 +52,7 @@ function parse(input: string, opts: ParseOptions = {}) {
   const onlyAllowTags = (options.onlyAllowTags || [])
     .filter(Boolean)
     .map((tag) => tag.toLowerCase());
-  const caseSensitiveTags = options.caseSensitiveTags || true;
+  const caseSensitiveTags = options.caseFreeTags || false;
 
   let tokenizer: LexerTokenizer | null = null;
 

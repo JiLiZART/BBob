@@ -20,8 +20,7 @@
     "cleanup": "node scripts/cleanup"
   },
   "author": {
-    "name": "Nikolay Kostyurin <jilizart@gmail.com>",
-    "url": "https://artkost.ru/"
+    "name": "Nikolay Kostyurin <jilizart@gmail.com>"
   },
   "license": "MIT",
   "devDependencies": {

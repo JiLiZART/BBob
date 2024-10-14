@@ -26,22 +26,20 @@ export interface LexerTokenizer {
   isTokenNested?: (token: Token<string>) => boolean;
 }
 
-export interface LexerOptions {
+export interface CommonOptions {
   openTag?: string;
   closeTag?: string;
   onlyAllowTags?: string[];
   enableEscapeTags?: boolean;
-  caseSensitiveTags?: boolean;
+  caseFreeTags?: boolean;
   contextFreeTags?: string[];
+}
+
+export interface LexerOptions extends CommonOptions {
   onToken?: (token?: Token<string>) => void;
 }
 
-export interface ParseOptions {
+export interface ParseOptions extends CommonOptions {
   createTokenizer?: (input: string, options?: LexerOptions) => LexerTokenizer;
-  openTag?: string;
-  closeTag?: string;
-  onlyAllowTags?: string[];
-  contextFreeTags?: string[];
-  enableEscapeTags?: boolean;
   onError?: (error: ParseError) => void;
 }

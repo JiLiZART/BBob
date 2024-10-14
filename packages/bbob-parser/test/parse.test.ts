@@ -275,9 +275,9 @@ describe('Parser', () => {
       expectOutput(ast, output);
     });
 
-    test('case sensitive tags', () => {
+    test('case free tags', () => {
       const ast = parse('[h1 name=value]Foo[/H1]', {
-        caseSensitiveTags: false
+        caseFreeTags: true
       });
       const output = [
         {
