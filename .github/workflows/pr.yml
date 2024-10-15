@@ -30,7 +30,7 @@ jobs:
       - name: Set SHA
         id: sha
         run: |
-          SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")
+          SHORT_SHA=$(git rev-parse --short "${{ github.event.pull_request.head.sha }}")
           echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
 
       - name: Install pnpm
