@@ -38,7 +38,7 @@ jobs:
         run: pnpm run lint
 
       - name: Install coverage
-        run: pnpm install --global codecov
+        run: pnpm install --global codecov@latest
 
       - name: Run the coverage
         run: pnpm run cover
