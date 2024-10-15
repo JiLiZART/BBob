@@ -44,4 +44,4 @@ jobs:
         run: pnpm run cover
 
       - name: Run the coverage
-        run: codecov
+        run: codecov --disable=gcov
