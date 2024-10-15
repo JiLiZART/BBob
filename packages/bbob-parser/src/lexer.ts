@@ -51,13 +51,14 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   let stateMode = STATE_WORD;
   let tagMode = TAG_STATE_NAME;
   let contextFreeTag = '';
-  const tokens = new Array<Token<string>>(Math.floor(buffer.length));
+  const tokens = new Array<Token>(Math.floor(buffer.length));
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
   const escapeTags = !!options.enableEscapeTags;
   const contextFreeTags = (options.contextFreeTags || [])
     .filter(Boolean)
     .map((tag) => tag.toLowerCase());
+  const caseFreeTags = options.caseFreeTags || false;
   const nestedMap = new Map<string, boolean>();
   const onToken = options.onToken || (() => {
   });
@@ -88,8 +89,6 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
   /**
    * Emits newly created token to subscriber
-   * @param {Number} type
-   * @param {String} value
    */
   function emitToken(type: number, value: string, startPos?: number, endPos?: number) {
     const token = createTokenOfType(type, value, row, prevCol, startPos, endPos);
@@ -352,13 +351,13 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     return tokens;
   }
 
-  function isTokenNested(token: Token) {
-    const value = openTag + SLASH + token.getValue();
+  function isTokenNested(tokenValue: string) {
+    const value = openTag + SLASH + tokenValue;
 
     if (nestedMap.has(value)) {
       return !!nestedMap.get(value);
     } else {
-      const status = (buffer.indexOf(value) > -1);
+      const status = caseFreeTags ? (buffer.toLowerCase().indexOf(value.toLowerCase()) > -1) : (buffer.indexOf(value) > -1);
 
       nestedMap.set(value, status);
 

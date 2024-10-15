@@ -52,9 +52,9 @@ function parse(input: string, opts: ParseOptions = {}) {
   const onlyAllowTags = (options.onlyAllowTags || [])
     .filter(Boolean)
     .map((tag) => tag.toLowerCase());
-  const caseSensitiveTags = options.caseFreeTags || false;
+  const caseFreeTags = options.caseFreeTags || false;
 
-  let tokenizer: LexerTokenizer | null = null;
+  let tokenizer: ReturnType<typeof createLexer> | null = null;
 
   /**
    * Result AST of nodes
@@ -86,10 +86,11 @@ function parse(input: string, opts: ParseOptions = {}) {
   const nestedTagsMap = new Set<string>();
 
   function isTokenNested(token: Token) {
-    const value = token.getValue();
+    const tokenValue = token.getValue();
+    const value = caseFreeTags ? tokenValue.toLowerCase() : tokenValue;
     const { isTokenNested } = tokenizer || {};
 
-    if (!nestedTagsMap.has(value) && isTokenNested && isTokenNested(token)) {
+    if (!nestedTagsMap.has(value) && isTokenNested && isTokenNested(value)) {
       nestedTagsMap.add(value);
 
       return true;
@@ -102,7 +103,7 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @private
    */
   function isTagNested(tagName: string) {
-    return Boolean(nestedTagsMap.has(tagName));
+    return Boolean(nestedTagsMap.has(caseFreeTags ? tagName.toLowerCase() : tagName));
   }
 
   /**
@@ -204,17 +205,23 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @param {Token} token
    */
   function handleTagEnd(token: Token) {
-    const lastTagNode = nestedNodes.last();
-    if (isTagNode(lastTagNode)) {
-      lastTagNode.setEnd({ from: token.getStart(), to: token.getEnd() });
-    }
-    flushTagNodes();
-
+    const tagName = token.getValue().slice(1);
     const lastNestedNode = nestedNodes.flush();
+
+    flushTagNodes();
 
     if (lastNestedNode) {
       const nodes = getNodes();
+
+      if (isTagNode(lastNestedNode)) {
+        lastNestedNode.setEnd({ from: token.getStart(), to: token.getEnd() });
+      }
+
       appendNodes(nodes, lastNestedNode);
+    } else if (!isTagNested(tagName)) { // when we have only close tag [/some] without any open tag
+      const nodes = getNodes();
+
+      appendNodes(nodes, token.toString({ openTag, closeTag }));
     } else if (typeof options.onError === "function") {
       const tag = token.getValue();
       const line = token.getLine();
@@ -282,13 +289,13 @@ function parse(input: string, opts: ParseOptions = {}) {
         }
       } else if (token.isTag()) {
         // if tag is not allowed, just pass it as is
-        appendNodes(nodes, token.toString());
+        appendNodes(nodes, token.toString({ openTag, closeTag }));
       }
     } else if (token.isText()) {
       appendNodes(nodes, tokenValue);
     } else if (token.isTag()) {
       // if tag is not allowed, just pass it as is
-      appendNodes(nodes, token.toString());
+      appendNodes(nodes, token.toString({ openTag, closeTag }));
     }
   }
 
@@ -312,6 +319,7 @@ function parse(input: string, opts: ParseOptions = {}) {
     closeTag,
     onlyAllowTags: options.onlyAllowTags,
     contextFreeTags: options.contextFreeTags,
+    caseFreeTags: options.caseFreeTags,
     enableEscapeTags: options.enableEscapeTags,
   });
 

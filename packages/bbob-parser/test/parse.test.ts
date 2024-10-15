@@ -247,10 +247,10 @@ describe('Parser', () => {
     });
   });
 
-  describe('caseSensetiveTags', () => {
-    test('case insensitive tags', () => {
+  describe('caseFreeTags', () => {
+    test('default case tags', () => {
       const ast = parse('[h1 name=value]Foo[/H1]', {
-        caseSensitiveTags: true
+        caseFreeTags: false
       });
       const output = [
         {
@@ -262,11 +262,7 @@ describe('Parser', () => {
           start: {
             from: 0,
             to: 15,
-          },
-          end: {
-            from: 25,
-            to: 30,
-          },
+          }
         },
         "Foo",
         "[/H1]"
@@ -293,8 +289,8 @@ describe('Parser', () => {
             to: 15,
           },
           end: {
-            from: 25,
-            to: 32,
+            from: 18,
+            to: 23,
           },
         }
       ];
@@ -330,6 +326,15 @@ describe('Parser', () => {
       },
       ' ',
       '/h1]',
+    ];
+
+    expectOutput(ast, output);
+  });
+
+  test('parse closed tag', () => {
+    const ast = parse('[/h1]');
+    const output = [
+      '[/h1]',
     ];
 
     expectOutput(ast, output);

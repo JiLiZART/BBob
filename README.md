@@ -230,6 +230,28 @@ const processed = bbobHTML(`[b]Text[/b]'\\[b\\]Text\\[/b\\]'`, presetHTML5(), { 
 console.log(processed); // <span style="font-weight: bold;">Text</span>[b]Text[/b]
 ```
 
+#### caseFreeTags
+
+Allows to parse case insensitive tags like `[h1]some[/H1]` -> `<h1>some</h1>`
+
+```js
+import bbobHTML from '@bbob/html'
+import presetHTML5 from '@bbob/preset-html5'
+
+const processed = bbobHTML(`[h1]some[/H1]`, presetHTML5(), { caseFreeTags: true })
+
+console.log(processed); // <h1>some</h1>
+```
+
+```js
+import bbobHTML from '@bbob/html'
+import presetHTML5 from '@bbob/preset-html5'
+
+const processed = bbobHTML(`[b]Text[/b]'\\[b\\]Text\\[/b\\]'`, presetHTML5(), { enableEscapeTags: true })
+
+console.log(processed); // <span style="font-weight: bold;">Text</span>[b]Text[/b]
+```
+
 
 ### Presets <a name="basic"></a>
 

@@ -23,7 +23,7 @@ export interface Token<TokenValue = string> {
 
 export interface LexerTokenizer {
   tokenize: () => Token<string>[];
-  isTokenNested?: (token: Token<string>) => boolean;
+  isTokenNested?: (tokenValue: string) => boolean;
 }
 
 export interface CommonOptions {

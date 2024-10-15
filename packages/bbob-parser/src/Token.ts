@@ -81,11 +81,11 @@ const getTagName = (token: Token) => {
   return isTagEnd(token) ? value.slice(1) : value;
 };
 
-const tokenToText = (token: Token) => {
-  let text = OPEN_BRAKET;
+const tokenToText = (token: Token, openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET) => {
+  let text = openTag;
 
   text += getTokenValue(token);
-  text += CLOSE_BRAKET;
+  text += closeTag;
 
   return text;
 };
@@ -167,8 +167,8 @@ class Token<TokenValue = string> implements TokenInterface {
     return getEndPosition(this);
   }
 
-  toString() {
-    return tokenToText(this);
+  toString({ openTag = OPEN_BRAKET, closeTag = CLOSE_BRAKET } = {}) {
+    return tokenToText(this, openTag, closeTag);
   }
 }
 
