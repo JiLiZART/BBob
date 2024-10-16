@@ -8,9 +8,9 @@ written in pure javascript, no dependencies
 
 [![Tests](https://github.com/JiLiZART/BBob/actions/workflows/test.yml/badge.svg)](https://github.com/JiLiZART/BBob/actions/workflows/test.yml)
 [![Benchmark](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml/badge.svg)](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml)
-<a href="https://codecov.io/gh/JiLiZART/bbob">
-  <img src="https://codecov.io/gh/JiLiZART/bbob/branch/master/graph/badge.svg" alt="codecov">
-</a> 
+<a href='https://coveralls.io/github/JiLiZART/BBob?branch=master'>
+    <img src='https://coveralls.io/repos/github/JiLiZART/BBob/badge.svg?branch=master' alt='Coverage Status' />
+</a>
 <a href="https://www.codefactor.io/repository/github/jilizart/bbob">
   <img src="https://www.codefactor.io/repository/github/jilizart/bbob/badge" alt="CodeFactor">
 </a>

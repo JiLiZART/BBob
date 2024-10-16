@@ -38,3 +38,5 @@ const ast = parse('[h1]some[/H1]', {
 ```
 
 BREAKING CHANGE: `isTokenNested` function now accepts string `tokenValue` instead of `token`
+
+Changed codecov.io to coveralls.io for test coverage
