@@ -10,8 +10,7 @@
     "cpupro": "node --require cpupro benchmark.js"
   },
   "author": {
-    "name": "Nikolay Kostyurin <jilizart@gmail.com>",
-    "url": "https://artkost.ru/"
+    "name": "Nikolay Kostyurin <jilizart@gmail.com>"
   },
   "dependencies": {
     "@bbob/parser": "*",

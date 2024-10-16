@@ -247,6 +247,58 @@ describe('Parser', () => {
     });
   });
 
+  describe('caseFreeTags', () => {
+    test('default case tags', () => {
+      const ast = parse('[h1 name=value]Foo[/H1]', {
+        caseFreeTags: false
+      });
+      const output = [
+        {
+          tag: 'h1',
+          attrs: {
+            name: 'value'
+          },
+          content: [],
+          start: {
+            from: 0,
+            to: 15,
+          }
+        },
+        "Foo",
+        "[/H1]"
+      ];
+
+      expectOutput(ast, output);
+    });
+
+    test('case free tags', () => {
+      const ast = parse('[h1 name=value]Foo[/H1]', {
+        caseFreeTags: true
+      });
+      const output = [
+        {
+          tag: 'h1',
+          attrs: {
+            name: 'value'
+          },
+          content: [
+            "Foo"
+          ],
+          start: {
+            from: 0,
+            to: 15,
+          },
+          end: {
+            from: 18,
+            to: 23,
+          },
+        }
+      ];
+
+      expectOutput(ast, output);
+    });
+  })
+
   test('parse inconsistent tags', () => {
     const ast = parse('[h1 name=value]Foo [Bar] /h1]');
     const output = [
@@ -274,6 +326,15 @@ describe('Parser', () => {
       },
       ' ',
       '/h1]',
+    ];
+
+    expectOutput(ast, output);
+  });
+
+  test('parse closed tag', () => {
+    const ast = parse('[/h1]');
+    const output = [
+      '[/h1]',
     ];
 
     expectOutput(ast, output);
@@ -650,49 +711,49 @@ sdfasdfasdf
 [url=xxx]xxx[/url]`;
 
     expectOutput(
-      parse(str),
-      [
-        {
-          tag: 'quote', attrs: {}, content: ['some'],
-          start: {
-            from: 0,
-            to: 7,
+        parse(str),
+        [
+          {
+            tag: 'quote', attrs: {}, content: ['some'],
+            start: {
+              from: 0,
+              to: 7,
+            },
+            end: {
+              from: 11,
+              to: 19,
+            },
           },
-          end: {
-            from: 11,
-            to: 19,
+          {
+            tag: 'color', attrs: { red: 'red' }, content: ['test'],
+            start: {
+              from: 19,
+              to: 30,
+            },
+            end: {
+              from: 34,
+              to: 42,
+            },
           },
-        },
-        {
-          tag: 'color', attrs: { red: 'red' }, content: ['test'],
-          start: {
-            from: 19,
-            to: 30,
-          },
-          end: {
-            from: 34,
-            to: 42,
-          },
-        },
-        '\n',
-        '[quote]',
-        'xxxsdfasdf',
-        '\n',
-        'sdfasdfasdf',
-        '\n',
-        '\n',
-        {
-          tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
-          start: {
-            from: 74,
-            to: 83,
-          },
-          end: {
-            from: 86,
-            to: 92,
-          },
-        }
-      ]
+          '\n',
+          '[quote]',
+          'xxxsdfasdf',
+          '\n',
+          'sdfasdfasdf',
+          '\n',
+          '\n',
+          {
+            tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
+            start: {
+              from: 74,
+              to: 83,
+            },
+            end: {
+              from: 86,
+              to: 92,
+            },
+          }
+        ]
     );
   });
 
@@ -700,45 +761,45 @@ sdfasdfasdf
     const str = `[quote]xxxsdfasdf[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url]`;
 
     expectOutput(
-      parse(str),
-      [
-        '[quote]',
-        'xxxsdfasdf',
-        {
-          tag: 'quote', attrs: {}, content: ['some'],
-          start: {
-            from: 17,
-            to: 24,
+        parse(str),
+        [
+          '[quote]',
+          'xxxsdfasdf',
+          {
+            tag: 'quote', attrs: {}, content: ['some'],
+            start: {
+              from: 17,
+              to: 24,
+            },
+            end: {
+              from: 28,
+              to: 36,
+            },
           },
-          end: {
-            from: 28,
-            to: 36,
+          {
+            tag: 'color', attrs: { red: 'red' }, content: ['test'],
+            start: {
+              from: 36,
+              to: 47,
+            },
+            end: {
+              from: 51,
+              to: 59,
+            },
           },
-        },
-        {
-          tag: 'color', attrs: { red: 'red' }, content: ['test'],
-          start: {
-            from: 36,
-            to: 47,
-          },
-          end: {
-            from: 51,
-            to: 59,
-          },
-        },
-        'sdfasdfasdf',
-        {
-          tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
-          start: {
-            from: 70,
-            to: 79,
-          },
-          end: {
-            from: 82,
-            to: 88,
-          },
-        }
-      ]
+          'sdfasdfasdf',
+          {
+            tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
+            start: {
+              from: 70,
+              to: 79,
+            },
+            end: {
+              from: 82,
+              to: 88,
+            },
+          }
+        ]
     );
   });
 
@@ -746,45 +807,45 @@ sdfasdfasdf
     const str = `[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url][quote]xxxsdfasdf`;
 
     expectOutput(
-      parse(str),
-      [
-        {
-          tag: 'quote', attrs: {}, content: ['some'],
-          start: {
-            from: 0,
-            to: 7,
+        parse(str),
+        [
+          {
+            tag: 'quote', attrs: {}, content: ['some'],
+            start: {
+              from: 0,
+              to: 7,
+            },
+            end: {
+              from: 11,
+              to: 19,
+            },
           },
-          end: {
-            from: 11,
-            to: 19,
+          {
+            tag: 'color', attrs: { red: 'red' }, content: ['test'],
+            start: {
+              from: 19,
+              to: 30,
+            },
+            end: {
+              from: 34,
+              to: 42,
+            },
           },
-        },
-        {
-          tag: 'color', attrs: { red: 'red' }, content: ['test'],
-          start: {
-            from: 19,
-            to: 30,
+          'sdfasdfasdf',
+          {
+            tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
+            start: {
+              from: 53,
+              to: 62,
+            },
+            end: {
+              from: 65,
+              to: 71,
+            },
           },
-          end: {
-            from: 34,
-            to: 42,
-          },
-        },
-        'sdfasdfasdf',
-        {
-          tag: 'url', attrs: { xxx: 'xxx' }, content: ['xxx'],
-          start: {
-            from: 53,
-            to: 62,
-          },
-          end: {
-            from: 65,
-            to: 71,
-          },
-        },
-        '[quote]',
-        'xxxsdfasdf',
-      ]
+          '[quote]',
+          'xxxsdfasdf',
+        ]
     );
   });
 

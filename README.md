@@ -8,9 +8,9 @@ written in pure javascript, no dependencies
 
 [![Tests](https://github.com/JiLiZART/BBob/actions/workflows/test.yml/badge.svg)](https://github.com/JiLiZART/BBob/actions/workflows/test.yml)
 [![Benchmark](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml/badge.svg)](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml)
-<a href="https://codecov.io/gh/JiLiZART/bbob">
-  <img src="https://codecov.io/gh/JiLiZART/bbob/branch/master/graph/badge.svg" alt="codecov">
-</a> 
+<a href='https://coveralls.io/github/JiLiZART/BBob?branch=master'>
+    <img src='https://coveralls.io/repos/github/JiLiZART/BBob/badge.svg?branch=master' alt='Coverage Status' />
+</a>
 <a href="https://www.codefactor.io/repository/github/jilizart/bbob">
   <img src="https://www.codefactor.io/repository/github/jilizart/bbob/badge" alt="CodeFactor">
 </a>
@@ -220,6 +220,28 @@ console.log(processed); // <span style="font-weight: bold;">Text</span><pre>[b]T
 #### enableEscapeTags
 
 Enable escape support for tags
+
+```js
+import bbobHTML from '@bbob/html'
+import presetHTML5 from '@bbob/preset-html5'
+
+const processed = bbobHTML(`[b]Text[/b]'\\[b\\]Text\\[/b\\]'`, presetHTML5(), { enableEscapeTags: true })
+
+console.log(processed); // <span style="font-weight: bold;">Text</span>[b]Text[/b]
+```
+
+#### caseFreeTags
+
+Allows to parse case insensitive tags like `[h1]some[/H1]` -> `<h1>some</h1>`
+
+```js
+import bbobHTML from '@bbob/html'
+import presetHTML5 from '@bbob/preset-html5'
+
+const processed = bbobHTML(`[h1]some[/H1]`, presetHTML5(), { caseFreeTags: true })
+
+console.log(processed); // <h1>some</h1>
+```
 
 ```js
 import bbobHTML from '@bbob/html'
