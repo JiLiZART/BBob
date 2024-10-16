@@ -1,9 +1,16 @@
 name: Pull Request
 on:
+#  workflow_run:
+#    workflows:
+#      - Tests
+#      - Benchmark
+#    types:
+#      - completed
   pull_request:
     paths-ignore:
       - '.changeset/**'
       - '.husky/**'
+  workflow_dispatch:
 
 concurrency:
   group: ci-pull-request=${{github.ref}}-1
