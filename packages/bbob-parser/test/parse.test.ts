@@ -859,10 +859,10 @@ sdfasdfasdf
         content: ['https://tw.greywool.com/i/e3Ph5.png'],
         start: {
           from: 0,
-          to: 38,
+          to: 5,
         },
         end: {
-          from: 38,
+          from: 40,
           to: 46,
         },
       },
