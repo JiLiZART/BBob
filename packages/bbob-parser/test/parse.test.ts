@@ -849,6 +849,26 @@ sdfasdfasdf
     );
   });
 
+  test('parse with url in tag content', () => {
+    const input = parse('[img]https://tw.greywool.com/i/e3Ph5.png[/img]');
+
+    expectOutput(input, [
+      {
+        tag: 'img',
+        attrs: {},
+        content: ['https://tw.greywool.com/i/e3Ph5.png'],
+        start: {
+          from: 0,
+          to: 5,
+        },
+        end: {
+          from: 40,
+          to: 46,
+        },
+      },
+    ]);
+  });
+
   describe('html', () => {
     const parseHTML = (input: string) => parse(input, { openTag: '<', closeTag: '>' });
 

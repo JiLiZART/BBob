@@ -55,6 +55,13 @@ describe('@bbob/preset-html5', () => {
     expect(parse(input)).toBe(result);
   });
 
+  test('[img]https://tw.greywool.com/i/e3Ph5.png[/img]', () => {
+    const input = '[img]https://tw.greywool.com/i/e3Ph5.png[/img]';
+    const result = '<img src="https://tw.greywool.com/i/e3Ph5.png"/>';
+
+    expect(parse(input)).toBe(result);
+  });
+
   test('[quote="author"]quoted text[/quote]', () => {
     const input = '[quote="author"]quoted text[/quote]';
     const result = '<blockquote><p>quoted text</p></blockquote>';
