@@ -37,11 +37,8 @@ jobs:
       - name: Run the lint
         run: pnpm run lint
 
-      - name: Install coverage
-        run: pnpm install --global codecov@latest
-
       - name: Run the coverage
         run: pnpm run cover
 
-      - name: Run the coverage
-        run: codecov --disable=gcov
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
