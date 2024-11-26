@@ -1,5 +1,48 @@
 # Change Log
 
+## 4.2.0
+
+### Minor Changes
+
+- [#251](https://github.com/JiLiZART/BBob/pull/251) [`ccab54a`](https://github.com/JiLiZART/BBob/commit/ccab54a4547b67d0ea61644e36ca57fdbe8c6491) Thanks [@JiLiZART](https://github.com/JiLiZART)! - New option flag `caseFreeTags` has been added
+
+  This flag allows to parse case insensitive tags like `[h1]some[/H1]` -> `<h1>some</h1>`
+
+  ```js
+  import html from "@bbob/html";
+  import presetHTML5 from "@bbob/preset-html5";
+
+  const processed = html(`[h1]some[/H1]`, presetHTML5(), {
+    caseFreeTags: true,
+  });
+
+  console.log(processed); // <h1>some</h1>
+  ```
+
+  Also now you can pass `caseFreeTags` to `parse` function
+
+  ```js
+  import { parse } from "@bbob/parser";
+
+  const ast = parse("[h1]some[/H1]", {
+    caseFreeTags: true,
+  });
+  ```
+
+  BREAKING CHANGE: `isTokenNested` function now accepts string `tokenValue` instead of `token`
+
+  Changed codecov.io to coveralls.io for test coverage
+
+### Patch Changes
+
+- [#267](https://github.com/JiLiZART/BBob/pull/267) [`8a9cfd6`](https://github.com/JiLiZART/BBob/commit/8a9cfd67c0f1a9fe6cc8cd74b68b7cdf3d393841) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Fix types for BbobCoreOptions
+
+- Updated dependencies [[`ccab54a`](https://github.com/JiLiZART/BBob/commit/ccab54a4547b67d0ea61644e36ca57fdbe8c6491), [`8a9cfd6`](https://github.com/JiLiZART/BBob/commit/8a9cfd67c0f1a9fe6cc8cd74b68b7cdf3d393841)]:
+  - @bbob/types@4.2.0
+  - @bbob/core@4.2.0
+  - @bbob/html@4.2.0
+  - @bbob/plugin-helper@4.2.0
+
 ## 4.1.1
 
 ### Patch Changes
