@@ -1,6 +1,6 @@
 {
   "name": "@bbob/parser",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "description": "A BBCode to AST Parser part of @bbob",
   "keywords": [
     "bbcode",
