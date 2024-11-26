@@ -10,8 +10,12 @@ import { render } from '@testing-library/react'
 
 import BBCode from '../src';
 
-const renderBBCode = (input, options) => render(
-    <BBCode plugins={[preset()]} options={options}>{input}</BBCode>
+import type { BBobCoreOptions } from "@bbob/types";
+
+const plugins = [preset()]
+
+const renderBBCode = (input: string, options?: BBobCoreOptions) => render(
+    <BBCode plugins={plugins} options={options}>{input}</BBCode>
 ).container.innerHTML;
 
 describe('@bbob/react', () => {
