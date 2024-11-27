@@ -10,17 +10,17 @@
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
   },
   "dependencies": {
-    "@bbob/preset-html5": "*",
     "@bbob/html": "*",
+    "@bbob/preset-html5": "*",
     "@bbob/types": "*"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "@tsconfig/svelte": "^5.0.4",
-    "svelte": "^4.2.18",
-    "svelte-check": "^3.8.1",
-    "tslib": "^2.6.3",
-    "typescript": "^5.2.2",
-    "vite": "^5.3.1"
+    "svelte": "^5.2.8",
+    "svelte-check": "^4.1.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0"
   }
 }
