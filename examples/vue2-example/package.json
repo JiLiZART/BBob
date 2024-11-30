@@ -10,7 +10,7 @@
     "@bbob/preset-vue": "*",
     "@bbob/vue2": "*",
     "core-js": "3.26.1",
-    "vue": "2.7.16"
+    "vue": "3.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "5.0.8",
