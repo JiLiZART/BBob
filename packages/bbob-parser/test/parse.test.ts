@@ -869,6 +869,26 @@ sdfasdfasdf
     ]);
   });
 
+  test('parse invalid tags', () => {
+    const input = parse('[b]Press Release[/b] [statement redacted] [i]This is more content[/i]')
+
+    expectOutput(input, [
+      {
+        tag: 'b',
+        attrs: {},
+        content: ['Press Release'],
+      },
+      ' ',
+      '[statement redacted]',
+      ' ',
+      {
+        tag: 'i',
+        attrs: {},
+        content: ['This is more content'],
+      },
+    ]);
+  })
+
   describe('html', () => {
     const parseHTML = (input: string) => parse(input, { openTag: '<', closeTag: '>' });
 
