@@ -7,7 +7,7 @@ const CLOSE_START_TAG = '</';
 const START_TAG = '<';
 const END_TAG = '>';
 
-interface BBobHTMLOptions extends BBobCoreOptions {
+export interface BBobHTMLOptions extends BBobCoreOptions {
   stripTags?: boolean
 }
 

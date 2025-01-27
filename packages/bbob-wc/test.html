@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bbob Web Component</title>
+</head>
+<body>
+
+<script type="module" src="dist/index.js"></script>
+<script type="module">
+    function testPlugin(...args) {
+        console.log(...args)
+        debugger
+    }
+</script>
+
+<bb-code html5 plugins="['testPlugin']">
+    simple text
+    [b]bolded text[/b]
+    [i]italicized text[/i]
+</bb-code>
+    
+</body>
+</html>

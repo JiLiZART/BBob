@@ -1,5 +1,8 @@
-import html, { BBobHTMLOptions } from '@bbob/html';
+import html from '@bbob/html';
 import html5Preset from '@bbob/preset-html5';
+
+import type { BBobHTMLOptions } from '@bbob/html';
+import type { BBobPluginFunction } from '@bbob/types';
 
 export class BBCodeElement extends HTMLElement {
   static get observedAttributes() {
@@ -7,8 +10,9 @@ export class BBCodeElement extends HTMLElement {
   }
 
   private _useHTML5 = false;
-  private _plugins: any[] = [];
-  private _options: Record<string, any> = {};
+  private _plugins: string[] = [];
+  private _options: BBobHTMLOptions = {};
+  private _tag = 'div';
 
   constructor() {
     super();
@@ -27,6 +31,7 @@ export class BBCodeElement extends HTMLElement {
         this._options = JSON.parse(newValue || '{}');
         break;
     }
+
     this.render();
   }
 
@@ -34,21 +39,21 @@ export class BBCodeElement extends HTMLElement {
     this.render();
   }
 
-  render() {
-    const content = this.textContent || '';
-    
-    const plugins = this._useHTML5 ? [...this._plugins, html5Preset] : this._plugins;
+  get plugins(): BBobPluginFunction[] {
+    return this._plugins.map((plugin) => {
+      return require(plugin);
+    });
+  }
 
-    const parsedContent = html(content, plugins, this._options);
-    
+  render() {
     if (this.shadowRoot) {
-      this.shadowRoot.innerHTML = parsedContent;
+      const content = this.textContent || '';
+    
+      const plugins = this._useHTML5 ? [...this.plugins, html5Preset()] : this.plugins;
+
+      this.shadowRoot.innerHTML = html(content, plugins, this._options);
     }
   }
-}
-
-if (typeof customElements !== 'undefined') {
-  customElements.define('bb-code', BBCodeElement);
 }
 
 export default BBCodeElement;

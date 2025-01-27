@@ -14,13 +14,13 @@
   "dependencies": {
     "@bbob/core": "*",
     "@bbob/html": "*",
-    "@bbob/preset-html5": "*",
     "@bbob/plugin-helper": "*",
+    "@bbob/preset-html5": "*",
     "@bbob/types": "*"
   },
   "devDependencies": {
     "@bbob/preset-html5": "*",
-    "@testing-library/dom": "7.0.0"
+    "@testing-library/dom": "^10.4.0"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
