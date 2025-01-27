@@ -14,16 +14,10 @@
     "@bbob/plugin-helper": "*",
     "@bbob/types": "*"
   },
-  "peerDependencies": {
-    "react": "> 15.0"
-  },
   "devDependencies": {
-    "@bbob/preset-react": "*",
+    "@bbob/preset-html5": "*",
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "13.x",
-    "react": "18.x",
-    "react-dom": "18.x",
-    "@types/react": "18.x"
+    "@testing-library/dom": "10.4.0"
   },
   "main": "lib/index.js",
   "module": "es/index.js",
