@@ -870,21 +870,38 @@ sdfasdfasdf
   });
 
   test('parse invalid tags', () => {
-    const input = parse('[b]Press Release[/b] [statement redacted] [i]This is more content[/i]')
+    const input = parse('[b]Press Release[/b] [statement redacted] [i]This is more content[/i]', {
+      whitespaceInTags: false
+    })
 
     expectOutput(input, [
       {
         tag: 'b',
         attrs: {},
-        content: ['Press Release'],
+        content: [
+          'Press',
+          ' ',
+          'Release'
+        ],
       },
       ' ',
-      '[statement redacted]',
+      '[',
+      'statement',
+      ' ',
+      'redacted]',
       ' ',
       {
         tag: 'i',
         attrs: {},
-        content: ['This is more content'],
+        content: [
+          'This',
+          ' ',
+          'is',
+          ' ',
+          'more',
+          ' ',
+          'content'
+        ],
       },
     ]);
   })

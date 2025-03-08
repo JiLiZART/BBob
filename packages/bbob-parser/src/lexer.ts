@@ -198,13 +198,19 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     const currChar = chars.getCurr();
     const nextChar = chars.getNext();
 
-    chars.skip();
+    chars.skip(); // skip openTag
 
     // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
     const substr = chars.substrUntilChar(closeTag);
-    const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
 
-    if ((nextChar && isCharReserved(nextChar)) || hasInvalidChars || chars.isLast()) {
+
+    const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
+    const isNextCharReserved = nextChar && isCharReserved(nextChar)
+    const isLastChar = chars.isLast()
+    const hasSpace = substr.indexOf(SPACE) >= 0;
+    const isSpaceRestricted = hasSpace && options.whitespaceInTags === false;
+
+    if (isNextCharReserved || hasInvalidChars || isLastChar || isSpaceRestricted) {
       emitToken(TYPE_WORD, currChar);
 
       return STATE_WORD;
