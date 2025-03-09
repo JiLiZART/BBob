@@ -99,6 +99,11 @@ describe('@bbob/plugin-helper/helpers', () => {
                 href: `JAVASCRIPT:alert('hello')`,
             })).toBe(` onclick="JAVASCRIPT%3Aalert(&#039;hello&#039;)" href="JAVASCRIPT%3Aalert(&#039;hello&#039;)"`)
         });
+        test(`file:alert("hello")`, () => {
+            expect(attrsToString({
+                href: `file:///shared/customer_info/customer-name`,
+            })).toBe(` href="file%3A///shared/customer_info/customer-name"`)
+        });
         test(`<tag>`, () => {
             expect(attrsToString({
                 onclick: `<tag>`,

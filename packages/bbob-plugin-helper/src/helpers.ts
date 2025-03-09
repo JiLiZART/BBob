@@ -54,7 +54,7 @@ function escapeAttrValue(value: string) {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;')
       // eslint-disable-next-line no-script-url
-      .replace(/(javascript|data|vbscript):/gi, '$1%3A');
+      .replace(/(javascript|data|vbscript|file):/gi, '$1%3A');
 }
 
 /**
