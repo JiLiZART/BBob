@@ -321,6 +321,7 @@ function parse(input: string, opts: ParseOptions = {}) {
     contextFreeTags: options.contextFreeTags,
     caseFreeTags: options.caseFreeTags,
     enableEscapeTags: options.enableEscapeTags,
+    whitespaceInTags: options.whitespaceInTags,
   });
 
   // eslint-disable-next-line no-unused-vars

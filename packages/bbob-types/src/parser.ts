@@ -32,6 +32,7 @@ export interface CommonOptions {
   onlyAllowTags?: string[];
   enableEscapeTags?: boolean;
   caseFreeTags?: boolean;
+  whitespaceInTags?: boolean;
   contextFreeTags?: string[];
 }
 
