@@ -63,26 +63,12 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   const onToken = options.onToken || (() => {
   });
 
-  const RESERVED_CHARS = new Map([
-    [closeTag, true],
-    [openTag, true],
-    [QUOTEMARK, true],
-    [BACKSLASH, true],
-    [SPACE, true],
-    [TAB, true],
-    [EQ, true],
-    [N, true],
-    [EM, true],
-  ]);
-  const NOT_CHAR_TOKENS = new Map([
-    [openTag, true],
-    [SPACE, true],
-    [TAB, true],
-    [N, true],
-  ]);
-
-  const isCharReserved = (char: string) => RESERVED_CHARS.has(char);
-  const isCharToken = (char: string) => !NOT_CHAR_TOKENS.has(char);
+  const RESERVED_CHARS = [closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM];
+  const NOT_CHAR_TOKENS = [
+    openTag, SPACE, TAB, N,
+  ];
+  const isCharReserved = (char: string) => (RESERVED_CHARS.indexOf(char) >= 0);
+  const isCharToken = (char: string) => (NOT_CHAR_TOKENS.indexOf(char) === -1);
   const isEscapableChar = (char: string) => (char === openTag || char === closeTag || char === BACKSLASH);
   const onSkip = () => {
     col++;
