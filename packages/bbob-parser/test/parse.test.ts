@@ -525,6 +525,28 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse url tag with brackets', () => {
+    const ast = parse('[url="https://example.com?loc[x]=1"]test[/url]');
+
+    expectOutput(ast, [
+      {
+        tag: 'url',
+        attrs: {
+          'https://example.com?loc[x]=1': 'https://example.com?loc[x]=1',
+        },
+        content: ['test'],
+        start: {
+          from: 0,
+          to: 66,
+        },
+        end: {
+          from: 69,
+          to: 75,
+        },
+      },
+    ]);
+  });
+
   test('parse triple nested tags', () => {
     const ast = parse(`this is outside [spoiler title="name with
       multiline
