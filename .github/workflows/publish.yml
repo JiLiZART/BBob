@@ -7,6 +7,12 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: read
+  deployments: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
