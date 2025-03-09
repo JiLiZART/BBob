@@ -1,5 +1,24 @@
 # @bbob/types
 
+## 4.3.0
+
+### Minor Changes
+
+- [#280](https://github.com/JiLiZART/BBob/pull/280) [`9a69869`](https://github.com/JiLiZART/BBob/commit/9a6986965e986f8ea1f3217439ee639733a72e01) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Now all file protocol urls will be escaped like `file://some/path/to/file` will be converted to `file%3A//some/path/to/file`
+
+- [#272](https://github.com/JiLiZART/BBob/pull/272) [`0566241`](https://github.com/JiLiZART/BBob/commit/0566241e2315cae0879ecb3ab467c83e99f0cc49) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Added `whitespaceInTags` parsing option (true by default) with this option you can disable parsing `[tags with spaces]` it will be considered as text
+
+  ```js
+  import html5 from "@bbob/preset-html5";
+  import parse from "@bbob/html";
+
+  const html = parse("[b]lorem[/b] [foo bar] [i]ipsum[/i]", html5(), {
+    whitespaceInTags: false,
+  });
+
+  console.log(html); // <b>lorem </b> [foo bar] <i>ipsum</i>
+  ```
+
 ## 4.2.0
 
 ### Minor Changes
