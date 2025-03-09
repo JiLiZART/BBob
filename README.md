@@ -3,8 +3,10 @@
   <img alt="BBob a BBCode processor" src="https://github.com/JiLiZART/bbob/blob/master/.github/logo.png?raw=true" />
 </p>
 
+<p align="center">
 BBob is a tool to parse and transform [BBCode](https://en.wikipedia.org/wiki/BBCode)
 written in pure javascript, no dependencies
+</p>
 
 [![Tests](https://github.com/JiLiZART/BBob/actions/workflows/test.yml/badge.svg)](https://github.com/JiLiZART/BBob/actions/workflows/test.yml)
 [![Benchmark](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml/badge.svg)](https://github.com/JiLiZART/BBob/actions/workflows/benchmark.yml)
