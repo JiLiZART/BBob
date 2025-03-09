@@ -40,6 +40,14 @@ jobs:
           RELEASE_VER=$(pnpm changeset status --output=./release.json && node scripts/ci/release-version.js | tail -n 1)
           echo "version=${RELEASE_VER}" >> $GITHUB_OUTPUT
 
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
