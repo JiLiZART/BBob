@@ -107,6 +107,7 @@ export const defaultTags = (function createTags() {
         toNode(
             "img",
             {
+              ...node.attrs,
               src: render(node.content),
             },
             null

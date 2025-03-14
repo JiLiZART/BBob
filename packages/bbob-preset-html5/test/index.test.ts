@@ -62,6 +62,13 @@ describe('@bbob/preset-html5', () => {
     expect(parse(input)).toBe(result);
   });
 
+  test('[img width="100" height="50" alt="Lubeck city gate" title="This is one of the medieval city gates of Lubeck"]https://www.bbcode.org/images/lubeck_small.jpg[/img]', () => {
+    const input = '[img width="100" height="50" alt="Lubeck city gate" title="This is one of the medieval city gates of Lubeck"]https://www.bbcode.org/images/lubeck_small.jpg[/img]';
+    const result = '<img width="100" height="50" alt="Lubeck city gate" title="This is one of the medieval city gates of Lubeck" src="https://www.bbcode.org/images/lubeck_small.jpg"/>';
+
+    expect(parse(input)).toBe(result);
+  });
+
   test('[quote="author"]quoted text[/quote]', () => {
     const input = '[quote="author"]quoted text[/quote]';
     const result = '<blockquote><p>quoted text</p></blockquote>';
