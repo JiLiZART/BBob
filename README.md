@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img alt="BBob a BBCode processor" src="https://github.com/JiLiZART/bbob/blob/master/.github/logo.png?raw=true" />
+  <img alt="BBob a BBCode processor" src="https://github.com/JiLiZART/bbob/blob/master/.github/card.png?raw=true" />
 </p>
 
 <p align="center">
