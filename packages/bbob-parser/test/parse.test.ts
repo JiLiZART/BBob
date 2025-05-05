@@ -4,7 +4,15 @@ import type { TagNode, TagNodeTree } from "@bbob/types";
 describe('Parser', () => {
   const expectOutput = (ast: TagNodeTree, output: Partial<TagNodeTree>) => {
     expect(ast).toBeInstanceOf(Array);
-    expect(ast).toMatchObject(output as {} | TagNode[]);
+    const mappedAst = Array.isArray(ast) ? ast.map(item => {
+      if (typeof item === 'object' && typeof item.toJSON === 'function') {
+        return item.toJSON()
+      }
+
+      return item
+
+    }) : ast
+    expect(mappedAst).toMatchObject(output as {} | TagNode[]);
   };
 
   test('parse paired tags tokens', () => {
@@ -245,6 +253,25 @@ describe('Parser', () => {
 
       expectOutput(ast, output);
     });
+
+    test('nesting similar free tags [code][codeButton]text[/codeButton][code]', () => {
+      const ast = parse('[code][codeButton]text[/codeButton][code]');
+      const output = [
+        {
+          tag: 'code',
+          attrs: {},
+          content: [
+            '[',
+            'codeButton]',
+            'text',
+            '[',
+            '/codeButton]'
+          ]
+        }
+      ];
+
+      expectOutput(ast, output);
+    })
   });
 
   describe('caseFreeTags', () => {

@@ -122,6 +122,16 @@ export class TagNode<TagValue extends any = any> implements TagNodeObject {
     return `${tagStart}${content}${this.toTagEnd({ openTag, closeTag })}`;
   }
 
+  toJSON() {
+    return {
+      tag: this.tag,
+      attrs: this.attrs,
+      content: this.content,
+      start: this.start,
+      end: this.end,
+    };
+  }
+
   static create(tag: string, attrs: Record<string, unknown> = {}, content: TagNodeTree = null, start?: TagPosition) {
     const node = new TagNode(tag, attrs, content);
     if (start) {
