@@ -527,6 +527,8 @@ describe('Parser', () => {
 
   test('parse url tag with fakeUnique', () => {
     const ast = parse('[url=https://example.org/ fakeUnique=fakeUnique]T[/url]');
+    const ast2 = parse('[url]T[/url]');
+    const ast3 = parse('[url src=some]T[/url]');
 
     expectOutput(ast, [
       {
