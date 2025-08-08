@@ -9,8 +9,8 @@ import type {
 } from "@bbob/types";
 
 import { parse } from '@bbob/parser';
-import { iterate, match } from './utils';
-import { C1, C2 } from './errors'
+import { iterate, match } from './utils.js';
+import { C1, C2 } from './errors.js'
 
 export function createTree<Options extends BBobCoreOptions = BBobCoreOptions>(tree: NodeContent[], options: Options) {
   const extendedTree = tree as BBobCoreTagNodeTree

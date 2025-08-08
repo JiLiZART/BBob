@@ -7,9 +7,9 @@ import {
   isTagNode,
 } from "@bbob/plugin-helper";
 
-import { createLexer } from "./lexer";
+import { createLexer } from "./lexer.js";
 
-import type { Token } from "./Token";
+import type { Token } from "./Token.js";
 
 class NodeList<Value> {
   private n: Value[];

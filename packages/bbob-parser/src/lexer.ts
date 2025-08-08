@@ -14,8 +14,8 @@ import type { LexerOptions, LexerTokenizer } from "@bbob/types";
 
 import {
   Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD,
-} from './Token';
-import { CharGrabber, createCharGrabber, trimChar, unquote } from './utils';
+} from './Token.js';
+import { CharGrabber, createCharGrabber, trimChar, unquote } from './utils.js';
 
 // for cases <!-- -->
 const EM = '!';

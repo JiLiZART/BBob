@@ -1,4 +1,4 @@
 export { TagNode } from '@bbob/plugin-helper';
-export { default } from './parse';
-export * from './parse';
-export * from './lexer'
+export { default } from './parse.js';
+export * from './parse.js';
+export * from './lexer.js'
