@@ -22,16 +22,21 @@
     "@bbob/core": "*"
   },
   "main": "lib/index.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
+  "module": "es/index.mjs",
+  "jsnext:main": "es/index.mjs",
   "browser": "dist/index.js",
   "browserName": "BbobPreset",
   "types": "types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
-      "import": "./es/index.js",
-      "require": "./lib/index.js",
+      "import": {
+        "types": "./types/index.d.mts",
+        "default": "./es/index.mjs"
+      },
+      "require": {
+        "types": "./types/index.d.ts",
+        "default": "./lib/index.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     }

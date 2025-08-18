@@ -1,7 +1,7 @@
 import type { NodeContent, StringNode } from "@bbob/types";
 
-import { N } from './char';
-import type { TagNode } from "./TagNode";
+import { N } from './char.js';
+import type { TagNode } from "./TagNode.js";
 
 function isTagNode(el: unknown): el is TagNode {
   return typeof el === 'object' && el !== null && 'tag' in el;

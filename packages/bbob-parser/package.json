@@ -24,44 +24,69 @@
     "@bbob/types": "*"
   },
   "main": "lib/index.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
+  "module": "es/index.mjs",
+  "jsnext:main": "es/index.mjs",
   "browser": "dist/index.js",
   "browserName": "BbobParser",
   "types": "types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
-      "import": "./es/index.js",
-      "require": "./lib/index.js",
+      "import": {
+        "types": "./types/index.d.mts",
+        "default": "./es/index.mjs"
+      },
+      "require": {
+        "types": "./types/index.d.ts",
+        "default": "./lib/index.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     },
     "./lexer": {
-      "types": "./types/lexer.d.ts",
-      "import": "./es/lexer.js",
-      "require": "./lib/lexer.js",
+      "import": {
+        "types": "./types/lexer.d.mts",
+        "default": "./es/lexer.mjs"
+      },
+      "require": {
+        "types": "./types/lexer.d.ts",
+        "default": "./lib/lexer.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     },
     "./parse": {
-      "types": "./types/parse.d.ts",
-      "import": "./es/parse.js",
-      "require": "./lib/parse.js",
+      "import": {
+        "types": "./types/parse.d.mts",
+        "default": "./es/parse.mjs"
+      },
+      "require": {
+        "types": "./types/parse.d.ts",
+        "default": "./lib/parse.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     },
     "./Token": {
-      "types": "./types/Token.d.ts",
-      "import": "./es/Token.js",
-      "require": "./lib/Token.js",
+      "import": {
+        "types": "./types/Token.d.mts",
+        "default": "./es/Token.mjs"
+      },
+      "require": {
+        "types": "./types/Token.d.ts",
+        "default": "./lib/Token.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     },
     "./utils": {
-      "types": "./types/utils.d.ts",
-      "import": "./es/utils.js",
-      "require": "./lib/utils.js",
+      "import": {
+        "types": "./types/utils.d.mts",
+        "default": "./es/utils.mjs"
+      },
+      "require": {
+        "types": "./types/utils.d.ts",
+        "default": "./lib/utils.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     }

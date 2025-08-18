@@ -14,7 +14,17 @@
     "types"
   ],
   "types": "types/index.d.ts",
-  "module": "types/index.d.ts",
+  "module": "types/index.d.mts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./types/index.d.mts"
+      },
+      "require": {
+        "types": "./types/index.d.ts"
+      }
+    }
+  },
   "homepage": "https://github.com/JiLiZART/bbob",
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
