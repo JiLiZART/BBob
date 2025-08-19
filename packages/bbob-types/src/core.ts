@@ -1,5 +1,5 @@
-import { ParseOptions } from "./parser";
-import { NodeContent, PartialNodeContent, TagNodeObject, TagNodeTree } from "./common";
+import { ParseOptions } from "./parser.js";
+import { NodeContent, PartialNodeContent, TagNodeObject, TagNodeTree } from "./common.js";
 
 export interface BBobCoreOptions<
     Data = unknown | null,

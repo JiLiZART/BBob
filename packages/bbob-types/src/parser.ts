@@ -1,4 +1,4 @@
-import { TagNodeTree, TagPosition } from "./common";
+import { TagNodeTree, TagPosition } from "./common.js";
 
 export interface ParseError {
   tagName: string;

@@ -15,8 +15,8 @@
     "types"
   ],
   "main": "lib/index.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
+  "module": "es/index.mjs",
+  "jsnext:main": "es/index.mjs",
   "browser": "dist/index.js",
   "browserName": "BbobPluginHelper",
   "types": "types/index.d.ts",
@@ -25,30 +25,50 @@
   },
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
-      "import": "./es/index.js",
-      "require": "./lib/index.js",
+      "import": {
+        "types": "./types/index.d.mts",
+        "default": "./es/index.mjs"
+      },
+      "require": {
+        "types": "./types/index.d.ts",
+        "default": "./lib/index.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     },
     "./char": {
-      "types": "./types/char.d.ts",
-      "import": "./es/char.js",
-      "require": "./lib/char.js",
+      "import": {
+        "types": "./types/char.d.mts",
+        "default": "./es/char.mjs"
+      },
+      "require": {
+        "types": "./types/char.d.ts",
+        "default": "./lib/char.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     },
     "./helpers": {
-      "types": "./types/helpers.d.ts",
-      "import": "./es/helpers.js",
-      "require": "./lib/helpers.js",
+      "import": {
+        "types": "./types/helpers.d.mts",
+        "default": "./es/helpers.mjs"
+      },
+      "require": {
+        "types": "./types/helpers.d.ts",
+        "default": "./lib/helpers.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     },
     "./TagNode": {
-      "types": "./types/TagNode.d.ts",
-      "import": "./es/TagNode.js",
-      "require": "./lib/TagNode.js",
+      "import": {
+        "types": "./types/TagNode.d.mts",
+        "default": "./es/TagNode.mjs"
+      },
+      "require": {
+        "types": "./types/TagNode.d.ts",
+        "default": "./lib/TagNode.js"
+      },
       "browser": "./dist/index.min.js",
       "umd": "./dist/index.min.js"
     }

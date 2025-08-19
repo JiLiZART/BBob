@@ -7,6 +7,7 @@ module.exports = {
   setupFilesAfterEnv: [`${__dirname}/jest.setup.js`],
   coverageDirectory: './coverage/',
   collectCoverage: true,
+  resolver: "ts-jest-resolver",
   transform: {
     '\\.[jt]sx?$': ['@swc/jest', { ...config }],
   },

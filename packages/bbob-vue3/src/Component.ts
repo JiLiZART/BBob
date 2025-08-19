@@ -1,5 +1,5 @@
 import { defineComponent, h, VNode } from "vue";
-import { render } from "./render";
+import { render } from "./render.js";
 
 import type { BBobPlugins, BBobCoreOptions } from "@bbob/types";
 

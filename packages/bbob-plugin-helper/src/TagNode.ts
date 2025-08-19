@@ -1,6 +1,6 @@
 import type { NodeContent, TagNodeObject, TagNodeTree, TagPosition } from "@bbob/types";
 
-import { OPEN_BRAKET, CLOSE_BRAKET, SLASH } from './char';
+import { OPEN_BRAKET, CLOSE_BRAKET, SLASH } from './char.js';
 import {
   getUniqAttr,
   getNodeLength,
@@ -8,7 +8,7 @@ import {
   attrsToString,
   attrValue,
   isTagNode,
-} from './helpers';
+} from './helpers.js';
 
 const getTagAttrs = <AttrValue>(tag: string, params: Record<string, AttrValue>) => {
   const uniqAttr = getUniqAttr(params);

@@ -1,5 +1,5 @@
 import type { Plugin } from "@vue/runtime-core";
-import Component from "./Component";
+import Component from "./Component.js";
 
 const plugin = {
   install(app) {

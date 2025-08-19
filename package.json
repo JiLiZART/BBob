@@ -66,6 +66,8 @@
     "rollup-plugin-gzip": "3.1.0",
     "rollup-plugin-swc3": "0.11.0",
     "size-limit": "11.0.1",
+    "ts-jest-resolver": "^2.0.1",
+    "ts2mjs": "^4.0.0",
     "typescript": "5.1.6"
   },
   "publishConfig": {
@@ -80,13 +82,13 @@
   },
   "pkgTasks": {
     "build:commonjs": "@/cross-env BABEL_ENV=commonjs NODE_ENV=production @/swc ./src/ --config-file ../../.swcrc-commonjs.json --out-dir lib --strip-leading-paths",
-    "build:es": "@/cross-env BABEL_ENV=es NODE_ENV=production @/swc ./src/ --config-file ../../.swcrc.json --out-dir es --strip-leading-paths",
+    "build:es": "@/cross-env BABEL_ENV=es NODE_ENV=production @/swc ./src/ --config-file ../../.swcrc.json --out-dir es --strip-leading-paths && @/ts2mjs es --remove-source",
     "build:umd": "@/cross-env BABEL_ENV=rollup NODE_ENV=production @/rollup --config ../../rollup.config.mjs",
     "build": "npm run build:es && npm run build:commonjs && npm run build:umd",
     "test": "@/jest",
     "cover": "@/jest --coverage .",
     "lint": "@/eslint .",
-    "types": "@/tsc",
+    "types": "@/tsc && @/ts2mjs types",
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize .",
     "size": "npm run build && @/cross-env NODE_ENV=production @/size-limit ."
   },

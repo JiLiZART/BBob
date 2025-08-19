@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import type { BBobPlugins, BBobCoreOptions } from '@bbob/types';
 
-import { render } from './render';
+import { render } from './render.js';
 
 const content = (children: ReactNode, plugins?: BBobPlugins, options?: BBobCoreOptions) =>
     React.Children.map(children,
