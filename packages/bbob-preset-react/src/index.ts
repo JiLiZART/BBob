@@ -30,6 +30,16 @@ const presetReact = presetHTML5.extend<PresetTagsDefinition>((tags) => ({
     ...tags.s(...args),
     ...tagAttr({ textDecoration: 'line-through' }),
   }),
+
+  color: (...args) => {
+    const node = args[0];
+    const color = node?.attrs?.['color'];
+    
+    return {
+      ...tags.color(...args),
+      ...tagAttr({ color }),
+    };
+  }
 }));
 
 export default presetReact;
