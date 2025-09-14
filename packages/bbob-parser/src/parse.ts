@@ -259,6 +259,7 @@ function parse(input: string, opts: ParseOptions = {}) {
             activeTagNode.attr(attrName, "");
           }
           break;
+
         case TYPE_ATTR_VALUE:
           const attrValName = tagNodesAttrName.last();
 
@@ -269,6 +270,7 @@ function parse(input: string, opts: ParseOptions = {}) {
             activeTagNode.attr(tokenValue, tokenValue);
           }
           break;
+
         case TYPE_SPACE:
         case TYPE_NEW_LINE:
         case TYPE_WORD:
