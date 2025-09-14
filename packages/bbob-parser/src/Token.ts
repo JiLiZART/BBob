@@ -7,49 +7,48 @@ import type { Token as TokenInterface } from "@bbob/types";
 
 // type, value, line, row, start pos, end pos
 
-const TOKEN_TYPE_ID = 't'; // 0;
-const TOKEN_VALUE_ID = 'v'; // 1;
-const TOKEN_COLUMN_ID = 'r'; // 2;
-const TOKEN_LINE_ID = 'l'; // 3;
-const TOKEN_START_POS_ID = 's'; // 4;
-const TOKEN_END_POS_ID = 'e'; // 5;
-
-const TOKEN_TYPE_WORD = 1; // 'word';
-const TOKEN_TYPE_TAG = 2; // 'tag';
-const TOKEN_TYPE_ATTR_NAME = 3; // 'attr-name';
-const TOKEN_TYPE_ATTR_VALUE = 4; // 'attr-value';
-const TOKEN_TYPE_SPACE = 5; // 'space';
-const TOKEN_TYPE_NEW_LINE = 6; // 'new-line';
+export const TYPE_ID = 't'; // 0;
+export const VALUE_ID = 'v'; // 1;
+export const LINE_ID = 'l'; // 3;
+export const COLUMN_ID = 'r'; // 2;
+export const START_POS_ID = 's'; // 4;
+export const END_POS_ID = 'e'; // 5;
+export const TYPE_WORD = 1; // 'word';
+export const TYPE_TAG = 2; // 'tag';
+export const TYPE_ATTR_NAME = 3; // 'attr-name';
+export const TYPE_ATTR_VALUE = 4; // 'attr-value';
+export const TYPE_SPACE = 5; // 'space';
+export const TYPE_NEW_LINE = 6; // 'new-line';
 
 const getTokenValue = (token: Token) => {
-  if (token && typeof token[TOKEN_VALUE_ID] !== 'undefined') {
-    return token[TOKEN_VALUE_ID];
+  if (token && typeof token[VALUE_ID] !== 'undefined') {
+    return token[VALUE_ID];
   }
 
   return '';
 };
 
-const getTokenLine = (token: Token) => (token && token[TOKEN_LINE_ID]) || 0;
+const getTokenLine = (token: Token) => (token && token[LINE_ID]) || 0;
 
-const getTokenColumn = (token: Token) => (token && token[TOKEN_COLUMN_ID]) || 0;
+const getTokenColumn = (token: Token) => (token && token[COLUMN_ID]) || 0;
 
-const getStartPosition = (token: Token) => (token && token[TOKEN_START_POS_ID]) || 0;
+const getStartPosition = (token: Token) => (token && token[START_POS_ID]) || 0;
 
-const getEndPosition = (token: Token) => (token && token[TOKEN_END_POS_ID]) || 0;
+const getEndPosition = (token: Token) => (token && token[END_POS_ID]) || 0;
 
 const isTextToken = (token: Token) => {
-  if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
-    return token[TOKEN_TYPE_ID] === TOKEN_TYPE_SPACE
-      || token[TOKEN_TYPE_ID] === TOKEN_TYPE_NEW_LINE
-      || token[TOKEN_TYPE_ID] === TOKEN_TYPE_WORD;
+  if (token && typeof token[TYPE_ID] !== 'undefined') {
+    return token[TYPE_ID] === TYPE_SPACE
+      || token[TYPE_ID] === TYPE_NEW_LINE
+      || token[TYPE_ID] === TYPE_WORD;
   }
 
   return false;
 };
 
 const isTagToken = (token: Token) => {
-  if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
-    return token[TOKEN_TYPE_ID] === TOKEN_TYPE_TAG;
+  if (token && typeof token[TYPE_ID] !== 'undefined') {
+    return token[TYPE_ID] === TYPE_TAG;
   }
 
   return false;
@@ -60,16 +59,16 @@ const isTagEnd = (token: Token) => getTokenValue(token).charCodeAt(0) === SLASH.
 const isTagStart = (token: Token) => !isTagEnd(token);
 
 const isAttrNameToken = (token: Token) => {
-  if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
-    return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_NAME;
+  if (token && typeof token[TYPE_ID] !== 'undefined') {
+    return token[TYPE_ID] === TYPE_ATTR_NAME;
   }
 
   return false;
 };
 
 const isAttrValueToken = (token: Token) => {
-  if (token && typeof token[TOKEN_TYPE_ID] !== 'undefined') {
-    return token[TOKEN_TYPE_ID] === TOKEN_TYPE_ATTR_VALUE;
+  if (token && typeof token[TYPE_ID] !== 'undefined') {
+    return token[TYPE_ID] === TYPE_ATTR_VALUE;
   }
 
   return false;
@@ -103,20 +102,20 @@ class Token<TokenValue = string> implements TokenInterface {
   readonly e: number; // end pos
 
   constructor(type?: number, value?: TokenValue, row: number = 0, col: number = 0, start: number = 0, end: number = 0) {
-    this[TOKEN_LINE_ID] = row;
-    this[TOKEN_COLUMN_ID] = col;
-    this[TOKEN_TYPE_ID] = type || 0;
-    this[TOKEN_VALUE_ID] = String(value);
-    this[TOKEN_START_POS_ID] = start;
-    this[TOKEN_END_POS_ID] = end;
+    this[LINE_ID] = row;
+    this[COLUMN_ID] = col;
+    this[TYPE_ID] = type || 0;
+    this[VALUE_ID] = String(value);
+    this[START_POS_ID] = start;
+    this[END_POS_ID] = end;
   }
 
   get type() {
-    return this[TOKEN_TYPE_ID];
+    return this[TYPE_ID];
   }
 
   isEmpty() {
-    return this[TOKEN_TYPE_ID] === 0 || isNaN(this[TOKEN_TYPE_ID]);
+    return this[TYPE_ID] === 0 || isNaN(this[TYPE_ID]);
   }
 
   isText() {
@@ -171,19 +170,6 @@ class Token<TokenValue = string> implements TokenInterface {
     return tokenToText(this, openTag, closeTag);
   }
 }
-
-export const TYPE_ID = TOKEN_TYPE_ID;
-export const VALUE_ID = TOKEN_VALUE_ID;
-export const LINE_ID = TOKEN_LINE_ID;
-export const COLUMN_ID = TOKEN_COLUMN_ID;
-export const START_POS_ID = TOKEN_START_POS_ID;
-export const END_POS_ID = TOKEN_END_POS_ID;
-export const TYPE_WORD = TOKEN_TYPE_WORD;
-export const TYPE_TAG = TOKEN_TYPE_TAG;
-export const TYPE_ATTR_NAME = TOKEN_TYPE_ATTR_NAME;
-export const TYPE_ATTR_VALUE = TOKEN_TYPE_ATTR_VALUE;
-export const TYPE_SPACE = TOKEN_TYPE_SPACE;
-export const TYPE_NEW_LINE = TOKEN_TYPE_NEW_LINE;
 
 export { Token };
 export default Token;
