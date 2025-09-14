@@ -1,13 +1,6 @@
 import { TYPE_ID, VALUE_ID, TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE, LINE_ID, COLUMN_ID, START_POS_ID, END_POS_ID } from '../src/Token';
 import { createLexer } from '../src/lexer';
-
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeMantchOutput(expected: Array<unknown>): CustomMatcherResult;
-    }
-  }
-}
+import { parse } from "../src";
 
 const TYPE = {
   WORD: TYPE_WORD,
@@ -24,88 +17,94 @@ const tokenize = (input: string) => (createLexer(input).tokenize());
 const tokenizeEscape = (input: string) => (createLexer(input, { enableEscapeTags: true }).tokenize());
 const tokenizeContextFreeTags = (input: string, tags: string[] = []) => (createLexer(input, { contextFreeTags: tags }).tokenize());
 
-describe('lexer', () => {
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeMatchOutput(expected: Array<unknown>): CustomMatcherResult;
+    }
+  }
+}
 
+expect.extend({
+  toBeMatchOutput(tokens, output) {
+    if (tokens.length !== output.length) {
+      return {
+        message: () =>
+            `expected tokens length ${tokens.length} to be ${output.length}`,
+        pass: false,
+      };
+    }
 
-  expect.extend({
-    toBeMantchOutput(tokens, output) {
-      if (tokens.length !== output.length) {
+    for (let idx = 0; idx < tokens.length; idx++) {
+      const token = tokens[idx];
+      const [type, value, col, row, startPos, endPos] = output[idx];
+
+      if (typeof token !== 'object') {
         return {
           message: () =>
-            `expected tokens length ${tokens.length} to be ${output.length}`,
+              `token must to be Object`,
           pass: false,
         };
       }
 
-      for (let idx = 0; idx < tokens.length; idx++) {
-        const token = tokens[idx];
-        const [type, value, col, row, startPos, endPos] = output[idx];
-
-        if (typeof token !== 'object') {
-          return {
-            message: () =>
-              `token must to be Object`,
-            pass: false,
-          };
-        }
-
-        if (token[TYPE_ID] !== type) {
-          return {
-            message: () =>
+      if (token[TYPE_ID] !== type) {
+        return {
+          message: () =>
               `expected token type ${TYPE_NAMES[type]} but received ${TYPE_NAMES[token[TYPE_ID]]} for ${JSON.stringify(output[idx])}`,
-            pass: false,
-          };
-        }
-
-        if (token[VALUE_ID] !== value) {
-          return {
-            message: () =>
-              `expected token value ${value} but received ${token[VALUE_ID]} for ${JSON.stringify(output[idx])}`,
-            pass: false,
-          };
-        }
-
-        if (token[LINE_ID] !== row) {
-          return {
-            message: () =>
-              `expected token row ${row} but received ${token[LINE_ID]} for ${JSON.stringify(output[idx])}`,
-            pass: false,
-          };
-        }
-
-        if (token[COLUMN_ID] !== col) {
-          return {
-            message: () =>
-              `expected token col ${col} but received ${token[COLUMN_ID]} for ${JSON.stringify(output[idx])}`,
-            pass: false,
-          };
-        }
-
-        if (type === TYPE.TAG && token[START_POS_ID] !== startPos) {
-          return {
-            message: () =>
-              `expected token start pos ${startPos} but received ${token[START_POS_ID]} for ${JSON.stringify(output[idx])}`,
-            pass: false,
-          };
-        }
-
-        if (type === TYPE.TAG && token[END_POS_ID] !== endPos) {
-          return {
-            message: () =>
-              `expected token end pos ${endPos} but received ${token[END_POS_ID]} for ${JSON.stringify(output[idx])}`,
-            pass: false,
-          };
-        }
+          pass: false,
+        };
       }
 
-      return {
-        message: () =>
-          `no valid output`,
-        pass: true,
-      };
-    },
-  });
+      if (token[VALUE_ID] !== value) {
+        return {
+          message: () =>
+              `expected token value ${value} but received ${token[VALUE_ID]} for ${JSON.stringify(output[idx])}`,
+          pass: false,
+        };
+      }
 
+      if (token[LINE_ID] !== row) {
+        return {
+          message: () =>
+              `expected token row ${row} but received ${token[LINE_ID]} for ${JSON.stringify(output[idx])}`,
+          pass: false,
+        };
+      }
+
+      if (token[COLUMN_ID] !== col) {
+        return {
+          message: () =>
+              `expected token col ${col} but received ${token[COLUMN_ID]} for ${JSON.stringify(output[idx])}`,
+          pass: false,
+        };
+      }
+
+      if (type === TYPE.TAG && token[START_POS_ID] !== startPos) {
+        return {
+          message: () =>
+              `expected token start pos ${startPos} but received ${token[START_POS_ID]} for ${JSON.stringify(output[idx])}`,
+          pass: false,
+        };
+      }
+
+      if (type === TYPE.TAG && token[END_POS_ID] !== endPos) {
+        return {
+          message: () =>
+              `expected token end pos ${endPos} but received ${token[END_POS_ID]} for ${JSON.stringify(output[idx])}`,
+          pass: false,
+        };
+      }
+    }
+
+    return {
+      message: () =>
+          `no valid output`,
+      pass: true,
+    };
+  },
+});
+
+describe('lexer', () => {
   test('single tag', () => {
     const input = '[SingleTag]';
     const tokens = tokenize(input);
@@ -113,7 +112,7 @@ describe('lexer', () => {
       [TYPE.TAG, 'SingleTag', 0, 0, 0, 11],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('single tag with params', () => {
@@ -124,7 +123,7 @@ describe('lexer', () => {
       [TYPE.ATTR_VALUE, '111', 6, 0],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('paired tag with single param', () => {
@@ -137,7 +136,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/url', 17, 0, 16, 22],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('single fake tag', () => {
@@ -149,7 +148,7 @@ describe('lexer', () => {
       [TYPE.WORD, 'user=111]', 2, 0, 2],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('single tag with spaces', () => {
@@ -160,7 +159,7 @@ describe('lexer', () => {
       [TYPE.TAG, 'Single Tag', 0, 0, 0, 12],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   // @TODO: this is breaking change behavior
@@ -175,7 +174,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/textarea', 25, 0],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('tags with single word and camel case params', () => {
@@ -213,7 +212,7 @@ describe('lexer', () => {
       [TYPE.SPACE, '    ', 28, 2, 203],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('string with quotemarks', () => {
@@ -232,7 +231,7 @@ describe('lexer', () => {
       [TYPE.WORD, 'Adele', 22, 0],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('tags in brakets', () => {
@@ -249,7 +248,7 @@ describe('lexer', () => {
       [TYPE.WORD, ']', 13, 0],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('tag as param', () => {
@@ -262,7 +261,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/color', 21, 0, 21, 29],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('tag with quotemark params with spaces', () => {
@@ -278,7 +277,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/url', 42, 0, 42, 48],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('tag with escaped quotemark param', () => {
@@ -292,7 +291,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/url', 26, 0, 26, 32],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('tag param without quotemarks', () => {
@@ -306,7 +305,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/style', 26, 0, 25, 33],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('list tag with items', () => {
@@ -344,7 +343,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/list', 0, 4, 52, 59],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('few tags without spaces', () => {
@@ -366,7 +365,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/mytag3', 74, 0, 74, 83],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('bad tags as texts', () => {
@@ -434,7 +433,7 @@ describe('lexer', () => {
       const tokens = tokenize(input);
       const output = asserts[idx];
 
-      expect(tokens).toBeMantchOutput(output);
+      expect(tokens).toBeMatchOutput(output);
     });
   });
 
@@ -452,7 +451,7 @@ describe('lexer', () => {
       [TYPE.TAG, 'Finger', 15, 0, 15, 23]
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('no close tag', () => {
@@ -467,7 +466,7 @@ describe('lexer', () => {
       [TYPE.WORD, 'A', 13, 0],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('escaped tag', () => {
@@ -482,7 +481,7 @@ describe('lexer', () => {
       [TYPE.WORD, '[', 9, 0],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('escaped tag and escaped backslash', () => {
@@ -502,7 +501,7 @@ describe('lexer', () => {
       [TYPE.WORD, ']', 21, 0],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('context free tag [code]', () => {
@@ -520,12 +519,12 @@ describe('lexer', () => {
       [TYPE.TAG, '/code', 25, 0, 25, 32],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('context free tag case insensitive [CODE]', () => {
-    const input = '[CODE] [b]some string[/b][/CODE]';
-    const tokens = tokenizeContextFreeTags(input, ['code']);
+    const tokens = tokenizeContextFreeTags('[CODE] [b]some string[/b][/CODE]', ['code']);
+
     const output = [
       [TYPE.TAG, 'CODE', 0, 0, 0, 6],
       [TYPE.SPACE, ' ', 6, 0],
@@ -538,7 +537,7 @@ describe('lexer', () => {
       [TYPE.TAG, '/CODE', 25, 0, 25, 32],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   test('bad closed tag with escaped backslash', () => {
@@ -552,7 +551,7 @@ describe('lexer', () => {
       [TYPE.WORD, 'b]', 9, 0],
     ];
 
-    expect(tokens).toBeMantchOutput(output);
+    expect(tokens).toBeMatchOutput(output);
   });
 
   describe('html', () => {
@@ -575,7 +574,7 @@ describe('lexer', () => {
         [TYPE.TAG, '/button', 78, 0, 78, 87]
       ];
 
-      expect(tokens).toBeMantchOutput(output);
+      expect(tokens).toBeMatchOutput(output);
     });
 
     test('attributes with no quotes or value', () => {
@@ -594,7 +593,7 @@ describe('lexer', () => {
         [TYPE.TAG, '/button', 63, 0, 62, 71]
       ];
 
-      expect(tokens).toBeMantchOutput(output);
+      expect(tokens).toBeMatchOutput(output);
     });
 
     test('attributes with no space between them. No valid, but accepted by the browser', () => {
@@ -612,7 +611,7 @@ describe('lexer', () => {
         [TYPE.TAG, '/button', 76, 0, 76, 85]
       ];
 
-      expect(tokens).toBeMantchOutput(output);
+      expect(tokens).toBeMatchOutput(output);
     });
 
     test.skip('style tag', () => {
@@ -634,7 +633,7 @@ input.buttonred{cursor:hand;font-family:verdana;background:#d12124;color:#fff;he
 -->
 </style>`;
       const tokens = tokenizeHTML(content);
-      expect(tokens).toBeMantchOutput([]);
+      expect(tokens).toBeMatchOutput([]);
     });
 
     test.skip('script tag', () => {
@@ -645,7 +644,7 @@ input.buttonred{cursor:hand;font-family:verdana;background:#d12124;color:#fff;he
 		//-->
 	</script>`;
       const tokens = tokenizeHTML(content);
-      expect(tokens).toBeMantchOutput([]);
+      expect(tokens).toBeMatchOutput([]);
     });
   });
 });
