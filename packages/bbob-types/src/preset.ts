@@ -1,6 +1,6 @@
 
-import { BBobCoreTagNodeTree, BBobPluginFunction, BBobPluginOptions } from "./core";
-import { TagNodeObject } from "./common";
+import { BBobCoreTagNodeTree, BBobPluginFunction, BBobPluginOptions } from "./core.js";
+import { TagNodeObject } from "./common.js";
 
 export type PartialRecord<K extends keyof any, T> =  Partial<Record<K, T>>
 

@@ -1,3 +1,3 @@
-export * from "./helpers";
-export * from "./char";
-export * from "./TagNode";
+export * from "./helpers.js";
+export * from "./char.js";
+export * from "./TagNode.js";

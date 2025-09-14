@@ -1,15 +1,10 @@
-import type { NodeContent, TagNodeTree, LexerTokenizer, ParseOptions } from "@bbob/types";
+import type { NodeContent, ParseOptions, TagNodeTree } from "@bbob/types";
 
-import {
-  CLOSE_BRAKET,
-  OPEN_BRAKET,
-  TagNode,
-  isTagNode,
-} from "@bbob/plugin-helper";
+import { CLOSE_BRAKET, isTagNode, OPEN_BRAKET, TagNode, } from "@bbob/plugin-helper";
 
-import { createLexer } from "./lexer";
+import { createLexer } from "./lexer.js";
 
-import type { Token } from "./Token";
+import { Token, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_NEW_LINE, TYPE_SPACE, TYPE_TAG, TYPE_WORD } from "./Token.js";
 
 class NodeList<Value> {
   private n: Value[];
@@ -85,15 +80,21 @@ function parse(input: string, opts: ParseOptions = {}) {
    */
   const nestedTagsMap = new Set<string>();
 
+  function getValue(tokenValue: string) {
+    return caseFreeTags ? tokenValue.toLowerCase() : tokenValue;
+  }
+
   function isTokenNested(token: Token) {
     const tokenValue = token.getValue();
-    const value = caseFreeTags ? tokenValue.toLowerCase() : tokenValue;
+    const value = getValue(tokenValue);
     const { isTokenNested } = tokenizer || {};
 
-    if (!nestedTagsMap.has(value) && isTokenNested && isTokenNested(value)) {
-      nestedTagsMap.add(value);
+    if (!nestedTagsMap.has(value) && typeof isTokenNested === "function") {
+      if (isTokenNested(value)) {
+        nestedTagsMap.add(value);
 
-      return true;
+        return true;
+      }
     }
 
     return nestedTagsMap.has(value);
@@ -103,13 +104,13 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @private
    */
   function isTagNested(tagName: string) {
-    return Boolean(nestedTagsMap.has(caseFreeTags ? tagName.toLowerCase() : tagName));
+    return Boolean(nestedTagsMap.has(getValue(tagName)));
   }
 
   /**
    * @private
    */
-  function isAllowedTag(value: string) {
+  function isTagAllowed(value: string) {
     if (onlyAllowTags.length) {
       return onlyAllowTags.indexOf(value.toLowerCase()) >= 0;
     }
@@ -121,7 +122,7 @@ function parse(input: string, opts: ParseOptions = {}) {
    * Flushes temp tag nodes and its attributes buffers
    * @private
    */
-  function flushTagNodes() {
+  function tagNodesFlush() {
     if (tagNodes.flush()) {
       tagNodesAttrName.flush();
     }
@@ -143,7 +144,7 @@ function parse(input: string, opts: ParseOptions = {}) {
   /**
    * @private
    */
-  function appendNodeAsString(
+  function nodesAppendAsString(
     nodes?: TagNodeTree,
     node?: TagNode,
     isNested = true
@@ -166,13 +167,13 @@ function parse(input: string, opts: ParseOptions = {}) {
   /**
    * @private
    */
-  function appendNodes(nodes?: TagNodeTree, node?: NodeContent) {
+  function nodesAppend(nodes?: TagNodeTree, node?: NodeContent) {
     if (Array.isArray(nodes) && typeof node !== "undefined") {
       if (isTagNode(node)) {
-        if (isAllowedTag(node.tag)) {
+        if (isTagAllowed(node.tag)) {
           nodes.push(node.toTagNode());
         } else {
-          appendNodeAsString(nodes, node);
+          nodesAppendAsString(nodes, node);
         }
       } else {
         nodes.push(node);
@@ -184,8 +185,8 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @private
    * @param {Token} token
    */
-  function handleTagStart(token: Token) {
-    flushTagNodes();
+  function tagHandleStart(token: Token) {
+    tagNodesFlush();
 
     const tagNode = TagNode.create(token.getValue(), {}, [], { from: token.getStart(), to: token.getEnd() });
     const isNested = isTokenNested(token);
@@ -196,7 +197,7 @@ function parse(input: string, opts: ParseOptions = {}) {
       nestedNodes.push(tagNode);
     } else {
       const nodes = getNodes();
-      appendNodes(nodes, tagNode);
+      nodesAppend(nodes, tagNode);
     }
   }
 
@@ -204,24 +205,24 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @private
    * @param {Token} token
    */
-  function handleTagEnd(token: Token) {
+  function tagHandleEnd(token: Token) {
     const tagName = token.getValue().slice(1);
     const lastNestedNode = nestedNodes.flush();
 
-    flushTagNodes();
+    tagNodesFlush();
 
     if (lastNestedNode) {
-      const nodes = getNodes();
+      const nodes = getNodes()
 
       if (isTagNode(lastNestedNode)) {
         lastNestedNode.setEnd({ from: token.getStart(), to: token.getEnd() });
       }
 
-      appendNodes(nodes, lastNestedNode);
+      nodesAppend(nodes, lastNestedNode);
     } else if (!isTagNested(tagName)) { // when we have only close tag [/some] without any open tag
       const nodes = getNodes();
 
-      appendNodes(nodes, token.toString({ openTag, closeTag }));
+      nodesAppend(nodes, token.toString({ openTag, closeTag }));
     } else if (typeof options.onError === "function") {
       const tag = token.getValue();
       const line = token.getLine();
@@ -239,23 +240,7 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @private
    * @param {Token} token
    */
-  function handleTag(token: Token) {
-    // [tag]
-    if (token.isStart()) {
-      handleTagStart(token);
-    }
-
-    // [/tag]
-    if (token.isEnd()) {
-      handleTagEnd(token);
-    }
-  }
-
-  /**
-   * @private
-   * @param {Token} token
-   */
-  function handleNode(token: Token) {
+  function nodeHandle(token: Token) {
     /**
      * @type {TagNode}
      */
@@ -265,37 +250,47 @@ function parse(input: string, opts: ParseOptions = {}) {
     const nodes = getNodes();
 
     if (activeTagNode !== null) {
-      if (token.isAttrName()) {
-        tagNodesAttrName.push(tokenValue);
-        const attrName = tagNodesAttrName.last();
+      switch (token.type) {
+        case TYPE_ATTR_NAME:
+          tagNodesAttrName.push(tokenValue);
+          const attrName = tagNodesAttrName.last();
 
-        if (attrName) {
-          activeTagNode.attr(attrName, "");
-        }
-      } else if (token.isAttrValue()) {
-        const attrName = tagNodesAttrName.last();
+          if (attrName) {
+            activeTagNode.attr(attrName, "");
+          }
+          break;
 
-        if (attrName) {
-          activeTagNode.attr(attrName, tokenValue);
-          tagNodesAttrName.flush();
-        } else {
-          activeTagNode.attr(tokenValue, tokenValue);
-        }
-      } else if (token.isText()) {
-        if (isNested) {
-          activeTagNode.append(tokenValue);
-        } else {
-          appendNodes(nodes, tokenValue);
-        }
-      } else if (token.isTag()) {
-        // if tag is not allowed, just pass it as is
-        appendNodes(nodes, token.toString({ openTag, closeTag }));
+        case TYPE_ATTR_VALUE:
+          const attrValName = tagNodesAttrName.last();
+
+          if (attrValName) {
+            activeTagNode.attr(attrValName, tokenValue);
+            tagNodesAttrName.flush();
+          } else {
+            activeTagNode.attr(tokenValue, tokenValue);
+          }
+          break;
+
+        case TYPE_SPACE:
+        case TYPE_NEW_LINE:
+        case TYPE_WORD:
+          if (isNested) {
+            activeTagNode.append(tokenValue);
+          } else {
+            nodesAppend(nodes, tokenValue);
+          }
+          break;
+
+        case TYPE_TAG:
+          // if tag is not allowed, just pass it as is
+          nodesAppend(nodes, token.toString({ openTag, closeTag }));
+          break;
       }
     } else if (token.isText()) {
-      appendNodes(nodes, tokenValue);
+      nodesAppend(nodes, tokenValue);
     } else if (token.isTag()) {
       // if tag is not allowed, just pass it as is
-      appendNodes(nodes, token.toString({ openTag, closeTag }));
+      nodesAppend(nodes, token.toString({ openTag, closeTag }));
     }
   }
 
@@ -305,9 +300,17 @@ function parse(input: string, opts: ParseOptions = {}) {
    */
   function onToken(token: Token) {
     if (token.isTag()) {
-      handleTag(token);
+      // [tag]
+      if (token.isStart()) {
+        tagHandleStart(token);
+      }
+
+      // [/tag]
+      if (token.isEnd()) {
+        tagHandleEnd(token);
+      }
     } else {
-      handleNode(token);
+      nodeHandle(token);
     }
   }
 
@@ -331,13 +334,8 @@ function parse(input: string, opts: ParseOptions = {}) {
   // for ex [q]test[/q][u]some[/u][q]some [u]some[/u] // forgot to close [/q]
   // so we need to flush nested content to nodes array
   const lastNestedNode = nestedNodes.flush();
-  if (
-    lastNestedNode !== null &&
-    lastNestedNode &&
-    isTagNode(lastNestedNode) &&
-    isTagNested(lastNestedNode.tag)
-  ) {
-    appendNodeAsString(getNodes(), lastNestedNode, false);
+  if (isTagNode(lastNestedNode) && isTagNested(lastNestedNode.tag)) {
+    nodesAppendAsString(getNodes(), lastNestedNode, false);
   }
 
   return nodes.toArray();

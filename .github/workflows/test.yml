@@ -40,5 +40,5 @@ jobs:
       - name: Run the coverage
         run: pnpm run cover
 
-      - name: Coveralls
-        uses: coverallsapp/github-action@v2
+#      - name: Coveralls
+#        uses: coverallsapp/github-action@v2
