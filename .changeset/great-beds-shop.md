@@ -14,4 +14,11 @@
 "@bbob/vue3": patch
 ---
 
-fix(293): [color] tag doesn't work in React
+Now `React` preset `@bbob/preset-react` supports `color` tag
+
+```js
+import preset from '@bbob/preset-react'
+import { render } from '@bbob/react'
+
+const html = render('[color=#ff0000]This text should be red[/color]', preset());
+```

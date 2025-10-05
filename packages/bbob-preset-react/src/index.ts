@@ -1,7 +1,7 @@
 import presetHTML5 from '@bbob/preset-html5';
 import { getUniqAttr } from "@bbob/plugin-helper";
 
-import { PresetTagsDefinition } from '@bbob/types';
+import type { PresetTagsDefinition } from '@bbob/types';
 
 const tagAttr = (style: Record<string, string>) => ({
   attrs: {
