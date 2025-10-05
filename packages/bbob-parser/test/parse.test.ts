@@ -641,6 +641,30 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse url tag with fakeUnique', () => {
+    const ast = parse('[url=https://example.org/ fakeUnique=fakeUnique]T[/url]');
+    const ast2 = parse('[url]T[/url]');
+    const ast3 = parse('[url src=some]T[/url]');
+
+    expectOutput(ast, [
+      {
+        tag: 'url',
+        attrs: {
+          'https://example.org/ fakeUnique=fakeUnique': 'https://example.org/ fakeUnique=fakeUnique',
+        },
+        content: ['T'],
+        start: {
+          from: 0,
+          to: 66,
+        },
+        end: {
+          from: 69,
+          to: 75,
+        },
+      },
+    ]);
+  });
+
   test('parse triple nested tags', () => {
     const ast = parse(`this is outside [spoiler title="name with
       multiline

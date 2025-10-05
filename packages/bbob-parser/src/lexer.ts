@@ -139,7 +139,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
         const isNextEQ = nextChar === EQ;
         const isWS = isWhiteSpace(char);
         // const isPrevWS = isWhiteSpace(prevChar);
-        const isNextWS = nextChar && isWhiteSpace(nextChar);
+        const isNextWS = !!nextChar && isWhiteSpace(nextChar);
 
         if (stateSpecial && isSpecialChar(char)) {
           return true;
@@ -245,7 +245,10 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     const silent = true;
     const tagStr = chars.grabWhile((char) => char !== closeTag, silent);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
+    const eqParts = tagStr.split(EQ);
+    const isStartSingle = !!eqParts.length && !eqParts[0].includes(SPACE) && eqParts[0][0] !== SLASH;
     const hasSpace = tagGrabber.includes(SPACE);
+    debugger
 
     tagMode = TAG_STATE_NAME;
 
