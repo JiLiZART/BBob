@@ -1,6 +1,7 @@
 import presetHTML5 from '@bbob/preset-html5';
+import { getUniqAttr } from "@bbob/plugin-helper";
 
-import type { PresetTagsDefinition } from '@bbob/types';
+import { PresetTagsDefinition } from '@bbob/types';
 
 const tagAttr = (style: Record<string, string>) => ({
   attrs: {
@@ -31,15 +32,10 @@ const presetReact = presetHTML5.extend<PresetTagsDefinition>((tags) => ({
     ...tagAttr({ textDecoration: 'line-through' }),
   }),
 
-  color: (...args) => {
-    const node = args[0];
-    const color = node?.attrs?.['color'];
-    
-    return {
-      ...tags.color(...args),
-      ...tagAttr({ color }),
-    };
-  }
+  color: (...args) => ({
+    ...tags.color(...args),
+    ...tagAttr({ color: String(getUniqAttr(args[0].attrs)) }),
+  })
 }));
 
 export default presetReact;
