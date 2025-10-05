@@ -418,6 +418,9 @@ importers:
 
   packages/bbob-preset-react:
     dependencies:
+      '@bbob/plugin-helper':
+        specifier: '*'
+        version: link:../bbob-plugin-helper
       '@bbob/preset-html5':
         specifier: '*'
         version: link:../bbob-preset-html5
@@ -425,6 +428,9 @@ importers:
         specifier: '*'
         version: link:../bbob-types
     devDependencies:
+      '@bbob/core':
+        specifier: '*'
+        version: link:../bbob-core
       '@types/react':
         specifier: 18.x
         version: 18.3.20
