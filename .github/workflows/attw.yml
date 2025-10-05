@@ -33,4 +33,4 @@ jobs:
         run: pnpm build
 
       - name: Run check
-        run: npx --yes @arethetypeswrong/cli --pack .
+        run: pnpm attw
