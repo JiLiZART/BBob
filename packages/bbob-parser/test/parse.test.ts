@@ -646,7 +646,7 @@ describe('Parser', () => {
     const ast2 = parse('[url]T[/url]');
     const ast3 = parse('[url src=some]T[/url]');
 
-    expectOutput(ast, [
+    expect(ast).toBeMatchAST([
       {
         tag: 'url',
         attrs: {

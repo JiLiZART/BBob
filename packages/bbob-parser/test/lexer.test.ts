@@ -1,6 +1,18 @@
-import { TYPE_ID, VALUE_ID, TYPE_WORD, TYPE_TAG, TYPE_ATTR_NAME, TYPE_ATTR_VALUE, TYPE_SPACE, TYPE_NEW_LINE, LINE_ID, COLUMN_ID, START_POS_ID, END_POS_ID } from '../src/Token';
-import { createLexer } from '../src/lexer';
-import { parse } from "../src";
+import {
+  TYPE_ID,
+  VALUE_ID,
+  TYPE_WORD,
+  TYPE_TAG,
+  TYPE_ATTR_NAME,
+  TYPE_ATTR_VALUE,
+  TYPE_SPACE,
+  TYPE_NEW_LINE,
+  LINE_ID,
+  COLUMN_ID,
+  START_POS_ID,
+  END_POS_ID
+} from '../src/Token';
+import { createLexer } from '../src';
 
 const TYPE = {
   WORD: TYPE_WORD,
@@ -133,6 +145,20 @@ describe('lexer', () => {
       [TYPE.TAG, 'url', 0, 0, 0, 13],
       [TYPE.ATTR_VALUE, 'someval', 5, 0],
       [TYPE.WORD, 'GET', 13, 0],
+      [TYPE.TAG, '/url', 17, 0, 16, 22],
+    ];
+
+    expect(tokens).toBeMatchOutput(output);
+  });
+
+  test('paired tag with url tag with fakeUnique', () => {
+    const input = '[url=https://example.org/ fakeUnique=fakeUnique]T[/url]';
+    const tokens = tokenize(input);
+
+    const output = [
+      [TYPE.TAG, 'url', 0, 0, 0, 13],
+      [TYPE.ATTR_VALUE, 'https://example.org/ fakeUnique=fakeUnique', 5, 0],
+      [TYPE.WORD, 'T', 13, 0],
       [TYPE.TAG, '/url', 17, 0, 16, 22],
     ];
 
