@@ -8,7 +8,7 @@ describe('NodeList', () => {
     list.push('b');
     list.push('c');
 
-    expect(list.toArray()).toEqual(['a', 'b', 'c']);
+    expect(list.arrayRef()).toEqual(['a', 'b', 'c']);
   });
 
   test('last', () => {
@@ -19,6 +19,7 @@ describe('NodeList', () => {
     list.push('c');
 
     expect(list.last()).toBe('c');
+    expect(list.arrayRef()).toEqual(['a', 'b', 'c']);
   });
 
   test('flush', () => {
@@ -28,7 +29,7 @@ describe('NodeList', () => {
     list.push('b');
     list.push('c');
 
-    expect(list.flush()).toBe('a');
-    expect(list.toArray()).toEqual(['b', 'c']);
+    expect(list.flush()).toBe('c');
+    expect(list.arrayRef()).toEqual(['a', 'b']);
   });
 });

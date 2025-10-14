@@ -108,7 +108,7 @@ function parse(input: string, opts: ParseOptions = {}) {
       return lastNestedNode.content;
     }
 
-    return nodes.toArray();
+    return nodes.arrayRef();
   }
 
   /**
@@ -156,15 +156,12 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @param {Token} token
    */
   function tagHandleStart(token: Token) {
-    debugger
     tempTagNodesFlush();
 
     const tagNode = TagNode.create(token.getValue(), {}, [], { from: token.getStart(), to: token.getEnd() });
     const isNested = isTokenNested(token);
 
     tempTagNodes.push(tagNode);
-
-    debugger
 
     if (isNested) {
       nestedNodes.push(tagNode);
@@ -297,12 +294,12 @@ function parse(input: string, opts: ParseOptions = {}) {
   // eslint-disable-next-line no-unused-vars
   const tokens = tokenizer.tokenize();
 
-  const nodesArr = nodes.toArray()
+  const nodesArr = nodes.arrayRef()
 
   // handles situations where we opened tag, but forget to close them
   // for ex [q]test[/q][u]some[/u][q]some [u]some[/u] // forgot to close [/q]
   // so we need to flush nested content to nodes array
-  const lastNodes = nestedNodes.toArray();
+  const lastNodes = nestedNodes.arrayRef();
 
   debugger
 

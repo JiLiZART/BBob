@@ -1,20 +1,18 @@
-class NodeListOld<Value> {
-  private n: Value[];
+class NodeList<Value> {
+  private readonly n: Value[];
 
   constructor() {
     this.n = [];
   }
 
   last() {
-    if (
-        Array.isArray(this.n) &&
-        this.n.length > 0 &&
-        typeof this.n[this.n.length - 1] !== "undefined"
-    ) {
-      return this.n[this.n.length - 1];
+    const len = this.n.length
+
+    if (len > 0) {
+      return this.n[len - 1];
     }
 
-    return null;
+    return undefined;
   }
 
   flush() {
@@ -25,41 +23,8 @@ class NodeListOld<Value> {
     this.n.push(value);
   }
 
-  toArray() {
+  arrayRef() {
     return this.n;
-  }
-}
-
-class NodeList<Value> {
-  private readonly n: Value[] = [];
-  private len = -1;
-  private lv: Value | null = null;
-
-  last() {
-    return this.lv;
-  }
-
-  flush() {
-    if (this.len) {
-      const lv = this.lv;
-      this.len -= 1;
-
-      this.lv = this.n[this.len];
-
-      return lv;
-    }
-
-    return false;
-  }
-
-  push(value: Value) {
-    this.n.push(value);
-    this.lv = value;
-    this.len += 1;
-  }
-
-  toArray() {
-    return this.n.slice(0, this.len);
   }
 }
 
