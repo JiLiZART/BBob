@@ -1,5 +1,12 @@
 name: Pull Request
 on:
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Build & Publish Pre-alpha Release'
+        required: true
+        type: boolean
+        default: true
 #  workflow_run:
 #    workflows:
 #      - Tests
@@ -23,7 +30,7 @@ permissions:
 
 jobs:
   build:
-    name: 'Build & pre-alpha release'
+    name: 'Build & Publish Pre-alpha Release'
 
     runs-on: ubuntu-latest
 
