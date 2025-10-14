@@ -91,6 +91,11 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
   /**
    * Emits newly created token to subscriber
+   *
+   * @param {number} type - 1 - word, 2 - tag, 3 - attr-name, 4 - attr-value, 5 - space, 6 - new-line
+   * @param {string} value - token value
+   * @param {number} startPos - start position
+   * @param {number} endPos - end position
    */
   function emitToken(type: number, value: string, startPos?: number, endPos?: number) {
     const token = createTokenOfType(type, value, row, prevCol, startPos, endPos);

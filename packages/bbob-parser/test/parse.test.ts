@@ -962,6 +962,36 @@ sdfasdfasdf
     );
   });
 
+  test('parse with lost repeated closing tag', () => {
+    const input = parse('Hello World[u]Wrong underline[u] This is another text [u]and this, too[/u]');
+
+    expect(input).toBeMatchAST([
+      'Hello',
+      ' ',
+      'World',
+      '[u]',
+      'Wrong',
+      ' ',
+      'underline',
+      '[u]',
+      ' ',
+      'This',
+      ' ',
+      'is',
+      ' ',
+      'another',
+      ' ',
+      'text',
+      ' ',
+      {
+        tag: 'u',
+        attrs: {},
+        content: ['and', ' ', 'this,', ' ', 'too'],
+      }
+    ]);
+  });
+
+
   test('parse with url in tag content', () => {
     const input = parse('[img]https://tw.greywool.com/i/e3Ph5.png[/img]');
 
