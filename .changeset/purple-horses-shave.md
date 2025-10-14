@@ -1,17 +1,17 @@
 ---
-"@bbob/parser": major
-"@bbob/cli": major
-"@bbob/core": major
-"@bbob/html": major
-"@bbob/plugin-helper": major
-"@bbob/preset": major
-"@bbob/preset-html5": major
-"@bbob/preset-react": major
-"@bbob/preset-vue": major
-"@bbob/react": major
-"@bbob/types": major
-"@bbob/vue2": major
-"@bbob/vue3": major
+"@bbob/parser": patch
+"@bbob/cli": patch
+"@bbob/core": patch
+"@bbob/html": patch
+"@bbob/plugin-helper": patch
+"@bbob/preset": patch
+"@bbob/preset-html5": patch
+"@bbob/preset-react": patch
+"@bbob/preset-vue": patch
+"@bbob/react": patch
+"@bbob/types": patch
+"@bbob/vue2": patch
+"@bbob/vue3": patch
 ---
 
 Now `@bbob/parser` correctly parses nested tags like
