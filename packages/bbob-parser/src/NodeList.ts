@@ -15,15 +15,19 @@ class NodeList<Value> {
     return undefined;
   }
 
+  has() {
+    return this.n.length > 0;
+  }
+
   flush() {
-    return this.n.length ? this.n.pop() : false;
+    return this.n.length ? this.n.pop() : undefined;
   }
 
   push(value: Value) {
     this.n.push(value);
   }
 
-  arrayRef() {
+  ref() {
     return this.n;
   }
 }

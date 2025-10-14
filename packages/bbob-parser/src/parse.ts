@@ -37,13 +37,13 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @private
    * @type {NodeList}
    */
-  const tempTagNodes = createList<TagNode>();
+  let activeTagNode: TagNode | null = null;
   /**
    * Temp buffer of tag attributes
    * @private
    * @type {NodeList}
    */
-  const tempTagNodesAttrName = createList<string>();
+  let activeTagNodesAttrName: string | null = null;
 
   /**
    * Cache for nested tags checks
@@ -92,9 +92,10 @@ function parse(input: string, opts: ParseOptions = {}) {
    * Flushes temp tag nodes and its attributes buffers
    * @private
    */
-  function tempTagNodesFlush() {
-    if (tempTagNodes.flush()) {
-      tempTagNodesAttrName.flush();
+  function activeTagNodeFlush() {
+    if (activeTagNode) {
+      activeTagNode = null;
+      activeTagNodesAttrName = null;
     }
   }
 
@@ -108,14 +109,14 @@ function parse(input: string, opts: ParseOptions = {}) {
       return lastNestedNode.content;
     }
 
-    return nodes.arrayRef();
+    return nodes.ref();
   }
 
   /**
    * @private
    */
   function nodesAppendAsString(
-    nodes?: TagNodeTree,
+    nodes: TagNodeTree,
     node?: TagNode,
     isNested = true
   ) {
@@ -137,7 +138,9 @@ function parse(input: string, opts: ParseOptions = {}) {
   /**
    * @private
    */
-  function nodesAppend(nodes?: TagNodeTree, node?: NodeContent) {
+  function nodesAppend(node: NodeContent) {
+    const nodes = getNodesContent() as TagNodeTree;
+
     if (Array.isArray(nodes) && typeof node !== "undefined") {
       if (isTagNode(node)) {
         if (isTagAllowed(node.tag)) {
@@ -156,17 +159,17 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @param {Token} token
    */
   function tagHandleStart(token: Token) {
-    tempTagNodesFlush();
+    activeTagNodeFlush();
 
     const tagNode = TagNode.create(token.getValue(), {}, [], { from: token.getStart(), to: token.getEnd() });
     const isNested = isTokenNested(token);
 
-    tempTagNodes.push(tagNode);
+    activeTagNode = tagNode;
 
     if (isNested) {
       nestedNodes.push(tagNode);
     } else {
-      nodesAppend(getNodesContent(), tagNode);
+      nodesAppend(tagNode);
     }
   }
 
@@ -178,16 +181,16 @@ function parse(input: string, opts: ParseOptions = {}) {
     const tagName = token.getValue().slice(1);
     const lastNestedNode = nestedNodes.flush();
 
-    tempTagNodesFlush();
+    activeTagNodeFlush();
 
     if (lastNestedNode) {
       if (isTagNode(lastNestedNode)) {
         lastNestedNode.setEnd({ from: token.getStart(), to: token.getEnd() });
       }
 
-      nodesAppend(getNodesContent(), lastNestedNode);
+      nodesAppend(lastNestedNode);
     } else if (!isTagNested(tagName)) { // when we have only close tag [/some] without any open tag
-      nodesAppend(getNodesContent(), token.toString({ openTag, closeTag }));
+      nodesAppend(token.toString({ openTag, closeTag }));
     } else if (typeof options.onError === "function") {
       const tag = token.getValue();
       const line = token.getLine();
@@ -206,30 +209,24 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @param {Token} token
    */
   function nodeHandle(token: Token) {
-    /**
-     * @type {TagNode}
-     */
-    const activeTagNode = tempTagNodes.last();
+
     const tokenValue = token.getValue();
     const isNested = isTagNested(token.toString());
 
-    if (activeTagNode !== null) {
+    if (activeTagNode) {
       switch (token.type) {
         case TYPE_ATTR_NAME:
-          tempTagNodesAttrName.push(tokenValue);
-          const attrName = tempTagNodesAttrName.last();
+          activeTagNodesAttrName = tokenValue;
 
-          if (attrName) {
-            activeTagNode.attr(attrName, "");
+          if (tokenValue) {
+            activeTagNode.attr(tokenValue, "");
           }
           break;
 
         case TYPE_ATTR_VALUE:
-          const attrValName = tempTagNodesAttrName.last();
-
-          if (attrValName) {
-            activeTagNode.attr(attrValName, tokenValue);
-            tempTagNodesAttrName.flush();
+          if (activeTagNodesAttrName) {
+            activeTagNode.attr(activeTagNodesAttrName, tokenValue);
+            activeTagNodesAttrName = null;
           } else {
             activeTagNode.attr(tokenValue, tokenValue);
           }
@@ -241,20 +238,20 @@ function parse(input: string, opts: ParseOptions = {}) {
           if (isNested) {
             activeTagNode.append(tokenValue);
           } else {
-            nodesAppend(getNodesContent(), tokenValue);
+            nodesAppend(tokenValue);
           }
           break;
 
         case TYPE_TAG:
           // if tag is not allowed, just pass it as is
-          nodesAppend(getNodesContent(), token.toString({ openTag, closeTag }));
+          nodesAppend(token.toString({ openTag, closeTag }));
           break;
       }
     } else if (token.isText()) {
-      nodesAppend(getNodesContent(), tokenValue);
+      nodesAppend(tokenValue);
     } else if (token.isTag()) {
       // if tag is not allowed, just pass it as is
-      nodesAppend(getNodesContent(), token.toString({ openTag, closeTag }));
+      nodesAppend(token.toString({ openTag, closeTag }));
     }
   }
 
@@ -294,25 +291,20 @@ function parse(input: string, opts: ParseOptions = {}) {
   // eslint-disable-next-line no-unused-vars
   const tokens = tokenizer.tokenize();
 
-  const nodesArr = nodes.arrayRef()
-
   // handles situations where we opened tag, but forget to close them
   // for ex [q]test[/q][u]some[/u][q]some [u]some[/u] // forgot to close [/q]
   // so we need to flush nested content to nodes array
-  const lastNodes = nestedNodes.arrayRef();
+  do {
+    const node = nestedNodes.flush();
 
-  debugger
-
-  for (const node of lastNodes) {
     if (isTagNode(node) && isTagNested(node.tag)) {
       nodesAppendAsString(getNodesContent(), node, false);
-    } else {
-      nodesAppend(getNodesContent(), node);
+    } else if (typeof node !== 'undefined') {
+      nodesAppend(node);
     }
-  }
+  } while (nestedNodes.has());
 
-  debugger
-  return nodesArr;
+  return nodes.ref();
 }
 
 export { parse };

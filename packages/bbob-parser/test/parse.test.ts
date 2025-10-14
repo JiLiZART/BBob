@@ -965,45 +965,29 @@ sdfasdfasdf
   test('parse with lost repeated closing tag', () => {
     const input = parse('Hello World[u]Wrong underline[u] This is another text [u]and this, too[/u]');
 
-    /*
-        +   "[u]",
-    +   "Wrong",
-    +   " ",
-    +   "underline",
-    +   "[u]",
-    +   " ",
-    +   "This",
-    +   " ",
-    +   "is",
-    +   " ",
-    +   "another",
-    +   " ",
-    +   "text",
-    +   " ",
-    +   Object {
-    +     "attrs": Object {},
-    +     "content": Array [
-    +       "and",
-    +       " ",
-    +       "this,",
-    +       " ",
-    +       "too",
-    +     ],
-    +     "end": Object {
-    +       "from": 70,
-    +       "to": 74,
-    +     },
-    +     "start": Object {
-    +       "from": 54,
-    +       "to": 57,
-    +     },
-    +     "tag": "u",
-    +   },
-     */
     expect(input).toBeMatchAST([
-        'Hello',
-        ' ',
-        'World',
+      'Hello',
+      ' ',
+      'World',
+      '[u]',
+      'Wrong',
+      ' ',
+      'underline',
+      '[u]',
+      ' ',
+      'This',
+      ' ',
+      'is',
+      ' ',
+      'another',
+      ' ',
+      'text',
+      ' ',
+      {
+        tag: 'u',
+        attrs: {},
+        content: ['and', ' ', 'this,', ' ', 'too'],
+      }
     ]);
   });
 
