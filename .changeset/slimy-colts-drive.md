@@ -14,7 +14,16 @@
 "@bbob/cli": patch
 ---
 
-fixes problem with context free tags
+Now `@bbob/parser` in context free tags mode correctly parses 
 
-now code like `[code][codeButton]text[/codeButton][/code]` 
-will be parsed correctly to `<code>[codeButton]text[/codeButton]</code>`
+code like
+```html
+[code][codeButton]text[/codeButton][/code]
+```
+
+will be parsed correctly to
+```html
+<code>[codeButton]text[/codeButton]</code>
+```
+
+Fixes #289

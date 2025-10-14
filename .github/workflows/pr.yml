@@ -6,13 +6,8 @@ on:
         description: 'Build & Publish Pre-alpha Release'
         required: true
         type: boolean
-        default: true
-#  workflow_run:
-#    workflows:
-#      - Tests
-#      - Benchmark
-#    types:
-#      - completed
+        default: false
+
   pull_request:
     paths-ignore:
       - '.changeset/**'
@@ -31,6 +26,7 @@ permissions:
 jobs:
   build:
     name: 'Build & Publish Pre-alpha Release'
+    if: ${{ github.event.inputs.test == 'true' }}
 
     runs-on: ubuntu-latest
 
