@@ -74,20 +74,28 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     col++;
   };
 
-  const checkContextFreeMode = (name: string, isClosingTag?: boolean) => {
+  const setupContextFreeTag = (name: string, isClosingTag?: boolean) => {
     if (contextFreeTag !== '' && isClosingTag) {
       contextFreeTag = '';
     }
 
-    if (contextFreeTag === '' && contextFreeTags.includes(name.toLowerCase())) {
-      contextFreeTag = name;
+    const tagName = name.toLowerCase()
+
+    if (contextFreeTag === '' && isTokenNested(name) && contextFreeTags.includes(tagName)) {
+      contextFreeTag = tagName;
     }
   };
+  const toEndTag = (tagName: string) => `${openTag}${SLASH}${tagName}${closeTag}`
 
   const chars = createCharGrabber(buffer, { onSkip });
 
   /**
    * Emits newly created token to subscriber
+   *
+   * @param {number} type - 1 - word, 2 - tag, 3 - attr-name, 4 - attr-value, 5 - space, 6 - new-line
+   * @param {string} value - token value
+   * @param {number} startPos - start position
+   * @param {number} endPos - end position
    */
   function emitToken(type: number, value: string, startPos?: number, endPos?: number) {
     const token = createTokenOfType(type, value, row, prevCol, startPos, endPos);
@@ -178,12 +186,13 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     const name = tagChars.grabWhile(validName);
 
     emitToken(TYPE_TAG, name, start, masterStartPos + tagChars.getLength() + 1);
-    checkContextFreeMode(name);
+
+    setupContextFreeTag(name);
 
     tagChars.skip();
     prevCol++;
 
-    // in cases when we has [url=someval]GET[/url] and we dont need to parse all
+    // in cases when we have [url=someval]GET[/url] and we don't need to parse all
     if (isSingleValueTag) {
       return TAG_STATE_VALUE;
     }
@@ -201,7 +210,6 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
     // detect case where we have '[My word [tag][/tag]' or we have '[My last line word'
     const substr = chars.substrUntilChar(closeTag);
-
 
     const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
     const isNextCharReserved = nextChar && isCharReserved(nextChar)
@@ -228,7 +236,8 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       chars.skip(); // skip closeTag
 
       emitToken(TYPE_TAG, name, startPos, endPos);
-      checkContextFreeMode(name, isClosingTag);
+
+      setupContextFreeTag(name, isClosingTag);
 
       return STATE_WORD;
     }
@@ -277,12 +286,11 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
     if (chars.getCurr() === openTag) {
       if (contextFreeTag) {
-        const fullTagLen = openTag.length + SLASH.length + contextFreeTag.length;
-        const fullTagName = `${openTag}${SLASH}${contextFreeTag}`;
-        const foundTag = chars.grabN(fullTagLen);
-        const isEndContextFreeMode = foundTag === fullTagName;
+        const fullTagName = toEndTag(contextFreeTag);
+        const foundTag = chars.grabN(fullTagName.length);
+        const isContextFreeEnded = foundTag.toLowerCase() === fullTagName.toLowerCase();
 
-        if (isEndContextFreeMode) {
+        if (isContextFreeEnded) {
           return STATE_TAG;
         }
       } else if (chars.includes(closeTag)) {
@@ -357,12 +365,15 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   }
 
   function isTokenNested(tokenValue: string) {
-    const value = openTag + SLASH + tokenValue;
+    const value = toEndTag(tokenValue);
 
     if (nestedMap.has(value)) {
       return !!nestedMap.get(value);
     } else {
-      const status = caseFreeTags ? (buffer.toLowerCase().indexOf(value.toLowerCase()) > -1) : (buffer.indexOf(value) > -1);
+      const buf = caseFreeTags ? buffer.toLowerCase() : buffer;
+      const val = caseFreeTags ? value.toLowerCase() : value;
+
+      const status = buf.indexOf(val) > -1;
 
       nestedMap.set(value, status);
 

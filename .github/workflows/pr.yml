@@ -1,11 +1,13 @@
 name: Pull Request
 on:
-#  workflow_run:
-#    workflows:
-#      - Tests
-#      - Benchmark
-#    types:
-#      - completed
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Build & Publish Pre-alpha Release'
+        required: true
+        type: boolean
+        default: false
+
   pull_request:
     paths-ignore:
       - '.changeset/**'
@@ -23,7 +25,8 @@ permissions:
 
 jobs:
   build:
-    name: 'Build & pre-alpha release'
+    name: 'Build & Publish Pre-alpha Release'
+    if: ${{ github.event.inputs.test == 'true' }}
 
     runs-on: ubuntu-latest
 
