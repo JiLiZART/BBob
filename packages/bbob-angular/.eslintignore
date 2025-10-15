@@ -1,0 +1,7 @@
+dist
+es
+lib
+test
+types
+test/*.d.ts
+test/*.map

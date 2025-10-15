@@ -1,0 +1,85 @@
+{
+  "name": "@bbob/wc",
+  "version": "4.2.0",
+  "description": "A BBCode Web Component part of @bbob",
+  "keywords": [
+    "html5",
+    "web",
+    "components",
+    "web-components",
+    "bbcode",
+    "parser",
+    "bbob"
+  ],
+  "dependencies": {
+    "@bbob/core": "*",
+    "@bbob/html": "*",
+    "@bbob/plugin-helper": "*",
+    "@bbob/preset-html5": "*",
+    "@bbob/types": "*"
+  },
+  "devDependencies": {
+    "@bbob/preset-html5": "*",
+    "@testing-library/dom": "^10.4.0"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "browser": "dist/index.js",
+  "browserName": "BbobWeb",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.js",
+      "browser": "./dist/index.min.js",
+      "umd": "./dist/index.min.js"
+    }
+  },
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JiLiZART/bbob/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
+  "scripts": {
+    "build:commonjs": "pkg-task",
+    "build:es": "pkg-task",
+    "build:umd": "pkg-task",
+    "build": "pkg-task",
+    "test": "pkg-task",
+    "cover": "pkg-task",
+    "lint": "pkg-task",
+    "size": "pkg-task",
+    "bundlesize": "pkg-task",
+    "types": "pkg-task",
+    "prepublishOnly": "npm run build"
+  },
+  "size-limit": [
+    {
+      "path": "./dist/index.min.js",
+      "size": "8 KB"
+    }
+  ],
+  "bundlesize": [
+    {
+      "path": "./dist/index.min.js",
+      "maxSize": "8 KB"
+    }
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "es",
+    "types"
+  ]
+}

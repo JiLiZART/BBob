@@ -1,5 +1,5 @@
 {
-  "name": "vite",
+  "name": "wc-vite",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,13 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "@bbob/html": "*",
-    "@bbob/preset-html5": "*",
-    "@bbob/types": "*"
-  },
   "devDependencies": {
-    "typescript": "^5.7.2",
-    "vite": "^6.0.0"
+    "typescript": "~5.6.2",
+    "vite": "^6.0.1"
   }
 }
