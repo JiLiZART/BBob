@@ -156,10 +156,10 @@ describe('lexer', () => {
     const tokens = tokenize(input);
 
     const output = [
-      [TYPE.TAG, 'url', 0, 0, 0, 13],
+      [TYPE.TAG, 'url', 0, 0, 0, 48],
       [TYPE.ATTR_VALUE, 'https://example.org/ fakeUnique=fakeUnique', 5, 0],
-      [TYPE.WORD, 'T', 13, 0],
-      [TYPE.TAG, '/url', 17, 0, 16, 22],
+      [TYPE.WORD, 'T', 48, 0],
+      [TYPE.TAG, '/url', 50, 0, 49, 55],
     ];
 
     expect(tokens).toBeMatchOutput(output);

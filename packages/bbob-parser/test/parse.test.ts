@@ -643,8 +643,6 @@ describe('Parser', () => {
 
   test('parse url tag with fakeUnique', () => {
     const ast = parse('[url=https://example.org/ fakeUnique=fakeUnique]T[/url]');
-    const ast2 = parse('[url]T[/url]');
-    const ast3 = parse('[url src=some]T[/url]');
 
     expect(ast).toBeMatchAST([
       {
@@ -655,11 +653,11 @@ describe('Parser', () => {
         content: ['T'],
         start: {
           from: 0,
-          to: 66,
+          to: 48,
         },
         end: {
-          from: 69,
-          to: 75,
+          from: 49,
+          to: 55,
         },
       },
     ]);
