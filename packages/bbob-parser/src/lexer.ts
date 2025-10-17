@@ -144,7 +144,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
         const isNextEQ = nextChar === EQ;
         const isWS = isWhiteSpace(char);
         // const isPrevWS = isWhiteSpace(prevChar);
-        const isNextWS = nextChar && isWhiteSpace(nextChar);
+        const isNextWS = !!nextChar && isWhiteSpace(nextChar);
 
         if (stateSpecial && isSpecialChar(char)) {
           return true;
@@ -205,6 +205,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   function stateTag() {
     const currChar = chars.getCurr();
     const nextChar = chars.getNext();
+    const isNextCharReserved = Boolean(nextChar && isCharReserved(nextChar))
 
     chars.skip(); // skip openTag
 
@@ -212,7 +213,6 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     const substr = chars.substrUntilChar(closeTag);
 
     const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
-    const isNextCharReserved = nextChar && isCharReserved(nextChar)
     const isLastChar = chars.isLast()
     const hasSpace = substr.indexOf(SPACE) >= 0;
     const isSpaceRestricted = hasSpace && options.whitespaceInTags === false;
@@ -228,6 +228,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     // [/myTag]
     const isClosingTag = substr[0] === SLASH;
 
+    // [url] or [/url]
     if (isNoAttrsInTag || isClosingTag) {
       const startPos = chars.getPos() - 1;
       const name = chars.grabWhile((char) => char !== closeTag);
@@ -250,12 +251,16 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     const silent = true;
     const tagStr = chars.grabWhile((char) => char !== closeTag, silent);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
-    const hasSpace = tagGrabber.includes(SPACE);
+    const eqParts = tagStr.split(EQ);
+    const tagName = eqParts[0];
+    const isEndTag = tagName[0] === SLASH;
+    const isSingleAttrTag = tagName.indexOf(SPACE) === -1;
+    const isSingleValueTag = !isEndTag && isSingleAttrTag
 
     tagMode = TAG_STATE_NAME;
 
     while (tagGrabber.hasNext()) {
-      tagMode = nextTagState(tagGrabber, !hasSpace, startPos);
+      tagMode = nextTagState(tagGrabber, isSingleValueTag, startPos);
     }
 
     chars.skip(); // skip closeTag
