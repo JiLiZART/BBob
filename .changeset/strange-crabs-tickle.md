@@ -19,11 +19,25 @@ Now `@bbob/parser` correctly parses tags like
 ```html
 [url=javascript:alert('XSS ME');]TEXT[/url]
 ```
-to
-```json 
-
-
+to correct attributes
+```json
+{
+  "tag": "url",
+  "attrs": {
+    "javascript:alert('XSS ME')": "javascript:alert('XSS ME')"
+  },
+  "content": [
+    "TEXT"
+  ],
+  "start": {
+    "from": 0,
+    "to": 38
+  },
+  "end": {
+    "from": 38,
+    "to": 42
+  }
+}
 ```
-
 
 Fixes #300
