@@ -1,6 +1,6 @@
 {
   "name": "@bbob/vue2",
-  "version": "4.3.0",
+  "version": "4.3.1",
   "description": "A BBCode to Vue2 Renderer part of @bbob",
   "keywords": [
     "vue",

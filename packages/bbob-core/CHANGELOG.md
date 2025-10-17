@@ -1,5 +1,42 @@
 # Change Log
 
+## 4.3.1
+
+### Patch Changes
+
+- [#281](https://github.com/JiLiZART/BBob/pull/281) [`322f88a`](https://github.com/JiLiZART/BBob/commit/322f88ad423c87252bda10c7dfd8677c8d6c9ced) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Now `@bbob/parser` correctly parses tags like
+
+  ```html
+  [url=javascript:alert('XSS ME');]TEXT[/url]
+  ```
+
+  to correct attributes
+
+  ```json
+  {
+    "tag": "url",
+    "attrs": {
+      "javascript:alert('XSS ME')": "javascript:alert('XSS ME')"
+    },
+    "content": ["TEXT"],
+    "start": {
+      "from": 0,
+      "to": 38
+    },
+    "end": {
+      "from": 38,
+      "to": 42
+    }
+  }
+  ```
+
+  Fixes #300
+
+- Updated dependencies [[`322f88a`](https://github.com/JiLiZART/BBob/commit/322f88ad423c87252bda10c7dfd8677c8d6c9ced)]:
+  - @bbob/parser@4.3.1
+  - @bbob/plugin-helper@4.3.1
+  - @bbob/types@4.3.1
+
 ## 4.3.0
 
 ### Minor Changes
