@@ -165,6 +165,35 @@ describe('lexer', () => {
     expect(tokens).toBeMatchOutput(output);
   });
 
+  test('single tag with xss', () => {
+    const input = '[url=javascript:alert(\'XSS ME\');]TEXT[/url]';
+    const tokens = tokenize(input);
+
+    const output = [
+      [TYPE.TAG, 'url', 0, 0, 0, 33],
+      [TYPE.ATTR_VALUE, 'javascript:alert(\'XSS ME\');', 5, 0],
+      [TYPE.WORD, 'TEXT', 33, 0],
+      [TYPE.TAG, '/url', 38, 0, 37, 43],
+    ];
+
+    expect(tokens).toBeMatchOutput(output);
+  });
+
+  test('single tag with xss and double quotes', () => {
+    const input = '[url=javascript:alert("XSS ME");]TEXT[/url]';
+    const tokens = tokenize(input);
+
+    const output = [
+      [TYPE.TAG, 'url', 0, 0, 0, 33],
+      [TYPE.ATTR_VALUE, 'javascript:alert("XSS ME', 5, 0],
+      [TYPE.ATTR_VALUE, ');', 31, 0],
+      [TYPE.WORD, 'TEXT', 33, 0],
+      [TYPE.TAG, '/url', 38, 0, 37, 43],
+    ];
+
+    expect(tokens).toBeMatchOutput(output);
+  });
+
   test('single fake tag', () => {
     const input = '[ user=111]';
     const tokens = tokenize(input);

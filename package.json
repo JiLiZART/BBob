@@ -17,7 +17,8 @@
     "types": "nx run-many --target=types",
     "release": "npm run build && npm run types && changeset publish",
     "lint": "nx run-many --target=lint",
-    "cleanup": "node scripts/cleanup"
+    "cleanup": "node scripts/cleanup",
+    "changeset": "npx changeset"
   },
   "author": {
     "name": "Nikolay Kostyurin <jilizart@gmail.com>"
