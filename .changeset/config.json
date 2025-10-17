@@ -30,10 +30,10 @@
   "updateInternalDependencies": "patch",
   "ignore": [
     "@bbob/scripts",
-    "react-vite",
-    "svelte-vite",
-    "vite",
-    "vue3-vite",
+    "react-vite-example",
+    "svelte-vite-example",
+    "vite-example",
+    "vue3-vite-example",
     "vue2-example"
   ]
 }
