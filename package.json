@@ -15,6 +15,7 @@
     "cover": "nx run-many --target=cover",
     "build": "nx run-many --target=build",
     "types": "nx run-many --target=types",
+    "attw": "nx run-many --target=attw",
     "release": "npm run build && npm run types && changeset publish",
     "lint": "nx run-many --target=lint",
     "cleanup": "node scripts/cleanup"
@@ -90,7 +91,8 @@
     "lint": "@/eslint .",
     "types": "@/tsc && @/ts2mjs types",
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize .",
-    "size": "npm run build && @/cross-env NODE_ENV=production @/size-limit ."
+    "size": "npm run build && @/cross-env NODE_ENV=production @/size-limit .",
+    "attw": "npx --yes @arethetypeswrong/cli --profile node16 --pack ."
   },
   "packageManager": "pnpm@8.15.1",
   "pnpm": {
