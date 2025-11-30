@@ -177,11 +177,11 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       xbbcode-parser:
-        specifier: 0.1.2
-        version: 0.1.2
+        specifier: 0.3.1
+        version: 0.3.1
       ya-bbcode:
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 5.0.0
+        version: 5.0.0
 
   examples/react-vite:
     dependencies:
@@ -17966,8 +17966,8 @@ packages:
         optional: true
     dev: true
 
-  /xbbcode-parser@0.1.2:
-    resolution: {integrity: sha512-CaSmiqVw3xH35u7zSi2eFhjCqNFcNEZFERYh9ngEteAJUv92Dk8XdHTzG6/vLshyDrWWDtJk05cCt54GUr+iSA==}
+  /xbbcode-parser@0.3.1:
+    resolution: {integrity: sha512-zUKKj1+YOpM0U9JJe95FRwDMAcfuNRwIaSdLitmlbjr5A1rX/rsY/l2mf71OGp+67Uh9ZQNfgw2nkDZlbh2BVQ==}
     dev: false
 
   /xml-name-validator@4.0.0:
@@ -17993,9 +17993,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /ya-bbcode@1.0.12:
-    resolution: {integrity: sha512-CI/2AmfmRDv/qxIpaTFymrzpnEn4VUa8Jsnoad6eidkhjQ8UTyim+XwPhDu/r9IZh9uzJugXZV0iyJQgX1FSCA==}
-    engines: {node: '>=8'}
+  /ya-bbcode@5.0.0:
+    resolution: {integrity: sha512-ymMEJ4FnJqYTKonrpMXUQ6BRVKiloCu7c9DPWGgW5W+gfgLIYRaJdFiggoxd//Cedt0SyAvYZd3DC7wZieWhHg==}
+    engines: {node: '>=22', npm: '>=10'}
     dev: false
 
   /yallist@2.1.2:
