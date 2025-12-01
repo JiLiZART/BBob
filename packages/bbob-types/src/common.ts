@@ -6,6 +6,7 @@ export interface TagNodeObject<TagValue extends any = any> {
   content?: TagNodeTree<TagValue>;
   start?: TagPosition;
   end?: TagPosition;
+  toJSON?: () => TagNodeObject<TagValue>;
 }
 
 export type NodeContent<TagValue extends any = any> = TagNodeObject<TagValue> | StringNode | null;

@@ -1,12 +1,36 @@
 import { parse } from '../src';
 import type { TagNode, TagNodeTree } from "@bbob/types";
 
-describe('Parser', () => {
-  const expectOutput = (ast: TagNodeTree, output: Partial<TagNodeTree>) => {
-    expect(ast).toBeInstanceOf(Array);
-    expect(ast).toMatchObject(output as {} | TagNode[]);
-  };
+const astToJSON = (ast: TagNodeTree) => Array.isArray(ast) ? ast.map(item => {
+  if (typeof item === 'object' && typeof item.toJSON === 'function') {
+    return item.toJSON()
+  }
 
+  return item
+}) : ast
+
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeMatchAST(expected: Array<unknown>): CustomMatcherResult;
+    }
+  }
+}
+
+expect.extend({
+  toBeMatchAST(ast, output) {
+
+    expect(astToJSON(ast)).toMatchObject(output as {} | TagNode[]);
+
+    return {
+      message: () =>
+          `no valid output`,
+      pass: true,
+    };
+  },
+});
+
+describe('Parser', () => {
   test('parse paired tags tokens', () => {
     const ast = parse('[best name=value]Foo Bar[/best]');
     const output = [
@@ -31,7 +55,7 @@ describe('Parser', () => {
       },
     ];
 
-    expectOutput(ast, output);
+    expect(ast).toBeMatchAST(output);
   });
 
   test('parse paired tags tokens 2', () => {
@@ -56,7 +80,7 @@ describe('Parser', () => {
       },
     ];
 
-    expectOutput(ast, output);
+    expect(ast).toBeMatchAST(output);
   });
 
   describe('onlyAllowTags', () => {
@@ -87,7 +111,7 @@ describe('Parser', () => {
         },
       ];
 
-      expectOutput(ast, output);
+      expect(ast).toBeMatchAST(output);
     });
 
     test('parse only allowed tags with params', () => {
@@ -96,7 +120,7 @@ describe('Parser', () => {
       };
       const ast = parse('hello [blah foo="bar"]world[/blah]', options);
 
-      expectOutput(ast, [
+      expect(ast).toBeMatchAST([
         'hello',
         ' ',
         '[blah foo="bar"]',
@@ -111,7 +135,7 @@ describe('Parser', () => {
       };
       const ast = parse('hello [blah="bar"]world[/blah]', options);
 
-      expectOutput(ast, [
+      expect(ast).toBeMatchAST([
         'hello',
         ' ',
         '[blah="bar"]',
@@ -180,7 +204,7 @@ describe('Parser', () => {
         '[/tab]',
       ];
 
-      expectOutput(ast, output);
+      expect(ast).toBeMatchAST(output);
     });
 
     test('parse only allowed tags case insensitive', () => {
@@ -210,7 +234,7 @@ describe('Parser', () => {
         },
       ];
 
-      expectOutput(ast, output);
+      expect(ast).toBeMatchAST(output);
     });
   });
 
@@ -243,8 +267,53 @@ describe('Parser', () => {
         }
       ];
 
-      expectOutput(ast, output);
+      expect(ast).toBeMatchAST(output);
     });
+
+    test('nesting similar context free tags [code][codeButton]text[/codeButton][/code]', () => {
+      const ast = parse('[code][codeButton]text[/codeButton][/code]', {
+        contextFreeTags: ['code']
+      });
+      const output = [
+        {
+          tag: 'code',
+          attrs: {},
+          content: [
+            '[',
+            'codeButton]text',
+            '[',
+            '/codeButton]'
+          ]
+        }
+      ];
+
+      expect(ast).toBeMatchAST(output);
+    })
+
+    test('broken nesting similar context free tags [code][codeButton]text[/codeButton][code]', () => {
+      const ast = parse('[code][codeButton]text[/codeButton][code]', {
+        contextFreeTags: ['code']
+      });
+      const output = [
+        {
+          attrs: {},
+          content: [],
+          tag: 'code',
+        },
+        {
+          attrs: {},
+          content: ['text'],
+          tag: 'codeButton',
+        },
+        {
+          attrs: {},
+          content: [],
+          tag: 'code',
+        },
+      ];
+
+      expect(ast).toBeMatchAST(output);
+    })
   });
 
   describe('caseFreeTags', () => {
@@ -268,7 +337,7 @@ describe('Parser', () => {
         "[/H1]"
       ];
 
-      expectOutput(ast, output);
+      expect(ast).toBeMatchAST(output);
     });
 
     test('case free tags', () => {
@@ -295,9 +364,56 @@ describe('Parser', () => {
         }
       ];
 
-      expectOutput(ast, output);
+      expect(ast).toBeMatchAST(output);
     });
   })
+
+  test('nesting similar tags [code][codeButton]text[/codeButton][/code]', () => {
+    const ast = parse('[code][codeButton]text[/codeButton][/code]');
+    const output = [
+      {
+        tag: 'code',
+        attrs: {},
+        content: [
+          {
+            tag: 'codeButton',
+            attrs: {},
+            content: [
+              'text'
+            ]
+          }
+        ]
+      }
+    ];
+
+    expect(ast).toBeMatchAST(output);
+  })
+
+  test('forgot close code tag [code][codeButton]text[/codeButton][code]', () => {
+    const ast = parse('[code][codeButton]text[/codeButton][code]');
+    const output = [
+      {
+        tag: 'code',
+        attrs: {},
+        content: []
+      },
+      {
+        tag: 'codeButton',
+        attrs: {},
+        content: [
+          'text'
+        ]
+      },
+      {
+        tag: 'code',
+        attrs: {},
+        content: []
+      }
+    ];
+
+    expect(ast).toBeMatchAST(output);
+  })
+
 
   test('parse inconsistent tags', () => {
     const ast = parse('[h1 name=value]Foo [Bar] /h1]');
@@ -316,7 +432,7 @@ describe('Parser', () => {
       'Foo',
       ' ',
       {
-        tag: 'bar',
+        tag: 'Bar',
         attrs: {},
         content: [],
         start: {
@@ -328,7 +444,7 @@ describe('Parser', () => {
       '/h1]',
     ];
 
-    expectOutput(ast, output);
+    expect(ast).toBeMatchAST(output);
   });
 
   test('parse closed tag', () => {
@@ -337,7 +453,7 @@ describe('Parser', () => {
       '[/h1]',
     ];
 
-    expectOutput(ast, output);
+    expect(ast).toBeMatchAST(output);
   });
 
   test('parse tag with value param', () => {
@@ -360,7 +476,7 @@ describe('Parser', () => {
       },
     ];
 
-    expectOutput(ast, output);
+    expect(ast).toBeMatchAST(output);
   });
 
   test('parse tag with quoted param with spaces', () => {
@@ -385,7 +501,7 @@ describe('Parser', () => {
       },
     ];
 
-    expectOutput(ast, output);
+    expect(ast).toBeMatchAST(output);
   });
 
   test('parse single tag with params', () => {
@@ -404,7 +520,7 @@ describe('Parser', () => {
       },
     ];
 
-    expectOutput(ast, output);
+    expect(ast).toBeMatchAST(output);
   });
 
   test('detect inconsistent tag', () => {
@@ -463,14 +579,14 @@ describe('Parser', () => {
       },
     ];
 
-    expectOutput(ast, output);
+    expect(ast).toBeMatchAST(output);
   });
 
   // @TODO: this is breaking change behavior
   test.skip('parse tags with single attributes like disabled', () => {
     const ast = parse('[b]hello[/b] [textarea disabled]world[/textarea]');
 
-    expectOutput(ast, [
+    expect(ast).toBeMatchAST([
       {
         tag: 'b',
         attrs: {},
@@ -506,7 +622,7 @@ describe('Parser', () => {
   test('parse url tag with get params', () => {
     const ast = parse('[url=https://github.com/JiLiZART/bbob/search?q=any&unscoped_q=any]GET[/url]');
 
-    expectOutput(ast, [
+    expect(ast).toBeMatchAST([
       {
         tag: 'url',
         attrs: {
@@ -525,13 +641,35 @@ describe('Parser', () => {
     ]);
   });
 
+  test('parse url tag with fakeUnique', () => {
+    const ast = parse('[url=https://example.org/ fakeUnique=fakeUnique]T[/url]');
+
+    expect(ast).toBeMatchAST([
+      {
+        tag: 'url',
+        attrs: {
+          'https://example.org/ fakeUnique=fakeUnique': 'https://example.org/ fakeUnique=fakeUnique',
+        },
+        content: ['T'],
+        start: {
+          from: 0,
+          to: 48,
+        },
+        end: {
+          from: 49,
+          to: 55,
+        },
+      },
+    ]);
+  });
+
   test('parse triple nested tags', () => {
     const ast = parse(`this is outside [spoiler title="name with
       multiline
       attr value"] this is a spoiler
       [b]this is bold [i]this is bold and italic[/i] this is bold again[/b]
       [/spoiler]this is outside again`);
-    expectOutput(ast, [
+    expect(ast).toBeMatchAST([
       "this",
       " ",
       "is",
@@ -632,7 +770,7 @@ describe('Parser', () => {
         [avatar href="/avatar/4/3/b/1606.jpg@20x20?cache=1561462725&bgclr=ffffff" size=xs][/avatar]
          Group Name Go[/url]    `);
 
-    expectOutput(ast, [
+    expect(ast).toBeMatchAST([
       {
         tag: 'url',
         attrs: {
@@ -684,7 +822,7 @@ describe('Parser', () => {
   test('parse url tag with # and = symbols [google docs]', () => {
     const ast = parse('[url href=https://docs.google.com/spreadsheets/d/1W9VPUESF_NkbSa_HtRFrQNl0nYo8vPCxJFy7jD3Tpio/edit#gid=0]Docs[/url]');
 
-    expectOutput(ast, [
+    expect(ast).toBeMatchAST([
       {
         tag: 'url',
         attrs: {
@@ -710,8 +848,7 @@ sdfasdfasdf
 
 [url=xxx]xxx[/url]`;
 
-    expectOutput(
-        parse(str),
+    expect(parse(str)).toBeMatchAST(
         [
           {
             tag: 'quote', attrs: {}, content: ['some'],
@@ -760,8 +897,7 @@ sdfasdfasdf
   test('parse with lost closing tag on from', () => {
     const str = `[quote]xxxsdfasdf[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url]`;
 
-    expectOutput(
-        parse(str),
+    expect(parse(str)).toBeMatchAST(
         [
           '[quote]',
           'xxxsdfasdf',
@@ -806,8 +942,7 @@ sdfasdfasdf
   test('parse with lost closing tag on to', () => {
     const str = `[quote]some[/quote][color=red]test[/color]sdfasdfasdf[url=xxx]xxx[/url][quote]xxxsdfasdf`;
 
-    expectOutput(
-        parse(str),
+    expect(parse(str)).toBeMatchAST(
         [
           {
             tag: 'quote', attrs: {}, content: ['some'],
@@ -849,10 +984,40 @@ sdfasdfasdf
     );
   });
 
+  test('parse with lost repeated closing tag', () => {
+    const input = parse('Hello World[u]Wrong underline[u] This is another text [u]and this, too[/u]');
+
+    expect(input).toBeMatchAST([
+      'Hello',
+      ' ',
+      'World',
+      '[u]',
+      'Wrong',
+      ' ',
+      'underline',
+      '[u]',
+      ' ',
+      'This',
+      ' ',
+      'is',
+      ' ',
+      'another',
+      ' ',
+      'text',
+      ' ',
+      {
+        tag: 'u',
+        attrs: {},
+        content: ['and', ' ', 'this,', ' ', 'too'],
+      }
+    ]);
+  });
+
+
   test('parse with url in tag content', () => {
     const input = parse('[img]https://tw.greywool.com/i/e3Ph5.png[/img]');
 
-    expectOutput(input, [
+    expect(input).toBeMatchAST([
       {
         tag: 'img',
         attrs: {},
@@ -874,7 +1039,7 @@ sdfasdfasdf
       whitespaceInTags: false
     })
 
-    expectOutput(input, [
+    expect(input).toBeMatchAST([
       {
         tag: 'b',
         attrs: {},
@@ -913,7 +1078,7 @@ sdfasdfasdf
       const content = `<button id="test0" class="value0" title="value1">class="value0" title="value1"</button>`;
       const ast = parseHTML(content);
 
-      expectOutput(ast, [
+      expect(ast).toBeMatchAST([
         {
           "tag": "button",
           "attrs": {
@@ -942,7 +1107,7 @@ sdfasdfasdf
       const content = `<button id="test1" class=value2 disabled required>class=value2 disabled</button>`;
       const ast = parseHTML(content);
 
-      expectOutput(ast, [
+      expect(ast).toBeMatchAST([
         {
           "tag": "button",
           "attrs": {
@@ -972,7 +1137,7 @@ sdfasdfasdf
       const content = `<button id="test2" class="value4"title="value5">class="value4"title="value5"</button>`;
       const ast = parseHTML(content);
 
-      expectOutput(ast, [
+      expect(ast).toBeMatchAST([
         {
           "tag": "button",
           "attrs": {
@@ -1000,7 +1165,7 @@ sdfasdfasdf
         enableEscapeTags: true
       });
 
-      expectOutput(ast, [
+      expect(ast).toBeMatchAST([
         '[',
         'b',
         ']',
@@ -1016,7 +1181,7 @@ sdfasdfasdf
         enableEscapeTags: true
       });
 
-      expectOutput(ast, [
+      expect(ast).toBeMatchAST([
         '\\',
         '[',
         'b',
