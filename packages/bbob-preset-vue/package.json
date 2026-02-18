@@ -8,6 +8,7 @@
     "vue"
   ],
   "dependencies": {
+    "@bbob/plugin-helper": "*",
     "@bbob/preset-html5": "*",
     "@bbob/types": "*"
   },
