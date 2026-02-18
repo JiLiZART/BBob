@@ -29,6 +29,11 @@ export const createTags = (tags: PresetTagsDefinition<string>) => {
       ...tags.s?.(...args),
       ...tagAttr({ textDecoration: 'line-through' }),
     }),
+
+    spoiler: (...args) => ({
+      ...tags.spoiler?.(...args),
+      ...tagAttr({ backgroundColor: '#000', color: 'transparent' }),
+    }),
   }
 
   return newTags

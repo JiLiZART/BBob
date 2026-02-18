@@ -140,6 +140,12 @@ describe('@bbob/preset-html5', () => {
     expect(parse(input)).toBe(result);
   });
 
+  test('[spoiler]hidden text[/spoiler]', () => {
+    const input = '[spoiler]hidden text[/spoiler]';
+    const result = '<span class="bb-spoiler" style="background-color: #000; color: transparent;">hidden text</span>';
+    expect(parse(input)).toBe(result);
+  });
+
   test(`[table][/table]`, () => {
     const input = `[table][tr][td]table 1[/td][td]table 2[/td][/tr][tr][td]table 3[/td][td]table 4[/td][/tr][/table]`;
     const result = `<table><tr><td>table 1</td><td>table 2</td></tr><tr><td>table 3</td><td>table 4</td></tr></table>`;
