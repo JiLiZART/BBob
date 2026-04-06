@@ -371,16 +371,16 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
   function isTokenNested(tokenValue: string) {
     const value = toEndTag(tokenValue);
+    const val = caseFreeTags ? value.toLowerCase() : value;
 
-    if (nestedMap.has(value)) {
-      return !!nestedMap.get(value);
+    if (nestedMap.has(val)) {
+      return !!nestedMap.get(val);
     } else {
       const buf = caseFreeTags ? buffer.toLowerCase() : buffer;
-      const val = caseFreeTags ? value.toLowerCase() : value;
 
       const status = buf.indexOf(val) > -1;
 
-      nestedMap.set(value, status);
+      nestedMap.set(val, status);
 
       return status;
     }
