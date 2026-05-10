@@ -11,7 +11,7 @@ const myPreset = preset.extend(defTags => ({
   })
 }))
 
-const bbcode = 'Text [b]bolded[/b] and [avatar]Some Name[/avatar]'
+let bbcode = 'Text [b]bolded[/b] and [avatar]Some Name[/avatar]'
 const plugins = [
   myPreset()
 ]
