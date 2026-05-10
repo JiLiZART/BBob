@@ -177,8 +177,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       xbbcode-parser:
-        specifier: 0.1.2
-        version: 0.1.2
+        specifier: 0.3.1
+        version: 0.3.1
       ya-bbcode:
         specifier: 1.0.12
         version: 1.0.12
@@ -18324,8 +18324,8 @@ packages:
         optional: true
     dev: true
 
-  /xbbcode-parser@0.1.2:
-    resolution: {integrity: sha512-CaSmiqVw3xH35u7zSi2eFhjCqNFcNEZFERYh9ngEteAJUv92Dk8XdHTzG6/vLshyDrWWDtJk05cCt54GUr+iSA==}
+  /xbbcode-parser@0.3.1:
+    resolution: {integrity: sha512-zUKKj1+YOpM0U9JJe95FRwDMAcfuNRwIaSdLitmlbjr5A1rX/rsY/l2mf71OGp+67Uh9ZQNfgw2nkDZlbh2BVQ==}
     dev: false
 
   /xml-name-validator@4.0.0:
