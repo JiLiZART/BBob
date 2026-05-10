@@ -1,9 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import * as Vue from 'vue'
 import preset from '@bbob/preset-vue';
-import { render } from '@testing-library/vue';
+import { render } from '@testing-library/vue3';
 
 import Component from '../src/Component';
 

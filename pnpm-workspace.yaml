@@ -3,3 +3,13 @@ packages:
   - 'examples/*'
   - 'scripts'
   - 'benchmark'
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+  microtime: true
+  nx: true
+  svelte-preprocess: true
+  v8-profiler-next: true

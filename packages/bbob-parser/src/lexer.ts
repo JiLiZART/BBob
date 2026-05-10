@@ -32,13 +32,11 @@ const TAG_STATE_NAME = 0;
 const TAG_STATE_ATTR = 1;
 const TAG_STATE_VALUE = 2;
 
-const WHITESPACES = [SPACE, TAB];
-const SPECIAL_CHARS = [EQ, SPACE, TAB];
 const END_POS_OFFSET = 2;  // length + start position offset
 
-const isWhiteSpace = (char: string) => (WHITESPACES.indexOf(char) >= 0);
+const isWhiteSpace = (char: string) => char === SPACE || char === TAB;
 const isEscapeChar = (char: string) => char === BACKSLASH;
-const isSpecialChar = (char: string) => (SPECIAL_CHARS.indexOf(char) >= 0);
+const isSpecialChar = (char: string) => char === EQ || char === SPACE || char === TAB;
 const isNewLine = (char: string) => char === N;
 const unq = (val: string) => unquote(trimChar(val, QUOTEMARK));
 
@@ -63,12 +61,9 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   const onToken = options.onToken || (() => {
   });
 
-  const RESERVED_CHARS = [closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM];
-  const NOT_CHAR_TOKENS = [
-    openTag, SPACE, TAB, N,
-  ];
-  const isCharReserved = (char: string) => (RESERVED_CHARS.indexOf(char) >= 0);
-  const isCharToken = (char: string) => (NOT_CHAR_TOKENS.indexOf(char) === -1);
+  const RESERVED_CHARS_SET = new Set([closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM]);
+  const isCharReserved = (char: string) => RESERVED_CHARS_SET.has(char);
+  const isCharToken = (char: string) => char !== openTag && char !== SPACE && char !== TAB && char !== N;
   const isEscapableChar = (char: string) => (char === openTag || char === closeTag || char === BACKSLASH);
   const onSkip = () => {
     col++;
@@ -369,21 +364,27 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     return tokens;
   }
 
+  let lowercaseBuffer: string | null = null;
+
   function isTokenNested(tokenValue: string) {
     const value = toEndTag(tokenValue);
 
     if (nestedMap.has(value)) {
       return !!nestedMap.get(value);
-    } else {
-      const buf = caseFreeTags ? buffer.toLowerCase() : buffer;
-      const val = caseFreeTags ? value.toLowerCase() : value;
-
-      const status = buf.indexOf(val) > -1;
-
-      nestedMap.set(value, status);
-
-      return status;
     }
+
+    let status: boolean;
+
+    if (caseFreeTags) {
+      if (!lowercaseBuffer) lowercaseBuffer = buffer.toLowerCase();
+      status = lowercaseBuffer.indexOf(value.toLowerCase()) > -1;
+    } else {
+      status = buffer.indexOf(value) > -1;
+    }
+
+    nestedMap.set(value, status);
+
+    return status;
   }
 
   return {
