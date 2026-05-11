@@ -19,6 +19,6 @@
     "picocolors": "1.0.0",
     "xbbcode-parser": "0.3.1",
     "cpupro": "*",
-    "ya-bbcode": "1.0.12"
+    "ya-bbcode": "5.0.0"
   }
 }

@@ -165,8 +165,8 @@ importers:
         specifier: 0.3.1
         version: 0.3.1
       ya-bbcode:
-        specifier: 1.0.12
-        version: 1.0.12
+        specifier: 5.0.0
+        version: 5.0.0
 
   examples/react-vite:
     dependencies:
@@ -9426,9 +9426,9 @@ packages:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
     engines: {node: '>=10'}
 
-  ya-bbcode@1.0.12:
-    resolution: {integrity: sha512-CI/2AmfmRDv/qxIpaTFymrzpnEn4VUa8Jsnoad6eidkhjQ8UTyim+XwPhDu/r9IZh9uzJugXZV0iyJQgX1FSCA==}
-    engines: {node: '>=8'}
+  ya-bbcode@5.0.0:
+    resolution: {integrity: sha512-ymMEJ4FnJqYTKonrpMXUQ6BRVKiloCu7c9DPWGgW5W+gfgLIYRaJdFiggoxd//Cedt0SyAvYZd3DC7wZieWhHg==}
+    engines: {node: '>=22', npm: '>=10'}
 
   yallist@2.1.2:
     resolution: {integrity: sha512-ncTzHV7NvsQZkYe1DW7cbDLm0YpzHmZF5r/iyP3ZnQtMiJ+pjzisCiMNI+Sj+xQF5pXhSHxSB3uDbsBTzY/c2A==}
@@ -20271,7 +20271,7 @@ snapshots:
 
   y18n@5.0.8: {}
 
-  ya-bbcode@1.0.12: {}
+  ya-bbcode@5.0.0: {}
 
   yallist@2.1.2: {}
 
