@@ -47,15 +47,7 @@ suite
       addInLineBreaks: false,
     });
   })
-  .add('@bbob/parser lexer old', () => {
-    const lexer1 = require('./lexer_old');
-
-    return require('@bbob/parser').parse(stub, {
-      onlyAllowTags: ['ch'],
-      createTokenizer: lexer1.createLexer,
-    });
-  })
-  .add('@bbob/parser lexer', () => {
+  .add('@bbob/parser', () => {
     const lexer2 = require('@bbob/parser');
 
     return require('@bbob/parser').parse(stub, {
@@ -65,7 +57,7 @@ suite
   })
 // add listeners
   .on('cycle', (event) => {
-    const name = event.target.name.padEnd('@bbob/parser lexer old'.length);
+    const name = event.target.name.padEnd('@bbob/parser name'.length);
     const hz = formatNumber(event.target.hz.toFixed(0)).padStart(10);
 
     process.stdout.write(`${name}${pico.bold(hz)}${pico.dim(' ops/sec')}\n`);
@@ -74,10 +66,6 @@ suite
     const name = this.filter('fastest').map('name').toString();
 
     process.stdout.write(`Fastest is ${pico.bold(name)}`);
-
-    if (name.indexOf('@bbob') === -1) {
-      process.exit(1);
-    }
   })
 // run async
   .run();
