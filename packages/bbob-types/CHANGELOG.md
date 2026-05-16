@@ -1,5 +1,11 @@
 # @bbob/types
 
+## 4.3.2
+
+### Patch Changes
+
+- [#318](https://github.com/JiLiZART/BBob/pull/318) [`151af27`](https://github.com/JiLiZART/BBob/commit/151af2772aff9a97cae019c9c862f2edbc8acfe5) Thanks [@JiLiZART](https://github.com/JiLiZART)! - increased performance of @bbob/parser
+
 ## 4.3.1
 
 ### Patch Changes
