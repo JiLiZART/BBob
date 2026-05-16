@@ -58,17 +58,7 @@ suite
 
     return parser.parse(stub);
   })
-// add listeners
   .on('cycle', (event) => {
-    const name = event.target.name.padEnd('00000000000000000000'.length);
-    const hz = formatNumber(event.target.hz.toFixed(0)).padStart(10);
-
-    process.stdout.write(`${name}${pico.bold(hz)}${pico.dim(' ops/sec')}\n`);
+    console.log(String(event.target));
   })
-  .on('complete', function onComplete() {
-    const name = this.filter('fastest').map('name').toString();
-
-    process.stdout.write(`Fastest is ${pico.bold(name)}`);
-  })
-// run async
   .run();
