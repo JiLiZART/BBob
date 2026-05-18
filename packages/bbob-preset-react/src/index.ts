@@ -35,7 +35,12 @@ const presetReact = presetHTML5.extend<PresetTagsDefinition>((tags) => ({
   color: (...args) => ({
     ...tags.color(...args),
     ...tagAttr({ color: String(getUniqAttr(args[0].attrs)) }),
-  })
+  }),
+
+  spoiler: (...args) => ({
+    ...tags.spoiler(...args),
+    ...tagAttr({ backgroundColor: '#000', color: 'transparent' }),
+  }),
 }));
 
 export default presetReact;
