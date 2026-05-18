@@ -33,4 +33,16 @@ jobs:
         run: pnpm build
 
       - name: Run benchmark
-        run: cd benchmark && pnpm start
+        run: cd benchmark && node index.js | tee output.txt
+
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Benchmark.js Benchmark
+          tool: 'benchmarkjs'
+          output-file-path: benchmark/output.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Show alert with commit comment on detecting possible performance regression
+          alert-threshold: '200%'
+          comment-on-alert: true
+          fail-on-alert: true
