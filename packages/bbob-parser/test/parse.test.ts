@@ -340,6 +340,32 @@ describe('Parser', () => {
       expect(ast).toBeMatchAST(output);
     });
 
+    test('case free tag [LIST]', () => {
+      const ast = parse('[LIST][*]test[/LIST]', {
+        caseFreeTags: true
+      });
+
+      const output = [
+        {
+          tag: 'list',
+          attrs: {},
+          content: [
+            "[*]test"
+          ],
+          start: {
+            from: 0,
+            to: 15,
+          },
+          end: {
+            from: 18,
+            to: 23,
+          },
+        }
+      ];
+
+      expect(ast).toBeMatchAST(output);
+    });
+
     test('case free tags', () => {
       const ast = parse('[h1 name=value]Foo[/H1]', {
         caseFreeTags: true

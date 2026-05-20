@@ -368,6 +368,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
   function isTokenNested(tokenValue: string) {
     const value = toEndTag(tokenValue);
+    const val = caseFreeTags ? value.toLowerCase() : value;
 
     if (nestedMap.has(value)) {
       return !!nestedMap.get(value);
