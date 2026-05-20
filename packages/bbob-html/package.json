@@ -54,6 +54,7 @@
     "size": "pkg-task",
     "bundlesize": "pkg-task",
     "types": "pkg-task",
+    "attw": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [
