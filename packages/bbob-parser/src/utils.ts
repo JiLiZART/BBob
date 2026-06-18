@@ -9,98 +9,90 @@ export type CharGrabberOptions = {
 
 export class CharGrabber {
   private s: string;
-  private c: { len: number; pos: number };
-  private o: CharGrabberOptions;
+  private pos: number;
+  private len: number;
+  private onSkip: (() => void) | null;
 
   constructor(source: string, options: CharGrabberOptions = {}) {
-    this.s = source
-    this.c = {
-      pos: 0,
-      len: source.length,
-    };
-
-    this.o = options
+    this.s = source;
+    this.pos = 0;
+    this.len = source.length;
+    this.onSkip = options.onSkip || null;
   }
 
   skip(num = 1, silent?: boolean) {
-    this.c.pos += num;
+    this.pos += num;
 
-    if (this.o && this.o.onSkip && !silent) {
-      this.o.onSkip();
+    if (!silent && this.onSkip) {
+      this.onSkip();
     }
   }
 
   hasNext() {
-    return this.c.len > this.c.pos
+    return this.len > this.pos;
   }
 
   getCurr() {
-    if (typeof this.s[this.c.pos] === 'undefined') {
-      return ''
-    }
-
-    return this.s[this.c.pos]
+    return this.pos < this.len ? this.s[this.pos] : '';
   }
 
   getPos() {
-    return this.c.pos;
+    return this.pos;
   }
 
   getLength() {
-    return this.c.len;
+    return this.len;
   }
 
   getRest() {
-    return this.s.substring(this.c.pos)
+    return this.s.substring(this.pos);
   }
 
   getNext() {
-    const nextPos = this.c.pos + 1;
+    const nextPos = this.pos + 1;
 
-    return nextPos <= (this.s.length - 1) ? this.s[nextPos] : null;
+    return nextPos < this.len ? this.s[nextPos] : null;
   }
 
   getPrev() {
-    const prevPos = this.c.pos - 1;
+    const prevPos = this.pos - 1;
 
-    if (typeof this.s[prevPos] === 'undefined') {
-      return null
-    }
-
-    return this.s[prevPos];
+    return prevPos >= 0 ? this.s[prevPos] : null;
   }
 
   isLast() {
-    return this.c.pos === this.c.len
+    return this.pos === this.len;
   }
 
   includes(val: string) {
-    return this.s.indexOf(val, this.c.pos) >= 0
+    return this.s.indexOf(val, this.pos) >= 0;
   }
 
   grabWhile(condition: (curr: string) => boolean, silent?: boolean) {
     let start = 0;
 
     if (this.hasNext()) {
-      start = this.c.pos;
+      start = this.pos;
+      const onSkip = silent ? null : this.onSkip;
 
-      while (this.hasNext() && condition(this.getCurr())) {
-        this.skip(1, silent);
+      while (this.pos < this.len && condition(this.s[this.pos])) {
+        this.pos++;
+        if (onSkip) onSkip();
       }
     }
 
-    return this.s.substring(start, this.c.pos);
+    return this.s.substring(start, this.pos);
   }
 
   grabN(num: number = 0) {
-    return this.s.substring(this.c.pos, this.c.pos + num)
+    return this.s.substring(this.pos, this.pos + num);
   }
 
   /**
    * Grabs rest of string until it find a char
    */
   substrUntilChar(char: string) {
-    const { pos } = this.c;
+    const pos = this.pos;
     const idx = this.s.indexOf(char, pos);
 
     return idx >= 0 ? this.s.substring(pos, idx) : '';
@@ -118,17 +110,13 @@ export const createCharGrabber = (source: string, options?: CharGrabberOptions) 
  *  trimChar('*hello*', '*') ==> 'hello'
  */
 export const trimChar = (str: string, charToRemove: string) => {
-  while (str.charAt(0) === charToRemove) {
-    // eslint-disable-next-line no-param-reassign
-    str = str.substring(1);
-  }
+  let start = 0;
+  let end = str.length;
 
-  while (str.charAt(str.length - 1) === charToRemove) {
-    // eslint-disable-next-line no-param-reassign
-    str = str.substring(0, str.length - 1);
-  }
+  while (start < end && str[start] === charToRemove) start++;
+  while (end > start && str[end - 1] === charToRemove) end--;
 
-  return str;
+  return start === 0 && end === str.length ? str : str.substring(start, end);
 };
 
 /**

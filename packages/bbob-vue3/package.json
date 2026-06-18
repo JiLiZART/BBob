@@ -20,13 +20,13 @@
   },
   "devDependencies": {
     "@bbob/preset-vue": "*",
-    "@testing-library/vue": "7.0.0",
-    "@vue/compiler-sfc": "*",
-    "@vue/runtime-dom": "*",
-    "@vue/runtime-core": "*",
-    "@vue/compiler-dom": "*",
-    "@vue/test-utils": "2.4.5",
-    "vue": "*"
+    "@testing-library/vue3": "npm:@testing-library/vue@8.1.0",
+    "@vue/compiler-sfc": "3",
+    "@vue/runtime-dom": "3",
+    "@vue/runtime-core": "3",
+    "@vue/compiler-dom": "3",
+    "@vue/test-utils": "2.4.10",
+    "vue": "3"
   },
   "main": "lib/index.js",
   "module": "es/index.mjs",
