@@ -428,6 +428,9 @@ importers:
 
   packages/bbob-preset-vue:
     dependencies:
+      '@bbob/plugin-helper':
+        specifier: '*'
+        version: link:../bbob-plugin-helper
       '@bbob/preset-html5':
         specifier: '*'
         version: 4.3.1
