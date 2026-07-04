@@ -45,7 +45,7 @@ jobs:
       - name: Install PNPM
         uses: pnpm/action-setup@v6
         with:
-          version: 11.0.9
+          version: 11.9.0
 
       - uses: actions/setup-node@v3
         with:
