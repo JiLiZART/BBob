@@ -67,7 +67,8 @@
     "size-limit": "12.1.0",
     "ts-jest-resolver": "2.0.1",
     "ts2mjs": "4.0.0",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "globals": "17.7.0"
   },
   "publishConfig": {
     "access": "public",

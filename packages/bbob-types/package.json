@@ -35,9 +35,6 @@
     "type": "git",
     "url": "git://github.com/JiLiZART/bbob.git"
   },
-  "scripts": {
-    "types": "pkg-task"
-  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   }
