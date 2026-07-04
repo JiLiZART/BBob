@@ -12,4 +12,5 @@ allowBuilds:
   microtime: true
   nx: true
   svelte-preprocess: true
+  unrs-resolver: true
   v8-profiler-next: true
