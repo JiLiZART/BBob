@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import viteLogo from '/favicon.svg'
 import './App.css'
 
 import preset from '@bbob/preset-react'
@@ -23,8 +23,10 @@ const plugins = [
 function App() {
   const [bbcode, setBBCode] = useState('Text [b]bolded[/b] and [avatar]Some Name[/avatar]')
 
-  const onInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setBBCode(e.target.value)
+  const onInput = (e: React.InputEvent<HTMLTextAreaElement>) => {
+    const value = 'value' in e.target ? e.target?.value : e.data
+
+    setBBCode(String(value))
   }
 
   return (

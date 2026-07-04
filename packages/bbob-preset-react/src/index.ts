@@ -35,7 +35,12 @@ const presetReact = presetHTML5.extend<PresetTagsDefinition>((tags) => ({
   color: (...args) => ({
     ...tags.color(...args),
     ...tagAttr({ color: String(getUniqAttr(args[0].attrs)) }),
-  })
+  }),
+
+  size: (...args) => ({
+    ...tags.size(...args),
+    ...tagAttr({ fontSize: String(getUniqAttr(args[0].attrs)) }),
+  }),
 }));
 
 export default presetReact;

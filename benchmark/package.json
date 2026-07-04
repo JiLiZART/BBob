@@ -19,7 +19,6 @@
     "picocolors": "1.0.0",
     "xbbcode-parser": "0.3.1",
     "js-bbcode-parser": "5.1.0",
-    "cpupro": "*",
     "ya-bbcode": "5.0.0"
   }
 }
