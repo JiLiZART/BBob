@@ -61,6 +61,18 @@
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
+  "size-limit": [
+    {
+      "path": "./dist/index.min.js",
+      "limit": "5 KB"
+    }
+  ],
+  "bundlesize": [
+    {
+      "path": "./dist/index.min.js",
+      "maxSize": "5 KB"
+    }
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   }
