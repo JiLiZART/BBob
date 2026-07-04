@@ -155,6 +155,9 @@ importers:
       benchmark:
         specifier: 2.1.4
         version: 2.1.4
+      js-bbcode-parser:
+        specifier: 5.1.0
+        version: 5.1.0
       picocolors:
         specifier: 1.0.0
         version: 1.0.0
@@ -6218,6 +6221,9 @@ packages:
 
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
+
+  js-bbcode-parser@5.1.0:
+    resolution: {integrity: sha512-JANn6aO0aNy32T8WfEjmezeVEnHbJ3lSakSm/5Iwyl8j2vbesBfLUq+avHVOp2HT9wsUV/ZPDcUJWUltNUrA6g==}
 
   js-beautify@1.15.4:
     resolution: {integrity: sha512-9/KXeZUKKJwqCXUdBxFJ3vPh467OCckSBmYDwSK/EtV090K+iMJ7zx2S3HLVDIWFQdqMIsZWbnaGiba18aWhaA==}
@@ -15774,6 +15780,8 @@ snapshots:
       '@sideway/address': 4.1.5
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+
+  js-bbcode-parser@5.1.0: {}
 
   js-beautify@1.15.4:
     dependencies:
