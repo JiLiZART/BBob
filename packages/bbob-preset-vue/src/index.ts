@@ -1,4 +1,5 @@
 import presetHTML5 from '@bbob/preset-html5';
+import { getUniqAttr } from "@bbob/plugin-helper";
 
 import type { PresetTagsDefinition } from '@bbob/types';
 
@@ -33,6 +34,11 @@ export const createTags = (tags: PresetTagsDefinition<string>) => {
     spoiler: (...args) => ({
       ...tags.spoiler?.(...args),
       ...tagAttr({ backgroundColor: '#000', color: 'transparent' }),
+    }),
+
+    size: (...args) => ({
+      ...tags.size?.(...args),
+      ...tagAttr({ fontSize: String(getUniqAttr(args[0].attrs)) }),
     }),
   }
 

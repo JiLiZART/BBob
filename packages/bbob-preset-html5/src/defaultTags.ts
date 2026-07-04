@@ -87,6 +87,8 @@ const toNode = (
 
 const toStyle = (style: string) => ({ style });
 
+const toEm = (value: unknown) => `${Number(value) / 10}em`;
+
 export const defineStyleNode = (tag: string, style: string) => (node: TagNodeObject) => toNode(tag, toStyle(style), node.content)
 
 export const defaultTags = (function createTags() {
@@ -129,6 +131,8 @@ export const defaultTags = (function createTags() {
         toNode("span", toStyle(`color: ${getUniqAttr(node.attrs)};`), node.content),
     spoiler: (node) =>
         toNode("span", { class: "bb-spoiler", ...toStyle("background-color: #000; color: transparent;") }, node.content),
+    size: (node) =>
+        toNode("span", toStyle(`font-size: ${toEm(getUniqAttr(node.attrs))};`), node.content),
   }
 
   return tags

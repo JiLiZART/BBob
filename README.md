@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-BBob is a tool to parse and transform [BBCode](https://en.wikipedia.org/wiki/BBCode)
+BBob is a tool to parse and transform (BBCode)[https://en.wikipedia.org/wiki/BBCode]
 written in pure javascript, no dependencies
 </p>
 

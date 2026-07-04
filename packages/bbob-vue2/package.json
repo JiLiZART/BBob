@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@bbob/preset-vue": "*",
-    "@testing-library/vue": "5.9.0",
+    "@testing-library/vue2": "npm:@testing-library/vue@5.9.0",
     "vue": "2.7.16",
     "vue-template-compiler": "2.7.16"
   },

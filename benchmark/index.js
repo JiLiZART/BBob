@@ -47,37 +47,18 @@ suite
       addInLineBreaks: false,
     });
   })
-  .add('@bbob/parser lexer old', () => {
-    const lexer1 = require('./lexer_old');
-
-    return require('@bbob/parser').parse(stub, {
-      onlyAllowTags: ['ch'],
-      createTokenizer: lexer1.createLexer,
+  .add('@bbob/parser', () => require('@bbob/parser').parse(stub, {
+    onlyAllowTags: ['ch'],
+  }))
+  .add('js-bbcode-parser', () => {
+    const BBCode = require('js-bbcode-parser/src/index').default;
+    const parser = new BBCode({
+      '\\[ch\\](.+?)\\[/ch\\]': '<strong>$1</strong>',
     });
-  })
-  .add('@bbob/parser lexer', () => {
-    const lexer2 = require('@bbob/parser');
 
-    return require('@bbob/parser').parse(stub, {
-      onlyAllowTags: ['ch'],
-      createTokenizer: lexer2.createLexer,
-    });
+    return parser.parse(stub);
   })
-// add listeners
   .on('cycle', (event) => {
-    const name = event.target.name.padEnd('@bbob/parser lexer old'.length);
-    const hz = formatNumber(event.target.hz.toFixed(0)).padStart(10);
-
-    process.stdout.write(`${name}${pico.bold(hz)}${pico.dim(' ops/sec')}\n`);
+    console.log(String(event.target));
   })
-  .on('complete', function onComplete() {
-    const name = this.filter('fastest').map('name').toString();
-
-    process.stdout.write(`Fastest is ${pico.bold(name)}`);
-
-    if (name.indexOf('@bbob') === -1) {
-      process.exit(1);
-    }
-  })
-// run async
   .run();

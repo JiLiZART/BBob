@@ -13,15 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Install PNPM
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v6
         with:
-          version: 9.4.0
+          version: 11.9.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
@@ -33,4 +33,16 @@ jobs:
         run: pnpm build
 
       - name: Run benchmark
-        run: cd benchmark && pnpm start
+        run: cd benchmark && node index.js | tee output.txt
+
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Benchmark.js Benchmark
+          tool: 'benchmarkjs'
+          output-file-path: benchmark/output.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Show alert with commit comment on detecting possible performance regression
+          alert-threshold: '200%'
+          comment-on-alert: true
+          fail-on-alert: true
