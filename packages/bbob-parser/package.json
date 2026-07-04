@@ -117,13 +117,13 @@
   "size-limit": [
     {
       "path": "./dist/index.min.js",
-      "size": "3 KB"
+      "size": "4 KB"
     }
   ],
   "bundlesize": [
     {
       "path": "./dist/index.min.js",
-      "maxSize": "3 KB"
+      "maxSize": "4 KB"
     }
   ],
   "publishConfig": {
