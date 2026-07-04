@@ -18,7 +18,7 @@
     "benchmark": "2.1.4",
     "picocolors": "1.0.0",
     "xbbcode-parser": "0.3.1",
-    "cpupro": "*",
-    "ya-bbcode": "1.0.12"
+    "js-bbcode-parser": "5.1.0",
+    "ya-bbcode": "5.0.0"
   }
 }
