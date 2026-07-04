@@ -2,6 +2,9 @@
   "name": "@bbob/types",
   "version": "4.3.1",
   "description": "Shared Typescript types of @bbob",
+  "scripts": {
+    "types": "pkg-task"
+  },
   "keywords": [
     "bbcode",
     "types"

@@ -24,6 +24,6 @@ For errors use `ERRORS.md` file, instead of inlined error messages, now includes
 
 ESlint migrated to 10.x version
 
-Typescript migrated to 6.x version
+TypeScript migrated to 6.x version
 
 
