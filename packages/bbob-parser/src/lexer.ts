@@ -265,9 +265,11 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     const silent = true;
     const tagStr = chars.grabWhileCode((code) => code !== closeTagCode, silent);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
-    const eqParts = tagStr.split(EQ);
-    const tagName = eqParts[0];
-    const isEndTag = tagName[0] === SLASH;
+    // Only the tag name (part before the first '=') is needed here; slice it out
+    // instead of split()-ing the whole tag string into an array.
+    const eqIdx = tagStr.indexOf(EQ);
+    const tagName = eqIdx === -1 ? tagStr : tagStr.slice(0, eqIdx);
+    const isEndTag = tagStr[0] === SLASH;
     const isSingleAttrTag = tagName.indexOf(SPACE) === -1;
     const isSingleValueTag = !isEndTag && isSingleAttrTag
 
