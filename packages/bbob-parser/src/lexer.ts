@@ -225,8 +225,8 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
     const hasInvalidChars = substr.length === 0 || substr.indexOf(openTag) >= 0;
     const isLastChar = chars.isLast()
-    const hasSpace = substr.indexOf(SPACE) >= 0;
-    const isSpaceRestricted = hasSpace && options.whitespaceInTags === false;
+    // Only pay for the space scan when whitespace is actually restricted.
+    const isSpaceRestricted = options.whitespaceInTags === false && substr.indexOf(SPACE) >= 0;
 
     if (isNextCharReserved || hasInvalidChars || isLastChar || isSpaceRestricted) {
       emitToken(TYPE_WORD, currChar);
@@ -242,9 +242,12 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     // [url] or [/url]
     if (isNoAttrsInTag || isClosingTag) {
       const startPos = chars.getPos() - 1;
-      const name = chars.grabWhileCode((code) => code !== closeTagCode);
+      // `substr` already holds exactly the tag name (span up to closeTag);
+      // consume it directly instead of re-scanning char by char.
+      const name = substr;
       const endPos = startPos + name.length + END_POS_OFFSET;
 
+      chars.advance(name.length);
       chars.skip(); // skip closeTag
 
       emitToken(TYPE_TAG, name, startPos, endPos);

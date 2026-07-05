@@ -30,6 +30,19 @@ export class CharGrabber {
     }
   }
 
+  /**
+   * Advance the cursor by `num` chars, bumping the column by the same amount.
+   * Use when a span was already scanned (e.g. via substrUntilChar) and we want
+   * to consume it without re-walking it character by character.
+   */
+  advance(num: number) {
+    this.pos += num;
+
+    if (this.onSkip && num > 0) {
+      this.onSkip(num);
+    }
+  }
+
   hasNext() {
     return this.len > this.pos;
   }
