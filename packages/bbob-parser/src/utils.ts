@@ -4,14 +4,14 @@ import {
 } from '@bbob/plugin-helper';
 
 export type CharGrabberOptions = {
-  onSkip?: () => void
+  onSkip?: (count?: number) => void
 }
 
 export class CharGrabber {
   private s: string;
   private pos: number;
   private len: number;
-  private onSkip: (() => void) | null;
+  private onSkip: ((count?: number) => void) | null;
 
   constructor(source: string, options: CharGrabberOptions = {}) {
     this.s = source;
@@ -23,8 +23,10 @@ export class CharGrabber {
   skip(num = 1, silent?: boolean) {
     this.pos += num;
 
+    // Preserve original semantics: a manual skip bumps the column by one,
+    // regardless of num (all call sites use num === 1).
     if (!silent && this.onSkip) {
-      this.onSkip();
+      this.onSkip(1);
     }
   }
 
@@ -34,6 +36,11 @@ export class CharGrabber {
 
   getCurr() {
     return this.pos < this.len ? this.s[this.pos] : '';
+  }
+
+  /** Char code at current position, or -1 past end. Avoids 1-char string alloc. */
+  getCurrCode() {
+    return this.pos < this.len ? this.s.charCodeAt(this.pos) : -1;
   }
 
   getPos() {
@@ -54,10 +61,24 @@ export class CharGrabber {
     return nextPos < this.len ? this.s[nextPos] : null;
   }
 
+  /** Char code at next position, or -1 if none. */
+  getNextCode() {
+    const nextPos = this.pos + 1;
+
+    return nextPos < this.len ? this.s.charCodeAt(nextPos) : -1;
+  }
+
   getPrev() {
     const prevPos = this.pos - 1;
 
     return prevPos >= 0 ? this.s[prevPos] : null;
+  }
+
+  /** Char code at previous position, or -1 if none. */
+  getPrevCode() {
+    const prevPos = this.pos - 1;
+
+    return prevPos >= 0 ? this.s.charCodeAt(prevPos) : -1;
   }
 
   isLast() {
@@ -73,12 +94,34 @@ export class CharGrabber {
 
     if (this.hasNext()) {
       start = this.pos;
-      const onSkip = silent ? null : this.onSkip;
 
       while (this.pos < this.len && condition(this.s[this.pos])) {
         this.pos++;
-        if (onSkip) onSkip();
       }
+
+      // Batch the skip notification: one call for the whole run instead of
+      // one per character. Equivalent when onSkip only accumulates a count.
+      if (!silent && this.onSkip && this.pos > start) this.onSkip(this.pos - start);
+    }
+
+    return this.s.substring(start, this.pos);
+  }
+
+  /**
+   * Same as grabWhile but the predicate receives a char *code* (number),
+   * avoiding a 1-char string allocation per character in hot loops.
+   */
+  grabWhileCode(condition: (code: number) => boolean, silent?: boolean) {
+    let start = 0;
+
+    if (this.hasNext()) {
+      start = this.pos;
+
+      while (this.pos < this.len && condition(this.s.charCodeAt(this.pos))) {
+        this.pos++;
+      }
+
+      if (!silent && this.onSkip && this.pos > start) this.onSkip(this.pos - start);
     }
 
     return this.s.substring(start, this.pos);

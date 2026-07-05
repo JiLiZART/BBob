@@ -20,6 +20,15 @@ import { CharGrabber, createCharGrabber, trimChar, unquote } from './utils.js';
 // for cases <!-- -->
 const EM = '!';
 
+// Char codes for the reserved/structural characters. Comparing numeric codes
+// avoids allocating 1-char strings on every character in the hot scan loops.
+const CODE_QUOTEMARK = QUOTEMARK.charCodeAt(0);
+const CODE_BACKSLASH = BACKSLASH.charCodeAt(0);
+const CODE_SPACE = SPACE.charCodeAt(0);
+const CODE_TAB = TAB.charCodeAt(0);
+const CODE_EQ = EQ.charCodeAt(0);
+const CODE_N = N.charCodeAt(0);
+
 export function createTokenOfType(type: number, value: string, r = 0, cl = 0, p = 0, e = 0) {
   return new Token(type, value, r, cl, p, e);
 }
@@ -34,10 +43,8 @@ const TAG_STATE_VALUE = 2;
 
 const END_POS_OFFSET = 2;  // length + start position offset
 
-const isWhiteSpace = (char: string) => char === SPACE || char === TAB;
-const isEscapeChar = (char: string) => char === BACKSLASH;
-const isSpecialChar = (char: string) => char === EQ || char === SPACE || char === TAB;
-const isNewLine = (char: string) => char === N;
+const isWhiteSpaceCode = (code: number) => code === CODE_SPACE || code === CODE_TAB;
+const isSpecialCode = (code: number) => code === CODE_EQ || code === CODE_SPACE || code === CODE_TAB;
 const unq = (val: string) => unquote(trimChar(val, QUOTEMARK));
 
 export function createLexer(buffer: string, options: LexerOptions = {}): LexerTokenizer {
@@ -49,7 +56,9 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   let stateMode = STATE_WORD;
   let tagMode = TAG_STATE_NAME;
   let contextFreeTag = '';
-  const tokens = new Array<Token>(Math.floor(buffer.length));
+  // Token count is far smaller than char count; grow on demand rather than
+  // reserving one slot per character.
+  const tokens: Token[] = [];
   const openTag = options.openTag || OPEN_BRAKET;
   const closeTag = options.closeTag || CLOSE_BRAKET;
   const escapeTags = !!options.enableEscapeTags;
@@ -61,12 +70,23 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   const onToken = options.onToken || (() => {
   });
 
-  const RESERVED_CHARS_SET = new Set([closeTag, openTag, QUOTEMARK, BACKSLASH, SPACE, TAB, EQ, N, EM]);
-  const isCharReserved = (char: string) => RESERVED_CHARS_SET.has(char);
-  const isCharToken = (char: string) => char !== openTag && char !== SPACE && char !== TAB && char !== N;
-  const isEscapableChar = (char: string) => (char === openTag || char === closeTag || char === BACKSLASH);
-  const onSkip = () => {
-    col++;
+  // Structural delimiters are single characters (the char-by-char scan assumes
+  // this); cache their codes for numeric comparison in the hot loops.
+  const openTagCode = openTag.charCodeAt(0);
+  const closeTagCode = closeTag.charCodeAt(0);
+  const CODE_EM = EM.charCodeAt(0);
+
+  const RESERVED_CODES_SET = new Set([
+    closeTagCode, openTagCode, CODE_QUOTEMARK, CODE_BACKSLASH,
+    CODE_SPACE, CODE_TAB, CODE_EQ, CODE_N, CODE_EM,
+  ]);
+  const isCharReservedCode = (code: number) => RESERVED_CODES_SET.has(code);
+  const isCharTokenCode = (code: number) => code !== openTagCode
+    && code !== CODE_SPACE && code !== CODE_TAB && code !== CODE_N;
+  const isEscapableCode = (code: number) => (code === openTagCode
+    || code === closeTagCode || code === CODE_BACKSLASH);
+  const onSkip = (count = 1) => {
+    col += count;
   };
 
   const setupContextFreeTag = (name: string, isClosingTag?: boolean) => {
@@ -104,10 +124,10 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
   function nextTagState(tagChars: CharGrabber, isSingleValueTag: boolean, masterStartPos: number) {
     if (tagMode === TAG_STATE_ATTR) {
-      const validAttrName = (char: string) => !(char === EQ || isWhiteSpace(char));
-      const name = tagChars.grabWhile(validAttrName);
+      const validAttrName = (code: number) => !(code === CODE_EQ || isWhiteSpaceCode(code));
+      const name = tagChars.grabWhileCode(validAttrName);
       const isEnd = tagChars.isLast();
-      const isValue = tagChars.getCurr() !== EQ;
+      const isValue = tagChars.getCurrCode() !== CODE_EQ;
 
       tagChars.skip();
 
@@ -130,18 +150,16 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     if (tagMode === TAG_STATE_VALUE) {
       let stateSpecial = false;
 
-      const validAttrValue = (char: string) => {
-        // const isEQ = char === EQ;
-        const isQM = char === QUOTEMARK;
-        const prevChar = tagChars.getPrev();
-        const nextChar = tagChars.getNext();
-        const isPrevSLASH = prevChar === BACKSLASH;
-        const isNextEQ = nextChar === EQ;
-        const isWS = isWhiteSpace(char);
-        // const isPrevWS = isWhiteSpace(prevChar);
-        const isNextWS = !!nextChar && isWhiteSpace(nextChar);
+      const validAttrValue = (code: number) => {
+        const isQM = code === CODE_QUOTEMARK;
+        const prevCode = tagChars.getPrevCode();
+        const nextCode = tagChars.getNextCode();
+        const isPrevSLASH = prevCode === CODE_BACKSLASH;
+        const isNextEQ = nextCode === CODE_EQ;
+        const isWS = isWhiteSpaceCode(code);
+        const isNextWS = isWhiteSpaceCode(nextCode);
 
-        if (stateSpecial && isSpecialChar(char)) {
+        if (stateSpecial && isSpecialCode(code)) {
           return true;
         }
 
@@ -155,17 +173,16 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
         if (!isSingleValueTag) {
           return !isWS;
-          // return (isEQ || isWS) === false;
         }
 
         return true;
       };
-      const name = tagChars.grabWhile(validAttrValue);
+      const name = tagChars.grabWhileCode(validAttrValue);
 
       tagChars.skip();
 
       emitToken(TYPE_ATTR_VALUE, unq(name));
-      if (tagChars.getPrev() === QUOTEMARK) {
+      if (tagChars.getPrevCode() === CODE_QUOTEMARK) {
         prevCol++;
       }
 
@@ -177,8 +194,8 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     }
 
     const start = masterStartPos + tagChars.getPos() - 1;
-    const validName = (char: string) => !(char === EQ || isWhiteSpace(char) || tagChars.isLast());
-    const name = tagChars.grabWhile(validName);
+    const validName = (code: number) => !(code === CODE_EQ || isWhiteSpaceCode(code) || tagChars.isLast());
+    const name = tagChars.grabWhileCode(validName);
 
     emitToken(TYPE_TAG, name, start, masterStartPos + tagChars.getLength() + 1);
 
@@ -199,8 +216,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
   function stateTag() {
     const currChar = chars.getCurr();
-    const nextChar = chars.getNext();
-    const isNextCharReserved = Boolean(nextChar && isCharReserved(nextChar))
+    const isNextCharReserved = isCharReservedCode(chars.getNextCode());
 
     chars.skip(); // skip openTag
 
@@ -226,7 +242,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     // [url] or [/url]
     if (isNoAttrsInTag || isClosingTag) {
       const startPos = chars.getPos() - 1;
-      const name = chars.grabWhile((char) => char !== closeTag);
+      const name = chars.grabWhileCode((code) => code !== closeTagCode);
       const endPos = startPos + name.length + END_POS_OFFSET;
 
       chars.skip(); // skip closeTag
@@ -244,7 +260,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   function stateAttrs() {
     const startPos = chars.getPos();
     const silent = true;
-    const tagStr = chars.grabWhile((char) => char !== closeTag, silent);
+    const tagStr = chars.grabWhileCode((code) => code !== closeTagCode, silent);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
     const eqParts = tagStr.split(EQ);
     const tagName = eqParts[0];
@@ -264,8 +280,10 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   }
 
   function stateWord() {
-    if (isNewLine(chars.getCurr())) {
-      emitToken(TYPE_NEW_LINE, chars.getCurr());
+    const currCode = chars.getCurrCode();
+
+    if (currCode === CODE_N) {
+      emitToken(TYPE_NEW_LINE, N);
 
       chars.skip();
 
@@ -276,15 +294,15 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       return STATE_WORD;
     }
 
-    if (isWhiteSpace(chars.getCurr())) {
-      const word = chars.grabWhile(isWhiteSpace);
+    if (isWhiteSpaceCode(currCode)) {
+      const word = chars.grabWhileCode(isWhiteSpaceCode);
 
       emitToken(TYPE_SPACE, word);
 
       return STATE_WORD;
     }
 
-    if (chars.getCurr() === openTag) {
+    if (currCode === openTagCode) {
       if (contextFreeTag) {
         const fullTagName = toEndTag(contextFreeTag);
         const foundTag = chars.grabN(fullTagName.length);
@@ -306,13 +324,13 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     }
 
     if (escapeTags) {
-      if (isEscapeChar(chars.getCurr())) {
+      if (currCode === CODE_BACKSLASH) {
         const currChar = chars.getCurr();
         const nextChar = chars.getNext();
 
         chars.skip(); // skip the \ without emitting anything
 
-        if (nextChar && isEscapableChar(nextChar)) {
+        if (nextChar && isEscapableCode(nextChar.charCodeAt(0))) {
           chars.skip(); // skip past the [, ] or \ as well
 
           emitToken(TYPE_WORD, nextChar);
@@ -325,16 +343,16 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
         return STATE_WORD;
       }
 
-      const isChar = (char: string) => isCharToken(char) && !isEscapeChar(char);
+      const isChar = (code: number) => isCharTokenCode(code) && code !== CODE_BACKSLASH;
 
-      const word = chars.grabWhile(isChar);
+      const word = chars.grabWhileCode(isChar);
 
       emitToken(TYPE_WORD, word);
 
       return STATE_WORD;
     }
 
-    const word = chars.grabWhile(isCharToken);
+    const word = chars.grabWhileCode(isCharTokenCode);
 
     emitToken(TYPE_WORD, word);
 

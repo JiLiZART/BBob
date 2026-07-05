@@ -211,7 +211,6 @@ function parse(input: string, opts: ParseOptions = {}) {
   function nodeHandle(token: Token) {
 
     const tokenValue = token.getValue();
-    const isNested = isTagNested(token.toString());
 
     if (activeTagNode) {
       switch (token.type) {
@@ -235,7 +234,9 @@ function parse(input: string, opts: ParseOptions = {}) {
         case TYPE_SPACE:
         case TYPE_NEW_LINE:
         case TYPE_WORD:
-          if (isNested) {
+          // isTagNested only matters here; computing it lazily avoids building
+          // a bracketed string for every text token outside an active tag.
+          if (isTagNested(token.toString())) {
             activeTagNode.append(tokenValue);
           } else {
             nodesAppend(tokenValue);
