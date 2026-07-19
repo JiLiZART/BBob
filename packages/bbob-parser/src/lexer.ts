@@ -45,7 +45,11 @@ const END_POS_OFFSET = 2;  // length + start position offset
 
 const isWhiteSpaceCode = (code: number) => code === CODE_SPACE || code === CODE_TAB;
 const isSpecialCode = (code: number) => code === CODE_EQ || code === CODE_SPACE || code === CODE_TAB;
-const unq = (val: string) => unquote(trimChar(val, QUOTEMARK));
+// Both trimChar and unquote only ever act on quotemarks, so an unquoted value
+// (the common case) can skip them entirely.
+const unq = (val: string) => (
+  val.indexOf(QUOTEMARK) === -1 ? val : unquote(trimChar(val, QUOTEMARK))
+);
 
 export function createLexer(buffer: string, options: LexerOptions = {}): LexerTokenizer {
   let row = 0;
@@ -390,11 +394,15 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   let lowercaseBuffer: string | null = null;
 
   function isTokenNested(tokenValue: string) {
-    const value = toEndTag(tokenValue);
+    // Key the cache by the raw tag name: building the `[/name]` form on every
+    // call allocated a string per tag token, when only a cache miss needs it.
+    const cached = nestedMap.get(tokenValue);
 
-    if (nestedMap.has(value)) {
-      return !!nestedMap.get(value);
+    if (cached !== undefined) {
+      return cached;
     }
+
+    const value = toEndTag(tokenValue);
 
     let status: boolean;
 
@@ -405,7 +413,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       status = buffer.indexOf(value) > -1;
     }
 
-    nestedMap.set(value, status);
+    nestedMap.set(tokenValue, status);
 
     return status;
   }

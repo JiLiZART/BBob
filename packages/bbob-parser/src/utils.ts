@@ -175,7 +175,13 @@ export const trimChar = (str: string, charToRemove: string) => {
   return start === 0 && end === str.length ? str : str.substring(start, end);
 };
 
+const ESCAPED_QUOTE = BACKSLASH + QUOTEMARK;
+
 /**
  * Unquotes \" to "
  */
-export const unquote = (str: string) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
+export const unquote = (str: string) => (
+  // The vast majority of attribute values contain no escaped quote at all;
+  // indexOf is far cheaper than entering replace().
+  str.indexOf(ESCAPED_QUOTE) === -1 ? str : str.replace(ESCAPED_QUOTE, QUOTEMARK)
+);

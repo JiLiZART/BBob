@@ -64,10 +64,39 @@ Prerequisite: **fix the benchmark first.** Current harness variance is ±15%, wh
 ### Phase A — Trustworthy measurement (do first, blocks everything)
 - Move bench out of jest into a standalone Node process (`tinybench` or hand-rolled with `--allow-natives-syntax` optional).
 - Warmup to steady state, report median + MAD, not best-of-N.
-- Add a memory/allocation counter (`process.memoryUsage()` delta, or `--trace-gc` scrape) — most changes below target allocations, and ops/sec alone will hide the win.
+- ~~Add a memory/allocation counter~~ — **attempted twice, dropped.** `heapUsed`
+  deltas measure GC timing, not allocation; V8's sampling heap profiler is
+  proportional but ~200× low because it reports *retained* sampled objects.
+  Both produced numbers that contradicted throughput. See the note in `run.mjs`.
+  Throughput at ±1% spread decides every change here; a misleading number is
+  worse than an absent one.
 - **Gate:** re-measure the current HEAD; establish a baseline with <5% run-to-run spread.
 
-### Phase B — Strings are offsets (article #7 + #8) — highest ROI
+**Done.** Spread ±15% → ±1.5%. Note jest was also *inflating absolute cost*: several
+parse figures came in well above what the old harness reported, so the absolute
+ops/sec in `PERF_PLAN.md` are overstated (the relative gains there still hold).
+
+### Phase B — Strings are offsets (article #7 + #8) — ⛔ BLOCKED, superseded
+
+**The premise was wrong.** Checked before implementing: only `TYPE_TAG` tokens carry
+spans (`lexer.ts:200,253`). Every other `emitToken` passes `startPos`/`endPos` as
+`undefined`, and attribute values are *transformed* by `unq()` — so value ≠ source
+slice. Lazy slicing needs accurate spans on every token first, which is a much
+larger and riskier change than this phase assumed. Deferred; revisit only with a
+concrete plan for span-accurate `emitToken` calls.
+
+**Shipped instead (same article principle, #11 — common case never pays for the
+general one):**
+- `isTokenNested` built a `[/name]` string on *every* tag token just to key its
+  cache. Key by the raw tag name; build the bracketed form only on a cache miss.
+- `unquote` concatenated `BACKSLASH + QUOTEMARK` per call and always entered
+  `replace()`. Hoist the constant; `indexOf` guard first.
+- `unq` skips `trimChar` + `unquote` entirely when the value has no quotemark.
+
+Result: **+5.6–30.6% lexer, +1.5–20.3% parse** (prose parse at +1.5% is within
+noise; the rest are well clear of the ±1.5% spread).
+
+### Phase B (original, for reference) — lazy Token values
 Today `Token` stores `v: string`, built via `substring()` for every word, tag, attr name and attr value.
 - Store `start`/`end` only (already present as `s`/`e`), make `v` a **lazy getter** that slices the buffer on first read and memoizes.
 - Keep an `escaped` flag; only run `unquote`/escape handling when set.

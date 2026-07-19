@@ -2,9 +2,9 @@
 /**
  * Standalone benchmark harness for @bbob/parser.
  *
- *   node --expose-gc packages/bbob-parser/bench/run.mjs
- *   node --expose-gc packages/bbob-parser/bench/run.mjs --save baseline.json
- *   node --expose-gc packages/bbob-parser/bench/run.mjs --compare baseline.json
+ *   node packages/bbob-parser/bench/run.mjs
+ *   node packages/bbob-parser/bench/run.mjs --save baseline.json
+ *   node packages/bbob-parser/bench/run.mjs --compare baseline.json
  *
  * Why not jest: jest runs modules inside a sandboxed VM context with its own
  * module registry, which perturbs JIT behaviour and adds noise unrelated to the
@@ -16,8 +16,8 @@
  *    evenly over all fixtures instead of penalising whichever ran during a spike.
  *  - Reports the **median** ms/op plus MAD-based relative spread. Best-of-N
  *    flatters a noisy machine; the median plus a visible spread does not.
- *  - With --expose-gc, also reports bytes allocated per op. Most data-oriented
- *    changes target allocation, and ops/sec alone can hide that entirely.
+ *  - Throughput only. See the note above `report` for why there is no
+ *    allocation column.
  */
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
@@ -103,7 +103,7 @@ const mad = (xs) => {
 
 /**
  * Runs every fixture's `fn` interleaved across rounds.
- * Returns { [name]: { msPerOp, spreadPct, bytesPerOp } }.
+ * Returns { [name]: { msPerOp, opsSec, spreadPct } }.
  */
 function measure(jobs) {
   for (const job of jobs) {
@@ -130,39 +130,40 @@ function measure(jobs) {
       opsSec: 1000 / m,
       // MAD as a percentage of the median: a stability readout, not an error bar.
       spreadPct: (mad(xs) / m) * 100,
-      bytesPerOp: measureAlloc(job.fn),
     };
   }
   return results;
 }
 
-/** Bytes allocated per op, or null when run without --expose-gc. */
-function measureAlloc(fn) {
-  if (typeof globalThis.gc !== 'function') return null;
-  const N = 200;
-  globalThis.gc();
-  const before = process.memoryUsage().heapUsed;
-  for (let i = 0; i < N; i++) fn();
-  const after = process.memoryUsage().heapUsed;
-  return Math.max(0, after - before) / N;
-}
+/*
+ * NOTE — no allocation column, deliberately.
+ *
+ * Two approaches were tried and both produced numbers that could not be
+ * trusted, so neither is shipped:
+ *
+ *  1. `process.memoryUsage().heapUsed` delta across the loop. Any scavenge
+ *     during the loop collects part of what was allocated, so the delta
+ *     tracks GC timing, not allocation volume. It reported one fixture
+ *     allocating 2.5x MORE while getting 31% faster.
+ *
+ *  2. V8's sampling heap profiler (`HeapProfiler.startSampling`). Proportional
+ *     but ~200x low in absolute terms with a fixed floor, because it reports
+ *     *retained sampled* objects rather than total allocation.
+ *
+ * Getting this right needs a real heap-profiler investigation. Until then,
+ * ops/sec at +/-1% spread is reliable and sufficient to decide every change
+ * in DOD_PLAN.md. A misleading number is worse than an absent one.
+ */
 
 // ---------------------------------------------------------------------------
 // Reporting
 // ---------------------------------------------------------------------------
 
-const fmtBytes = (b) => {
-  if (b == null) return '     n/a';
-  if (b > 1024 * 1024) return `${(b / 1024 / 1024).toFixed(2)} MB`;
-  if (b > 1024) return `${(b / 1024).toFixed(1)} KB`;
-  return `${b.toFixed(0)} B`;
-};
-
 function report(title, results, baseline) {
   console.log(`\n=== ${title} ===`);
   console.log(
     `${'fixture'.padEnd(12)}${'ops/sec'.padStart(10)}${'spread'.padStart(9)}`
-    + `${'alloc/op'.padStart(11)}${baseline ? 'vs base'.padStart(10) : ''}`,
+    + `${baseline ? 'vs base'.padStart(10) : ''}`,
   );
   for (const [name, r] of Object.entries(results)) {
     let delta = '';
@@ -174,7 +175,6 @@ function report(title, results, baseline) {
       name.padEnd(12)
       + r.opsSec.toFixed(0).padStart(10)
       + `±${r.spreadPct.toFixed(1)}%`.padStart(9)
-      + fmtBytes(r.bytesPerOp).padStart(11)
       + delta,
     );
   }
@@ -190,10 +190,6 @@ const outDir = build();
 const require = createRequire(import.meta.url);
 const { createLexer } = require(join(outDir, 'lexer.js'));
 const { parse } = require(join(outDir, 'parse.js'));
-
-if (typeof globalThis.gc !== 'function') {
-  console.log('note: run with --expose-gc to get allocation numbers');
-}
 
 const lexJobs = FIXTURES.map((f) => ({
   name: f.name,
