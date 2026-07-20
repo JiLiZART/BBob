@@ -18,6 +18,9 @@ function parse(input: string, opts: ParseOptions = {}) {
     .filter(Boolean)
     .map((tag) => tag.toLowerCase());
   const caseFreeTags = options.caseFreeTags || false;
+  // Shared, never mutated by the callees: avoids allocating a fresh options
+  // object on every toString()/toTagStart()/toTagEnd() call.
+  const tagOpts = { openTag, closeTag };
 
   let tokenizer: ReturnType<typeof createLexer> | null = null;
 
@@ -49,6 +52,11 @@ function parse(input: string, opts: ParseOptions = {}) {
    * Cache for nested tags checks
    */
   const nestedTagsMap = new Set<string>();
+  /**
+   * Whether any name in `nestedTagsMap` begins with the open braket. Lets the
+   * text-token path skip building a "[value]" string that could never match.
+   */
+  let nestedTagsMayStartWithBraket = false;
 
   function getValue(tokenValue: string) {
     return caseFreeTags ? tokenValue.toLowerCase() : tokenValue;
@@ -62,6 +70,10 @@ function parse(input: string, opts: ParseOptions = {}) {
     if (!nestedTagsMap.has(value) && typeof isTokenNested === "function") {
       if (isTokenNested(value)) {
         nestedTagsMap.add(value);
+
+        if (value.charCodeAt(0) === OPEN_BRAKET.charCodeAt(0)) {
+          nestedTagsMayStartWithBraket = true;
+        }
 
         return true;
       }
@@ -121,7 +133,7 @@ function parse(input: string, opts: ParseOptions = {}) {
     isNested = true
   ) {
     if (Array.isArray(nodes) && typeof node !== "undefined") {
-      nodes.push(node.toTagStart({ openTag, closeTag }));
+      nodes.push(node.toTagStart(tagOpts));
 
       if (Array.isArray(node.content) && node.content.length) {
         node.content.forEach((item) => {
@@ -129,7 +141,7 @@ function parse(input: string, opts: ParseOptions = {}) {
         });
 
         if (isNested) {
-          nodes.push(node.toTagEnd({ openTag, closeTag }));
+          nodes.push(node.toTagEnd(tagOpts));
         }
       }
     }
@@ -190,7 +202,7 @@ function parse(input: string, opts: ParseOptions = {}) {
 
       nodesAppend(lastNestedNode);
     } else if (!isTagNested(tagName)) { // when we have only close tag [/some] without any open tag
-      nodesAppend(token.toString({ openTag, closeTag }));
+      nodesAppend(token.toString(tagOpts));
     } else if (typeof options.onError === "function") {
       const tag = token.getValue();
       const line = token.getLine();
@@ -234,9 +246,12 @@ function parse(input: string, opts: ParseOptions = {}) {
         case TYPE_SPACE:
         case TYPE_NEW_LINE:
         case TYPE_WORD:
-          // isTagNested only matters here; computing it lazily avoids building
-          // a bracketed string for every text token outside an active tag.
-          if (isTagNested(token.toString())) {
+          // `token.toString()` yields "[value]", so this can only match a tag
+          // name that literally starts with "[" — possible in principle with a
+          // custom openTag, never in practice. Building that string for every
+          // text token inside a tag is pure waste, so only do it when the
+          // nested-tag set actually holds such a name.
+          if (nestedTagsMayStartWithBraket && isTagNested(token.toString())) {
             activeTagNode.append(tokenValue);
           } else {
             nodesAppend(tokenValue);
@@ -245,14 +260,14 @@ function parse(input: string, opts: ParseOptions = {}) {
 
         case TYPE_TAG:
           // if tag is not allowed, just pass it as is
-          nodesAppend(token.toString({ openTag, closeTag }));
+          nodesAppend(token.toString(tagOpts));
           break;
       }
     } else if (token.isText()) {
       nodesAppend(tokenValue);
     } else if (token.isTag()) {
       // if tag is not allowed, just pass it as is
-      nodesAppend(token.toString({ openTag, closeTag }));
+      nodesAppend(token.toString(tagOpts));
     }
   }
 
