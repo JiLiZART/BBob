@@ -110,9 +110,33 @@ Today `Token` stores `v: string`, built via `substring()` for every word, tag, a
 - Nests through the existing `nestedNodes` recursion the same way the article describes.
 - Expected: fewer array allocations + correctly-sized final arrays (no growth doubling).
 
-### Phase D — Reserve from estimate (article #9)
-- Heuristic-size the scratch buffers and `content` arrays from `input.length` instead of growing from empty.
-- Cheap, low risk, small win. Bundle with C.
+### Phase D — Reserve from estimate (article #9) — ❌ TESTED, REJECTED
+
+Measured token density first, and the premise does not hold for BBCode:
+
+| fixture | chars | tokens | chars/token |
+|---------|------:|-------:|------------:|
+| tagDense | 14200 | 3200 | 4.44 |
+| attrs | 15200 | 1000 | **15.20** |
+| prose | 26200 | 8000 | 3.27 |
+| nested | 8000 | 2400 | 3.33 |
+| codeFree | 11600 | 5400 | **2.15** |
+
+A 7× spread, so no single estimate fits. The article's "one node per two source
+bytes" is a property of JS source, not of BBCode.
+
+Tried `new Array(buffer.length / N)` for N = 2, 4, 8 anyway. **Every variant was
+at or below the growable `[]` baseline on every fixture** (growable:
++23.2/+9.1/+4.4/+28.2/+5.1; best prealloc: +20.1/+5.6/+1.2/+26.2/+5.4).
+
+Mechanism: `new Array(n)` produces a HOLEY_ELEMENTS array in V8, whereas
+appending to `[]` keeps it PACKED_ELEMENTS, which has cheaper element access.
+The geometric growth V8 already does costs less than the holey penalty. This
+also independently reproduces the earlier Phase 4 result, which moved *away*
+from `new Array(buffer.length)` for the same reason.
+
+Reserve-from-estimate is a real win in a language where you control the
+allocation. In V8 it fights the engine's element-kind optimisation. Not pursued.
 
 ### Phase E — Typed-array token columns (article #1/#2, internal only)
 - Replace `Token[]` with SoA columns: `Int32Array` for type/start/end/line/col, plus the lazy string accessor from Phase B.
@@ -129,5 +153,30 @@ Only after A–E, only with the good benchmark, only if numbers justify the comp
 - No change to `parse()`'s public output shape in phases A–E.
 - Every phase reports before/after from the Phase A harness. **No phase lands on a hunch.**
 
-## Honest expectation
+## Outcome (after A–D)
+
+| fixture | LEXER | PARSE |
+|---------|------:|------:|
+| tagDense | +23.2% | +25.2% |
+| attrs | +9.1% | +13.3% |
+| prose | +4.4% | +7.7% |
+| nested | +28.2% | +22.1% |
+| codeFree | +5.1% | **+48.2%** |
+
+**Every win came from deleting work that did not need doing — none from memory
+layout.** The article's headline techniques are exactly the ones that do not
+survive the trip to JS (no allocator control, no struct layout, and V8's element
+kinds actively punish manual preallocation). Its most throwaway line, #11
+"never let the common case pay for the general one", paid on all three
+successful phases.
+
+**Phase E (typed-array token columns) is therefore not recommended.** It is the
+most invasive remaining change and rests on the part of the article that has
+transferred worst. Phase F (lazy AST) is unchanged: possible, but a
+compatibility risk that needs its own justification.
+
+The remaining headroom is likely in the same #11 shape — find work being done
+unconditionally that only a rare input needs.
+
+## Honest expectation (written before A–D; kept for the record)
 Phases B–D are real but incremental — think 10–30%, not 3×. The 3–10× in the article comes from Zig-vs-JS and from controlling memory layout directly, which JS mostly denies us. The already-landed char-code + `String()` work captured the cheap 2–6×. What's left here is allocation pressure, and the ceiling is lower.
