@@ -94,13 +94,23 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   };
 
   const setupContextFreeTag = (name: string, isClosingTag?: boolean) => {
+    // Runs for every tag token, but can only ever do anything when
+    // contextFreeTags is configured. With none, `contextFreeTag` stays '' for
+    // the whole parse, so skip the toLowerCase() alloc and the isTokenNested
+    // buffer scan that every tag would otherwise pay for.
+    if (contextFreeTags.length === 0) {
+      return;
+    }
+
     if (contextFreeTag !== '' && isClosingTag) {
       contextFreeTag = '';
     }
 
+    // Gate the cheap array membership test before the buffer-scanning
+    // isTokenNested: a tag not in contextFreeTags can never open one.
     const tagName = name.toLowerCase()
 
-    if (contextFreeTag === '' && isTokenNested(name) && contextFreeTags.includes(tagName)) {
+    if (contextFreeTag === '' && contextFreeTags.includes(tagName) && isTokenNested(name)) {
       contextFreeTag = tagName;
     }
   };
