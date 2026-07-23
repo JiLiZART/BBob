@@ -14,16 +14,16 @@
 "@bbob/cli": minor
 ---
 
-PNPM updated to 11.9.0 version
+PNPM updated to `11.9.0` version
 
-Minimal Node version set to 22.x
+Minimal Node version set to `22.x`
 
-Example for React update to new versions of deps
+Example for React updated to new versions of deps
 
-For errors use `ERRORS.md` file, instead of inlined error messages, now includes `C1` and `C2`
+For errors `C1` and `C2` used `ERRORS.md` file, instead of inlined error messages.
 
-ESlint migrated to 10.x version
+`ESlint` migrated to 10.x version
 
-TypeScript migrated to 6.x version
+`TypeScript` migrated to 6.x version
 
 

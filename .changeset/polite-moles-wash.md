@@ -1,17 +1,20 @@
 ---
-"@bbob/parser": patch
-"@bbob/cli": patch
-"@bbob/core": patch
-"@bbob/html": patch
-"@bbob/plugin-helper": patch
-"@bbob/preset": patch
-"@bbob/preset-html5": patch
-"@bbob/preset-react": patch
-"@bbob/preset-vue": patch
-"@bbob/react": patch
-"@bbob/types": patch
-"@bbob/vue2": patch
-"@bbob/vue3": patch
+"@bbob/parser": minor
+"@bbob/cli": minor
+"@bbob/core": minor
+"@bbob/html": minor
+"@bbob/plugin-helper": minor
+"@bbob/preset": minor
+"@bbob/preset-html5": minor
+"@bbob/preset-react": minor
+"@bbob/preset-vue": minor
+"@bbob/react": minor
+"@bbob/types": minor
+"@bbob/vue2": minor
+"@bbob/vue3": minor
 ---
 
-increased performance of @bbob/parser
+Increased performance of `@bbob/parser`
+  - Replaced all array searches `[].indexOf` to instant condition comparsion `char === EQ || char === SPACE`
+  - Increased performance of nested tokens detection `isTokenNested`
+  - Removed redundant object in `CharGrabber`
