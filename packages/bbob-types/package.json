@@ -1,6 +1,6 @@
 {
   "name": "@bbob/types",
-  "version": "4.3.1",
+  "version": "4.4.0",
   "description": "Shared Typescript types of @bbob",
   "scripts": {
     "types": "pkg-task"

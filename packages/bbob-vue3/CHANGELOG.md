@@ -1,5 +1,41 @@
 # @bbob/vue3
 
+## 4.4.0
+
+### Minor Changes
+
+- [#327](https://github.com/JiLiZART/BBob/pull/327) [`22bf163`](https://github.com/JiLiZART/BBob/commit/22bf163562b643806f3339334e920464885992e4) Thanks [@JiLiZART](https://github.com/JiLiZART)! - PNPM updated to `11.9.0` version
+
+  Minimal Node version set to `22.x`
+
+  Example for React updated to new versions of deps
+
+  For errors `C1` and `C2` used `ERRORS.md` file, instead of inlined error messages.
+
+  `ESlint` migrated to 10.x version
+
+  `TypeScript` migrated to 6.x version
+
+- [#318](https://github.com/JiLiZART/BBob/pull/318) [`151af27`](https://github.com/JiLiZART/BBob/commit/151af2772aff9a97cae019c9c862f2edbc8acfe5) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Increased performance of `@bbob/parser`
+
+  - Replaced all array searches `[].indexOf` to instant condition comparsion `char === EQ || char === SPACE`
+  - Increased performance of nested tokens detection `isTokenNested`
+  - Removed redundant object in `CharGrabber`
+
+- [#310](https://github.com/JiLiZART/BBob/pull/310) [`7fe4a1a`](https://github.com/JiLiZART/BBob/commit/7fe4a1aaa353aef3b2d28fc58fea8194202f8aca) Thanks [@FrenchGithubUser](https://github.com/FrenchGithubUser)! - Adds support to `[size=20]text[/size]` tag
+
+### Patch Changes
+
+- [`89e4c22`](https://github.com/JiLiZART/BBob/commit/89e4c2285741e50875b0ecc04fee732518768db3) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Fixes CVE GHSA-p4wh-gqrq-q2wq
+
+  `escapeAttrValue` function now remove ASCII `tab/newline/CR` and ignore other control chars when resolving a URL scheme
+
+- Updated dependencies [[`89e4c22`](https://github.com/JiLiZART/BBob/commit/89e4c2285741e50875b0ecc04fee732518768db3), [`22bf163`](https://github.com/JiLiZART/BBob/commit/22bf163562b643806f3339334e920464885992e4), [`151af27`](https://github.com/JiLiZART/BBob/commit/151af2772aff9a97cae019c9c862f2edbc8acfe5), [`7fe4a1a`](https://github.com/JiLiZART/BBob/commit/7fe4a1aaa353aef3b2d28fc58fea8194202f8aca)]:
+  - @bbob/core@4.4.0
+  - @bbob/html@4.4.0
+  - @bbob/plugin-helper@4.4.0
+  - @bbob/types@4.4.0
+
 ## 4.3.1
 
 ### Patch Changes
