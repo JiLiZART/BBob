@@ -15,7 +15,7 @@
     "cover": "nx run-many --target=cover",
     "build": "nx run-many --target=build",
     "types": "nx run-many --target=types",
-    "release": "npm run build && npm run types && changeset publish",
+    "release": "npm run build && npm run types && npx changeset publish",
     "lint": "nx run-many --target=lint",
     "cleanup": "node scripts/cleanup"
   },
@@ -26,7 +26,7 @@
   "devDependencies": {
     "@bbob/scripts": "file:scripts",
     "@changesets/changelog-github": "0.7.0",
-    "@changesets/cli": "2.31.0",
+    "@changesets/cli": "2.31.1",
     "@commitlint/cli": "21.2.0",
     "@commitlint/config-conventional": "21.2.0",
     "@nx/eslint": "23.0.1",
@@ -93,29 +93,6 @@
     "size": "npm run build && @/cross-env NODE_ENV=production @/size-limit ."
   },
   "packageManager": "pnpm@11.9.0",
-  "pnpm": {
-    "overrides": {
-      "semver@>=7.0.0 <7.5.2": ">=7.5.2",
-      "postcss@<8.4.31": ">=8.4.31",
-      "follow-redirects@<1.15.4": ">=1.15.4",
-      "axios@>=1.0.0 <1.6.0": ">=1.6.0",
-      "ip@=2.0.0": ">=2.0.1",
-      "follow-redirects@<=1.15.5": ">=1.15.6",
-      "express@<4.19.2": ">=4.19.2"
-    },
-    "packageExtensions": {
-      "@testing-library/vue@7": {
-        "dependencies": {
-          "vue": "3.x"
-        }
-      },
-      "@vue/test-utils@2": {
-        "dependencies": {
-          "vue": "3.x"
-        }
-      }
-    }
-  },
   "workspaces": [
     "packages/*",
     "examples/*",
