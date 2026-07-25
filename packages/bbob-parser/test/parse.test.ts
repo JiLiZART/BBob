@@ -2,7 +2,7 @@ import { parse } from '../src';
 import type { TagNode, TagNodeTree } from "@bbob/types";
 
 const astToJSON = (ast: TagNodeTree) => Array.isArray(ast) ? ast.map(item => {
-  if (typeof item === 'object' && typeof item.toJSON === 'function') {
+  if (typeof item === 'object' && item && typeof item.toJSON === 'function') {
     return item.toJSON()
   }
 
@@ -340,7 +340,7 @@ describe('Parser', () => {
       expect(ast).toBeMatchAST(output);
     });
 
-    test('case free tag [LIST]', () => {
+    test('case free tag [LIST][/LIST]', () => {
       const ast = parse('[LIST][*]test[/LIST]', {
         caseFreeTags: true
       });
@@ -365,6 +365,58 @@ describe('Parser', () => {
 
       expect(ast).toBeMatchAST(output);
     });
+
+    test('case free tag [LIST][/list]', () => {
+      const ast = parse(`[LIST][*]test[/list]`, {
+        caseFreeTags: true,
+      });
+
+      const output = [
+        {
+          tag: 'list',
+          attrs: {},
+          content: [
+            "[*]test"
+          ],
+          start: {
+            from: 0,
+            to: 15,
+          },
+          end: {
+            from: 18,
+            to: 23,
+          },
+        }
+      ];
+
+      expect(ast).toBeMatchAST(output);
+    })
+
+    test('case free tag [list][/list]', () => {
+      const ast = parse(`[LIST][*]test[/LIST]`, {
+        caseFreeTags: true,
+      });
+
+      const output = [
+        {
+          tag: 'list',
+          attrs: {},
+          content: [
+            "[*]test"
+          ],
+          start: {
+            from: 0,
+            to: 15,
+          },
+          end: {
+            from: 18,
+            to: 23,
+          },
+        }
+      ];
+
+      expect(ast).toBeMatchAST(output);
+    })
 
     test('case free tags', () => {
       const ast = parse('[h1 name=value]Foo[/H1]', {
