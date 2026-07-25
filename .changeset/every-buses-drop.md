@@ -16,4 +16,4 @@
 
 Fixes CVE GHSA-p4wh-gqrq-q2wq 
 
-escapeAttrValue function now remove ASCII tab/newline/CR and ignore other control chars when resolving a URL scheme
+`escapeAttrValue` function now remove ASCII `tab/newline/CR` and ignore other control chars when resolving a URL scheme
