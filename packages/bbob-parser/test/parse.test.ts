@@ -347,18 +347,27 @@ describe('Parser', () => {
 
       const output = [
         {
-          tag: 'list',
+          tag: 'LIST',
           attrs: {},
           content: [
-            "[*]test"
+            {
+              tag: '*',
+              attrs: {},
+              content: [],
+              start: {
+                from: 6,
+                to: 9,
+              },
+            },
+            'test'
           ],
           start: {
             from: 0,
-            to: 15,
+            to: 6,
           },
           end: {
-            from: 18,
-            to: 23,
+            from: 13,
+            to: 20,
           },
         }
       ];
@@ -373,18 +382,27 @@ describe('Parser', () => {
 
       const output = [
         {
-          tag: 'list',
+          tag: 'LIST',
           attrs: {},
           content: [
-            "[*]test"
+            {
+              tag: '*',
+              attrs: {},
+              content: [],
+              start: {
+                from: 6,
+                to: 9,
+              },
+            },
+            'test'
           ],
           start: {
             from: 0,
-            to: 15,
+            to: 6,
           },
           end: {
-            from: 18,
-            to: 23,
+            from: 13,
+            to: 20,
           },
         }
       ];
@@ -393,7 +411,7 @@ describe('Parser', () => {
     })
 
     test('case free tag [list][/list]', () => {
-      const ast = parse(`[LIST][*]test[/LIST]`, {
+      const ast = parse(`[list][*]test[/list]`, {
         caseFreeTags: true,
       });
 
@@ -402,15 +420,24 @@ describe('Parser', () => {
           tag: 'list',
           attrs: {},
           content: [
-            "[*]test"
+            {
+              tag: '*',
+              attrs: {},
+              content: [],
+              start: {
+                from: 6,
+                to: 9,
+              },
+            },
+            'test'
           ],
           start: {
             from: 0,
-            to: 15,
+            to: 6,
           },
           end: {
-            from: 18,
-            to: 23,
+            from: 13,
+            to: 20,
           },
         }
       ];
