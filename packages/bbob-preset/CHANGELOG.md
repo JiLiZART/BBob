@@ -1,5 +1,15 @@
 # Change Log
 
+## 4.4.1
+
+### Patch Changes
+
+- [#331](https://github.com/JiLiZART/BBob/pull/331) [`a969027`](https://github.com/JiLiZART/BBob/commit/a9690275894f49c394f69fbc2c158da7e6f62be2) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Improves type generation regression from 4.4.0
+
+- Updated dependencies [[`a969027`](https://github.com/JiLiZART/BBob/commit/a9690275894f49c394f69fbc2c158da7e6f62be2)]:
+  - @bbob/plugin-helper@4.4.1
+  - @bbob/types@4.4.1
+
 ## 4.4.0
 
 ### Minor Changes
