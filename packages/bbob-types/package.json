@@ -3,7 +3,8 @@
   "version": "4.4.0",
   "description": "Shared Typescript types of @bbob",
   "scripts": {
-    "types": "pkg-task"
+    "types": "pkg-task",
+    "attw": "pkg-task"
   },
   "keywords": [
     "bbcode",
