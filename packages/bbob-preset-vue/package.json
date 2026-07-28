@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset-vue",
-  "version": "4.3.1",
+  "version": "4.4.1",
   "description": "Vue preset to transform BBCode to Vue for @bbob/vue*",
   "keywords": [
     "bbob",
@@ -53,6 +53,7 @@
     "size": "pkg-task",
     "bundlesize": "pkg-task",
     "types": "pkg-task",
+    "attw": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [

@@ -1,6 +1,6 @@
 {
   "name": "@bbob/cli",
-  "version": "4.3.1",
+  "version": "4.4.1",
   "description": "Comand line bbcode parser",
   "bin": {
     "bbob": "lib/cli.js"
@@ -57,6 +57,7 @@
     "size": "pkg-task",
     "bundlesize": "pkg-task",
     "types": "pkg-task",
+    "attw": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",

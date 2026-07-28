@@ -15,7 +15,8 @@
     "cover": "nx run-many --target=cover",
     "build": "nx run-many --target=build",
     "types": "nx run-many --target=types",
-    "release": "npm run build && npm run types && changeset publish",
+    "attw": "nx run-many --target=attw",
+    "release": "npm run build && npm run types && npm run attw && npx changeset publish",
     "lint": "nx run-many --target=lint",
     "cleanup": "node scripts/cleanup"
   },
@@ -24,9 +25,10 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
     "@bbob/scripts": "file:scripts",
     "@changesets/changelog-github": "0.7.0",
-    "@changesets/cli": "2.31.0",
+    "@changesets/cli": "2.31.1",
     "@commitlint/cli": "21.2.0",
     "@commitlint/config-conventional": "21.2.0",
     "@nx/eslint": "23.0.1",
@@ -53,6 +55,7 @@
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.7.0",
     "husky": "9.1.7",
     "jest": "30.4.2",
     "jest-environment-jsdom": "30.4.1",
@@ -67,8 +70,7 @@
     "size-limit": "12.1.0",
     "ts-jest-resolver": "2.0.1",
     "ts2mjs": "4.0.0",
-    "typescript": "6.0.3",
-    "globals": "17.7.0"
+    "typescript": "6.0.3"
   },
   "publishConfig": {
     "access": "public",
@@ -89,33 +91,11 @@
     "cover": "@/jest --coverage .",
     "lint": "@/eslint .",
     "types": "@/tsc && @/ts2mjs types",
+    "attw": "@/attw --pack . --profile node16 --ignore-rules false-export-default",
     "bundlesize": "npm run build && @/cross-env NODE_ENV=production @/bundlesize .",
     "size": "npm run build && @/cross-env NODE_ENV=production @/size-limit ."
   },
   "packageManager": "pnpm@11.9.0",
-  "pnpm": {
-    "overrides": {
-      "semver@>=7.0.0 <7.5.2": ">=7.5.2",
-      "postcss@<8.4.31": ">=8.4.31",
-      "follow-redirects@<1.15.4": ">=1.15.4",
-      "axios@>=1.0.0 <1.6.0": ">=1.6.0",
-      "ip@=2.0.0": ">=2.0.1",
-      "follow-redirects@<=1.15.5": ">=1.15.6",
-      "express@<4.19.2": ">=4.19.2"
-    },
-    "packageExtensions": {
-      "@testing-library/vue@7": {
-        "dependencies": {
-          "vue": "3.x"
-        }
-      },
-      "@vue/test-utils@2": {
-        "dependencies": {
-          "vue": "3.x"
-        }
-      }
-    }
-  },
   "workspaces": [
     "packages/*",
     "examples/*",
