@@ -129,6 +129,8 @@ export const defaultTags = (function createTags() {
     },
     color: (node) =>
         toNode("span", toStyle(`color: ${getUniqAttr(node.attrs)};`), node.content),
+    spoiler: (node) =>
+        toNode("span", { class: "bb-spoiler", ...toStyle("background-color: #000; color: transparent;") }, node.content),
     size: (node) =>
         toNode("span", toStyle(`font-size: ${toEm(getUniqAttr(node.attrs))};`), node.content),
   }
