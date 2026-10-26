@@ -111,6 +111,13 @@ describe('@bbob/preset-html5', () => {
     expect(parse(input)).toBe(result);
   });
 
+  test(`[LIST][*]Entry 1[/LIST] with caseFreeTags`, () => {
+    const input = `[LIST][*]Entry 1[*]Entry 2[/LIST]`;
+    const result = '<ul><li>Entry 1</li><li>Entry 2</li></ul>';
+
+    expect(html(input, preset(), { caseFreeTags: true })).toBe(result);
+  });
+
   test(`[list]*Entry 1[/list]`, () => {
     const input = `
     [list]
