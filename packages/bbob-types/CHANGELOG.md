@@ -1,5 +1,13 @@
 # @bbob/types
 
+## 4.4.2
+
+### Patch Changes
+
+- [#339](https://github.com/JiLiZART/BBob/pull/339) [`5de1d25`](https://github.com/JiLiZART/BBob/commit/5de1d2551f0c38f78c4463f15b488b85dfa8c424) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Fixes [#315](https://github.com/JiLiZART/BBob/issues/315): with `caseFreeTags: true` the parser now emits lowercase tag names, so `[LIST][*]test[/LIST]` is rendered by presets the same as `[list][*]test[/list]`
+
+  **Behavior note:** with `caseFreeTags: true`, tag names in the AST are now lowercase (`[LIST]` produces `tag: 'list'`). Plugins that matched on the original casing, e.g. `node.tag === 'LIST'`, need to compare against lowercase. Without the flag nothing changes.
+
 ## 4.4.1
 
 ### Patch Changes
