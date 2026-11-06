@@ -8,6 +8,10 @@ module.exports = {
   coverageDirectory: './coverage/',
   collectCoverage: true,
   resolver: "ts-jest-resolver",
+  // resolve workspace packages to their sources, not the published registry versions
+  moduleNameMapper: {
+    '^@bbob/(.*)$': `${__dirname}/packages/bbob-$1/src`,
+  },
   transform: {
     '\\.[jt]sx?$': ['@swc/jest', { ...config }],
   },

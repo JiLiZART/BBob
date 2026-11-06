@@ -347,7 +347,7 @@ describe('Parser', () => {
 
       const output = [
         {
-          tag: 'LIST',
+          tag: 'list',
           attrs: {},
           content: [
             {
@@ -382,7 +382,7 @@ describe('Parser', () => {
 
       const output = [
         {
-          tag: 'LIST',
+          tag: 'list',
           attrs: {},
           content: [
             {
