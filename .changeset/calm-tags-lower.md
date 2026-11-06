@@ -15,3 +15,5 @@
 ---
 
 Fixes #315: with `caseFreeTags: true` the parser now emits lowercase tag names, so `[LIST][*]test[/LIST]` is rendered by presets the same as `[list][*]test[/list]`
+
+**Behavior note:** with `caseFreeTags: true`, tag names in the AST are now lowercase (`[LIST]` produces `tag: 'list'`). Plugins that matched on the original casing, e.g. `node.tag === 'LIST'`, need to compare against lowercase. Without the flag nothing changes.
