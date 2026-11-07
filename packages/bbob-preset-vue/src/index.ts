@@ -31,6 +31,11 @@ export const createTags = (tags: PresetTagsDefinition<string>) => {
       ...tagAttr({ textDecoration: 'line-through' }),
     }),
 
+    spoiler: (...args) => ({
+      ...tags.spoiler?.(...args),
+      ...tagAttr({ backgroundColor: '#000', color: 'transparent' }),
+    }),
+
     size: (...args) => ({
       ...tags.size?.(...args),
       ...tagAttr({ fontSize: String(getUniqAttr(args[0].attrs)) }),
