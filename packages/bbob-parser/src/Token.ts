@@ -105,7 +105,9 @@ class Token<TokenValue = string> implements TokenInterface {
     this[LINE_ID] = row;
     this[COLUMN_ID] = col;
     this[TYPE_ID] = type || 0;
-    this[VALUE_ID] = String(value);
+    // Values are almost always already strings (the lexer only emits strings);
+    // skip the String() coercion call in that hot path.
+    this[VALUE_ID] = typeof value === 'string' ? value : String(value);
     this[START_POS_ID] = start;
     this[END_POS_ID] = end;
   }
