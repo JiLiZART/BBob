@@ -7,6 +7,23 @@ const CLOSE_START_TAG = '</';
 const START_TAG = '<';
 const END_TAG = '>';
 
+// Drop event handlers and malformed names; attribute values are escaped by attrsToString.
+const SAFE_ATTR_NAME = /^(?!on)[a-z_:][\w:.-]*$/i;
+
+function safeAttrs(attrs?: Record<string, unknown> | null) {
+  if (!attrs) {
+    return attrs;
+  }
+
+  return Object.keys(attrs).reduce<Record<string, unknown>>((acc, key) => {
+    if (SAFE_ATTR_NAME.test(key)) {
+      acc[key] = attrs[key];
+    }
+
+    return acc;
+  }, {});
+}
+
 export interface BBobHTMLOptions extends BBobCoreOptions {
   stripTags?: boolean
 }
@@ -31,7 +48,7 @@ function renderNode(node?: TagNodeTree, options?: BBobHTMLOptions): string {
       return render(node.content, options);
     }
 
-    const attrs = attrsToString(node.attrs)
+    const attrs = attrsToString(safeAttrs(node.attrs))
 
     if (node.content === null) {
       return START_TAG + node.tag + attrs + SELFCLOSE_END_TAG

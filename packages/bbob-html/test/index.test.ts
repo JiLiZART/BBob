@@ -5,7 +5,7 @@ const process = (input: string, params?: BBobHTMLOptions) => toHTML(input, [], p
 describe('@bbob/html', () => {
   test('render bbcode tag with single param as html tag', () => {
     const input = '[url=https://ru.wikipedia.org]Text[/url]';
-    const expected = '<url https://ru.wikipedia.org="https://ru.wikipedia.org">Text</url>';
+    const expected = '<url>Text</url>';
     const result = process(input);
 
     expect(result).toBe(expected);
@@ -39,5 +39,17 @@ describe('@bbob/html', () => {
     const result = 'https://ru.wikipedia.org';
 
     expect(render(input)).toBe(result);
+  });
+
+  test('drops event handler attributes', () => {
+    const input = '[img onerror=alert(1) src=x]x[/img]';
+
+    expect(process(input)).toBe('<img src="x">x</img>');
+  });
+
+  test('drops malformed attribute names', () => {
+    const input = '[a href=/x "onclick"=alert(1)]x[/a]';
+
+    expect(process(input)).toBe('<a href="/x">x</a>');
   });
 });
