@@ -1,48 +1,42 @@
 # @bbob/angular
 [![install size](https://packagephobia.now.sh/badge?p=@bbob/angular)](https://packagephobia.now.sh/result?p=@bbob/angular) [![Known Vulnerabilities](https://snyk.io/test/github/JiLiZART/bbob/badge.svg?targetFile=packages%2Fbbob-angular%2Fpackage.json)](https://snyk.io/test/github/JiLiZART/bbob?targetFile=packages%2Fbbob-angular%2Fpackage.json)
 
-> Component for Angular framework
+> Standalone BBCode component for Angular 22+
 
 ```shell
-npm i @bbob/angular @bbob/preset-angular
+npm i @bbob/angular @bbob/preset-html5
 ```
 
-```jsx
-import React from 'react'
-import BBCode from '@bbob/angular';
-import presetReact from '@bbob/preset-html5';
+```ts
+import { Component } from '@angular/core';
+import { BBCodeComponent } from '@bbob/angular';
+import preset from '@bbob/preset-html5';
 
-const plugins = [presetReact()];
-
-export default () => (
-    <BBCode plugins={plugins}>
-    [table]
-      [tr]
-          [td]table 1[/td]
-          [td]table 2[/td]
-      [/tr]
-      [tr]
-          [td]table 3[/td]
-          [td]table 4[/td]
-      [/tr]
-    [/table]
-    </BBCode>
-)
+@Component({
+  selector: 'app-root',
+  imports: [BBCodeComponent],
+  template: `
+    <bbob-bbcode [source]="bbcode" [plugins]="plugins" [trusted]="true"></bbob-bbcode>
+  `,
+})
+export class AppComponent {
+  bbcode = '[b]bolded text[/b] [url=https://github.com/JiLiZART/bbob]bbob[/url]';
+  plugins = [preset()];
+}
 ```
 
-```jsx
-import { render } from '@bbob/react'
+## Inputs
 
-export default () => render(`
-[table]
-  [tr]
-      [td]table 1[/td]
-      [td]table 2[/td]
-  [/tr]
-  [tr]
-      [td]table 3[/td]
-      [td]table 4[/td]
-  [/tr]
-[/table]
-`)
-```
+| Input     | Type                   | Default | Description                                       |
+|-----------|------------------------|---------|---------------------------------------------------|
+| `source`  | `string`               | `''`    | BBCode string to render                           |
+| `plugins` | `BBobPlugins`          | `[]`    | BBob plugins, e.g. `[preset()]`                   |
+| `options` | `BBobHTMLOptions`      |         | Options passed to `@bbob/html`                    |
+| `trusted` | `boolean`              | `false` | Bypass Angular's HTML sanitizer (see below)       |
+
+## Sanitization
+
+The rendered HTML goes through Angular's `DomSanitizer` by default. The sanitizer strips `style`
+attributes, so tags that render as inline styles in `@bbob/preset-html5` (`[b]`, `[i]`, `[color]`, ...)
+lose their styling. Set `[trusted]="true"` to bypass the sanitizer. BBob does not escape raw text in
+the source, so only do that for input you control.

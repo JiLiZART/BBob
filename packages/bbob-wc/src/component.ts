@@ -2,34 +2,44 @@ import html from '@bbob/html';
 import html5Preset from '@bbob/preset-html5';
 
 import type { BBobHTMLOptions } from '@bbob/html';
-import type { BBobPluginFunction } from '@bbob/types';
+import type { BBobPlugins } from '@bbob/types';
 
 export class BBCodeElement extends HTMLElement {
   static get observedAttributes() {
-    return ['html5', 'plugins', 'options'];
+    return ['html5', 'options'];
   }
 
-  private _useHTML5 = false;
-  private _plugins: string[] = [];
+  private _plugins: BBobPlugins = [];
+
   private _options: BBobHTMLOptions = {};
-  private _tag = 'div';
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    switch(name) {
-      case 'html5':
-        this._useHTML5 = newValue !== null;
-        break;
-      case 'plugins':
-        this._plugins = JSON.parse(newValue || '[]');
-        break;
-      case 'options':
-        this._options = JSON.parse(newValue || '{}');
-        break;
+  /** Plugins are functions, so they are set as a property, not an attribute. */
+  get plugins(): BBobPlugins {
+    return this._plugins;
+  }
+
+  set plugins(value: BBobPlugins) {
+    this._plugins = value;
+    this.render();
+  }
+
+  get options(): BBobHTMLOptions {
+    return this._options;
+  }
+
+  set options(value: BBobHTMLOptions) {
+    this._options = value;
+    this.render();
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null) {
+    if (name === 'options') {
+      this._options = JSON.parse(newValue || '{}');
     }
 
     this.render();
@@ -39,20 +49,14 @@ export class BBCodeElement extends HTMLElement {
     this.render();
   }
 
-  get plugins(): BBobPluginFunction[] {
-    return this._plugins.map((plugin) => {
-      return require(plugin);
-    });
-  }
-
   render() {
-    if (this.shadowRoot) {
-      const content = this.textContent || '';
-    
-      const plugins = this._useHTML5 ? [...this.plugins, html5Preset()] : this.plugins;
-
-      this.shadowRoot.innerHTML = html(content, plugins, this._options);
+    if (!this.shadowRoot) {
+      return;
     }
+
+    const plugins = this.hasAttribute('html5') ? [html5Preset(), ...this._plugins] : this._plugins;
+
+    this.shadowRoot.innerHTML = html(this.textContent || '', plugins, this._options);
   }
 }
 

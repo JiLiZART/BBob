@@ -15,7 +15,6 @@
     "cover": "nx run-many --target=cover",
     "build": "nx run-many --target=build",
     "types": "nx run-many --target=types",
-    "types-check": "tsc --noEmit ./packages/",
     "release": "npm run build && npm run types && changeset publish",
     "lint": "nx run-many --target=lint",
     "cleanup": "node scripts/cleanup"
@@ -46,7 +45,7 @@
     "@testing-library/dom": "10.4.0",
     "@testing-library/jest-dom": "6.1.2",
     "@types/jest": "29.5.3",
-    "@types/node": "22.10.0",
+    "@types/node": "22.20.5",
     "@types/react": "18.2.18",
     "bundlesize2": "0.0.31",
     "cross-env": "7.0.3",
@@ -117,6 +116,12 @@
         "dependencies": {
           "vue": "3.x"
         }
+      }
+    },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "@emnapi/core": "2",
+        "@emnapi/runtime": "2"
       }
     }
   },

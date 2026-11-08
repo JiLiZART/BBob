@@ -22,7 +22,9 @@
       "@bbob/react",
       "@bbob/types",
       "@bbob/vue2",
-      "@bbob/vue3"
+      "@bbob/vue3",
+      "@bbob/angular",
+      "@bbob/wc"
     ]
   ],
   "access": "public",
@@ -34,6 +36,8 @@
     "svelte-vite",
     "vite",
     "vue3-vite",
-    "vue2-example"
+    "vue2-example",
+    "angular-vite",
+    "wc-vite"
   ]
 }

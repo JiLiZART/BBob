@@ -1,7 +1,7 @@
 {
   "name": "@bbob/angular",
   "version": "4.2.0",
-  "description": "Angular BBCode component part of @bbob",
+  "description": "A BBCode component for Angular part of @bbob",
   "keywords": [
     "angular",
     "bbcode",
@@ -11,27 +11,30 @@
   "dependencies": {
     "@bbob/core": "*",
     "@bbob/html": "*",
-    "@bbob/plugin-helper": "*",
     "@bbob/types": "*"
   },
-  "devDependencies": {
-    "@bbob/preset-html5": "*",
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/dom": "10.4.0"
+  "peerDependencies": {
+    "@angular/core": ">=22.0.0",
+    "@angular/platform-browser": ">=22.0.0"
   },
-  "main": "lib/index.js",
+  "devDependencies": {
+    "@angular/common": "22.2.5",
+    "@angular/compiler": "22.2.5",
+    "@angular/compiler-cli": "22.2.5",
+    "@angular/core": "22.2.5",
+    "@angular/platform-browser": "22.2.5",
+    "@bbob/preset-html5": "*",
+    "rxjs": "7.8.2",
+    "typescript": "6.0.3"
+  },
+  "main": "es/index.js",
   "module": "es/index.js",
-  "jsnext:main": "es/index.js",
-  "browser": "dist/index.js",
-  "browserName": "BbobReact",
   "types": "types/index.d.ts",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "import": "./es/index.js",
-      "require": "./lib/index.js",
-      "browser": "./dist/index.min.js",
-      "umd": "./dist/index.min.js"
+      "default": "./es/index.js"
     }
   },
   "homepage": "https://github.com/JiLiZART/bbob",
@@ -45,38 +48,18 @@
     "url": "git://github.com/JiLiZART/bbob.git"
   },
   "scripts": {
-    "build:commonjs": "pkg-task",
-    "build:es": "pkg-task",
-    "build:umd": "pkg-task",
-    "build": "pkg-task",
+    "build": "ngc -p tsconfig.json",
     "test": "pkg-task",
     "cover": "pkg-task",
     "lint": "pkg-task",
-    "size": "pkg-task",
-    "bundlesize": "pkg-task",
-    "types": "pkg-task",
     "prepublishOnly": "npm run build"
   },
-  "size-limit": [
-    {
-      "path": "./dist/index.min.js",
-      "size": "8 KB"
-    }
-  ],
-  "bundlesize": [
-    {
-      "path": "./dist/index.min.js",
-      "maxSize": "8 KB"
-    }
-  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "files": [
-    "dist",
-    "lib",
-    "src",
     "es",
+    "src",
     "types"
   ]
 }

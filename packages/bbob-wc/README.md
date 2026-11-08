@@ -1,41 +1,37 @@
-# @bbob/vue3
+# @bbob/wc
 
-[![install size](https://packagephobia.now.sh/badge?p=@bbob/vue3)](https://packagephobia.now.sh/result?p=@bbob/vue3) [![Known Vulnerabilities](https://snyk.io/test/github/JiLiZART/bbob/badge.svg?targetFile=packages%2Fbbob-vue3%2Fpackage.json)](https://snyk.io/test/github/JiLiZART/bbob?targetFile=packages%2Fbbob-vue3%2Fpackage.json)
+[![install size](https://packagephobia.now.sh/badge?p=@bbob/wc)](https://packagephobia.now.sh/result?p=@bbob/wc) [![Known Vulnerabilities](https://snyk.io/test/github/JiLiZART/bbob/badge.svg?targetFile=packages%2Fbbob-wc%2Fpackage.json)](https://snyk.io/test/github/JiLiZART/bbob?targetFile=packages%2Fbbob-wc%2Fpackage.json)
 
-> Converts @bbob/parser AST tree to Vue 3
+> `<bb-code>` web component that renders BBCode to HTML
 
 ```shell
-npm i @bbob/vue3 @bbob/preset-vue
+npm i @bbob/wc
 ```
 
 ```js
-import { defineComponent } from 'vue'
-import VueBbob from '@bbob/vue3';
-
-Vue.use(VueBbob);
+import '@bbob/wc'; // registers <bb-code>
 ```
 
 ```html
-<template>
-  <div class="vue3">
-    <h2>Generated vue3 here</h2>
-    <bbob-bbcode container="div" :plugins="plugins">{{ bbcode }}</bbob-bbcode>
-  </div>
-</template>
-<script>
-  import Vue from 'vue'
-  import preset from '@bbob/preset-vue'
-  
-  export default defineComponent({
-    name: 'App',
-    data() {
-      return {
-        bbcode: 'Text [b]bolded[/b] and [i]Some Name[/i]',
-        plugins: [
-          preset()
-        ],
-      }
-    }
-  })
-</script>
+<bb-code html5>Text [b]bolded[/b] and [i]italic[/i]</bb-code>
 ```
+
+## Attributes
+
+| Attribute | Description                                                   |
+|-----------|---------------------------------------------------------------|
+| `html5`   | Enable `@bbob/preset-html5`                                   |
+| `options` | JSON string of `@bbob/html` options, e.g. `{"stripTags":true}` |
+
+## Properties
+
+Plugins are functions, so they are set as a property:
+
+```js
+import preset from '@bbob/preset-html5';
+
+const el = document.querySelector('bb-code');
+el.plugins = [preset()];
+```
+
+The rendered HTML goes into the element's shadow root.
