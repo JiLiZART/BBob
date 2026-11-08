@@ -9,6 +9,7 @@ const END_TAG = '>';
 
 // Drop event handlers and malformed names; attribute values are escaped by attrValue.
 const SAFE_ATTR_NAME = /^(?!on)[a-z_:][\w:.-]*$/i;
+const { hasOwnProperty } = Object.prototype;
 
 // Single pass over attrs straight to a string, no intermediate object.
 function renderAttrs(attrs?: Record<string, unknown> | null) {
@@ -19,7 +20,7 @@ function renderAttrs(attrs?: Record<string, unknown> | null) {
   }
 
   for (const key in attrs) {
-    if (SAFE_ATTR_NAME.test(key)) {
+    if (hasOwnProperty.call(attrs, key) && SAFE_ATTR_NAME.test(key)) {
       const attr = attrValue(key, attrs[key]);
 
       if (attr) {

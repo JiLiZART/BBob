@@ -1,3 +1,4 @@
+import { TagNode } from '@bbob/plugin-helper';
 import toHTML, { BBobHTMLOptions, render } from '../src';
 
 const process = (input: string, params?: BBobHTMLOptions) => toHTML(input, [], params);
@@ -51,5 +52,12 @@ describe('@bbob/html', () => {
     const input = '[a href=/x "onclick"=alert(1)]x[/a]';
 
     expect(process(input)).toBe('<a href="/x">x</a>');
+  });
+
+  test('ignores inherited attrs', () => {
+    const attrs = Object.create({ onerror: 'alert(1)', inherited: 'x' });
+    attrs.href = '/x';
+
+    expect(render(TagNode.create('a', attrs, ['x']))).toBe('<a href="/x">x</a>');
   });
 });
