@@ -4,6 +4,9 @@ import html5Preset from '@bbob/preset-html5';
 import type { BBobHTMLOptions } from '@bbob/html';
 import type { BBobPlugins } from '@bbob/types';
 
+// Raw text is not escaped by @bbob/html, so escape before parsing to keep HTML in the source inert.
+const escapeHTML = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
 export class BBCodeElement extends HTMLElement {
   static get observedAttributes() {
     return ['html5', 'options'];
@@ -56,7 +59,7 @@ export class BBCodeElement extends HTMLElement {
 
     const plugins = this.hasAttribute('html5') ? [html5Preset(), ...this._plugins] : this._plugins;
 
-    this.shadowRoot.innerHTML = html(this.textContent || '', plugins, this._options);
+    this.shadowRoot.innerHTML = html(escapeHTML(this.textContent || ''), plugins, this._options);
   }
 }
 

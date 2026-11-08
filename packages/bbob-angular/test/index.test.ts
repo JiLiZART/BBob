@@ -51,12 +51,12 @@ describe('@bbob/angular', () => {
       .toBe('<span style="font-weight: bold;">bolded text</span>');
   });
 
-  test('trusted strips nothing', async () => {
+  test('trusted escapes raw html in source', async () => {
     expect(await renderBBCode('[b]a[/b]<img src=x onerror="1">', true))
-      .toBe('<span style="font-weight: bold;">a</span><img src="x" onerror="1">');
+      .toBe('<span style="font-weight: bold;">a</span>&lt;img src=x onerror="1"&gt;');
   });
 
-  test('sanitizer drops event handlers', async () => {
-    expect(await renderBBCode('<img src=x onerror="1">')).toBe('<img src="x">');
+  test('raw html in source is escaped', async () => {
+    expect(await renderBBCode('<img src=x onerror="1">')).toBe('&lt;img src=x onerror="1"&gt;');
   });
 });

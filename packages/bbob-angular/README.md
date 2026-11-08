@@ -38,5 +38,5 @@ export class AppComponent {
 
 The rendered HTML goes through Angular's `DomSanitizer` by default. The sanitizer strips `style`
 attributes, so tags that render as inline styles in `@bbob/preset-html5` (`[b]`, `[i]`, `[color]`, ...)
-lose their styling. Set `[trusted]="true"` to bypass the sanitizer. BBob does not escape raw text in
-the source, so only do that for input you control.
+lose their styling. Set `[trusted]="true"` to bypass the sanitizer. The source text is HTML-escaped
+before parsing, so only markup produced by your plugins reaches the DOM either way.

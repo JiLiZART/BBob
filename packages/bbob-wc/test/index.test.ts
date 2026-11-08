@@ -31,6 +31,12 @@ describe('@bbob/wc', () => {
     expect(el.shadowRoot?.innerHTML).toBe('<b>BOLDED TEXT</b>');
   });
 
+  test('raw html in source is escaped', () => {
+    const el = mount('<bb-code html5>&lt;img src=x onerror="1"&gt;[b]a[/b]</bb-code>');
+
+    expect(el.shadowRoot?.innerHTML).toBe('&lt;img src=x onerror="1"&gt;<span style="font-weight: bold;">a</span>');
+  });
+
   test('options attribute is parsed as JSON', () => {
     const el = mount('<bb-code html5 options=\'{"stripTags":true}\'>[b]bolded text[/b]</bb-code>');
 

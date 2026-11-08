@@ -34,4 +34,5 @@ const el = document.querySelector('bb-code');
 el.plugins = [preset()];
 ```
 
-The rendered HTML goes into the element's shadow root.
+The rendered HTML goes into the element's shadow root. The source text is HTML-escaped before
+parsing, so only markup produced by plugins reaches the DOM.
