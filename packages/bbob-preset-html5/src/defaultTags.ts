@@ -85,7 +85,11 @@ const toNode = (
   content?: TagNodeTree
 ) => TagNode.create(tag, attrs, content);
 
-const IMG_ALLOWED_ATTRS = ["width", "height", "alt", "title"];
+const IMG_ALLOWED_ATTRS = ["width", "height", "alt", "title", "class", "id", "style"];
+
+// strict name pattern: attr names come from user input and are rendered unescaped
+const isAllowedImgAttr = (name: string) =>
+  IMG_ALLOWED_ATTRS.includes(name) || /^data-[a-z0-9_-]+$/i.test(name);
 
 const toStyle = (style: string) => ({ style });
 
@@ -112,10 +116,8 @@ export const defaultTags = (function createTags() {
       const attrs: Record<string, unknown> = {};
 
       // allow-list only: attr names come from user input (GHSA-69g8-5v35-g33w)
-      IMG_ALLOWED_ATTRS.forEach((name) => {
-        if (Object.prototype.hasOwnProperty.call(source, name)) {
-          attrs[name] = source[name];
-        }
+      Object.keys(source).filter(isAllowedImgAttr).forEach((name) => {
+        attrs[name] = source[name];
       });
 
       attrs.src = render(node.content);

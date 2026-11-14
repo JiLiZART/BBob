@@ -83,6 +83,15 @@ describe('@bbob/preset-html5', () => {
       expect(parse('[img width=10 onerror="alert(1)"]x[/img]')).toBe('<img width="10" src="x"/>');
     });
 
+    test('keeps class, id, style and data-* attributes', () => {
+      expect(parse('[img class="a b" id="pic" style="width: 10px" data-foo="bar" onerror="alert(1)"]x[/img]'))
+        .toBe('<img class="a b" id="pic" style="width: 10px" data-foo="bar" src="x"/>');
+    });
+
+    test('drops malformed data-* names', () => {
+      expect(parse('[img data-="1" data-a/onerror="alert(1)" data-a>b="1"]x[/img]')).not.toMatch(/onerror|data-/);
+    });
+
     test('invalid attribute name', () => {
       expect(parse('[img "x"=1]x[/img]')).toBe('<img src="x"/>');
     });
