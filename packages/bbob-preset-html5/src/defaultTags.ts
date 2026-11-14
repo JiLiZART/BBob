@@ -85,6 +85,8 @@ const toNode = (
   content?: TagNodeTree
 ) => TagNode.create(tag, attrs, content);
 
+const IMG_ALLOWED_ATTRS = ["width", "height", "alt", "title"];
+
 const toStyle = (style: string) => ({ style });
 
 const toEm = (value: unknown) => `${Number(value) / 10}em`;
@@ -105,15 +107,21 @@ export const defaultTags = (function createTags() {
             },
             node.content
         ),
-    img: (node, { render }) =>
-        toNode(
-            "img",
-            {
-              ...node.attrs,
-              src: render(node.content),
-            },
-            null
-        ),
+    img: (node, { render }) => {
+      const source: Record<string, unknown> = node.attrs || {};
+      const attrs: Record<string, unknown> = {};
+
+      // allow-list only: attr names come from user input (GHSA-69g8-5v35-g33w)
+      IMG_ALLOWED_ATTRS.forEach((name) => {
+        if (Object.prototype.hasOwnProperty.call(source, name)) {
+          attrs[name] = source[name];
+        }
+      });
+
+      attrs.src = render(node.content);
+
+      return toNode("img", attrs, null);
+    },
     quote: (node) => toNode("blockquote", {}, [toNode("p", {}, node.content)]),
     code: (node) => toNode("pre", {}, node.content),
     style: (node) =>

@@ -1,3 +1,4 @@
+import bbob from '@bbob/core';
 import type { PresetTagFunction } from "@bbob/types";
 
 import preset, { createTags, tagAttr } from '../src'
@@ -25,4 +26,14 @@ describe('@bbob/preset-vue', () => {
     expect(tags.u?.({tag: 'u'}, ...args)).toEqual(createTag('u',{ textDecoration: 'underline' }))
     expect(tags.s?.({tag: 's'}, ...args)).toEqual(createTag('s',{ textDecoration: 'line-through' }))
   })
+
+  test('GHSA-69g8-5v35-g33w: [img] drops non allow-listed attributes', () => {
+    const res = bbob(preset()).process('[img width=10 onerror="alert(1)" onLoad="alert(1)"]x[/img]', {
+      render: (content) => String(content),
+    })
+    const [img] = [...res.tree] as { tag: string, attrs: Record<string, unknown> }[]
+
+    expect(img.tag).toBe('img')
+    expect(img.attrs).toEqual({ width: '10', src: 'x' })
+  });
 });
