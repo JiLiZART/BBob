@@ -48,4 +48,14 @@ describe('@bbob/preset-react', () => {
 
     expect(tags).toEqual([createTag(["This", " ", "text", " ", "should", " ", "be", " ", "red"], { color: '#ff0000' })]);
   });
+
+  test('GHSA-69g8-5v35-g33w: [img] drops non allow-listed attributes', () => {
+    const res = bbob(preset()).process('[img width=10 onerror="alert(1)" onLoad="alert(1)"]x[/img]', {
+      render: (content) => String(content),
+    })
+    const [img] = [...res.tree] as { tag: string, attrs: Record<string, unknown> }[]
+
+    expect(img.tag).toBe('img')
+    expect(img.attrs).toEqual({ width: '10', src: 'x' })
+  });
 });
