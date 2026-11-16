@@ -1,0 +1,65 @@
+{
+  "name": "@bbob/angular",
+  "version": "4.2.0",
+  "description": "A BBCode component for Angular part of @bbob",
+  "keywords": [
+    "angular",
+    "bbcode",
+    "parser",
+    "bbob"
+  ],
+  "dependencies": {
+    "@bbob/core": "*",
+    "@bbob/html": "*",
+    "@bbob/types": "*"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=22.0.0",
+    "@angular/platform-browser": ">=22.0.0"
+  },
+  "devDependencies": {
+    "@angular/common": "22.2.5",
+    "@angular/compiler": "22.2.5",
+    "@angular/compiler-cli": "22.2.5",
+    "@angular/core": "22.2.5",
+    "@angular/platform-browser": "22.2.5",
+    "@bbob/preset-html5": "*",
+    "rxjs": "7.8.2",
+    "typescript": "6.0.3"
+  },
+  "main": "es/index.js",
+  "module": "es/index.js",
+  "types": "types/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./es/index.js"
+    }
+  },
+  "homepage": "https://github.com/JiLiZART/bbob",
+  "author": "Nikolay Kostyurin <jilizart@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JiLiZART/bbob/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JiLiZART/bbob.git"
+  },
+  "scripts": {
+    "build": "ngc -p tsconfig.json",
+    "test": "pkg-task",
+    "cover": "pkg-task",
+    "lint": "pkg-task",
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "es",
+    "src",
+    "types"
+  ]
+}

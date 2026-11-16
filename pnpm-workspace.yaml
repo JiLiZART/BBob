@@ -3,13 +3,17 @@ packages:
   - 'examples/*'
   - 'scripts'
   - 'benchmark'
+linkWorkspacePackages: true
+preferWorkspacePackages: true
 allowBuilds:
   '@parcel/watcher': true
   '@swc/core': true
   core-js: true
   core-js-pure: true
   esbuild: true
+  lmdb: false
   microtime: true
+  msgpackr-extract: false
   nx: true
   svelte-preprocess: true
   unrs-resolver: true
@@ -25,6 +29,10 @@ overrides:
   "express@<4.19.2": ">=4.19.2"
 
 packageExtensions:
+  # compiler must load the same vue as the package using it, not whichever version got hoisted
+  "vue-template-compiler@2":
+    "peerDependencies":
+      "vue": "2.x"
   "@testing-library/vue@7":
     "dependencies":
       "vue": "3.x"

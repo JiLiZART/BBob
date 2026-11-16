@@ -1,0 +1,13 @@
+<main>
+  <h1>BBob + Angular</h1>
+  <div class="data">
+    <div class="bbcode">
+      <h2>Raw BB Code here</h2>
+      <textarea name="bbcode" id="bbcode" cols="30" rows="10" [(ngModel)]="bbcode"></textarea>
+    </div>
+    <div class="html">
+      <h2>Generated HTML here</h2>
+      <bbob-bbcode [source]="bbcode" [plugins]="plugins" [trusted]="true"></bbob-bbcode>
+    </div>
+  </div>
+</main>

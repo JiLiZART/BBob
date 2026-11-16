@@ -1,5 +1,5 @@
 import core from '@bbob/core';
-import { attrsToString, isTagNode, TagNode } from '@bbob/plugin-helper';
+import { attrValue, isTagNode, TagNode } from '@bbob/plugin-helper';
 import type { BBobCoreOptions, BBobPlugins, TagNodeTree } from '@bbob/types';
 
 const SELFCLOSE_END_TAG = '/>';
@@ -7,7 +7,32 @@ const CLOSE_START_TAG = '</';
 const START_TAG = '<';
 const END_TAG = '>';
 
-interface BBobHTMLOptions extends BBobCoreOptions {
+// Drop event handlers and malformed names; attribute values are escaped by attrValue.
+const SAFE_ATTR_NAME = /^(?!on)[a-z_:][\w:.-]*$/i;
+const { hasOwnProperty } = Object.prototype;
+
+// Single pass over attrs straight to a string, no intermediate object.
+function renderAttrs(attrs?: Record<string, unknown> | null) {
+  let result = '';
+
+  if (!attrs) {
+    return result;
+  }
+
+  for (const key in attrs) {
+    if (hasOwnProperty.call(attrs, key) && SAFE_ATTR_NAME.test(key)) {
+      const attr = attrValue(key, attrs[key]);
+
+      if (attr) {
+        result += ' ' + attr;
+      }
+    }
+  }
+
+  return result;
+}
+
+export interface BBobHTMLOptions extends BBobCoreOptions {
   stripTags?: boolean
 }
 
@@ -31,7 +56,7 @@ function renderNode(node?: TagNodeTree, options?: BBobHTMLOptions): string {
       return render(node.content, options);
     }
 
-    const attrs = attrsToString(node.attrs)
+    const attrs = renderAttrs(node.attrs)
 
     if (node.content === null) {
       return START_TAG + node.tag + attrs + SELFCLOSE_END_TAG

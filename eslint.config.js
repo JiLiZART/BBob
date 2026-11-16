@@ -7,6 +7,8 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import _import from 'eslint-plugin-import'
 
 export default defineConfig([
+  // flat config ignores .eslintignore files; keep build output out of lint
+  { ignores: ["**/dist/**", "**/es/**", "**/lib/**", "**/types/**", "**/coverage/**"] },
   {
     languageOptions: {
       globals: {

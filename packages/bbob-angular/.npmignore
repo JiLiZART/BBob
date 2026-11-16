@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+coverage
+src
+!dist
+!lib
+!es
+*.test.js
