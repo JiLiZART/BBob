@@ -21,7 +21,32 @@ import '@bbob/wc'; // registers <bb-code>
 | Attribute | Description                                                   |
 |-----------|---------------------------------------------------------------|
 | `html5`   | Enable `@bbob/preset-html5`                                   |
+| `use`     | Space-separated names of plugins/presets registered with `BBCodeElement.define` |
 | `options` | JSON string of `@bbob/html` options, e.g. `{"stripTags":true}` |
+
+## Custom plugins and presets
+
+Register a plugin or a preset under a name once, then use it from markup:
+
+```js
+import BBCodeElement from '@bbob/wc';
+import html5Preset from '@bbob/preset-html5';
+
+const myPreset = html5Preset.extend((tags) => ({
+  ...tags,
+  spoiler: (node) => ({ tag: 'details', attrs: {}, content: node.content }),
+}));
+
+BBCodeElement.define('my-preset', myPreset());
+BBCodeElement.define('upper', (tree) => tree.walk((node) => (typeof node === 'string' ? node.toUpperCase() : node)));
+```
+
+```html
+<bb-code use="my-preset upper">[spoiler]hidden[/spoiler]</bb-code>
+```
+
+Plugins run in the order listed: `html5` first, then `use`, then the `plugins` property.
+Unknown names are skipped until they are defined.
 
 ## Properties
 

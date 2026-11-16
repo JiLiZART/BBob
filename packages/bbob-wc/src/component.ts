@@ -7,9 +7,21 @@ import type { BBobPluginFunction, BBobPlugins } from '@bbob/types';
 // Raw text is not escaped by @bbob/html, so escape before parsing to keep HTML in the source inert.
 const escapeHTML = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
+const registry = new Map<string, BBobPluginFunction>();
+const connected = new Set<BBCodeElement>();
+
 export class BBCodeElement extends HTMLElement {
   static get observedAttributes() {
-    return ['html5', 'options'];
+    return ['html5', 'use', 'options'];
+  }
+
+  /**
+   * Registers a plugin or a preset instance under a name usable in the `use` attribute.
+   * Elements already on the page re-render, so it can be called after they are upgraded.
+   */
+  static define(name: string, plugin: BBobPluginFunction) {
+    registry.set(name, plugin);
+    connected.forEach((el) => el.render());
   }
 
   private _plugins: BBobPlugins = [];
@@ -49,7 +61,12 @@ export class BBCodeElement extends HTMLElement {
   }
 
   connectedCallback() {
+    connected.add(this);
     this.render();
+  }
+
+  disconnectedCallback() {
+    connected.delete(this);
   }
 
   render() {
@@ -57,9 +74,21 @@ export class BBCodeElement extends HTMLElement {
       return;
     }
 
-    const plugins = this.hasAttribute('html5') ? ([html5Preset()] as BBobPluginFunction[]).concat(this._plugins) : this._plugins;
+    const plugins: BBobPluginFunction[] = [];
 
-    this.shadowRoot.innerHTML = html(escapeHTML(this.textContent || ''), plugins, this._options);
+    if (this.hasAttribute('html5')) {
+      plugins.push(html5Preset() as BBobPluginFunction);
+    }
+
+    (this.getAttribute('use') || '').split(/\s+/).forEach((name) => {
+      const plugin = registry.get(name);
+
+      if (plugin) {
+        plugins.push(plugin);
+      }
+    });
+
+    this.shadowRoot.innerHTML = html(escapeHTML(this.textContent || ''), plugins.concat(this._plugins), this._options);
   }
 }
 

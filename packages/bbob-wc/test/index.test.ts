@@ -1,3 +1,5 @@
+import html5Preset from '@bbob/preset-html5';
+
 import BBCodeElement from '../src';
 
 const mount = (markup: string) => {
@@ -41,5 +43,40 @@ describe('@bbob/wc', () => {
     const el = mount('<bb-code html5 options=\'{"stripTags":true}\'>[b]bolded text[/b]</bb-code>');
 
     expect(el.shadowRoot?.innerHTML).toBe('bolded text');
+  });
+
+  describe('define', () => {
+    const upper = (tree: any) => tree.walk((node: any) => (typeof node === 'string' ? node.toUpperCase() : node));
+    const preset = html5Preset.extend((tags) => ({
+      ...tags,
+      spoiler: (node) => ({ tag: 'details', attrs: {}, content: node.content }),
+    }));
+
+    test('use attribute applies a defined plugin', () => {
+      BBCodeElement.define('upper', upper);
+
+      const el = mount('<bb-code use="upper">[b]bolded text[/b]</bb-code>');
+
+      expect(el.shadowRoot?.innerHTML).toBe('<b>BOLDED TEXT</b>');
+    });
+
+    test('use attribute applies a defined preset, in order with plugins', () => {
+      BBCodeElement.define('upper', upper);
+      BBCodeElement.define('my-preset', preset());
+
+      const el = mount('<bb-code use="my-preset upper">[spoiler]hidden[/spoiler] [b]a[/b]</bb-code>');
+
+      expect(el.shadowRoot?.innerHTML).toBe('<details>HIDDEN</details> <span style="font-weight: bold;">A</span>');
+    });
+
+    test('defining after the element is connected re-renders it', () => {
+      const el = mount('<bb-code use="late">[b]bolded text[/b]</bb-code>');
+
+      expect(el.shadowRoot?.innerHTML).toBe('<b>bolded text</b>');
+
+      BBCodeElement.define('late', upper);
+
+      expect(el.shadowRoot?.innerHTML).toBe('<b>BOLDED TEXT</b>');
+    });
   });
 });
