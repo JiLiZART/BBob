@@ -69,6 +69,38 @@ describe('@bbob/preset-html5', () => {
     expect(parse(input)).toBe(result);
   });
 
+  describe('GHSA-69g8-5v35-g33w: img drops non allow-listed attributes', () => {
+    test('event handler', () => {
+      expect(parse('[img onerror="alert(1)"]x[/img]')).toBe('<img src="x"/>');
+    });
+
+    test('event handler with onlyAllowTags', () => {
+      expect(html('[img onerror="alert(1)"]x[/img]', preset(), { onlyAllowTags: ['img'] }))
+        .toBe('<img src="x"/>');
+    });
+
+    test('keeps width, drops onerror', () => {
+      expect(parse('[img width=10 onerror="alert(1)"]x[/img]')).toBe('<img width="10" src="x"/>');
+    });
+
+    test('keeps class, id, style and data-* attributes', () => {
+      expect(parse('[img class="a b" id="pic" style="width: 10px" data-foo="bar" onerror="alert(1)"]x[/img]'))
+        .toBe('<img class="a b" id="pic" style="width: 10px" data-foo="bar" src="x"/>');
+    });
+
+    test('drops malformed data-* names', () => {
+      expect(parse('[img data-="1" data-a/onerror="alert(1)" data-a>b="1"]x[/img]')).not.toMatch(/onerror|data-/);
+    });
+
+    test('invalid attribute name', () => {
+      expect(parse('[img "x"=1]x[/img]')).toBe('<img src="x"/>');
+    });
+
+    test('user supplied src attr does not override content', () => {
+      expect(parse('[img src="y" onload="alert(1)"]x[/img]')).toBe('<img src="x"/>');
+    });
+  });
+
   test('[quote="author"]quoted text[/quote]', () => {
     const input = '[quote="author"]quoted text[/quote]';
     const result = '<blockquote><p>quoted text</p></blockquote>';
