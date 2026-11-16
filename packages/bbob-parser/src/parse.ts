@@ -190,7 +190,6 @@ function parse(input: string, opts: ParseOptions = {}) {
    * @param {Token} token
    */
   function tagHandleEnd(token: Token) {
-    const tagName = token.getValue().slice(1);
     const lastNestedNode = nestedNodes.flush();
 
     activeTagNodeFlush();
@@ -201,7 +200,7 @@ function parse(input: string, opts: ParseOptions = {}) {
       }
 
       nodesAppend(lastNestedNode);
-    } else if (!isTagNested(tagName)) { // when we have only close tag [/some] without any open tag
+    } else if (!isTagNested(token.getValue().slice(1))) { // when we have only close tag [/some] without any open tag
       nodesAppend(token.toString(tagOpts));
     } else if (typeof options.onError === "function") {
       const tag = token.getValue();
@@ -280,10 +279,8 @@ function parse(input: string, opts: ParseOptions = {}) {
       // [tag]
       if (token.isStart()) {
         tagHandleStart(token);
-      }
-
-      // [/tag]
-      if (token.isEnd()) {
+      } else {
+        // [/tag]
         tagHandleEnd(token);
       }
     } else {

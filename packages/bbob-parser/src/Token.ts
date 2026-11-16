@@ -54,7 +54,9 @@ const isTagToken = (token: Token) => {
   return false;
 };
 
-const isTagEnd = (token: Token) => getTokenValue(token).charCodeAt(0) === SLASH.charCodeAt(0);
+const CODE_SLASH = SLASH.charCodeAt(0);
+
+const isTagEnd = (token: Token) => getTokenValue(token).charCodeAt(0) === CODE_SLASH;
 
 const isTagStart = (token: Token) => !isTagEnd(token);
 

@@ -44,7 +44,8 @@ const TAG_STATE_VALUE = 2;
 const END_POS_OFFSET = 2;  // length + start position offset
 
 const isWhiteSpaceCode = (code: number) => code === CODE_SPACE || code === CODE_TAB;
-const isSpecialCode = (code: number) => code === CODE_EQ || code === CODE_SPACE || code === CODE_TAB;
+const validAttrName = (code: number) => !(code === CODE_EQ || isWhiteSpaceCode(code));
+const isSpecialCode =(code: number) => code === CODE_EQ || code === CODE_SPACE || code === CODE_TAB;
 // Both trimChar and unquote only ever act on quotemarks, so an unquoted value
 // (the common case) can skip them entirely.
 const unq = (val: string) => (
@@ -60,6 +61,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   let stateMode = STATE_WORD;
   let tagMode = TAG_STATE_NAME;
   let contextFreeTag = '';
+  let pendingTagStr = '';
   // Token count is far smaller than char count; grow on demand rather than
   // reserving one slot per character.
   const tokens: Token[] = [];
@@ -117,6 +119,7 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
   const toEndTag = (tagName: string) => `${openTag}${SLASH}${tagName}${closeTag}`
 
   const chars = createCharGrabber(buffer, { onSkip });
+  const bufferLen = buffer.length;
 
   /**
    * Emits newly created token to subscriber
@@ -138,7 +141,6 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
 
   function nextTagState(tagChars: CharGrabber, isSingleValueTag: boolean, masterStartPos: number) {
     if (tagMode === TAG_STATE_ATTR) {
-      const validAttrName = (code: number) => !(code === CODE_EQ || isWhiteSpaceCode(code));
       const name = tagChars.grabWhileCode(validAttrName);
       const isEnd = tagChars.isLast();
       const isValue = tagChars.getCurrCode() !== CODE_EQ;
@@ -271,13 +273,18 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       return STATE_WORD;
     }
 
+    pendingTagStr = substr;
+
     return STATE_TAG_ATTRS;
   }
 
   function stateAttrs() {
     const startPos = chars.getPos();
-    const silent = true;
-    const tagStr = chars.grabWhileCode((code) => code !== closeTagCode, silent);
+    // stateTag (the only way in here) already sliced the tag body up to
+    // closeTag; reuse it instead of re-scanning it char by char.
+    const tagStr = pendingTagStr;
+
+    chars.skip(tagStr.length, true);
     const tagGrabber = createCharGrabber(tagStr, { onSkip });
     // Only the tag name (part before the first '=') is needed here; slice it out
     // instead of split()-ing the whole tag string into an array.
@@ -314,9 +321,17 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
     }
 
     if (isWhiteSpaceCode(currCode)) {
-      const word = chars.grabWhileCode(isWhiteSpaceCode);
+      // Same direct scan as the word path below.
+      const start = chars.getPos();
+      let end = start + 1;
 
-      emitToken(TYPE_SPACE, word);
+      while (end < bufferLen && isWhiteSpaceCode(buffer.charCodeAt(end))) {
+        end++;
+      }
+
+      chars.advance(end - start);
+
+      emitToken(TYPE_SPACE, buffer.substring(start, end));
 
       return STATE_WORD;
     }
@@ -371,9 +386,19 @@ export function createLexer(buffer: string, options: LexerOptions = {}): LexerTo
       return STATE_WORD;
     }
 
-    const word = chars.grabWhileCode(isCharTokenCode);
+    // Hottest loop of the lexer (every plain word). Scan the buffer directly:
+    // grabWhileCode is shared by many different predicates, so V8 cannot
+    // inline the per-char callback there, while this call site is monomorphic.
+    const start = chars.getPos();
+    let end = start + 1; // current char is already known to be a word char
 
-    emitToken(TYPE_WORD, word);
+    while (end < bufferLen && isCharTokenCode(buffer.charCodeAt(end))) {
+      end++;
+    }
+
+    chars.advance(end - start);
+
+    emitToken(TYPE_WORD, buffer.substring(start, end));
 
     return STATE_WORD;
   }
