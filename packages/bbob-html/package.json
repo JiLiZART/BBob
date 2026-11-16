@@ -1,6 +1,6 @@
 {
   "name": "@bbob/html",
-  "version": "4.3.1",
+  "version": "4.4.1",
   "description": "A BBCode to HTML Renderer part of @bbob",
   "keywords": [
     "html",
@@ -54,6 +54,7 @@
     "size": "pkg-task",
     "bundlesize": "pkg-task",
     "types": "pkg-task",
+    "attw": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [

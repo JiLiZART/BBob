@@ -1,6 +1,6 @@
 {
   "name": "@bbob/preset-react",
-  "version": "4.3.1",
+  "version": "4.4.1",
   "description": "React preset to transform BBCode to React for @bbob/react",
   "keywords": [
     "bbob",
@@ -62,6 +62,7 @@
     "size": "pkg-task",
     "bundlesize": "pkg-task",
     "types": "pkg-task",
+    "attw": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [
