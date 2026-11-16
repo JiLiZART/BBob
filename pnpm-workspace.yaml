@@ -11,7 +11,9 @@ allowBuilds:
   core-js: true
   core-js-pure: true
   esbuild: true
+  lmdb: false
   microtime: true
+  msgpackr-extract: false
   nx: true
   svelte-preprocess: true
   unrs-resolver: true
