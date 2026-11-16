@@ -1,4 +1,4 @@
-/* eslint-disable no-use-before-define,import/prefer-default-export */
+/* eslint-disable no-use-before-define */
 import core from '@bbob/core';
 import * as html from '@bbob/html';
 

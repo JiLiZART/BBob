@@ -4,103 +4,151 @@ import {
 } from '@bbob/plugin-helper';
 
 export type CharGrabberOptions = {
-  onSkip?: () => void
+  onSkip?: (count?: number) => void
 }
 
 export class CharGrabber {
   private s: string;
-  private c: { len: number; pos: number };
-  private o: CharGrabberOptions;
+  private pos: number;
+  private len: number;
+  private onSkip: ((count?: number) => void) | null;
 
   constructor(source: string, options: CharGrabberOptions = {}) {
-    this.s = source
-    this.c = {
-      pos: 0,
-      len: source.length,
-    };
-
-    this.o = options
+    this.s = source;
+    this.pos = 0;
+    this.len = source.length;
+    this.onSkip = options.onSkip || null;
   }
 
   skip(num = 1, silent?: boolean) {
-    this.c.pos += num;
+    this.pos += num;
 
-    if (this.o && this.o.onSkip && !silent) {
-      this.o.onSkip();
+    // Preserve original semantics: a manual skip bumps the column by one,
+    // regardless of num (all call sites use num === 1).
+    if (!silent && this.onSkip) {
+      this.onSkip(1);
+    }
+  }
+
+  /**
+   * Advance the cursor by `num` chars, bumping the column by the same amount.
+   * Use when a span was already scanned (e.g. via substrUntilChar) and we want
+   * to consume it without re-walking it character by character.
+   */
+  advance(num: number) {
+    this.pos += num;
+
+    if (this.onSkip && num > 0) {
+      this.onSkip(num);
     }
   }
 
   hasNext() {
-    return this.c.len > this.c.pos
+    return this.len > this.pos;
   }
 
   getCurr() {
-    if (typeof this.s[this.c.pos] === 'undefined') {
-      return ''
-    }
+    return this.pos < this.len ? this.s[this.pos] : '';
+  }
 
-    return this.s[this.c.pos]
+  /** Char code at current position, or -1 past end. Avoids 1-char string alloc. */
+  getCurrCode() {
+    return this.pos < this.len ? this.s.charCodeAt(this.pos) : -1;
   }
 
   getPos() {
-    return this.c.pos;
+    return this.pos;
   }
 
   getLength() {
-    return this.c.len;
+    return this.len;
   }
 
   getRest() {
-    return this.s.substring(this.c.pos)
+    return this.s.substring(this.pos);
   }
 
   getNext() {
-    const nextPos = this.c.pos + 1;
+    const nextPos = this.pos + 1;
 
-    return nextPos <= (this.s.length - 1) ? this.s[nextPos] : null;
+    return nextPos < this.len ? this.s[nextPos] : null;
+  }
+
+  /** Char code at next position, or -1 if none. */
+  getNextCode() {
+    const nextPos = this.pos + 1;
+
+    return nextPos < this.len ? this.s.charCodeAt(nextPos) : -1;
   }
 
   getPrev() {
-    const prevPos = this.c.pos - 1;
+    const prevPos = this.pos - 1;
 
-    if (typeof this.s[prevPos] === 'undefined') {
-      return null
-    }
+    return prevPos >= 0 ? this.s[prevPos] : null;
+  }
 
-    return this.s[prevPos];
+  /** Char code at previous position, or -1 if none. */
+  getPrevCode() {
+    const prevPos = this.pos - 1;
+
+    return prevPos >= 0 ? this.s.charCodeAt(prevPos) : -1;
   }
 
   isLast() {
-    return this.c.pos === this.c.len
+    return this.pos === this.len;
   }
 
   includes(val: string) {
-    return this.s.indexOf(val, this.c.pos) >= 0
+    return this.s.indexOf(val, this.pos) >= 0;
   }
 
   grabWhile(condition: (curr: string) => boolean, silent?: boolean) {
     let start = 0;
 
     if (this.hasNext()) {
-      start = this.c.pos;
+      start = this.pos;
 
-      while (this.hasNext() && condition(this.getCurr())) {
-        this.skip(1, silent);
+      while (this.pos < this.len && condition(this.s[this.pos])) {
+        this.pos++;
       }
+
+      // Batch the skip notification: one call for the whole run instead of
+      // one per character. Equivalent when onSkip only accumulates a count.
+      if (!silent && this.onSkip && this.pos > start) this.onSkip(this.pos - start);
     }
 
-    return this.s.substring(start, this.c.pos);
+    return this.s.substring(start, this.pos);
+  }
+
+  /**
+   * Same as grabWhile but the predicate receives a char *code* (number),
+   * avoiding a 1-char string allocation per character in hot loops.
+   */
+  grabWhileCode(condition: (code: number) => boolean, silent?: boolean) {
+    let start = 0;
+
+    if (this.hasNext()) {
+      start = this.pos;
+
+      while (this.pos < this.len && condition(this.s.charCodeAt(this.pos))) {
+        this.pos++;
+      }
+
+      if (!silent && this.onSkip && this.pos > start) this.onSkip(this.pos - start);
+    }
+
+    return this.s.substring(start, this.pos);
   }
 
   grabN(num: number = 0) {
-    return this.s.substring(this.c.pos, this.c.pos + num)
+    return this.s.substring(this.pos, this.pos + num);
   }
 
   /**
    * Grabs rest of string until it find a char
    */
   substrUntilChar(char: string) {
-    const { pos } = this.c;
+    const pos = this.pos;
     const idx = this.s.indexOf(char, pos);
 
     return idx >= 0 ? this.s.substring(pos, idx) : '';
@@ -118,20 +166,22 @@ export const createCharGrabber = (source: string, options?: CharGrabberOptions) 
  *  trimChar('*hello*', '*') ==> 'hello'
  */
 export const trimChar = (str: string, charToRemove: string) => {
-  while (str.charAt(0) === charToRemove) {
-    // eslint-disable-next-line no-param-reassign
-    str = str.substring(1);
-  }
+  let start = 0;
+  let end = str.length;
 
-  while (str.charAt(str.length - 1) === charToRemove) {
-    // eslint-disable-next-line no-param-reassign
-    str = str.substring(0, str.length - 1);
-  }
+  while (start < end && str[start] === charToRemove) start++;
+  while (end > start && str[end - 1] === charToRemove) end--;
 
-  return str;
+  return start === 0 && end === str.length ? str : str.substring(start, end);
 };
+
+const ESCAPED_QUOTE = BACKSLASH + QUOTEMARK;
 
 /**
  * Unquotes \" to "
  */
-export const unquote = (str: string) => str.replace(BACKSLASH + QUOTEMARK, QUOTEMARK);
+export const unquote = (str: string) => (
+  // The vast majority of attribute values contain no escaped quote at all;
+  // indexOf is far cheaper than entering replace().
+  str.indexOf(ESCAPED_QUOTE) === -1 ? str : str.replace(ESCAPED_QUOTE, QUOTEMARK)
+);

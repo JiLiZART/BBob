@@ -1,6 +1,6 @@
 {
   "name": "@bbob/cli",
-  "version": "4.2.0",
+  "version": "4.4.1",
   "description": "Comand line bbcode parser",
   "bin": {
     "bbob": "lib/cli.js"
@@ -57,10 +57,23 @@
     "size": "pkg-task",
     "bundlesize": "pkg-task",
     "types": "pkg-task",
+    "attw": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "author": "Nikolay Kostyurin <jilizart@gmail.com>",
   "license": "MIT",
+  "size-limit": [
+    {
+      "path": "./dist/index.min.js",
+      "limit": "5 KB"
+    }
+  ],
+  "bundlesize": [
+    {
+      "path": "./dist/index.min.js",
+      "maxSize": "5 KB"
+    }
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   }

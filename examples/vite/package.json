@@ -1,5 +1,5 @@
 {
-  "name": "vite",
+  "name": "vite-example",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@bbob/html": "*",
     "@bbob/preset-html5": "*",
+    "@bbob/html": "*",
     "@bbob/types": "*"
   },
   "devDependencies": {
-    "typescript": "^5.7.2",
-    "vite": "^6.0.0"
+    "typescript": "^5.2.2",
+    "vite": "^6.4.3"
   }
 }

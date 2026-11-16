@@ -43,18 +43,29 @@ function appendToNode(node: TagNode, value: NodeContent) {
 }
 
 /**
- * Replaces " to &qquot;
+ * C0 control characters (plus DEL). Browsers remove ASCII tab/newline/CR and
+ * ignore other control chars when resolving a URL scheme, so a control char
+ * inside the scheme keyword (e.g. "java\tscript:") would otherwise slip past
+ * the scheme guard below while still executing. Strip them so the scheme can't
+ * be split apart. Harmless for non-URL attributes, where such chars aren't valid.
+ */
+const CONTROL_CHARS_RE = /[\u0000-\u001F\u007F]/g;
+
+/**
+ * Escapes an attribute value for safe HTML output and neutralizes
+ * dangerous URL schemes.
  * @param {string} value
  */
 function escapeAttrValue(value: string) {
-  return value
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;')
-      // eslint-disable-next-line no-script-url
-      .replace(/(javascript|data|vbscript|file):/gi, '$1%3A');
+    return value
+        .replace(CONTROL_CHARS_RE, '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        // eslint-disable-next-line no-script-url
+        .replace(/(javascript|data|vbscript|file):/gi, '$1%3A');
 }
 
 /**

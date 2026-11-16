@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./types",
-    "moduleResolution": "node"
+    "rootDir": "./src",
+    "tsBuildInfoFile": "./types/tsconfig.tsbuildinfo",
+    "outDir": "./types"
   },
   "include": [
     "./src/**/*"

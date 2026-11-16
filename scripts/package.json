@@ -1,6 +1,7 @@
 {
   "name": "@bbob/scripts",
   "private": true,
+  "version": "0.0.0",
   "bin": {
     "pkg-task": "pkg-task"
   },

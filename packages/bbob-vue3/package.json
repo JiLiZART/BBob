@@ -1,6 +1,6 @@
 {
   "name": "@bbob/vue3",
-  "version": "4.2.0",
+  "version": "4.4.1",
   "description": "A BBCode to Vue3 Renderer part of @bbob",
   "keywords": [
     "vue",
@@ -20,13 +20,13 @@
   },
   "devDependencies": {
     "@bbob/preset-vue": "*",
-    "@testing-library/vue": "7.0.0",
-    "@vue/compiler-sfc": "*",
-    "@vue/runtime-dom": "*",
-    "@vue/runtime-core": "*",
-    "@vue/compiler-dom": "*",
-    "@vue/test-utils": "2.4.5",
-    "vue": "*"
+    "@testing-library/vue3": "npm:@testing-library/vue@8.1.0",
+    "@vue/compiler-sfc": "3",
+    "@vue/runtime-dom": "3",
+    "@vue/runtime-core": "3",
+    "@vue/compiler-dom": "3",
+    "@vue/test-utils": "2.4.10",
+    "vue": "3"
   },
   "main": "lib/index.js",
   "module": "es/index.mjs",
@@ -69,6 +69,7 @@
     "size": "pkg-task",
     "bundlesize": "pkg-task",
     "types": "pkg-task",
+    "attw": "pkg-task",
     "prepublishOnly": "npm run build"
   },
   "size-limit": [

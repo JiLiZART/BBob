@@ -8,7 +8,6 @@ import { minify } from 'rollup-plugin-swc3'
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-// eslint-disable-next-line import/no-dynamic-require
 const pkg = require(`${process.cwd()}/package.json`);
 const { NODE_ENV } = process.env;
 

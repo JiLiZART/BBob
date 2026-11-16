@@ -85,7 +85,15 @@ const toNode = (
   content?: TagNodeTree
 ) => TagNode.create(tag, attrs, content);
 
+const IMG_ALLOWED_ATTRS = ["width", "height", "alt", "title", "class", "id", "style"];
+
+// strict name pattern: attr names come from user input and are rendered unescaped
+const isAllowedImgAttr = (name: string) =>
+  IMG_ALLOWED_ATTRS.includes(name) || /^data-[a-z0-9_-]+$/i.test(name);
+
 const toStyle = (style: string) => ({ style });
+
+const toEm = (value: unknown) => `${Number(value) / 10}em`;
 
 export const defineStyleNode = (tag: string, style: string) => (node: TagNodeObject) => toNode(tag, toStyle(style), node.content)
 
@@ -103,15 +111,19 @@ export const defaultTags = (function createTags() {
             },
             node.content
         ),
-    img: (node, { render }) =>
-        toNode(
-            "img",
-            {
-              ...node.attrs,
-              src: render(node.content),
-            },
-            null
-        ),
+    img: (node, { render }) => {
+      const source: Record<string, unknown> = node.attrs || {};
+      const attrs: Record<string, unknown> = {};
+
+      // allow-list only: attr names come from user input (GHSA-69g8-5v35-g33w)
+      Object.keys(source).filter(isAllowedImgAttr).forEach((name) => {
+        attrs[name] = source[name];
+      });
+
+      attrs.src = render(node.content);
+
+      return toNode("img", attrs, null);
+    },
     quote: (node) => toNode("blockquote", {}, [toNode("p", {}, node.content)]),
     code: (node) => toNode("pre", {}, node.content),
     style: (node) =>
@@ -127,6 +139,8 @@ export const defaultTags = (function createTags() {
     },
     color: (node) =>
         toNode("span", toStyle(`color: ${getUniqAttr(node.attrs)};`), node.content),
+    size: (node) =>
+        toNode("span", toStyle(`font-size: ${toEm(getUniqAttr(node.attrs))};`), node.content),
   }
 
   return tags

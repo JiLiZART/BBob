@@ -4,7 +4,15 @@
       "dependsOn": [
         "^types"
       ],
-      "outputs": ["{projectRoot}/types"],
+      "outputs": [
+        "{projectRoot}/types"
+      ]
+    },
+    "attw": {
+      "dependsOn": [
+        "build",
+        "types"
+      ]
     },
     "build": {
       "dependsOn": [
@@ -13,7 +21,11 @@
         "^build:commonjs",
         "^build:umd"
       ],
-      "outputs": ["{projectRoot}/lib", "{projectRoot}/es", "{projectRoot}/dist"],
+      "outputs": [
+        "{projectRoot}/lib",
+        "{projectRoot}/es",
+        "{projectRoot}/dist"
+      ]
     },
     "test": {
       "dependsOn": [
@@ -26,7 +38,9 @@
         "build",
         "^cover"
       ],
-      "outputs": ["{projectRoot}/coverage"]
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
     },
     "lint": {
       "dependsOn": [
@@ -38,20 +52,26 @@
         "build:es",
         "^build:commonjs"
       ],
-      "outputs": ["{projectRoot}/lib"],
+      "outputs": [
+        "{projectRoot}/lib"
+      ]
     },
     "build:es": {
       "dependsOn": [
         "^build:es"
       ],
-      "outputs": ["{projectRoot}/es"],
+      "outputs": [
+        "{projectRoot}/es"
+      ]
     },
     "build:umd": {
       "dependsOn": [
         "build:es",
         "^build:umd"
       ],
-      "outputs": ["{projectRoot}/dist"],
+      "outputs": [
+        "{projectRoot}/dist"
+      ]
     }
   },
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
@@ -72,5 +92,6 @@
         ]
       }
     }
-  ]
+  ],
+  "analytics": true
 }

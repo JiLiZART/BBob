@@ -6,3 +6,5 @@ types
 test/*.d.ts
 test/*.map
 tsconfig.tsbuildinfo
+.bench-build
+bench/*.json

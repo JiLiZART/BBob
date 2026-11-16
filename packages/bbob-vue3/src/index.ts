@@ -7,8 +7,8 @@ const plugin = {
     app.component("BBobBBCode", Component);
     app.component("BBCode", Component);
   }
-} as Plugin<any[]>;
+} satisfies Plugin;
 
-export { render } from "./render";
+export { render } from "./render.js";
 export { Component };
 export default plugin;

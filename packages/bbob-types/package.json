@@ -1,7 +1,11 @@
 {
   "name": "@bbob/types",
-  "version": "4.2.0",
+  "version": "4.4.1",
   "description": "Shared Typescript types of @bbob",
+  "scripts": {
+    "types": "pkg-task",
+    "attw": "pkg-task"
+  },
   "keywords": [
     "bbcode",
     "types"
@@ -34,9 +38,6 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/JiLiZART/bbob.git"
-  },
-  "scripts": {
-    "types": "pkg-task"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
