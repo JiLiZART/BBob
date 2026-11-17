@@ -1,5 +1,24 @@
 # Change Log
 
+## 4.5.0
+
+### Patch Changes
+
+- [#339](https://github.com/JiLiZART/BBob/pull/339) [`5de1d25`](https://github.com/JiLiZART/BBob/commit/5de1d2551f0c38f78c4463f15b488b85dfa8c424) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Fixes [#315](https://github.com/JiLiZART/BBob/issues/315): with `caseFreeTags: true` the parser now emits lowercase tag names, so `[LIST][*]test[/LIST]` is rendered by presets the same as `[list][*]test[/list]`
+
+  **Behavior note:** with `caseFreeTags: true`, tag names in the AST are now lowercase (`[LIST]` produces `tag: 'list'`). Plugins that matched on the original casing, e.g. `node.tag === 'LIST'`, need to compare against lowercase. Without the flag nothing changes.
+
+- [#342](https://github.com/JiLiZART/BBob/pull/342) [`5116e5c`](https://github.com/JiLiZART/BBob/commit/5116e5cdbc8ca74fb0bdcead68cdd886582639c2) Thanks [@JiLiZART](https://github.com/JiLiZART)! - Security fix (GHSA-69g8-5v35-g33w, CWE-79): the `[img]` tag no longer copies every user-supplied attribute onto the rendered `<img>`. Only `width`, `height`, `alt`, `title`, `class`, `id`, `style` and `data-*` are kept, so `[img onerror="alert(1)"]x[/img]` now renders `<img src="x"/>`.
+
+  `@bbob/preset-react` maps `class` to `className` and converts the `style` string to a style object.
+
+  **Behavior note:** any other attribute on `[img]` is dropped. Override the `img` tag via `preset.extend` if you need more. `class`, `id`, `style` and `data-*` values are still user-controlled: if your page has scripts that act on `data-*` attributes or ids, restrict them with your own `img` override.
+
+- Updated dependencies [[`5de1d25`](https://github.com/JiLiZART/BBob/commit/5de1d2551f0c38f78c4463f15b488b85dfa8c424)]:
+  - @bbob/plugin-helper@4.5.0
+  - @bbob/preset@4.5.0
+  - @bbob/types@4.5.0
+
 ## 4.4.1
 
 ### Patch Changes
